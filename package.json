@@ -1,0 +1,33 @@
+{
+  "name": "tijdloze",
+  "description": "De Tijdloze Website",
+  "version": "1.0.0",
+  "author": "Stijn Vermeeren",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+  },
+  "dependencies": {
+    "axios": "^0.17.1",
+    "nuxt": "^1.0.0-rc11",
+    "vue": "2.5.9",
+    "vue-server-renderer": "2.5.9"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^6.0.0",
+    "babel-preset-latest": "^6.0.0",
+    "cross-env": "^3.0.0",
+    "css-loader": "^0.25.0",
+    "file-loader": "^0.9.0",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
+    "text-loader": "0.0.1",
+    "vue-loader": "11.1.4",
+    "vue-resource": "^1.3.4",
+    "vue-template-compiler": "^2.5.9",
+    "webpack": "^2.7.0",
+    "webpack-dev-server": "^2.9.7"
+  }
+}

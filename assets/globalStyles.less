@@ -1,0 +1,54 @@
+
+@import "styleConfig";
+
+body {
+  margin: 0;
+  background-color: @backgroundColor;
+  font-family: Arial, sans-serif;
+  letter-spacing: 0.027em;
+  line-height: 1.27em;
+  text-align: justify;
+}
+
+.hidden {
+  display: none;
+}
+
+img {
+  border: 0;
+  margin: 0;
+}
+
+a {
+  text-decoration: none;
+  color: @linkColor;
+  &:hover {
+    color: @hoverLinkColor;
+  }
+}
+
+h2 {
+  font-size: 140%;
+  margin: 1em 1em 1.5em 1em;
+}
+h3 {
+  font-size: 115%;
+  margin: 1em 0 1em 0;
+  padding: 0.3em 0 0.3em 1.2em;
+}
+h4 {
+  font-size: 110%;
+  margin-top: 1em;
+  margin-bottom: 0.4em;
+}
+
+p {
+  margin: 0.2em 1.2em 0.4em 1.2em;
+}
+table {
+  margin: 0 auto;
+  padding: 0;
+  border-width: 0;
+  border-spacing: 0;
+  width: 100%;
+}
