@@ -41,7 +41,7 @@
             for (let position = 1; position <= 5; position++) {
               const song = this.$store.getters.findSongAtPosition(year, position);
               if (song) {
-                const artist = this.$store.getters.artistById(song.artistId);
+                const artist = this.$store.state.artists[song.artistId];
                 result[year].push({song, artist});
               }
             }

@@ -1,9 +1,11 @@
 <template>
-    <nuxt-link :to="'artiest/' + coreArtist.id" class="list">{{coreArtist | fullname}}</nuxt-link>
+    <div>
+        <nuxt-link :to="'artiest/' + artist.id">{{artist | fullname}}</nuxt-link>
+    </div>
 </template>
 
 <script>
   export default {
-    props: ["coreArtist"]
+    props: ["artist"]
   }
 </script>

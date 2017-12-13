@@ -9,7 +9,10 @@
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
   },
   "dependencies": {
+    "@nuxtjs/axios": "^4.5.0",
+    "@nuxtjs/dotenv": "^1.1.0",
     "axios": "^0.17.1",
+    "lodash": "^4.17.4",
     "nuxt": "^1.0.0-rc11",
     "vue": "2.5.9",
     "vue-server-renderer": "2.5.9"

@@ -1,7 +1,10 @@
 <template>
     <div class="tabs">
         <div class="tabtitels">
-            <nuxt-link v-for="tab in tabs" :to="tab.to" :key="tab.to" tag="h3"><a>{{tab.title}}</a></nuxt-link>
+            <h3 v-for="tab in tabs" :key="tab.to" :class="{selected: tab.to === selected}">
+                <nuxt-link v-if="tab.to !== selected" :to="tab.to">{{tab.title}}</nuxt-link>
+                <span v-else>{{tab.title}}</span>
+            </h3>
         </div>
         <div class="tab">
             <slot></slot>
@@ -11,7 +14,7 @@
 
 <script>
     export default {
-      props: ["tabs"]
+      props: ["tabs", "selected"]
     }
 </script>
 
@@ -33,11 +36,10 @@
                 margin: 0 0.7em;
                 background-color: @headerBackgroundColor;
             }
-            h3.router-link-exact-active {
+            h3.selected {
                 border-bottom: 2px @backgroundColor solid;
                 background-color: @backgroundColor;
                 a {
-                    cursor: default;
                     color: black;
                 }
             }

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   /*
   ** Headers of the page
@@ -25,6 +27,12 @@ module.exports = {
   */
   loading: { color: '#3B8070' },
   plugins: ['~/plugins/global.js'],
+  modules: [
+    '@nuxtjs/dotenv',
+    ['@nuxtjs/axios', {
+      baseURL: process.env.BASE_URL
+    }]
+  ],
   build: {
     vendor: ['axios']
   }

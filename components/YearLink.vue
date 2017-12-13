@@ -1,5 +1,5 @@
 <template>
-    <nuxt-link :to="'lijst/' + year" class="list">{{year}}</nuxt-link>
+    <nuxt-link :to="'lijst/' + year">{{year}}</nuxt-link>
 </template>
 
 <script>

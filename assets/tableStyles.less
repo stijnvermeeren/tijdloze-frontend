@@ -1,0 +1,172 @@
+
+table {
+  margin: 0 auto;
+  padding: 0;
+  border-width: 0;
+  border-spacing: 0;
+  width: 100%;
+}
+
+table.lijst {
+  margin-bottom: 20px;
+  width: 90%;
+
+  tr:first-child {
+    th, td {
+      border-bottom: 1px solid black;
+    }
+  }
+  tr:last-child {
+    th, td {
+      border-bottom: none !important;
+    }
+  }
+  td, th {
+    text-align: center;
+    padding: 0.16em 0.5em;
+  }
+  th {
+    font-weight: bold;
+  }
+  td.l, th.l, th.headerl {
+    text-align: left;
+  }
+  td.a, th.a {
+    text-align: right;
+  }
+  td.a + td, th.a + th {
+    text-align: left;
+  }
+  td.r, th.r {
+    white-space: nowrap;
+    font-weight: bold;
+    &:not(:first-child) {
+      border-left: 1px solid black;
+    }
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
+    width: 2.5em;
+  }
+  td.y, th.y {
+    &:not(:first-child) {
+      border-left: 1px solid black;
+    }
+    &:not(:last-child) {
+      border-right: 1px solid black;
+    }
+    width: 3em;
+  }
+  td.n, th.n {
+    color: #555555;
+  }
+  td.i {
+    font-style: italic;
+    white-space: nowrap;
+  }
+  td.s {
+    font-size: 85%;
+    ul {
+      .noBullets;
+      li {
+        padding: 0 0 0 15px;
+        display: inline;
+        a {
+          display: inline;
+        }
+      }
+    }
+
+  }
+  td.wrap {
+    white-space: normal;
+  }
+
+  &.perEen tr, &.perVijf tr:nth-child(5n+1), tr.lineAfter {
+    td {
+      border-bottom: 1px #888888 dotted;
+    }
+  }
+
+  &.home {
+    tr:first-child th {
+      background-color: @headerBackgroundColor;
+      font-size: 120%;
+      padding: 0.3em 0;
+      border-bottom: none;
+    }
+    tr:nth-child(2) td {
+      padding-top: 1em;
+    }
+  }
+  &.topvijflijst th.r {
+    text-align: left;
+    padding-left: 45px;
+  }
+
+  tr.inCurrentList {
+    td:nth-child(2), td:last-child {
+      font-weight: bold;
+    }
+  }
+
+  table.valueData {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
+      width: 3em;
+      font-weight: bold;
+    }
+    td {
+      border: none !important;
+    }
+  }
+
+  table.valueDataData {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
+      width: 3em;
+    }
+    td:nth-child(2), th:nth-child(2) {
+      width: 17em;
+    }
+    td {
+      border: none !important;
+    }
+  }
+
+  table.valueValueDataData {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
+      width: 6em;
+    }
+    td:nth-child(2), th:nth-child(2) {
+      width: 4em;
+    }
+    td:nth-child(3), th:nth-child(3) {
+      width: 40%;
+    }
+    td {
+      border: none !important;
+    }
+  }
+
+  table.valueDataDataValue {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
+      width: 4em;
+    }
+    td:nth-child(2), th:nth-child(2) {
+      width: 35%;
+    }
+    td:nth-child(4), th:nth-child(4) {
+      width: 4em;
+    }
+    td {
+      border: none !important;
+    }
+  }
+}
