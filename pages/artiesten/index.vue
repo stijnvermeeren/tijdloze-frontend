@@ -2,7 +2,7 @@
     <div>
         <h2>Alle Tijdloze artiesten</h2>
 
-        <tijdloze-tabs :tabs="[{ to: '/artiest', title: 'Artiesten' }, { to: '/nummers', title: 'Nummers' }]" selected="/artiest">
+        <tijdloze-tabs :tabs="[{ title: 'Artiesten' }, { to: '/nummers', title: 'Nummers' }]">
             <table class="lijst perVijf">
                 <tbody>
                     <tr>
@@ -35,7 +35,7 @@
   export default {
     computed: {
       artistData() {
-        return this.$store.state.artists.map(artist => {
+        return this.$store.getters.artists.map(artist => {
           return {
             artist: artist,
             country: this.$store.getters.countriesById[artist.countryId],
@@ -43,6 +43,9 @@
           };
         });
       }
+    },
+    head: {
+      title: 'Artiesten'
     }
   }
 </script>

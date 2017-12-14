@@ -1,6 +1,11 @@
 import Vuex from 'vuex';
 import _ from 'lodash';
 
+import Artist from './Artist';
+import Song from './Song';
+import Year from './Year';
+import Years from './Years';
+
 function objectWithIdKeys(values) {
   let result = {};
   values.forEach(value => result[value.id] = value);
@@ -10,41 +15,43 @@ function objectWithIdKeys(values) {
 const createStore = () => {
   return new Vuex.Store({
     state: {
-      songs: [],
-      artists: [],
+      songsRaw: [],
+      artistsRaw: [],
       albums: [],
-      years: [],
+      yearsRaw: [],
       countries: []
     },
     getters: {
-      artistsById: state => objectWithIdKeys(state.artists),
-      songsById: state => objectWithIdKeys(state.songs),
+      years: state => new Years(state.yearsRaw.map(yyyy => new Year(yyyy))),
+      artists: state => state.artistsRaw.map(artist => new Artist(artist)),
+      songs: (state, getters) => state.songsRaw.map(song => {
+        return new Song(song, getters.albumsById[song.albumId].year, getters.years);
+      }),
+      artistsById: (state, getters) => objectWithIdKeys(getters.artists),
+      songsById: (state, getters) => objectWithIdKeys(getters.songs),
       albumsById: state => objectWithIdKeys(state.albums),
       countriesById: state => objectWithIdKeys(state.countries),
       songsByArtistId: (state, getters) => artistId => {
         return _.sortBy(
-          state.songs.filter(song => song.artistId === artistId),
-          song => [getters.albumsById[song.albumId].year, song.title.toLowerCase()]
+          getters.songs.filter(song => song.artistId === artistId),
+          song => [song.releaseYear, song.title.toLowerCase()]
         );
       },
-      findSongAtPosition: (state) => (year, position) => {
-        const yearKey = year.toString().substr(2, 2);
+      findSongAtPosition: (state, getters) => (year, position) => {
         // TODO: what about an in-progress Tijdloze?
-        return state.songs.find(song =>
-          song.positions[yearKey] === position
-        );
+        return getters.songs.find(song => song.position(year) === position);
       }
     },
     mutations: {
       updateCoreData(state, json) {
         state.countries = json.countries;
-        state.artists = _.sortBy(
+        state.artistsRaw = _.sortBy(
           json.artists,
           artist => [artist.name.toLowerCase(), artist.firstName.toLowerCase()]
         );
-        state.songs = json.songs;
+        state.songsRaw = json.songs;
         state.albums = json.albums;
-        state.years = json.years;
+        state.yearsRaw = json.years;
       }
     },
     actions: {

@@ -1,8 +1,8 @@
 <template>
     <div class="tabs">
         <div class="tabtitels">
-            <h3 v-for="tab in tabs" :key="tab.to" :class="{selected: tab.to === selected}">
-                <nuxt-link v-if="tab.to !== selected" :to="tab.to">{{tab.title}}</nuxt-link>
+            <h3 v-for="tab in tabs" :key="tab.to" :class="{selected: !tab.to}">
+                <nuxt-link v-if="tab.to" :to="tab.to">{{tab.title}}</nuxt-link>
                 <span v-else>{{tab.title}}</span>
             </h3>
         </div>

@@ -1,0 +1,70 @@
+<template>
+    <svg :class="['colorLabel', 'color-' + index]"><rect class="coloredRect" x="0" y="0" width="30" height="14"></rect></svg>
+</template>
+
+<script>
+  export default {
+    props: ['index']
+  }
+</script>
+
+<style lang="less" scoped>
+    @color0: rgb(228,26,28);
+    @color1: rgb(55,126,184);
+    @color2: rgb(77,175,74);
+    @color3: rgb(152,78,163);
+    @color4: rgb(255,127,0);
+    @color5: rgb(255,255,51);
+    @color6: rgb(166,86,40);
+    @color7: rgb(247,129,191);
+    @color8: rgb(153,153,153);
+
+    .color(@color) {
+        .coloredRect {
+            fill: @color;
+        }
+        .coloredPath {
+            fill: none;
+            stroke: @color;
+        }
+        .coloredCircle {
+            fill: @color;
+            stroke: @color;
+        }
+    }
+
+    .color {
+        &-0 {
+            .color(@color0)
+        }
+        &-1 {
+            .color(@color1)
+        }
+        &-2 {
+            .color(@color2)
+        }
+        &-3 {
+            .color(@color3)
+        }
+        &-4 {
+            .color(@color4)
+        }
+        &-5 {
+            .color(@color5)
+        }
+        &-6 {
+            .color(@color6)
+        }
+        &-7 {
+            .color(@color7)
+        }
+        &-8 {
+            .color(@color8)
+        }
+    }
+
+    svg.colorLabel {
+        width: 30px;
+        height: 14px;
+    }
+</style>

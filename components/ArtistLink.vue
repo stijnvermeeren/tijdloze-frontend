@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nuxt-link :to="'artiest/' + artist.id">{{artist | fullname}}</nuxt-link>
+        <nuxt-link :to="'artiest/' + artist.id">{{artist.fullName}}</nuxt-link>
     </div>
 </template>
 

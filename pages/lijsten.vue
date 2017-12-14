@@ -3,22 +3,22 @@
         <h2>Alle Tijdloze lijsten</h2>
 
         <div class="notabs">
-            <table v-for="year in [...years].reverse()" class="lijst topvijflijst">
+            <table v-for="year in [...years.years].reverse()" class="lijst topvijflijst">
                 <tbody>
                     <tr>
                         <th colspan="3" class="r">
                             <tijdloze-year :year="year"></tijdloze-year>
                         </th>
                     </tr>
-                    <tr v-for="{song, artist} in topFive[year]">
+                    <tr v-for="{song, artist} in topFive(year)">
                         <td class="r">
-                            {{song.positions[year]}}
+                            {{song.position(year)}}
                         </td>
                         <td>
-                            <tijdloze-artist :coreArtist="artist"></tijdloze-artist>
+                            <tijdloze-artist :artist="artist"></tijdloze-artist>
                         </td>
                         <td>
-                            <tijdloze-song :coreSong="song"></tijdloze-song>
+                            <tijdloze-song :song="song"></tijdloze-song>
                         </td>
                     </tr>
                 </tbody>
@@ -31,22 +31,19 @@
     export default {
       computed: {
         years() {
-          return this.$store.state.years;
-        },
-        topFive() {
-          const result = {};
-
-          for (const year of this.years) {
-            result[year] = [];
-            for (let position = 1; position <= 5; position++) {
-              const song = this.$store.getters.findSongAtPosition(year, position);
-              if (song) {
-                const artist = this.$store.state.artists[song.artistId];
-                result[year].push({song, artist});
-              }
+          return this.$store.getters.years;
+        }
+      },
+      methods: {
+        topFive(year) {
+          let result = [];
+          for (let position = 1; position <= 5; position++) {
+            const song = this.$store.getters.findSongAtPosition(year, position);
+            if (song) {
+              const artist = this.$store.getters.artistsById[song.artistId];
+              result.push({song, artist});
             }
           }
-
           return result;
         }
       },

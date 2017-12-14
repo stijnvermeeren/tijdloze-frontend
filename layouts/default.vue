@@ -17,7 +17,7 @@
                     <ul>
                         <li class="detijdlozevan"><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link></li>
 
-                        <li v-for="year in years"><nuxt-link :to="'/lijst/' + year">{{year | yy}}</nuxt-link></li>
+                        <li v-for="year in years.years"><nuxt-link :to="'/lijst/' + year.yyyy">{{year._yy}}</nuxt-link></li>
                     </ul>
                 </div>
             </div>
@@ -36,7 +36,7 @@
   export default {
     computed: {
       years() {
-        return this.$store.state.years;
+        return this.$store.getters.years;
       }
     }
   }
