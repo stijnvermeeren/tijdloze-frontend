@@ -6,8 +6,9 @@ export default class Song {
     this.albumId = songData.albumId;
     this.positions = songData.positions;
     this.exitCurrent = songData.exitCurrent;
-    this.years = years;
     this.releaseYear = releaseYear;
+
+    this.years = years;
   }
 
   position(year) {
@@ -16,17 +17,18 @@ export default class Song {
   }
 
   notInList(year) {
-    if (year.equals(this.years.currentYear()) && this.years.previousYear() && this.position(this.years.previousYear())) {
-      console.log(this.exitCurrent);
-      console.log(this.position(year));
-
+    if (year.isCurrent() && year.previous() && this.position(year.previous())) {
       return this.exitCurrent || !this.position(year);
     } else {
-      return this.position(year) === 0;
+      return !this.position(year);
     }
   }
 
+  possiblyInList(year) {
+    return !this.notInList(year);
+  }
+
   listCount() {
-    return this.years.years.filter(year => this.position(year)).length;
+    return this.years.filter(year => this.position(year)).length;
   }
 }

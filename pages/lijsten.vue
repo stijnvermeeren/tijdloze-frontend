@@ -3,7 +3,7 @@
         <h2>Alle Tijdloze lijsten</h2>
 
         <div class="notabs">
-            <table v-for="year in [...years.years].reverse()" class="lijst topvijflijst">
+            <table v-for="year in [...years].reverse()" class="lijst topvijflijst">
                 <tbody>
                     <tr>
                         <th colspan="3" class="r">

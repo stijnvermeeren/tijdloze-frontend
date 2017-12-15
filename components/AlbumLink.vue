@@ -1,10 +1,10 @@
 <template>
-    <nuxt-link :to="`nummer/${song.id}`">{{song.title}}</nuxt-link>
+    <nuxt-link :to="`album/${album.id}`">{{album.title}}</nuxt-link>
 </template>
 
 <script>
   export default {
-    props: ["song"]
+    props: ["album"]
   }
 </script>
 

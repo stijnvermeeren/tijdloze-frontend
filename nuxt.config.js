@@ -34,6 +34,9 @@ module.exports = {
     }]
   ],
   build: {
-    vendor: ['axios']
+    vendor: ['axios'],
+    babel: {
+      presets: ['vue-app']
+    }
   }
 };

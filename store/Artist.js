@@ -5,6 +5,6 @@ export default class Artist {
     this.firstName = artistData.firstName;
     this.name = artistData.name;
     this.countryId = artistData.countryId;
-    this.fullName = this.firstName ? this.firstName + ' ' + this.name : this.name
+    this.fullName = this.firstName ? `${this.firstName} ${this.name}` : this.name
   }
 }

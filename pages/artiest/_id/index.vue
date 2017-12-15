@@ -24,7 +24,7 @@
                             <th class="l">In de Tijdloze</th>
                             <th v-for="year in lastTwoYears">{{year._yy}}</th>
                         </tr>
-                        <tr v-for="(song, index) in songs" :class="['highlight', 'highlight-' + index, {inCurrentList: song.notInList(years.currentYear())}]">
+                        <tr v-for="(song, index) in songs" :class="['highlight', 'highlight-' + index, {inCurrentList: song.possiblyInList(currentYear)}]">
                             <td>
                                 <color-label :index="index" />
                             </td>
@@ -35,7 +35,10 @@
                                 {{song.releaseYear}}
                             </td>
                             <td class="l">
-                                <span v-if="song.listCount()">{{song.listCount()}} {{song.listCount() > 1 ? 'noteringen' : 'notering'}} ({Year::prettyPrint($song->possibleListYears)})</span>
+                                <span v-if="song.listCount()">
+                                    {{song.listCount()}} {{song.listCount() > 1 ? 'noteringen' : 'notering'}}
+                                    ({{inListSummary(song)}})
+                                </span>
                                 <span v-else>Geen top-100 noteringen</span>
                             </td>
                             <td v-for="year in lastTwoYears">
@@ -45,17 +48,21 @@
                     </tbody>
                 </table>
             </div>
+
+            <tijdloze-graph v-if="songs.find(song => song.listCount() > 0)" />
         </tijdloze-tabs>
     </div>
 </template>
 
 <script>
-  import ColorLabel from "../../components/d3/ColorLabel";
+  import ColorLabel from "../../../components/d3/ColorLabel";
+  import Graph from "../../../components/d3/Graph";
   import _ from 'lodash';
 
   export default {
     components: {
-      ColorLabel
+      ColorLabel,
+      TijdlozeGraph: Graph
     },
     computed: {
       artist() {
@@ -70,8 +77,11 @@
       years() {
         return this.$store.getters.years;
       },
+      currentYear() {
+        return this.$store.getters.currentYear;
+      },
       lastTwoYears() {
-        return _.takeRight(this.years.years, 2);
+        return _.takeRight(this.years, 2);
       },
       links() {
         const links = [];
@@ -89,6 +99,35 @@
         addLink('urlWikinl', 'Wikipedia (Nederlands)');
         addLink('urlAllmusic', 'AllMusic');
         return links;
+      }
+    },
+    methods: {
+      inListSummary(song) {
+        const intervals = [];
+        let unprocessedYears = this.years;
+
+        while (unprocessedYears.length) {
+          unprocessedYears = _.dropWhile(unprocessedYears, year => song.notInList(year));
+
+          const interval = _.takeWhile(unprocessedYears, year => song.possiblyInList(year));
+          if (interval.length) {
+            intervals.push(interval);
+            unprocessedYears = _.dropWhile(unprocessedYears, year => song.possiblyInList(year));
+          }
+        }
+
+        const intervalSummaries = intervals.map(interval => {
+          const first = _.first(interval);
+          const last = _.last(interval);
+          if (last.isCurrent()) {
+            return `${first._yy}-...`
+          } else if (first.equals(last)) {
+            return first._yy
+          } else {
+            return `${first._yy}-${last._yy}`
+          }
+        });
+        return intervalSummaries.join(", ");
       }
     },
     async asyncData({ params, app }) {

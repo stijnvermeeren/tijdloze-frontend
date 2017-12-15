@@ -4,7 +4,6 @@ import _ from 'lodash';
 import Artist from './Artist';
 import Song from './Song';
 import Year from './Year';
-import Years from './Years';
 
 function objectWithIdKeys(values) {
   let result = {};
@@ -22,20 +21,27 @@ const createStore = () => {
       countries: []
     },
     getters: {
-      years: state => new Years(state.yearsRaw.map(yyyy => new Year(yyyy))),
+      years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
+      currentYear: (state, getters) => _.last(getters.years),
       artists: state => state.artistsRaw.map(artist => new Artist(artist)),
-      songs: (state, getters) => state.songsRaw.map(song => {
-        return new Song(song, getters.albumsById[song.albumId].year, getters.years);
-      }),
+      songs: (state, getters) => _.sortBy(
+        state.songsRaw.map(song => {
+          return new Song(song, getters.albumsById[song.albumId].year, getters.years);
+        }),
+        song => [song.releaseYear, song.title.toLowerCase()]
+      ),
       artistsById: (state, getters) => objectWithIdKeys(getters.artists),
       songsById: (state, getters) => objectWithIdKeys(getters.songs),
       albumsById: state => objectWithIdKeys(state.albums),
       countriesById: state => objectWithIdKeys(state.countries),
       songsByArtistId: (state, getters) => artistId => {
-        return _.sortBy(
-          getters.songs.filter(song => song.artistId === artistId),
-          song => [song.releaseYear, song.title.toLowerCase()]
-        );
+        return getters.songs.filter(song => song.artistId === artistId);
+      },
+      songsByAlbumId: (state, getters) => albumId => {
+        return getters.songs.filter(song => song.albumId === albumId);
+      },
+      albumsByArtistId: (state, getters) => artistId => {
+        return state.albums.filter(album => album.artistId === artistId);
       },
       findSongAtPosition: (state, getters) => (year, position) => {
         // TODO: what about an in-progress Tijdloze?
@@ -50,7 +56,10 @@ const createStore = () => {
           artist => [artist.name.toLowerCase(), artist.firstName.toLowerCase()]
         );
         state.songsRaw = json.songs;
-        state.albums = json.albums;
+        state.albums = _.sortBy(
+          json.albums,
+          album => [album.year, album.title.toLowerCase()]
+        );
         state.yearsRaw = json.years;
       }
     },

@@ -13,25 +13,39 @@
       position() {
         return this.song.position(this.year);
       },
-      previousYear() {
-        return this.song.years.previousYear(this.year);
-      },
       previousPosition() {
-        if (this.previousYear) {
-          return this.song.position(this.previousYear);
+        if (this.year.previous()) {
+          return this.song.position(this.year.previous());
         } else {
           return null;
         }
       },
       equal() {
-        return this.previousYear && this.position && this.position === this.previousPosition;
+        return this.year.previous() && this.position && this.position === this.previousPosition;
       },
       up() {
-        return this.previousYear && this.position && (!this.previousPosition || this.position > this.previousPosition);
+        return this.year.previous() && this.position && (!this.previousPosition || this.position > this.previousPosition);
       },
       down() {
-        return this.previousYear && this.previousPosition && (!this.position || this.position < this.previousPosition);
+        return this.year.previous() && this.previousPosition && (!this.position || this.position < this.previousPosition);
       }
     }
   }
 </script>
+
+<style lang="less" scoped>
+    .movement(@color) {
+        padding-right: 0.6em;
+        color: @color;
+    }
+
+    span.up {
+        .movement(#007700);
+    }
+    span.down {
+        .movement(#aa0000);
+    }
+    span.equal {
+        .movement(#444444);
+    }
+</style>
