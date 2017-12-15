@@ -12,6 +12,7 @@
     "@nuxtjs/axios": "^4.5.0",
     "@nuxtjs/dotenv": "^1.1.0",
     "axios": "^0.17.1",
+    "d3-scale": "^1.0.7",
     "lodash": "^4.17.4",
     "nuxt": "^1.0.0-rc11",
     "vue": "2.5.9",
