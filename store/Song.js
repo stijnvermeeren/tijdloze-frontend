@@ -1,3 +1,4 @@
+import _ from 'lodash';
 
 export default class Song {
   constructor(songData, releaseYear, years) {
@@ -18,7 +19,7 @@ export default class Song {
 
   notInList(year) {
     if (year.isCurrent() && year.previous() && this.position(year.previous())) {
-      return this.exitCurrent || !this.position(year);
+      return this.exitCurrent;
     } else {
       return !this.position(year);
     }
@@ -26,6 +27,23 @@ export default class Song {
 
   possiblyInList(year) {
     return !this.notInList(year);
+  }
+
+  possiblyInListIntervals() {
+    const intervals = [];
+    let unprocessedYears = this.years;
+
+    while (unprocessedYears.length) {
+      unprocessedYears = _.dropWhile(unprocessedYears, year => this.notInList(year));
+
+      const interval = _.takeWhile(unprocessedYears, year => this.possiblyInList(year));
+      if (interval.length) {
+        intervals.push(interval);
+        unprocessedYears = _.dropWhile(unprocessedYears, year => this.possiblyInList(year));
+      }
+    }
+
+    return intervals;
   }
 
   listCount() {

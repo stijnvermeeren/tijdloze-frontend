@@ -24,10 +24,10 @@
         return this.year.previous() && this.position && this.position === this.previousPosition;
       },
       up() {
-        return this.year.previous() && this.position && (!this.previousPosition || this.position > this.previousPosition);
+        return this.year.previous() && this.position && (!this.previousPosition || this.position < this.previousPosition);
       },
       down() {
-        return this.year.previous() && this.previousPosition && (!this.position || this.position < this.previousPosition);
+        return this.year.previous() && this.previousPosition && (!this.position || this.position > this.previousPosition);
       }
     }
   }

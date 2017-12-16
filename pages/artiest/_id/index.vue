@@ -11,10 +11,10 @@
                         <a :href="link.href">{{link.title}}</a>
                     </span>
                 </li>
-                <li v-if="fullArtistData.notes"><em>{{fullArtistData.notes | makelinks}}</em></li>
+                <li v-if="fullArtistData.notes"><em>{{fullArtistData.notes}}</em></li>
             </ul>
 
-            <div class="scrollbox">
+            <div>
                 <table class="lijst">
                     <tbody>
                         <tr>
@@ -24,7 +24,15 @@
                             <th class="l">In de Tijdloze</th>
                             <th v-for="year in lastTwoYears">{{year._yy}}</th>
                         </tr>
-                        <tr v-for="(song, index) in songs" :class="['highlight', 'highlight-' + index, {inCurrentList: song.possiblyInList(currentYear)}]">
+                        <tr
+                                v-for="(song, index) in songs"
+                                :class="[{
+                                  notHighlighted: hoverIndex !== null && index !== hoverIndex,
+                                  inCurrentList: song.possiblyInList(currentYear)
+                                }]"
+                                @mouseover="onHover(index)"
+                                @mouseleave="onHover(null)"
+                        >
                             <td>
                                 <color-label :index="index" />
                             </td>
@@ -49,7 +57,12 @@
                 </table>
             </div>
 
-            <tijdloze-graph v-if="songs.find(song => song.listCount() > 0)" />
+            <tijdloze-graph
+                    v-if="songs.find(song => song.listCount() > 0)"
+                    :songs="songs"
+                    :hoverIndex="hoverIndex"
+                    @hover="onHover"
+            />
         </tijdloze-tabs>
     </div>
 </template>
@@ -63,6 +76,11 @@
     components: {
       ColorLabel,
       TijdlozeGraph: Graph
+    },
+    data() {
+      return {
+        hoverIndex: null
+      }
     },
     computed: {
       artist() {
@@ -102,21 +120,11 @@
       }
     },
     methods: {
+      onHover(index) {
+        this.hoverIndex = index;
+      },
       inListSummary(song) {
-        const intervals = [];
-        let unprocessedYears = this.years;
-
-        while (unprocessedYears.length) {
-          unprocessedYears = _.dropWhile(unprocessedYears, year => song.notInList(year));
-
-          const interval = _.takeWhile(unprocessedYears, year => song.possiblyInList(year));
-          if (interval.length) {
-            intervals.push(interval);
-            unprocessedYears = _.dropWhile(unprocessedYears, year => song.possiblyInList(year));
-          }
-        }
-
-        const intervalSummaries = intervals.map(interval => {
+        const intervalSummaries = song.possiblyInListIntervals().map(interval => {
           const first = _.first(interval);
           const last = _.last(interval);
           if (last.isCurrent()) {
@@ -144,5 +152,7 @@
 </script>
 
 <style scoped>
-
+    tr.notHighlighted {
+        opacity: 0.3;
+    }
 </style>
