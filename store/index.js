@@ -18,7 +18,8 @@ const createStore = () => {
       artistsRaw: [],
       albums: [],
       yearsRaw: [],
-      countries: []
+      countries: [],
+      languages: []
     },
     getters: {
       years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
@@ -26,7 +27,7 @@ const createStore = () => {
       artists: state => state.artistsRaw.map(artist => new Artist(artist)),
       songs: (state, getters) => _.sortBy(
         state.songsRaw.map(song => {
-          return new Song(song, getters.albumsById[song.albumId].year, getters.years);
+          return new Song(song, getters.albumsById[song.albumId].releaseYear, getters.years);
         }),
         song => [song.releaseYear, song.title.toLowerCase()]
       ),
@@ -34,6 +35,7 @@ const createStore = () => {
       songsById: (state, getters) => objectWithIdKeys(getters.songs),
       albumsById: state => objectWithIdKeys(state.albums),
       countriesById: state => objectWithIdKeys(state.countries),
+      languagesById: state => objectWithIdKeys(state.languages),
       songsByArtistId: (state, getters) => artistId => {
         return getters.songs.filter(song => song.artistId === artistId);
       },
@@ -51,6 +53,7 @@ const createStore = () => {
     mutations: {
       updateCoreData(state, json) {
         state.countries = json.countries;
+        state.languages = json.languages;
         state.artistsRaw = _.sortBy(
           json.artists,
           artist => [artist.name.toLowerCase(), artist.firstName.toLowerCase()]
@@ -58,7 +61,7 @@ const createStore = () => {
         state.songsRaw = json.songs;
         state.albums = _.sortBy(
           json.albums,
-          album => [album.year, album.title.toLowerCase()]
+          album => [album.releaseYear, album.title.toLowerCase()]
         );
         state.yearsRaw = json.years;
       }

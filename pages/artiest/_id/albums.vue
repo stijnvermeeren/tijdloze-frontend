@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h2><img src="/images/icon/artist.png" alt="Artiest" class="icon" />{{artist.fullName}}</h2>
+        <h2><tijdloze-h2-icon name="artist" alt="Artiest" />{{artist.fullName}}</h2>
 
         <tijdloze-tabs :tabs="[{ to: `/artiest/${artist.id}`, title: 'Informatie en nummers' }, { title: 'Albums' }]">
             <ul v-if="albums.length">
                 <li v-for="album in albums">
-                    <tijdloze-album :album="album" /> ({{album.year}})
+                    <tijdloze-album :album="album" /> ({{album.releaseYear}})
                     <ul v-if="songsByAlbumId(album.id)">
                         <li v-for="song in songsByAlbumId(album.id)"><tijdloze-song :song="song" /></li>
                     </ul>
@@ -16,13 +16,18 @@
 </template>
 
 <script>
+  import H2Icon from "../../../components/H2Icon";
+
   export default {
+    components: {
+      TijdlozeH2Icon: H2Icon
+    },
     computed: {
       artist() {
-        return this.$store.getters.artistsById[this.fullArtistData.id];
+        return this.$store.getters.artistsById[this.artistId];
       },
       albums() {
-        return this.$store.getters.albumsByArtistId(this.artist.id);
+        return this.$store.getters.albumsByArtistId(this.artistId);
       }
     },
     methods: {
@@ -30,9 +35,9 @@
         return this.$store.getters.songsByAlbumId(albumId);
       }
     },
-    async asyncData({ params, app }) {
+    asyncData({ params }) {
       return {
-        fullArtistData: await app.$axios.$get(`artist/${params.id}`)
+        artistId: Number(params.id)
       };
     },
     head() {

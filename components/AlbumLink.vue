@@ -1,5 +1,5 @@
 <template>
-    <nuxt-link :to="`album/${album.id}`">{{album.title}}</nuxt-link>
+    <nuxt-link :to="`/album/${album.id}`">{{album.title}}</nuxt-link>
 </template>
 
 <script>

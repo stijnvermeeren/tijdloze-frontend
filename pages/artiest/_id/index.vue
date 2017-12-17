@@ -1,11 +1,11 @@
 <template>
     <div>
-        <h2><img src="/images/icon/artist.png" alt="Artiest" class="icon" />{{artist.fullName}}</h2>
+        <h2><tijdloze-h2-icon name="artist" alt="Artiest" />{{artist.fullName}}</h2>
 
         <tijdloze-tabs :tabs="[{ title: 'Informatie en nummers' }, { to: `/artiest/${artist.id}/albums`, title: 'Albums' }]">
             <ul class="info">
                 <li><tijdloze-country-icon :country="country" /> {{country.name}}</li>
-                <li><strong>Links: </strong>
+                <li v-if="links.length"><strong>Links: </strong>
                     <span v-for="(link, index) in links">
                         <span v-if="index > 0">, </span>
                         <a :href="link.href">{{link.title}}</a>
@@ -14,73 +14,19 @@
                 <li v-if="fullArtistData.notes"><em>{{fullArtistData.notes}}</em></li>
             </ul>
 
-            <div>
-                <table class="lijst">
-                    <tbody>
-                        <tr>
-                            <th></th>
-                            <th class="l">Nummer</th>
-                            <th class="y">Jaar</th>
-                            <th class="l">In de Tijdloze</th>
-                            <th v-for="year in lastTwoYears">{{year._yy}}</th>
-                        </tr>
-                        <tr
-                                v-for="(song, index) in songs"
-                                :class="[{
-                                  notHighlighted: hoverIndex !== null && index !== hoverIndex,
-                                  inCurrentList: song.possiblyInList(currentYear)
-                                }]"
-                                @mouseover="onHover(index)"
-                                @mouseleave="onHover(null)"
-                        >
-                            <td>
-                                <color-label :index="index" />
-                            </td>
-                            <td class="l">
-                                <tijdloze-song :song="song" />
-                            </td>
-                            <td class="y">
-                                {{song.releaseYear}}
-                            </td>
-                            <td class="l">
-                                <span v-if="song.listCount()">
-                                    {{song.listCount()}} {{song.listCount() > 1 ? 'noteringen' : 'notering'}}
-                                    ({{inListSummary(song)}})
-                                </span>
-                                <span v-else>Geen top-100 noteringen</span>
-                            </td>
-                            <td v-for="year in lastTwoYears">
-                                <tijdloze-position-change :song="song" :year="year" /> <tijdloze-position :song="song" :year="year" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <tijdloze-graph
-                    v-if="songs.find(song => song.listCount() > 0)"
-                    :songs="songs"
-                    :hoverIndex="hoverIndex"
-                    @hover="onHover"
-            />
+            <tijdloze-songs-overview-and-graph :songs="songs"/>
         </tijdloze-tabs>
     </div>
 </template>
 
 <script>
-  import ColorLabel from "../../../components/d3/ColorLabel";
-  import Graph from "../../../components/d3/Graph";
-  import _ from 'lodash';
+  import SongsOverviewAndGraph from "../../../components/SongsOverviewAndGraph";
+  import H2Icon from "../../../components/H2Icon";
 
   export default {
     components: {
-      ColorLabel,
-      TijdlozeGraph: Graph
-    },
-    data() {
-      return {
-        hoverIndex: null
-      }
+      TijdlozeSongsOverviewAndGraph: SongsOverviewAndGraph,
+      TijdlozeH2Icon: H2Icon
     },
     computed: {
       artist() {
@@ -91,15 +37,6 @@
       },
       songs() {
         return this.$store.getters.songsByArtistId(this.artist.id);
-      },
-      years() {
-        return this.$store.getters.years;
-      },
-      currentYear() {
-        return this.$store.getters.currentYear;
-      },
-      lastTwoYears() {
-        return _.takeRight(this.years, 2);
       },
       links() {
         const links = [];
@@ -113,29 +50,10 @@
         };
 
         addLink('urlOfficial', 'Officiële website');
-        addLink('urlWikien', 'Wikipedia (Engels)');
-        addLink('urlWikinl', 'Wikipedia (Nederlands)');
+        addLink('urlWikiEn', 'Wikipedia (Engels)');
+        addLink('urlWikiNl', 'Wikipedia (Nederlands)');
         addLink('urlAllmusic', 'AllMusic');
         return links;
-      }
-    },
-    methods: {
-      onHover(index) {
-        this.hoverIndex = index;
-      },
-      inListSummary(song) {
-        const intervalSummaries = song.possiblyInListIntervals().map(interval => {
-          const first = _.first(interval);
-          const last = _.last(interval);
-          if (last.isCurrent()) {
-            return `${first._yy}-...`
-          } else if (first.equals(last)) {
-            return first._yy
-          } else {
-            return `${first._yy}-${last._yy}`
-          }
-        });
-        return intervalSummaries.join(", ");
       }
     },
     async asyncData({ params, app }) {
@@ -150,9 +68,3 @@
     }
   }
 </script>
-
-<style scoped>
-    tr.notHighlighted {
-        opacity: 0.3;
-    }
-</style>

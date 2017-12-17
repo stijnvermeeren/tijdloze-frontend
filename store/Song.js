@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 export default class Song {
   constructor(songData, releaseYear, years) {
+    this.id = songData.id;
     this.title = songData.title;
     this.artistId = songData.artistId;
     this.albumId = songData.albumId;

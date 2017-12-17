@@ -1,5 +1,5 @@
 <template>
-    <nuxt-link :to="`nummer/${song.id}`">{{song.title}}</nuxt-link>
+    <nuxt-link :to="`/nummer/${song.id}`">{{song.title}}</nuxt-link>
 </template>
 
 <script>

@@ -1,7 +1,5 @@
 <template>
-    <div>
-        <nuxt-link :to="`artiest/${artist.id}`">{{artist.fullName}}</nuxt-link>
-    </div>
+    <nuxt-link :to="`/artiest/${artist.id}`">{{artist.fullName}}</nuxt-link>
 </template>
 
 <script>
