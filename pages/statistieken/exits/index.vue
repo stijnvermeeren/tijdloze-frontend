@@ -4,7 +4,7 @@
             <tr>
                 <th class="r">Jaar</th>
                 <th>Aantal</th>
-                <th class="l">Nieuwkomers</th>
+                <th class="l">Exits</th>
             </tr>
             <tr v-for="year in listYears">
                 <td class="r"><tijdloze-year :year="year" /></td>
@@ -43,7 +43,7 @@
     methods: {
       entriesPerYear(year) {
         return _.sortBy(
-          this.data.filter(entry => entry.year.equals(year)),
+          this.data.filter(entry => entry.year.equals(year.previous())),
           entry => entry.song.position(entry.year)
         );
       }

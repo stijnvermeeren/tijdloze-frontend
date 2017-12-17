@@ -6,14 +6,15 @@
                 <th>Jaar</th>
                 <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
                 <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
-                <th>Plaats</th>
+                <th colspan="2">Gestegen</th>
             </tr>
             <tr v-for="{entry, position} in ranking">
                 <td class="r">{{position}}</td>
-                <td><tijdloze-year :year="entry.year.next()" /></td>
+                <td><tijdloze-year :year="entry.year" /></td>
                 <td class="a"><tijdloze-artist :artist="$store.getters.artistsById[entry.song.artistId]" /></td>
                 <td><tijdloze-song :song="entry.song" /></td>
-                <td>{{entry.song.position(entry.year)}}</td>
+                <td>{{entry.oldPosition - entry.newPosition}} posities</td>
+                <td class="i">{{entry.oldPosition}} &rarr; {{entry.newPosition}}</td>
             </tr>
         </tbody>
     </table>
@@ -28,8 +29,8 @@
       ranking() {
         return ranking(
           this.data,
-          ({song, year}) => song.position(year),
-          ({year}) => year.yyyy,
+          ({oldPosition, newPosition}) => newPosition - oldPosition,
+          [({newPosition}) => newPosition, ({year}) => year.yyyy],
           50
         );
       }
