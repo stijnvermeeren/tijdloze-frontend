@@ -59,7 +59,7 @@
     },
     head() {
       return {
-        title: `${this.album.title} (${this.artist.fullName}`
+        title: `${this.album.title} (${this.artist.fullName})`
       }
     }
   }

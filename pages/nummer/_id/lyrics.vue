@@ -1,38 +1,12 @@
 <template>
     <div>
-        <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}} (<tijdloze-artist :artist="artist" />)</h2>
-
-        <tijdloze-tabs :tabs="[{ to: `/nummer/${song.id}`, title: 'Informatie' }, { title: 'Songtekst' }]">
-            <p class="lyrics">{{fullSongData.lyrics}}</p>
-        </tijdloze-tabs>
+        <p class="lyrics">{{fullSongData.lyrics}}</p>
     </div>
 </template>
 
 <script>
-  import H2Icon from "../../../components/H2Icon";
-
   export default {
-    components: {
-      TijdlozeH2Icon: H2Icon
-    },
-    computed: {
-      song() {
-        return this.$store.getters.songsById[this.fullSongData.id];
-      },
-      artist() {
-        return this.$store.getters.artistsById[this.song.artistId];
-      }
-    },
-    async asyncData({ params, app }) {
-      return {
-        fullSongData: await app.$axios.$get(`song/${params.id}`)
-      };
-    },
-    head() {
-      return {
-        title: `${this.song.title} (${this.artist.fullName})`
-      }
-    }
+    props: ['fullSongData']
   }
 </script>
 

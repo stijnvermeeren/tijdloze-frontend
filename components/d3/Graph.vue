@@ -2,20 +2,7 @@
     <div class="graph">
         <svg :width="fullWidth" :height="fullHeight">
             <g :transform="`translate(${margin.left},${margin.top})`">
-                <g class="x axis">
-                    <g v-for="year in years" class="tick" :transform="`translate(${xScale(year._yy)},0)`" style="opacity: 1;">
-                        <line y2="-6" x2="0" />
-                        <text dy="0em" y="-9" x="0" style="text-anchor: middle;">{{year._yy}}</text>
-                    </g>
-                    <path class="domain" :d="`M0,0 H ${width}`" />
-                </g>
-                <g class="y axis">
-                    <g v-for="position in yTickValues" class="tick" :transform="`translate(0,${yScale(position)})`" style="opacity: 1;">
-                        <line :x2="width" y2="0" />
-                        <text dy=".32em" x="-3" y="0" style="text-anchor: end;">{{position}}</text>
-                    </g>
-                    <path class="domain" :d="`M0,0 V ${height}`" />
-                </g>
+                <tijdloze-axes :xScale="xScale" :yScale="yScale" :years="years" />
                 <g
                         v-for="(song, index) in songs"
                         :class="[
@@ -44,18 +31,21 @@
 </template>
 
 <script>
+    import Axes from './Axes';
     import {scaleLinear, scaleBand} from "d3-scale";
     import {line} from "d3-shape";
     import _ from 'lodash';
 
     export default {
+      components: {
+        TijdlozeAxes: Axes
+      },
       props: ['songs', 'hoverIndex'],
       data() {
         return {
           fullWidth: 750,
           fullHeight: 400,
-          margin: {top: 40, right: 20, bottom: 10, left: 50},
-          yTickValues: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+          margin: {top: 40, right: 20, bottom: 10, left: 50}
         }
       },
       computed: {
@@ -141,27 +131,10 @@
         padding: 20px 0;
 
         svg {
-            @axisColor: #777777;
             height: 400px;
             width: 750px;
             background-color: white;
             font-size: 11px;
-
-            .axis {
-                text {
-                    fill: @axisColor;
-                }
-
-                path, line {
-                    fill: none;
-                    stroke: @axisColor;
-                    shape-rendering: crispEdges;
-                }
-            }
-
-            .y.axis .tick line {
-                stroke-dasharray: 1, 3;
-            }
 
             .line {
                 path {
