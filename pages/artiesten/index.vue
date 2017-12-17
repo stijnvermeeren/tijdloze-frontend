@@ -2,7 +2,10 @@
     <div>
         <h2>Alle Tijdloze artiesten</h2>
 
-        <tijdloze-tabs :tabs="[{ title: 'Artiesten' }, { to: '/nummers', title: 'Nummers' }]">
+        <tijdloze-tabs :tabs="[
+          { to: '/artiesten', title: 'Artiesten' },
+          { to: '/nummers', title: 'Nummers' }
+        ]">
             <table class="lijst perVijf">
                 <tbody>
                     <tr>
@@ -10,16 +13,16 @@
                         <th></th>
                         <th>Nummers</th>
                     </tr>
-                    <tr v-for="item in artistData">
+                    <tr v-for="{artist, country, songs} in artistData">
                         <td>
-                            <tijdloze-artist :artist="item.artist"></tijdloze-artist>
+                            <tijdloze-artist :artist="artist"></tijdloze-artist>
                         </td>
                         <td>
-                            <tijdloze-country-icon :country="item.country"></tijdloze-country-icon>
+                            <tijdloze-country-icon :country="country"></tijdloze-country-icon>
                         </td>
                         <td class="s wrap">
-                            <ul v-if="item.songs">
-                                <li v-for="song in item.songs">
+                            <ul v-if="songs.length">
+                                <li v-for="song in songs">
                                     <tijdloze-song :song="song"></tijdloze-song>
                                 </li>
                             </ul>
@@ -49,7 +52,3 @@
     }
   }
 </script>
-
-<style scoped>
-
-</style>
