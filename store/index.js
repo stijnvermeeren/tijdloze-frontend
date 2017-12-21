@@ -29,7 +29,7 @@ const createStore = () => {
         state.songsRaw.map(song => {
           return new Song(song, getters.albumsById[song.albumId].releaseYear, getters.years);
         }),
-        song => [song.releaseYear, song.title.toLowerCase()]
+        song => song.title.toLowerCase()
       ),
       artistsById: (state, getters) => objectWithIdKeys(getters.artists),
       songsById: (state, getters) => objectWithIdKeys(getters.songs),
@@ -37,7 +37,10 @@ const createStore = () => {
       countriesById: state => objectWithIdKeys(state.countries),
       languagesById: state => objectWithIdKeys(state.languages),
       songsByArtistId: (state, getters) => artistId => {
-        return getters.songs.filter(song => song.artistId === artistId);
+        return _.sortBy(
+          getters.songs.filter(song => song.artistId === artistId),
+          [song => song.releaseYear], [song => song.title.toLowerCase()]
+        );
       },
       songsByAlbumId: (state, getters) => albumId => {
         return getters.songs.filter(song => song.albumId === albumId);

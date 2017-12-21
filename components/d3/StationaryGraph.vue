@@ -3,21 +3,10 @@
         <svg :width="fullWidth" :height="fullHeight">
             <g :transform="`translate(${margin.left},${margin.top})`">
                 <tijdloze-axes :xScale="xScale" :yScale="yScale" :years="years" />
-                <g
-                        v-for="(song, index) in songs"
-                        :class="[
-                          'line',
-                          `color-${index}`,
-                          {
-                            highlighted: hoverIndex === index,
-                            notHighlighted: hoverIndex !== null && hoverIndex !== index
-                          }]"
-                        @mouseover="onHover(index)"
-                        @mouseleave="onHover(null)"
-                >
-                    <path :d="fullSongLine(song)" class="coloredPath" />
+                <g v-for="song in songs" class="color-1">
+                    <path :d="stationarySongLine(song)" class="coloredPath" />
                     <circle
-                            v-for="year in years"
+                            v-for="year in stationaryYears(song)"
                             v-if="song.position(year)"
                             class="circle coloredCircle"
                             :cx="xScale(year._yy)"
@@ -33,23 +22,25 @@
 <script>
     import BaseGraph from './BaseGraph';
     import BaseGraphAxes from './BaseGraphAxes';
+    import _ from 'lodash';
 
     export default {
       extends: BaseGraph,
       components: {
         TijdlozeAxes: BaseGraphAxes
       },
-      props: ['songs', 'hoverIndex'],
+      props: ['songs'],
       methods: {
-        onHover(index) {
-          this.$emit('hover', index);
+        stationarySongLine(song) {
+          return this.songLine(song, song.stationaryIntervals());
         },
-        fullSongLine(song) {
-          return this.songLine(song, song.possiblyInListIntervals(), true);
+        stationaryYears(song) {
+          return _.flatten(song.stationaryIntervals());
         }
       }
     }
 </script>
+
 
 <style lang="less" scoped>
     @import "../../assets/graphColors.less";
@@ -63,20 +54,6 @@
             width: 750px;
             background-color: white;
             font-size: 11px;
-
-            .line {
-                path {
-                    stroke-width: 1.5px;
-                }
-                &.highlighted {
-                    path {
-                        stroke-width: 3px;
-                    }
-                }
-                &.notHighlighted {
-                    opacity: 0.5;
-                }
-            }
         }
     }
 </style>

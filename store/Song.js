@@ -47,6 +47,27 @@ export default class Song {
     return intervals;
   }
 
+  stationaryIntervals() {
+    const intervals = [];
+    let unprocessedYears = this.years;
+
+    while (unprocessedYears.length) {
+      const position = this.position(_.first(unprocessedYears));
+
+      if (position) {
+        const interval = _.takeWhile(unprocessedYears, year => this.position(year) === position);
+
+        if (interval.length > 1) {
+          intervals.push(interval);
+        }
+      }
+
+      unprocessedYears = _.dropWhile(unprocessedYears, year => this.position(year) === position);
+    }
+
+    return intervals;
+  }
+
   listCount() {
     return this.years.filter(year => this.position(year)).length;
   }
