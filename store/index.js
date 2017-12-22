@@ -48,9 +48,11 @@ const createStore = () => {
       albumsByArtistId: (state, getters) => artistId => {
         return state.albums.filter(album => album.artistId === artistId);
       },
-      findSongAtPosition: (state, getters) => (year, position) => {
-        // TODO: what about an in-progress Tijdloze?
-        return getters.songs.find(song => song.position(year) === position);
+      list: (state, getters) => year => {
+        return _.sortBy(
+          getters.songs.filter(song => song.position(year)),
+          song => song.position(year)
+        );
       }
     },
     mutations: {

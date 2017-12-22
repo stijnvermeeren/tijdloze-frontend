@@ -66,10 +66,7 @@
         return this.years.find(year => year.yyyy.toString() === this.$route.params.yyyy);
       },
       songs() {
-        return _.sortBy(
-          this.$store.getters.songs.filter(song => song.position(this.year)),
-          song => song.position(this.year)
-        );
+        return this.$store.getters.list(this.year);
       },
       newSongs() {
         if (this.year.previous()) {
