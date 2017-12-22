@@ -14,7 +14,7 @@
 
 <script>
     export default {
-      props: ["tabs", "selected"]
+      props: ["tabs"]
     }
 </script>
 

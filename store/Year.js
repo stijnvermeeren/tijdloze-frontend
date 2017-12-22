@@ -29,6 +29,6 @@ export default class Year {
   }
 
   next() {
-    return this.plus(-1);
+    return this.plus(1);
   }
 }

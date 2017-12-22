@@ -71,4 +71,11 @@ export default class Song {
   listCount() {
     return this.years.filter(year => this.position(year)).length;
   }
+
+  isReEntry(year) {
+    return this.position(year) &&
+      year.previous() &&
+      !this.position(year.previous()) &&
+      !this.years.find(year => this.position(year)).equals(year);
+  }
 }

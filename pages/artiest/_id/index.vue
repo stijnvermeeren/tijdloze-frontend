@@ -8,7 +8,7 @@
                     <a :href="link.href">{{link.title}}</a>
                 </span>
             </li>
-            <li v-if="fullArtistData.notes"><em>{{fullArtistData.notes}}</em></li>
+            <li v-if="fullArtistData.notes"><em><tijdloze-links :text="fullArtistData.notes" /></em></li>
         </ul>
 
         <tijdloze-songs-overview-and-graph :songs="songs"/>
