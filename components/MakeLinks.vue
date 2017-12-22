@@ -1,9 +1,9 @@
 <template>
     <span>
-        <span v-for="fragment in fragments">
+        <template v-for="fragment in fragments">
             <span v-if="fragment.text" v-html="fragment.text"></span>
             <tijdloze-link v-if="fragment.to" :to="fragment.to" />
-        </span>
+        </template>
     </span>
 </template>
 

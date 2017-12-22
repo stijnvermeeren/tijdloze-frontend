@@ -1,7 +1,9 @@
 <template>
-    <span>
+    <span :class="{bold: isBold}">
         <tijdloze-song v-if="song" :song="song" />
         <tijdloze-artist v-else-if="artist" :artist="artist" />
+        <tijdloze-year v-else-if="year" :year="year" />
+        <tijdloze-year-short v-else-if="yearShort" :year="yearShort" />
         <span v-else="artist">{{to}}</span>
     </span>
 </template>
@@ -16,14 +18,39 @@
       songs() {
         return this.$store.getters.songs;
       },
+      years() {
+        return this.$store.getters.years;
+      },
       song() {
-        return this.findSong(this.to.trim());
+        return this.findSong(this.input);
+      },
+      year() {
+        return this.findYear(this.input);
+      },
+      yearShort() {
+        return this.findYearShort(this.input);
       },
       artist() {
-        return this.findArtist(this.to.trim());
+        return this.findArtist(this.input);
+      },
+      isBold() {
+        return this.to.startsWith("*");
+      },
+      input() {
+        if (this.to.startsWith("*")) {
+          return this.to.substring(1).trim();
+        } else {
+          return this.to.trim();
+        }
       }
     },
     methods: {
+      findYear(input) {
+        return this.years.find(year => year.yyyy.toString() === input);
+      },
+      findYearShort(input) {
+        return this.years.find(year => year._yy === input);
+      },
       findArtist(input) {
         const fullNameMatches = this.artists.filter(artist => artist.fullName.toLowerCase() === input.toLowerCase());
         if (fullNameMatches.length === 1) {
@@ -72,3 +99,9 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    span.bold {
+        font-weight: bold;
+    }
+</style>

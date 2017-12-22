@@ -126,6 +126,11 @@
     },
     validate({params, store}) {
       return store.getters.years.find(year => year.yyyy.toString() === params.yyyy);
+    },
+    fetch ({ params, redirect }) {
+      if (params.yyyy === '1987') {
+        redirect(301, '/lijst/1987/analyse');
+      }
     }
   }
 </script>
