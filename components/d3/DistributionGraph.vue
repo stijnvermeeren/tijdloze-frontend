@@ -12,6 +12,15 @@
                             r="3"
                     />
                 </g>
+                <g class="color-2">
+                    <circle
+                            v-for="point in secondaryPoints"
+                            class="circle coloredCircle"
+                            :cx="xScale(point.year._yy)"
+                            :cy="yScale(point.song.position(point.year))"
+                            r="3"
+                    />
+                </g>
             </g>
         </svg>
     </div>
@@ -26,10 +35,18 @@
       components: {
         TijdlozeAxes: BaseGraphAxes
       },
-      props: ['points']
+      props: {
+        points: {
+          type: Array,
+          default: () => []
+        },
+        secondaryPoints: {
+          type: Array,
+          default: () => []
+        }
+      }
     }
 </script>
-
 
 <style lang="less" scoped>
     @import "../../assets/graphColors.less";
