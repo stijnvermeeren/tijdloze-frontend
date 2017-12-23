@@ -6,7 +6,9 @@
   "private": true,
   "scripts": {
     "dev": "nuxt",
-    "build": "cross-env NODE_ENV=production webpack --progress --hide-modules"
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
   },
   "dependencies": {
     "@nuxtjs/axios": "^4.5.0",
