@@ -1,7 +1,7 @@
 <template>
     <span :class="{bold: isBold}">
         <tijdloze-song v-if="song" :song="song" />
-        <tijdloze-artist v-else-if="artist" :artist="artist" />
+        <tijdloze-artist v-else-if="artist" :artist="artist" :text="input" />
         <tijdloze-year v-else-if="year" :year="year" />
         <tijdloze-year-short v-else-if="yearShort" :year="yearShort" />
         <span v-else="artist">{{to}}</span>

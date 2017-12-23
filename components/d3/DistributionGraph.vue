@@ -1,5 +1,6 @@
 <template>
     <div class="graph">
+        <h4 v-if="title">{{title}}</h4>
         <svg :width="fullWidth" :height="fullHeight">
             <g :transform="`translate(${margin.left},${margin.top})`">
                 <tijdloze-axes :xScale="xScale" :yScale="yScale" :years="years" />
@@ -36,6 +37,9 @@
         TijdlozeAxes: BaseGraphAxes
       },
       props: {
+        title: {
+          type: String
+        },
         points: {
           type: Array,
           default: () => []
