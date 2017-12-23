@@ -32,7 +32,7 @@
                     </tr>
                     <tr>
                         <th>Bericht:</th>
-                        <td><textarea cols="30" rows="4" v-model="message"></textarea></td>
+                        <td><textarea cols="30" rows="4" v-model="message" placeholder="Verplicht veld"></textarea></td>
                     </tr>
                     <tr>
                         <th>&nbsp;</th>
@@ -65,7 +65,8 @@
       submitDisabled() {
         const nameOk = !!this.name.trim();
         const emailOk = !this.email.trim() || this.validateEmail(this.email.trim());
-        return !(nameOk && emailOk);
+        const messageOk = !!this.message.trim();
+        return !(nameOk && emailOk && messageOk);
       }
     },
     methods: {
