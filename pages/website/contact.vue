@@ -1,9 +1,8 @@
 <template>
     <div>
-
         <p v-if="error" class="fout">Probleem met het verzenden van je bericht! {{error}}</p>
 
-        <div v-if="success" class="fout">
+        <div v-if="success">
             <p>Bedankt voor je mail. <a href="#" @click="reset()">Verzend een nieuw bericht</a>.</p>
             <h3>Verzonden bericht:</h3>
             <h4>Van:</h4><p>{{name}} <span v-if="email.trim()">({{email}})</span></p>
@@ -20,21 +19,28 @@
             <table>
                 <tbody>
                     <tr>
-                        <td class="formlabel">Jouw naam:</td>
-                        <td><input type="text" class="formtext" v-model="name" /></td>
+                        <th>Jouw naam:</th>
+                        <td><input type="text" class="formtext" v-model="name" placeholder="Verplicht veld" /></td>
                     </tr>
 
                     <tr>
-                        <td class="formlabel">Jouw e-mailadres:</td>
-                        <td><input class="formtext" name="email" v-model="email" /></td>
+                        <th>Jouw e-mailadres:</th>
+                        <td>
+                            <div><input @blur="emailTouched = true" class="formtext" name="email" v-model="email" /></div>
+                            <div v-if="emailTouched && email.trim() && !validateEmail(email.trim())" class="fout">Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.</div>
+                        </td>
                     </tr>
                     <tr>
-                        <td class="formlabel">Bericht:</td>
+                        <th>Bericht:</th>
                         <td><textarea cols="30" rows="4" v-model="message"></textarea></td>
                     </tr>
                     <tr>
-                        <td class="formlabel">&nbsp;</td>
-                        <td><input @click="submit()" type="submit" class="formsubmit" value="Bericht verzenden" /></td>
+                        <th>&nbsp;</th>
+                        <td>
+                            <button @click="submit" :disabled="submitDisabled" type="submit" class="formsubmit">
+                                Bericht verzenden
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -50,8 +56,16 @@
         email: "",
         message: "",
         error: null,
+        emailTouched: false,
         inProgress: false,
         success: false
+      }
+    },
+    computed: {
+      submitDisabled() {
+        const nameOk = !!this.name.trim();
+        const emailOk = !this.email.trim() || this.validateEmail(this.email.trim());
+        return !(nameOk && emailOk);
       }
     },
     methods: {
@@ -62,35 +76,23 @@
         this.success = false;
       },
       submit() {
-        this.error = this.checkForError();
+        this.inProgress = true;
 
-        if (!this.error) {
-          const payLoad = {
-            name: this.name.trim(),
-            message: this.message
-          };
-          if (this.email.trim()) {
-            payLoad.email = this.email.trim();
-          }
+        const payLoad = {
+          name: this.name.trim(),
+          message: this.message
+        };
+        if (this.email.trim()) {
+          payLoad.email = this.email.trim();
+        }
 
-          this.inProgress = true;
-          this.$axios.$post('/contact', payLoad).then(response => {
-            this.inProgress = false;
-            this.success = true;
-          }, error => {
-            this.inProgress = false;
-            this.error = `Foutmelding van de server (${error.message}).`;
-          });
-        }
-      },
-      checkForError() {
-        if (!this.name.trim()) {
-          return "Voer je naam in."
-        }
-        if (this.email.trim() && !this.validateEmail(this.email.trim())) {
-          return "Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen."
-        }
-        return null;
+        this.$axios.$post('/contact', payLoad).then(response => {
+          this.inProgress = false;
+          this.success = true;
+        }, error => {
+          this.inProgress = false;
+          this.error = `Foutmelding van de server (${error.message}).`;
+        });
       },
       validateEmail(email) {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -106,11 +108,11 @@
 <style lang="less" scoped>
     @import "../../assets/styleConfig";
 
-    p.fout {
+    .fout {
         color: #CC0000;
         font-weight: bold;
     }
-    p.goed {
+    .goed {
         color: #007700;
         font-weight: bold;
     }
@@ -119,9 +121,10 @@
         white-space: pre-line;
     }
 
-    td.bold, td.formlabel {
-        font-weight: bold;
+    th {
+        width: 180px;
     }
+
     input[type="text"] input[type="password"] {
         width: 350px;
         background-color: @inputBackgroundColor;
