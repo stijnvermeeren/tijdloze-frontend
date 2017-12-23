@@ -5,7 +5,7 @@
         <p>De Tijdloze Website is volledig <strong>onafhankelijk van Studio Brussel</strong> en de <a href="http://vrt.be">VRT</a>. De Tijdloze Website heeft niets te maken met de samenstelling of het uitzenden van de Tijdloze. De Tijdloze Website dankt wel Studio Brussel voor de hulp met het vervolledigen van de database van deze website.</p>
 
         <h4>Webmaster</h4>
-        <p>De Tijdloze Website wordt beheerd door <strong>Stijn Vermeeren</strong>. U kunt hem een berichtje sturen via het <router-link to="/website/contact">contactformulier</router-link>. Suggesties of verbeteringen voor de website worden ten zeerste geapprecieerd. U kan ook eens een kijkje nemen op de <a href="http://www.stijnvermeeren.be" title="Persoonlijke website Stijn Vermeeren">persoonlijke website</a> van webmaster Stijn.</p>
+        <p>De Tijdloze Website wordt beheerd door <strong>Stijn Vermeeren</strong>. U kunt hem een berichtje sturen via het <nuxt-link to="/website/contact">contactformulier</nuxt-link>. Suggesties of verbeteringen voor de website worden ten zeerste geapprecieerd. U kan ook eens een kijkje nemen op de <a href="http://www.stijnvermeeren.be" title="Persoonlijke website Stijn Vermeeren">persoonlijke website</a> van webmaster Stijn.</p>
         <p>In 2014 krijgt Stijn hulp van <strong>Wouter <em>"Link"</em> Verbeke</strong> bij het onderhouden en updaten van de website tijdens de uitzending van de Tijdloze.</p>
 
         <h4>Technische details</h4>
@@ -26,10 +26,8 @@
 
 <script>
   export default {
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        document.title = "Over de Tijdloze Website";
-      });
+    head: {
+      title: "Website"
     }
   }
 </script>

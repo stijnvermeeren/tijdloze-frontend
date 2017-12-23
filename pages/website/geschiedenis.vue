@@ -31,10 +31,8 @@
 
 <script>
     export default {
-      beforeRouteEnter(to, from, next) {
-        next(vm => {
-          document.title = "Geschiedenis";
-        });
+      head: {
+        title: "Geschiedenis"
       }
     }
 </script>
