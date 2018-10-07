@@ -13,16 +13,16 @@
                         <th></th>
                         <th>Nummers</th>
                     </tr>
-                    <tr v-for="{artist, country, songs} in artistData">
+                    <tr v-for="artist in artists">
                         <td>
                             <tijdloze-artist :artist="artist"></tijdloze-artist>
                         </td>
                         <td>
-                            <tijdloze-country-icon :country="country"></tijdloze-country-icon>
+                            <tijdloze-country-icon :country="countries[artist.countryId]"></tijdloze-country-icon>
                         </td>
                         <td class="s wrap">
-                            <ul v-if="songs.length">
-                                <li v-for="song in songs">
+                            <ul v-if="artist.songs.length">
+                                <li v-for="song in artist.songs">
                                     <tijdloze-song :song="song"></tijdloze-song>
                                 </li>
                             </ul>
@@ -35,16 +35,15 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     computed: {
-      artistData() {
-        return this.$store.getters.artists.map(artist => {
-          return {
-            artist: artist,
-            country: this.$store.getters.countriesById[artist.countryId],
-            songs: this.$store.getters.songsByArtistId(artist.id)
-          };
-        });
+      artists() {
+        return this.$store.getters['entities/artists/query']().with('songs').all();
+      },
+      countries() {
+        return this.$store.getters.countriesById;
       }
     },
     head: {

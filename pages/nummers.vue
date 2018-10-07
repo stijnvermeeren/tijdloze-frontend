@@ -13,15 +13,15 @@
                         <th class="l"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
                         <th>Jaar</th>
                     </tr>
-                    <tr v-for="data in songData">
+                    <tr v-for="song in songs">
                         <td class="l">
-                            <tijdloze-song :song="data.song" />
+                            <tijdloze-song :song="song" />
                         </td>
                         <td class="l">
-                            <tijdloze-artist :artist="data.artist" />
+                            <tijdloze-artist :artist="song.artist" />
                         </td>
                         <td>
-                            {{data.song.releaseYear}}
+                            {{song.album.releaseYear}}
                         </td>
                     </tr>
                 </tbody>
@@ -31,15 +31,15 @@
 </template>
 
 <script>
+  import _ from 'lodash'
+
   export default {
     computed: {
-      songData() {
-        return this.$store.getters.songs.map(song => {
-          return {
-            artist: this.$store.getters.artistsById[song.artistId],
-            song
-          };
-        });
+      songs() {
+        return _.sortBy(
+          this.$store.getters['entities/songs/query']().with('artist').with('album').all(),
+          song => [song.title, song.album.releaseYear]
+        );
       }
     },
     head: {

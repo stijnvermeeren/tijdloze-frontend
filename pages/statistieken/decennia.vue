@@ -52,14 +52,14 @@
       years() {
         return this.$store.getters.years;
       },
-      songs() {
-        return this.$store.getters.songs;
-      },
       currentYear() {
         return this.$store.getters.currentYear;
       },
+      songs() {
+        return this.$store.getters['entities/songs/query']().with('album').all();
+      },
       decades() {
-        const startYear = _.min(this.songs.map(song => song.releaseYear));
+        const startYear = this.$store.getters['entities/albums/query']().min('releaseYear');
         const endYear = this.currentYear.yyyy;
         const decades = [];
         for (let decadeYear = this.decadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {
@@ -73,10 +73,10 @@
           dataPoints[decadeYear] = [];
         });
 
-        this.years.forEach(year => {
-          this.songs.forEach(song => {
+        this.songs.forEach(song => {
+          this.years.forEach(year => {
             if (song.position(year)) {
-              dataPoints[this.decadeYear(song.releaseYear)].push({
+              dataPoints[this.decadeYear(song.album.releaseYear)].push({
                 song: song,
                 year: year
               });
@@ -91,9 +91,7 @@
         return yyyy - yyyy % 10;
       },
       inYearDecadeCount(decadeYear, year) {
-        const data = this.data;
-        console.log(decadeYear, year._yy);
-        return data[decadeYear].filter(dataPoint => dataPoint.year.equals(year)).length;
+        return this.data[decadeYear].filter(dataPoint => dataPoint.year.equals(year)).length;
       },
       totalDecadeCount(decadeYear) {
         return this.data[decadeYear].length;

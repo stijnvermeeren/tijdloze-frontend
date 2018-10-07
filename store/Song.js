@@ -1,16 +1,25 @@
 import _ from 'lodash';
+import { Model } from '@vuex-orm/core'
+import Artist from "./Artist";
+import Album from "./Album";
 
-export default class Song {
-  constructor(songData, releaseYear, years) {
-    this.id = songData.id;
-    this.title = songData.title;
-    this.artistId = songData.artistId;
-    this.albumId = songData.albumId;
-    this.positions = songData.positions;
-    this.exitCurrent = songData.exitCurrent;
-    this.releaseYear = releaseYear;
+export default class Song extends Model {
+  static get entity() {
+    return 'songs';
+  }
 
-    this.years = years;
+  static fields() {
+    return {
+      id: this.attr(null),
+      title: this.attr(null),
+      artistId: this.attr(null),
+      albumId: this.attr(null),
+      positions: this.attr(null),
+      exitCurrent: this.attr(null),
+
+      artist: this.belongsTo(Artist, 'artistId'),
+      album: this.belongsTo(Album, 'albumId')
+    };
   }
 
   position(year) {
@@ -30,9 +39,9 @@ export default class Song {
     return !this.notInList(year);
   }
 
-  possiblyInListIntervals() {
+  possiblyInListIntervals(years) {
     const intervals = [];
-    let unprocessedYears = this.years;
+    let unprocessedYears = years;
 
     while (unprocessedYears.length) {
       unprocessedYears = _.dropWhile(unprocessedYears, year => this.notInList(year));
@@ -47,9 +56,9 @@ export default class Song {
     return intervals;
   }
 
-  stationaryIntervals() {
+  stationaryIntervals(years) {
     const intervals = [];
-    let unprocessedYears = this.years;
+    let unprocessedYears = years;
 
     while (unprocessedYears.length) {
       const position = this.position(_.first(unprocessedYears));
@@ -68,14 +77,14 @@ export default class Song {
     return intervals;
   }
 
-  listCount() {
-    return this.years.filter(year => this.position(year)).length;
+  listCount(years) {
+    return years.filter(year => this.position(year)).length;
   }
 
-  isReEntry(year) {
+  isReEntry(years, year) {
     return this.position(year) &&
       year.previous() &&
       !this.position(year.previous()) &&
-      !this.years.find(year => this.position(year)).equals(year);
+      !years.find(year => this.position(year)).equals(year);
   }
 }

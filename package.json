@@ -11,16 +11,17 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^4.5.0",
-    "@nuxtjs/dotenv": "^1.1.0",
+    "@nuxtjs/axios": "^4.5.2",
+    "@nuxtjs/dotenv": "^1.1.1",
+    "@vuex-orm/core": "^0.26.4",
     "axios": "^0.17.1",
     "d3-scale": "^1.0.7",
-    "d3-shape": "^1.2.0",
-    "lodash": "^4.17.4",
-    "nuxt": "1.0.0-rc11"
+    "d3-shape": "^1.2.2",
+    "lodash": "^4.17.11",
+    "nuxt": "^1.4.2"
   },
   "devDependencies": {
     "less": "^2.7.3",
-    "less-loader": "^4.0.5"
+    "less-loader": "^4.1.0"
   }
 }

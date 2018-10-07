@@ -13,10 +13,10 @@
     props: ["to"],
     computed: {
       artists() {
-        return this.$store.getters.artists;
+        return this.$store.getters['entities/artists/all']();
       },
       songs() {
-        return this.$store.getters.songs;
+        return this.$store.getters['entities/songs/all']();
       },
       years() {
         return this.$store.getters.years;
