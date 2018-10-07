@@ -19,23 +19,23 @@
                         <th v-for="year in years">{{year._yy}}</th>
                         <th class="r">Tot.</th>
                     </tr>
-                    <tr v-for="{name, decadeYear} in decades">
+                    <tr v-for="{decade, total, perYear} in counts">
                         <td class="r">
-                            {{name}}
+                            {{decade.name}}
                         </td>
-                        <td v-for="year in years">
-                            {{inYearDecadeCount(decadeYear, year)}}
+                        <td v-for="{count} in perYear">
+                            {{count}}
                         </td>
                         <td class="r">
-                            {{totalDecadeCount(decadeYear)}}
+                            {{total}}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
-        <div v-for="{decadeYear, name} in decades" class="graph">
-            <tijdloze-distribution-graph :title="name" :points="data[decadeYear]" />
+        <div v-for="{decade, dataPoints} in graphData" class="graph">
+            <tijdloze-distribution-graph :title="decade.name" :points="dataPoints" />
         </div>
     </div>
 </template>
@@ -56,6 +56,7 @@
         return this.$store.getters.currentYear;
       },
       songs() {
+        console.log("songs");
         return this.$store.getters['entities/songs/query']().with('album').all();
       },
       decades() {
@@ -67,10 +68,15 @@
         }
         return decades.reverse();
       },
-      data() {
+      graphData() {
+        console.log("graphData");
         const dataPoints = {};
-        this.decades.forEach(({decadeYear}) => {
-          dataPoints[decadeYear] = [];
+        const result = this.decades.map(decade => {
+          dataPoints[decade.decadeYear] = [];
+          return {
+            decade: decade,
+            dataPoints: dataPoints[decade.decadeYear]
+          };
         });
 
         this.songs.forEach(song => {
@@ -83,18 +89,27 @@
             }
           });
         });
-        return dataPoints;
+
+        return result;
+      },
+      counts() {
+        return this.graphData.map(({decade, dataPoints}) => {
+          return {
+            decade: decade,
+            total: dataPoints.length,
+            perYear: this.years.map(year => {
+              return {
+                year: year,
+                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+              }
+            })
+          }
+        });
       }
     },
     methods: {
       decadeYear(yyyy) {
         return yyyy - yyyy % 10;
-      },
-      inYearDecadeCount(decadeYear, year) {
-        return this.data[decadeYear].filter(dataPoint => dataPoint.year.equals(year)).length;
-      },
-      totalDecadeCount(decadeYear) {
-        return this.data[decadeYear].length;
       }
     },
     head: {

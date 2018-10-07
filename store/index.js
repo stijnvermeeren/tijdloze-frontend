@@ -8,7 +8,7 @@ import Song from './Song';
 import Year from './Year';
 
 function objectWithIdKeys(values) {
-  let result = {};
+  const result = {};
   values.forEach(value => result[value.id] = value);
   return result;
 }
