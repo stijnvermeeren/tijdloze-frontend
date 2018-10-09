@@ -21,16 +21,16 @@
                 <tijdloze-position :song="song" :year="year" />
             </td>
             <td class="a">
-                <tijdloze-artist :artist="$store.getters.artistsById[song.artistId]" />
+                <tijdloze-artist :artist="song.artist" />
             </td>
             <td>
                 <tijdloze-song :song="song" />
             </td>
             <td>
-                <span v-if="song.isReEntry(year)">Re-entry</span>
+                <span v-if="song.isReEntry($store.getters.years, year)">Re-entry</span>
             </td>
             <td>
-                {{song.releaseYear}}
+                {{song.album.releaseYear}}
             </td>
         </tr>
         </tbody>

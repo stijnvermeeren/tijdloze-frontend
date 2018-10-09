@@ -15,7 +15,7 @@ export default class Artist extends Model {
       countryId: this.attr(null),
 
       songs: this.hasMany(Song, 'artistId'),
-      albums: this.hasMany(Album, 'albumId')
+      albums: this.hasMany(Album, 'artistId')
     };
   }
 

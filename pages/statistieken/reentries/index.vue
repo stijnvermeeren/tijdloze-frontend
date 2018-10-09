@@ -26,7 +26,7 @@
                         <tr v-for="entry in entriesPerYear(year)">
                             <td>{{entry.song.position(entry.year)}}</td>
                             <td class="a">
-                                <tijdloze-artist :artist="$store.getters.artistsById[entry.song.artistId]" />
+                                <tijdloze-artist :artist="entry.song.artist" />
                             </td>
                             <td>
                                 <tijdloze-song :song="entry.song" />

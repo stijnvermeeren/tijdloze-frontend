@@ -36,10 +36,7 @@
   export default {
     computed: {
       songs() {
-        return _.sortBy(
-          this.$store.getters['entities/songs/query']().with('artist').with('album').all(),
-          song => [song.title, song.album.releaseYear]
-        );
+        return this.$store.getters.songs;
       }
     },
     head: {

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2><tijdloze-h2-icon name="album" alt="Album" />{{album.title}} (<tijdloze-artist :artist="artist" />)</h2>
+        <h2><tijdloze-h2-icon name="album" alt="Album" />{{album.title}} (<tijdloze-artist :artist="album.artist" />)</h2>
 
         <ul class="info">
             <li><strong>Album uit:</strong> {{album.releaseYear}}</li>
@@ -12,7 +12,7 @@
             </li>
         </ul>
 
-        <tijdloze-songs-overview-and-graph :songs="songs"/>
+        <tijdloze-songs-overview-and-graph :songs="album.songs"/>
     </div>
 </template>
 
@@ -27,13 +27,7 @@
     },
     computed: {
       album() {
-        return this.$store.getters.albumsById[this.fullAlbumData.id];
-      },
-      artist() {
-        return this.$store.getters.artistsById[this.album.artistId];
-      },
-      songs() {
-        return this.$store.getters.songsByAlbumId(this.album.id);
+        return this.$store.getters['entities/albums']().withAll().with('songs.album').find(this.fullAlbumData.id);
       },
       links() {
         const links = [];
@@ -59,7 +53,7 @@
     },
     head() {
       return {
-        title: `${this.album.title} (${this.artist.fullName})`
+        title: `${this.album.title} (${this.album.artist.fullName})`
       }
     }
   }

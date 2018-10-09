@@ -2,7 +2,7 @@
     <div>
         <ul class="info">
             <li><strong>Taal:</strong> {{language.name}}</li>
-            <li><strong>Origineel op album: </strong> <tijdloze-album :album="album" /> ({{album.releaseYear}})</li>
+            <li><strong>Origineel op album: </strong> <tijdloze-album :album="song.album" /> ({{song.album.releaseYear}})</li>
             <li v-if="links.length"><strong>Links: </strong>
                 <span v-for="(link, index) in links">
                     <span v-if="index > 0">, </span>
@@ -40,11 +40,8 @@
     components: {
       TijdlozeSongsOverviewAndGraph: SongsOverviewAndGraph
     },
-    props: ['song', 'fullSongData', 'artist'],
+    props: ['song', 'fullSongData'],
     computed: {
-      album() {
-        return this.$store.getters.albumsById[this.song.albumId];
-      },
       language() {
         return this.$store.getters.languagesById[this.fullSongData.languageId];
       },

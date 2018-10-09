@@ -7,7 +7,7 @@
         />
 
         <tijdloze-graph
-                v-if="songs.find(song => song.listCount() > 0)"
+                v-if="songs.find(song => song.listCount($store.getters.years) > 0)"
                 :songs="songs"
                 :hoverIndex="hoverIndex"
                 @hover="onHover"

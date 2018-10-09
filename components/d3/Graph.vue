@@ -45,7 +45,7 @@
           this.$emit('hover', index);
         },
         fullSongLine(song) {
-          return this.songLine(song, song.possiblyInListIntervals(), true);
+          return this.songLine(song, song.possiblyInListIntervals(this.years), true);
         }
       }
     }

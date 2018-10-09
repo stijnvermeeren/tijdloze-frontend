@@ -11,7 +11,7 @@
             <li v-if="fullArtistData.notes"><em><tijdloze-links :text="fullArtistData.notes" /></em></li>
         </ul>
 
-        <tijdloze-songs-overview-and-graph :songs="songs"/>
+        <tijdloze-songs-overview-and-graph :songs="artist.songs"/>
     </div>
 </template>
 
@@ -26,9 +26,6 @@
     computed: {
       country() {
         return this.$store.getters.countriesById[this.artist.countryId];
-      },
-      songs() {
-        return this.$store.getters.songsByArtistId(this.artist.id);
       },
       links() {
         const links = [];

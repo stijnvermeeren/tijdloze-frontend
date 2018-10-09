@@ -55,10 +55,6 @@
       currentYear() {
         return this.$store.getters.currentYear;
       },
-      songs() {
-        console.log("songs");
-        return this.$store.getters['entities/songs/query']().with('album').all();
-      },
       decades() {
         const startYear = this.$store.getters['entities/albums/query']().min('releaseYear');
         const endYear = this.currentYear.yyyy;
@@ -69,7 +65,6 @@
         return decades.reverse();
       },
       graphData() {
-        console.log("graphData");
         const dataPoints = {};
         const result = this.decades.map(decade => {
           dataPoints[decade.decadeYear] = [];
@@ -79,7 +74,7 @@
           };
         });
 
-        this.songs.forEach(song => {
+        this.$store.getters.songs.forEach(song => {
           this.years.forEach(year => {
             if (song.position(year)) {
               dataPoints[this.decadeYear(song.album.releaseYear)].push({

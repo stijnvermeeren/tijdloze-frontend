@@ -5,7 +5,7 @@
                 <th>Hoogste nieuwkomer</th>
                 <td>
                     <span v-if="highestNew">
-                        <tijdloze-song :song="highestNew" /> - <tijdloze-artist :artist="$store.getters.artistsById[highestNew.artistId]" /> (<tijdloze-position :song="highestNew" :year="year" />) <span v-if="highestNew.isReEntry(year)">(re-entry)</span>
+                        <tijdloze-song :song="highestNew" /> - <tijdloze-artist :artist="highestNew.artist" /> (<tijdloze-position :song="highestNew" :year="year" />) <span v-if="highestNew.isReEntry($store.getters.years, year)">(re-entry)</span>
                     </span>
                     <span v-else>/</span>
                 </td>
@@ -14,7 +14,7 @@
                 <th>Grootste stijger</th>
                 <td>
                     <span v-if="biggestUp">
-                        <tijdloze-song :song="biggestUp" /> - <tijdloze-artist :artist="$store.getters.artistsById[biggestUp.artistId]" /> (<tijdloze-position :song="biggestUp" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestUp" :year="year" />)
+                        <tijdloze-song :song="biggestUp" /> - <tijdloze-artist :artist="biggestUp.artist" /> (<tijdloze-position :song="biggestUp" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestUp" :year="year" />)
                     </span>
                     <span v-else>/</span>
                 </td>
@@ -23,7 +23,7 @@
                 <th>Grootste daler</th>
                 <td>
                     <span v-if="biggestDown">
-                        <tijdloze-song :song="biggestDown" /> - <tijdloze-artist :artist="$store.getters.artistsById[biggestDown.artistId]" /> (<tijdloze-position :song="biggestDown" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestDown" :year="year" />)
+                        <tijdloze-song :song="biggestDown" /> - <tijdloze-artist :artist="biggestDown.artist" /> (<tijdloze-position :song="biggestDown" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestDown" :year="year" />)
                     </span>
                     <span v-else>/</span>
                 </td>

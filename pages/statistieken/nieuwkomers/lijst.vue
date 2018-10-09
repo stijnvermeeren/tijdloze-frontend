@@ -11,7 +11,7 @@
             <tr v-for="{entry, position} in ranking">
                 <td class="r">{{position}}</td>
                 <td><tijdloze-year :year="entry.year" /></td>
-                <td class="a"><tijdloze-artist :artist="$store.getters.artistsById[entry.song.artistId]" /></td>
+                <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
                 <td><tijdloze-song :song="entry.song" /></td>
                 <td>{{entry.song.position(entry.year)}}</td>
             </tr>

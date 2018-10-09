@@ -25,11 +25,11 @@
                     <tijdloze-song :song="song" />
                 </td>
                 <td class="y">
-                    {{song.releaseYear}}
+                    {{song.album.releaseYear}}
                 </td>
                 <td class="l">
-                                <span v-if="song.listCount()">
-                                    {{song.listCount()}} {{song.listCount() > 1 ? 'noteringen' : 'notering'}}
+                                <span v-if="song.listCount(years)">
+                                    {{song.listCount(years)}} {{song.listCount(years) > 1 ? 'noteringen' : 'notering'}}
                                     ({{inListSummary(song)}})
                                 </span>
                     <span v-else>Geen top-100 noteringen</span>
@@ -68,7 +68,7 @@
         this.$emit('hover', index);
       },
       inListSummary(song) {
-        const intervalSummaries = song.possiblyInListIntervals().map(interval => {
+        const intervalSummaries = song.possiblyInListIntervals(this.years).map(interval => {
           const first = _.first(interval);
           const last = _.last(interval);
           if (last.isCurrent()) {

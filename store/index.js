@@ -32,6 +32,12 @@ const createStore = () => {
       languages: []
     },
     getters: {
+      songs: (state, getters) => {
+        return _.sortBy(
+          getters['entities/songs/query']().withAll().all(),
+          song => [song.title, song.album.releaseYear]
+        );
+      },
       decades: (state, getters) => {
         function getDecadeYear(yyyy) {
           return yyyy - yyyy % 10;

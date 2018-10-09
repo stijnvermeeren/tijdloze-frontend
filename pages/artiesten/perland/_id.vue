@@ -8,13 +8,13 @@
                     <th>Artiest</th>
                     <th>Nummers</th>
                 </tr>
-                <tr v-for="{artist, country, songs} in artistData">
+                <tr v-for="artist in artists">
                     <td>
                         <tijdloze-artist :artist="artist"></tijdloze-artist>
                     </td>
                     <td class="s wrap">
-                        <ul v-if="songs.length">
-                            <li v-for="song in songs">
+                        <ul v-if="artist.songs.length">
+                            <li v-for="song in artist.songs">
                                 <tijdloze-song :song="song"></tijdloze-song>
                             </li>
                         </ul>
@@ -31,15 +31,11 @@
       country() {
         return this.$store.getters.countriesById[this.$route.params.id];
       },
-      artistData() {
-        return this.$store.getters.artists
-          .filter(artist => artist.countryId === this.country.id)
-          .map(artist => {
-              return {
-                artist: artist,
-                songs: this.$store.getters.songsByArtistId(artist.id)
-              };
-            });
+      artists() {
+        return this.$store.getters['entities/artists']()
+          .with('songs')
+          .where(artist => artist.countryId === this.country.id)
+          .all();
       }
     },
     head() {

@@ -20,7 +20,7 @@
     },
     computed: {
       artist() {
-        return this.$store.getters.artistsById[this.fullArtistData.id];
+        return this.$store.getters['entities/artists']().withAllRecursive(2).find(this.fullArtistData.id);
       }
     },
     async asyncData({ params, app }) {

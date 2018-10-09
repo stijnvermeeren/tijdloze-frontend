@@ -17,7 +17,7 @@
                     {{topEntry(year).oldPosition}} &rarr; {{topEntry(year).newPosition}}
                 </td>
                 <td v-if="topEntry(year)" class="a">
-                    <tijdloze-artist :artist="$store.getters.artistsById[topEntry(year).song.artistId]" />
+                    <tijdloze-artist :artist="topEntry(year).song.artist" />
                 </td>
                 <td v-if="topEntry(year)">
                     <tijdloze-song :song="topEntry(year).song" />

@@ -10,12 +10,12 @@
                             <tijdloze-year :year="year" />
                         </th>
                     </tr>
-                    <tr v-for="{song, artist} in topFive(year)">
+                    <tr v-for="song in topFive(year)">
                         <td class="r">
                             {{song.position(year)}}
                         </td>
                         <td>
-                            <tijdloze-artist :artist="artist" />
+                            <tijdloze-artist :artist="song.artist" />
                         </td>
                         <td>
                             <tijdloze-song :song="song" />
@@ -38,10 +38,7 @@
       },
       methods: {
         topFive(year) {
-          return _.take(this.$store.getters.list(year), 5).map(song => {
-            const artist = this.$store.getters.artistsById[song.artistId];
-            return {song, artist};
-          });
+          return _.take(this.$store.getters.list(year), 5);
         }
       },
       head: {

@@ -1,12 +1,12 @@
 <template>
     <div>
-        <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}} (<tijdloze-artist :artist="artist" />)</h2>
+        <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}} (<tijdloze-artist :artist="song.artist" />)</h2>
 
         <tijdloze-tabs :tabs="[
           { to: `/nummer/${song.id}`, title: 'Informatie' },
           { to: `/nummer/${song.id}/lyrics`, title: 'Songtekst' }]"
         >
-            <nuxt-child :artist="artist" :song="song" :fullSongData="fullSongData" />
+            <nuxt-child :song="song" :fullSongData="fullSongData" />
         </tijdloze-tabs>
     </div>
 </template>
@@ -21,10 +21,7 @@
     },
     computed: {
       song() {
-        return this.$store.getters.songsById[this.fullSongData.id];
-      },
-      artist() {
-        return this.$store.getters.artistsById[this.song.artistId];
+        return this.$store.getters['entities/songs']().withAll().find(this.fullSongData.id);
       }
     },
     async asyncData({ params, app }) {
@@ -34,7 +31,7 @@
     },
     head() {
       return {
-        title: `${this.song.title} (${this.artist.fullName})`
+        title: `${this.song.title} (${this.song.artist.fullName})`
       }
     }
   }
