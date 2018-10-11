@@ -1,6 +1,8 @@
 <template>
     <div class="graph">
-        <h4 v-if="title">{{title}}</h4>
+        <h4 v-if="$slots.default || title">
+            <slot>{{title}}</slot>
+        </h4>
         <svg :width="fullWidth" :height="fullHeight">
             <g :transform="`translate(${margin.left},${margin.top})`">
                 <tijdloze-axes :xScale="xScale" :yScale="yScale" :years="years" />

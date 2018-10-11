@@ -88,7 +88,7 @@
         }
       },
       analyse() {
-        const item= analyse.find(item => item.yyyy === this.year.yyyy);
+        const item = analyse.find(item => item.yyyy === this.year.yyyy);
         if (item) {
           return item.analyse;
         }

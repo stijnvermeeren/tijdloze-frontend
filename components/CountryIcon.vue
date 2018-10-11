@@ -1,9 +1,12 @@
 <template>
-    <nuxt-link :to="`artiesten/perland/${country.id}`"><img :src="`/images/nat/${country.id}.png`" :alt="country.name" /></nuxt-link>
+    <nuxt-link :to="`/artiesten/perland/${country.id}`">
+        <img :src="`/images/nat/${country.id}.png`" :alt="country.name" />
+        <span v-if="includeName"> {{country.name}}</span>
+    </nuxt-link>
 </template>
 
 <script>
     export default {
-      props: ["country"]
+      props: ["country", "includeName"]
     }
 </script>
