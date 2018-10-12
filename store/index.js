@@ -29,7 +29,8 @@ const createStore = () => {
     state: {
       yearsRaw: [],
       countries: [],
-      languages: []
+      languages: [],
+      vocalsGenders: []
     },
     getters: {
       songs: (state, getters) => {
@@ -51,30 +52,6 @@ const createStore = () => {
         }
         return decades.reverse();
       },
-      data: (state, getters) => {
-        console.log('data');
-
-        function getDecadeYear(yyyy) {
-          return yyyy - yyyy % 10;
-        }
-
-        const dataPoints = {};
-        getters.decades.forEach(({decadeYear}) => {
-          dataPoints[decadeYear] = [];
-        });
-
-        getters.years.forEach(year => {
-          getters.songs.forEach(song => {
-            if (song.position(year)) {
-              dataPoints[getDecadeYear(song.releaseYear)].push({
-                song: song,
-                year: year
-              });
-            }
-          });
-        });
-        return dataPoints;
-      },
       years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
       currentYear: (state, getters) => _.last(getters.years),
       /* songs: (state, getters) => _.sortBy(
@@ -85,6 +62,7 @@ const createStore = () => {
       ), */
       countriesById: state => objectWithIdKeys(state.countries),
       languagesById: state => objectWithIdKeys(state.languages),
+      vocalsGendersById: state => objectWithIdKeys(state.vocalsGenders),
       list: (state, getters) => year => {
         return _.sortBy(
           getters.songs.filter(song => song.position(year)),
@@ -96,6 +74,7 @@ const createStore = () => {
       updateCoreData(state, json) {
         state.countries = json.countries;
         state.languages = json.languages;
+        state.vocalsGenders = json.vocalsGenders;
         state.yearsRaw = json.years;
       }
     },

@@ -22,6 +22,7 @@
                     <li><nuxt-link to="/statistieken/noteringen_album">Noteringen (Albums)</nuxt-link></li>
                     <li><nuxt-link to="/statistieken/landen">Landen</nuxt-link></li>
                     <li><nuxt-link to="/statistieken/talen">Talen</nuxt-link></li>
+                    <li><nuxt-link to="/statistieken/leadvocals">Lead vocals</nuxt-link></li>
                     <li><nuxt-link to="/statistieken/decennia">Decennia</nuxt-link></li>
                     <li><nuxt-link to="/statistieken/leeftijden">Leeftijden</nuxt-link></li>
                 </ul>
