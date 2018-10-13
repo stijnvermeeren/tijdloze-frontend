@@ -60,6 +60,11 @@ const createStore = () => {
         }),
         song => song.title.toLowerCase()
       ), */
+      completedYears: (state, getters) => {
+        return getters.years.filter(year => {
+          return getters.songs.find(song => song.position(year) === 1);
+        });
+      },
       countriesById: state => objectWithIdKeys(state.countries),
       languagesById: state => objectWithIdKeys(state.languages),
       vocalsGendersById: state => objectWithIdKeys(state.vocalsGenders),

@@ -29,7 +29,7 @@
                         <td class="bold">Van:</td>
                         <td>
                             <select v-model="startYear">
-                                <option v-for="year in completedYears" value="year.yyyy">{{year.yyyy}}</option>
+                                <option v-for="year in completedYears" :value="year.yyyy">{{year.yyyy}}</option>
                             </select>
                         </td>
                     </tr>
@@ -37,7 +37,7 @@
                         <td class="bold">Tot:</td>
                         <td>
                             <select v-model="endYear">
-                                <option v-for="year in completedYears" value="year.yyyy">{{year.yyyy}}</option>
+                                <option v-for="year in completedYears" :value="year.yyyy">{{year.yyyy}}</option>
                             </select>
                         </td>
                     </tr>
@@ -75,27 +75,19 @@
   export default {
     data() {
       return {
-        type: "nummers",
-        strict: false,
-        startYear: this.defaultStartYear,
-        endYear: this.defaultEndYear,
-        method: "1"
+        type: this.$route.query.type ? this.$route.query.type : "nummers",
+        strict: this.$route.query.strikt ? this.$route.query.strikt === "1" : false,
+        startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
+        endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
+        method: this.$route.query.telling ? this.$route.query.telling : "1"
       }
     },
     computed: {
       songs() {
         return this.$store.getters.songs;
       },
-      defaultStartYear() {
-        return _.first(this.completedYears).yyyy.toString();
-      },
-      defaultEndYear() {
-        return _.last(this.completedYears).yyyy.toString();
-      },
       completedYears() {
-        return this.$store.getters.years.filter(year => {
-          return this.songs.find(song => song.position(year) === 1);
-        });
+        return this.$store.getters.completedYears;
       }
     },
     methods: {
