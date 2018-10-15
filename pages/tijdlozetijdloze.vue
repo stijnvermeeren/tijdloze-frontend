@@ -5,18 +5,16 @@
 
         <div class="notabs">
 
-            <div id="toelichting">
+            <div v-if="!active" id="toelichting">
                 <p><tijdloze-links text="Wat als je alle edities van de Tijdloze bij elkaar gooit? Wie komt er dan uit als het ultieme tijdloze Tijdloze nummer? Veel mensen willen het weten, maar het antwoord is niet zo eenvoudig. Want op welke manier geef je punten aan de nummers? Bekijk je enkel nummers die in elke Tijdloze genoteerd waren? Is het eerlijk om een nummer uit 1967 te vergelijken met een nummer uit 2001?" /></p>
                 <p><tijdloze-links text="Op deze pagina kan je zelf met verschillende instellingen experimenteren, de Tijdloze Tijdloze wordt automatisch gegenereerd. Naargelang de instellingen zal je verschillende nummers aan kop vinden, dus we zullen hier ook geen ultieme winnaar uitroepen. Maar toch enkele algemene observaties: [Child In Time] staat in de meeste lijstjes bovenaan, samen met klassiekers als [Angie], [Stairway To Heaven] en [Bohemian Rhapsody]. De recentere jaren worden echter aangevoerd door [Smells Like Teen Spirit], [Mia], [One;Metallica] en [Creep]. Slechts 15 nummers stonden in elke Tijdloze, terwijl [Smells Like Teen Spirit] meestal het hoogste recentere nummer is." /></p>
                 <p><tijdloze-links text="Je kan hier ook de punten per artiest laten samentellen, en zo een ranglijst van de beste Tijdloze Artiesten krijgen. Hier vind je weer de grote kleppers aan de top als [Deep Purple], [The Rolling Stones] en [Led Zeppelin]. Maar ook groepen als [The Doors], [U2], [dEUS] en [Radiohead], die geen heel hoge maar wel veel noteringen hebben, scoren hier goed. Om [Gorky], die enkel scoorde met [Mia], te vinden moet je echter naar beneden scrollen." /></p>
             </div>
 
-            <p>&nbsp;</p>
-
             <table>
                 <tbody>
                     <tr>
-                        <td class="bold">Vergelijk:</td>
+                        <th>Vergelijk:</th>
                         <td>
                             <select v-model="type">
                                 <option value="nummers">Nummers</option>
@@ -26,7 +24,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="bold">Van:</td>
+                        <th>Van:</th>
                         <td>
                             <select v-model="startYear">
                                 <option v-for="year in completedYears" :value="year.yyyy">{{year.yyyy}}</option>
@@ -34,7 +32,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td class="bold">Tot:</td>
+                        <th>Tot:</th>
                         <td>
                             <select v-model="endYear">
                                 <option v-for="year in completedYears" :value="year.yyyy">{{year.yyyy}}</option>
@@ -42,14 +40,14 @@
                         </td>
                     </tr>
                     <tr>
-                        <td></td>
+                        <th></th>
                         <td>
                             <input type="checkbox" v-model="strict" class="ch" />
                             Tel enkel nummers die in elke Tijdloze stonden
                         </td>
                     </tr>
                     <tr>
-                        <td class="bold top">Methode:</td>
+                        <th>Methode:</th>
                         <td>
                             <div><input v-model="method" type="radio" class="ra" value="1" /> Eenvoudige telling</div>
                             <div class="noot">Het nummer op de eerste plaats krijgt 100 punten, de tweede 99, de derde 98, en zo verder tot de honderste die nog 1 punt krijgt... <em>Formule: punten = 101 - positie</em>.</div>
@@ -57,24 +55,41 @@
                             <div class="noot">Deze telling leunt dichter aan bij het aantal stemmen dat elk nummer waarschijnlijk door de jaren heen gekregen heeft. De formule hiervoor is gebaseerd op de Tijdloze van 1998. Toen was de schiftingsvraag 'hoeveel stemmen hebben alle nummers in de top 100 gekregen'. Tijdens de uitzending werden er af en toe <em>updates</em> gegeven over hoeveel stemmen sommige nummers kregen, en wat het subtotaal van de stemmen was. Een formule die grofweg het aantal stemmen per positie benadert, is <em>400 / (positie + 5)</em>. Deze formule wordt hier gebruikt.</div>
                         </td>
                     </tr>
-                    <tr>
-                        <td></td>
+                    <tr v-if="!active">
+                        <th></th>
                         <td>
-                            <button @click="submit" type="submit">Bereken Tijdloze Tijdloze</button>
+                            <button @click="submit()" type="submit">Bereken Tijdloze Tijdloze</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <table v-if="active && type === 'nummers'" class="lijst perVijf">
+            <tr>
+                <th class="r"></th>
+                <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
+                <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
+                <th>Score</th>
+            </tr>
+            <tr v-for="{entry, position} in songData">
+                <td class="r">{{position}}</td>
+                <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
+                <td><tijdloze-song :song="entry.song" /></td>
+                <td>{{Math.round(entry.points * 10) / 10}}</td>
+            </tr>
+        </table>
     </div>
 </template>
 
 <script>
   import _ from 'lodash';
+  import ranking from '../store/ranking';
 
   export default {
     data() {
       return {
+        active: !!this.$route.query.type,
         type: this.$route.query.type ? this.$route.query.type : "nummers",
         strict: this.$route.query.strikt ? this.$route.query.strikt === "1" : false,
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
@@ -83,26 +98,89 @@
       }
     },
     computed: {
-      songs() {
-        return this.$store.getters.songs;
+      queryParams() {
+        return {
+          type: this.type,
+          start: this.startYear.toString(),
+          einde: this.endYear.toString(),
+          strikt: this.strict ? '1' : '0',
+          telling: this.method
+        };
+      },
+      query() {
+        return this.$route.query;
+      },
+      selectedSongs() {
+        const selectedYears = this.selectedYears;
+        if (this.strict) {
+          return this.$store.getters.songs.filter(song =>
+            selectedYears.every(year => song.position(year))
+          );
+        } else {
+          return this.$store.getters.songs;
+        }
       },
       completedYears() {
         return this.$store.getters.completedYears;
+      },
+      selectedYears() {
+        return this.completedYears.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
+      },
+      scoreFn() {
+        if (this.method === '1') {
+          return position => 101 - position;
+        } else {
+          return position => 400 / (position + 5);
+        }
+      },
+      songData() {
+        const selectedYears = this.selectedYears;
+        const scoreFn = this.scoreFn;
+        const data = this.selectedSongs.map(song => {
+          return {
+            song: song,
+            points: _.sum(
+              selectedYears
+                .map(year => song.position(year))
+                .filter(position => position)
+                .map(scoreFn)
+            )
+          }
+        });
+
+        return ranking(
+          data.filter(item => item.points > 0),
+          item => -item.points,
+          item => item.song.title,
+        )
+      }
+    },
+    watch: {
+      queryParams() {
+        console.log(this.active);
+        if (this.active) {
+          this.updateQuery()
+        }
+      },
+      query: newQuery => {
+        console.log(newQuery);
+        this.type = newQuery.type ? newQuery.type : "nummers";
+        this.strict = newQuery.strikt ? newQuery.strikt === "1" : false;
+        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
+        this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
+        this.method = newQuery.telling ? newQuery.telling : "1";
+        console.log(this.strict);
       }
     },
     methods: {
       submit() {
-        this.$router.push(
-          {
-            query: {
-              type: this.type,
-              start: this.startYear,
-              einde: this.endYear,
-              strikt: this.strict ? 1 : 0,
-              telling: this.method
-            }
-          }
-        );
+        this.active = true;
+        this.updateQuery();
+      },
+      updateQuery() {
+        this.$router.push({
+          query: this.queryParams
+        });
       }
     },
     head: {
@@ -110,3 +188,18 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    div.noot {
+        font-size: 85%;
+        margin-left: 2em;
+    }
+
+    div#toelichting {
+        margin-bottom: 2em;
+    }
+
+    table.lijst {
+        margin-top: 2em;
+    }
+</style>

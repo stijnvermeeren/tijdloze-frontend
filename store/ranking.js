@@ -23,5 +23,8 @@ export default function ranking(data, rankBy, secondaryRankBy, limit) {
     }
   });
 
-  return _.takeWhile(results, ({position}) => position === '=' || position <= limit);
+  return _.takeWhile(
+    results,
+    ({position}) => !limit || position <= limit || position === '='
+  );
 }
