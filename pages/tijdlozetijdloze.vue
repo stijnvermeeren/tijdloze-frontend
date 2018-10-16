@@ -2,7 +2,6 @@
     <div>
         <h2>De Tijdloze Tijdloze</h2>
 
-
         <div class="notabs">
 
             <div v-if="!active" id="toelichting">
@@ -66,18 +65,52 @@
         </div>
 
         <table v-if="active && type === 'nummers'" class="lijst perVijf">
-            <tr>
-                <th class="r"></th>
-                <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
-                <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
-                <th>Score</th>
-            </tr>
-            <tr v-for="{entry, position} in songData">
-                <td class="r">{{position}}</td>
-                <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
-                <td><tijdloze-song :song="entry.song" /></td>
-                <td>{{Math.round(entry.points * 10) / 10}}</td>
-            </tr>
+            <tbody>
+                <tr>
+                    <th class="r"></th>
+                    <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
+                    <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
+                    <th>Score</th>
+                </tr>
+                <tr v-for="{entry, position} in songData">
+                    <td class="r">{{position}}</td>
+                    <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
+                    <td><tijdloze-song :song="entry.song" /></td>
+                    <td>{{Math.round(entry.points * 10) / 10}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table v-if="active && type === 'artiesten'" class="lijst perVijf">
+            <tbody>
+                <tr>
+                    <th class="r"></th>
+                    <th class="l"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
+                    <th>Score</th>
+                </tr>
+                <tr v-for="{entry, position} in artistData">
+                    <td class="r">{{position}}</td>
+                    <td class="l"><tijdloze-artist :artist="entry.artist" /></td>
+                    <td>{{Math.round(entry.points * 10) / 10}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table v-if="active && type === 'albums'" class="lijst perVijf">
+            <tbody>
+                <tr>
+                    <th class="r"></th>
+                    <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
+                    <th>Album</th>
+                    <th>Score</th>
+                </tr>
+                <tr v-for="{entry, position} in albumData">
+                    <td class="r">{{position}}</td>
+                    <td class="a"><tijdloze-artist :artist="entry.artist" /></td>
+                    <td><tijdloze-album :album="entry.album" /></td>
+                    <td>{{Math.round(entry.points * 10) / 10}}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
@@ -133,10 +166,10 @@
           return position => 400 / (position + 5);
         }
       },
-      songData() {
+      rawData() {
         const selectedYears = this.selectedYears;
         const scoreFn = this.scoreFn;
-        const data = this.selectedSongs.map(song => {
+        return this.selectedSongs.map(song => {
           return {
             song: song,
             points: _.sum(
@@ -147,41 +180,72 @@
             )
           }
         });
+      },
+      songData() {
+        return ranking(
+          this.rawData.filter(item => item.points > 0),
+          item => -item.points,
+          item => item.song.title,
+        )
+      },
+      artistData() {
+        const data = _.values(_.groupBy(this.rawData, item => item.song.artistId)).map(items => {
+          return {
+            artist: _.first(items).song.artist,
+            points: _.sum(items.map(item => item.points))
+          }
+        });
 
         return ranking(
           data.filter(item => item.points > 0),
           item => -item.points,
-          item => item.song.title,
+          item => item.artist.name,
+        )
+      },
+      albumData() {
+        const data = _.values(_.groupBy(this.rawData, item => item.song.albumId)).map(items => {
+          return {
+            album: _.first(items).song.album,
+            artist: _.first(items).song.artist,
+            points: _.sum(items.map(item => item.points))
+          }
+        });
+
+        return ranking(
+          data.filter(item => item.points > 0),
+          item => -item.points,
+          item => item.album.title,
         )
       }
     },
     watch: {
-      queryParams() {
-        console.log(this.active);
+      queryParams(newQueryParams) {
         if (this.active) {
-          this.updateQuery()
+          this.$router.replace({
+            query: newQueryParams
+          });
         }
       },
-      query: newQuery => {
-        console.log(newQuery);
-        this.type = newQuery.type ? newQuery.type : "nummers";
-        this.strict = newQuery.strikt ? newQuery.strikt === "1" : false;
-        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
-        this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
-        this.method = newQuery.telling ? newQuery.telling : "1";
-        console.log(this.strict);
+      query(newQuery) {
+        if (newQuery.type) {
+          this.active = true;
+          this.type = newQuery.type ? newQuery.type : "nummers";
+          this.strict = newQuery.strikt ? newQuery.strikt === "1" : false;
+          this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
+          this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
+          this.method = newQuery.telling ? newQuery.telling : "1";
+        } else {
+          this.active = false;
+        }
       }
     },
     methods: {
       submit() {
         this.active = true;
-        this.updateQuery();
-      },
-      updateQuery() {
         this.$router.push({
           query: this.queryParams
         });
-      }
+      },
     },
     head: {
       title: 'De Tijdloze Tijdloze'
