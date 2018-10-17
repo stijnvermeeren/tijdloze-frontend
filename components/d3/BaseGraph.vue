@@ -23,7 +23,7 @@
       },
       xScale() {
         return scaleBand()
-          .rangeRound([0, this.width])
+          .rangeRound([10, this.width + 10])
           .paddingInner(0.1)
           .paddingOuter(0.5)
           .domain(this.years.map(year => year._yy));
