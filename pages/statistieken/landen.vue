@@ -12,40 +12,56 @@
             <table class="lijst">
                 <tbody>
                     <tr>
-                        <th class="r">Land</th>
-                        <th v-for="year in years">{{year._yy}}</th>
-                        <th class="r">Tot.</th>
+                        <th>Land</th>
+                        <th></th>
+                        <th v-for="year in tableFilter(years)">{{year.yyyy}}</th>
+                        <th>Alle jaren</th>
                     </tr>
-                    <tr v-for="{country, total, perYear} in counts">
-                        <td class="r">
-                            <tijdloze-country-icon :country="country" :includeName="true" />
-                        </td>
-                        <td v-for="{count} in perYear">
-                            {{count}}
-                        </td>
-                        <td class="r">
-                            {{total}}
-                        </td>
-                    </tr>
+                    <template v-for="{country, total, perYear, graphData} in data">
+                        <tr>
+                            <td>
+                                <tijdloze-country-icon :country="country" :includeName="true" />
+                            </td>
+                            <td>
+                                <button v-if="!showDetails[country.id]" @click="toggleDetails(country.id)">Meer details</button>
+                                <button v-else @click="toggleDetails(country.id)">Verberg details</button>
+                            </td>
+                            <td v-for="{count} in tableFilter(perYear)">
+                                {{count}}
+                            </td>
+                            <td>
+                                {{total}}
+                            </td>
+                        </tr>
+                        <transition name="fade" :duration="500">
+                            <tr v-if="showDetails[country.id]" class="details">
+                                <td colspan="5">
+                                   <div class="wrapper">
+                                        <tijdloze-distribution-graph :points="graphData" />
+                                    </div>
+                                </td>
+                            </tr>
+                        </transition>
+                    </template>
                 </tbody>
             </table>
-        </div>
-
-        <div v-for="{country, dataPoints} in graphData" class="graph">
-            <tijdloze-distribution-graph :points="dataPoints">
-                <tijdloze-country-icon :country="country" :includeName="true" />
-            </tijdloze-distribution-graph>
         </div>
     </div>
 </template>
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
+  import Vue from 'vue';
   import _ from 'lodash';
 
   export default {
     components: {
       TijdlozeDistributionGraph: DistributionGraph
+    },
+    data() {
+      return {
+        showDetails: {}
+      };
     },
     computed: {
       years() {
@@ -57,13 +73,13 @@
           country => country.name
         );
       },
-      graphData() {
+      data() {
         const dataPoints = {};
-        const result = this.countries.map(country => {
+        const graphDataPerCountry = this.countries.map(country => {
           dataPoints[country.id] = [];
           return {
             country: country,
-            dataPoints: dataPoints[country.id]
+            graphData: dataPoints[country.id]
           };
         });
 
@@ -78,17 +94,15 @@
           });
         });
 
-        return result;
-      },
-      counts() {
-        return this.graphData.map(({country, dataPoints}) => {
+        return graphDataPerCountry.map(({country, graphData}) => {
           return {
             country: country,
-            total: dataPoints.length,
+            graphData: graphData,
+            total: graphData.length,
             perYear: this.years.map(year => {
               return {
                 year: year,
-                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+                count: graphData.filter(dataPoint => dataPoint.year.equals(year)).length
               }
             })
           }
@@ -98,6 +112,12 @@
     methods: {
       decadeYear(yyyy) {
         return yyyy - yyyy % 10;
+      },
+      tableFilter(data) {
+        return _.takeRight(data, 2);
+      },
+      toggleDetails(countryId) {
+        Vue.set(this.showDetails, countryId, !this.showDetails[countryId]);
       }
     },
     head: {
@@ -105,3 +125,36 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    @import "../../assets/styleConfig";
+
+    tr.details {
+        background-color: @inputBackgroundColor;
+
+        div.wrapper {
+            overflow: hidden;
+            max-height: 2000px;
+        }
+
+        &.fade-enter-active {
+            div.wrapper {
+                transition: all .5s ease;
+            }
+        }
+
+        &.fade-leave-active {
+            div.wrapper {
+                transition: all .5s cubic-bezier(0, 1.05, 0, 1);
+            }
+        }
+
+        &.fade-enter, &.fade-leave-to {
+            div.wrapper {
+                max-height: 0;
+            }
+        }
+    }
+
+</style>
+

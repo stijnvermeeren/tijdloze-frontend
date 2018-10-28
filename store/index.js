@@ -27,19 +27,26 @@ const createStore = () => {
       VuexORM.install(database)
     ],
     state: {
+      user: null,
       yearsRaw: [],
       countries: [],
       languages: [],
       vocalsGenders: []
     },
     getters: {
-      songs: (state, getters) => {
+      isAuthenticated(state) {
+        return !!state.user
+      },
+      loggedUser(state) {
+        return state.user
+      },
+      songs(state, getters) {
         return _.sortBy(
           getters['entities/songs/query']().withAll().all(),
           song => [song.title, song.album.releaseYear]
         );
       },
-      decades: (state, getters) => {
+      decades(state, getters) {
         function getDecadeYear(yyyy) {
           return yyyy - yyyy % 10;
         }
@@ -60,7 +67,7 @@ const createStore = () => {
         }),
         song => song.title.toLowerCase()
       ), */
-      completedYears: (state, getters) => {
+      completedYears (state, getters) {
         return getters.years.filter(year => {
           return getters.songs.find(song => song.position(year) === 1);
         });
@@ -81,6 +88,9 @@ const createStore = () => {
         state.languages = json.languages;
         state.vocalsGenders = json.vocalsGenders;
         state.yearsRaw = json.years;
+      },
+      setUser(state, user) {
+        state.user = user || null
       }
     },
     actions: {

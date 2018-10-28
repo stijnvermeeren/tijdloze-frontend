@@ -38,5 +38,8 @@ module.exports = {
     babel: {
       presets: ['vue-app']
     }
+  },
+  router: {
+    middleware: 'check-auth'
   }
 };
