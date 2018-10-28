@@ -7,7 +7,7 @@
   export default {
     mounted () {
       const { token, secret } = extractInfoFromHash()
-      if (!checkSecret(secret) || !token) {
+      if (!token) {
         console.error('Something happened with the Sign In request')
       }
       setToken(token)

@@ -1,19 +1,31 @@
 <template>
     <div>
-        <nuxt-link v-if="isAuthenticated" to="/auth/sign-out">
+        <button v-if="isAuthenticated" @click="logout()">
             Log Out
-        </nuxt-link>
-        <nuxt-link v-else to="/auth/sign-in">
+        </button>
+        <button v-else @click="login()">
             Log In
-        </nuxt-link>
+        </button>
     </div>
 </template>
 
 <script>
+  import { unsetToken, login } from '~/utils/auth';
+
   export default {
     computed: {
       isAuthenticated() {
         return this.$store.getters.isAuthenticated;
+      }
+    },
+    methods: {
+      login() {
+        login();
+      },
+      logout() {
+        unsetToken();
+        this.$store.commit('setUser', null);
+        this.$router.push("/");
       }
     }
   }

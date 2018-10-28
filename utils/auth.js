@@ -1,5 +1,30 @@
+import auth0 from 'auth0-js';
 import jwtDecode from 'jwt-decode'
 import Cookie from 'js-cookie'
+
+const ID_TOKEN_KEY = 'id_token';
+const ACCESS_TOKEN_KEY = 'access_token';
+
+const config = require('~/config.json')
+
+const SCOPE = 'openid profile email';
+const AUDIENCE = 'http://api.tijdloze.stijnshome.be';
+
+
+const auth = new auth0.WebAuth({
+  clientID: config.AUTH0_CLIENT_ID,
+  domain: config.AUTH0_CLIENT_DOMAIN
+});
+
+export function login() {
+  auth.authorize({
+    responseType: 'token id_token',
+    redirectUri: config.AUTH0_CALLBACK_URI,
+    audience: AUDIENCE,
+    scope: SCOPE
+  });
+}
+
 
 const getQueryParams = () => {
   const params = {}
@@ -46,7 +71,3 @@ export const getUserFromLocalStorage = () => {
   const json = window.localStorage.user
   return json ? JSON.parse(json) : undefined
 }
-
-export const setSecret = (secret) => window.localStorage.setItem('secret', secret)
-
-export const checkSecret = (secret) => window.localStorage.secret === secret
