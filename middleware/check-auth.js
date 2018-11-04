@@ -1,8 +1,11 @@
-import { getUserFromCookie, getUserFromLocalStorage } from '~/utils/auth'
+import { setAccessToken } from '~/utils/auth'
 
-export default function ({ isServer, store, req }) {
+export default function ({ store, req, app }) {
   // If nuxt generate, pass this middleware
-  if (isServer && !req) return;
-  const loggedUser = isServer ? getUserFromCookie(req) : getUserFromLocalStorage();
-  store.commit('setUser', loggedUser);
+  if (process.server && !req) return;
+
+  const accessToken = app.$cookies.get('access_token');
+  if (accessToken) {
+    setAccessToken(accessToken, app, store);
+  }
 }

@@ -3,15 +3,13 @@
 </template>
 
 <script>
-  import { setToken, checkSecret, extractInfoFromHash } from '~/utils/auth'
+  import { setAccessToken, checkSecret, getTokensFromHash } from '~/utils/auth'
   export default {
     mounted () {
-      const { token, secret } = extractInfoFromHash()
-      if (!token) {
-        console.error('Something happened with the Sign In request')
-      }
-      setToken(token)
-      this.$router.replace('/')
+      getTokensFromHash(({ idToken, accessToken }) => {
+        setAccessToken(accessToken, this, this.$store);
+        this.$router.replace('/')
+      });
     }
   }
 </script>

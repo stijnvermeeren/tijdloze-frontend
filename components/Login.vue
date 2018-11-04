@@ -6,11 +6,14 @@
         <button v-else @click="login()">
             Log In
         </button>
+        <button @click="test()">
+            Test
+        </button>
     </div>
 </template>
 
 <script>
-  import { unsetToken, login } from '~/utils/auth';
+  import { unsetAccessToken, login } from '~/utils/auth';
 
   export default {
     computed: {
@@ -23,9 +26,13 @@
         login();
       },
       logout() {
-        unsetToken();
-        this.$store.commit('setUser', null);
+        unsetAccessToken(this, this.$store);
         this.$router.push("/");
+      },
+      test() {
+        this.$axios.$get(`test`).then(result => {
+          console.log(result);
+        })
       }
     }
   }

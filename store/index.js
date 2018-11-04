@@ -14,10 +14,10 @@ function objectWithIdKeys(values) {
 }
 
 const database = new VuexORM.Database();
-const users = {};
+const songs = {};
 const artists = {};
 const albums = {};
-database.register(Song, users);
+database.register(Song, songs);
 database.register(Artist, artists);
 database.register(Album, albums);
 
@@ -27,7 +27,7 @@ const createStore = () => {
       VuexORM.install(database)
     ],
     state: {
-      user: null,
+      accessToken: null,
       yearsRaw: [],
       countries: [],
       languages: [],
@@ -35,10 +35,7 @@ const createStore = () => {
     },
     getters: {
       isAuthenticated(state) {
-        return !!state.user
-      },
-      loggedUser(state) {
-        return state.user
+        return !!state.accessToken
       },
       songs(state, getters) {
         return _.sortBy(
@@ -89,8 +86,8 @@ const createStore = () => {
         state.vocalsGenders = json.vocalsGenders;
         state.yearsRaw = json.years;
       },
-      setUser(state, user) {
-        state.user = user || null
+      setAccessToken(state, accessToken) {
+        state.accessToken = accessToken || null
       }
     },
     actions: {

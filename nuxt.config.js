@@ -1,4 +1,4 @@
-require('dotenv').config();
+const config = require('./config.json');
 
 module.exports = {
   /*
@@ -28,9 +28,11 @@ module.exports = {
   loading: { color: '#3B8070' },
   plugins: ['~/plugins/global.js'],
   modules: [
-    '@nuxtjs/dotenv',
     ['@nuxtjs/axios', {
-      baseURL: process.env.BASE_URL
+      baseURL: config.API_URI
+    }],
+    ['cookie-universal-nuxt', {
+      parseJSON: false
     }]
   ],
   build: {
