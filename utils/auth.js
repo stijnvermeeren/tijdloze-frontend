@@ -1,5 +1,4 @@
 import auth0 from 'auth0-js';
-import Cookie from 'js-cookie';
 
 const config = require('~/config.json');
 
@@ -20,23 +19,28 @@ export function login() {
   });
 }
 
-export const getTokensFromHash = (callback) => {
-  return auth.parseHash({}, function(err, authResult) {
-    if (err) {
-      return console.log(err);
-    }
-    callback(authResult);
-  });
+export const getQueryParams = () => {
+  const params = {}
+  window.location.href.replace(/([^(?|#)=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => {
+    params[$1] = $3
+  })
+  return params
+}
+
+export const setAccessTokenCookie = (token, app) => {
+  app.$cookies.set('access_token', token, { secure: config.SECURE_COOKIES, path: '/' });
 }
 
 export const setAccessToken = (token, app, store) => {
-  app.$cookies.set('access_token', token, { secure: config.SECURE_COOKIES, path: '/' });
-  app.$axios.setToken(token, 'Bearer');
+  // app.$axios.setToken(token, 'Bearer');
   store.commit('setAccessToken', token);
 }
 
 export const unsetAccessToken = (app, store) => {
+  console.log('remove cookie?');
+  console.log(app.$cookies.get('access_token'));
   app.$cookies.remove('access_token', { path: '/' });
-  app.$axios.setToken(false);
+  console.log(app.$cookies.get('access_token'));
+  // app.$axios.setToken(false);
   store.commit('setAccessToken', null);
 }

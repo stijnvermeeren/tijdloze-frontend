@@ -23,6 +23,7 @@
     },
     methods: {
       login() {
+        unsetAccessToken(this, this.$store);
         login();
       },
       logout() {
@@ -30,7 +31,7 @@
         this.$router.push("/");
       },
       test() {
-        this.$axios.$get(`test`).then(result => {
+        this.$axios.$post(`user`).then(result => {
           console.log(result);
         })
       }
