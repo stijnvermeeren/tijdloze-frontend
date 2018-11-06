@@ -19,6 +19,12 @@ export function login() {
   });
 }
 
+export function logout() {
+  auth.logout({
+    returnTo: config.AUTH0_LOGOUT_URI
+  });
+}
+
 export const getQueryParams = () => {
   const params = {}
   window.location.href.replace(/([^(?|#)=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => {

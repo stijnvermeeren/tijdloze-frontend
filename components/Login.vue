@@ -13,7 +13,7 @@
 </template>
 
 <script>
-  import { unsetAccessToken, login } from '~/utils/auth';
+  import { unsetAccessToken, login, logout } from '~/utils/auth';
 
   export default {
     computed: {
@@ -28,7 +28,7 @@
       },
       logout() {
         unsetAccessToken(this, this.$store);
-        this.$router.push("/");
+        logout();
       },
       test() {
         this.$axios.$post(`user`).then(result => {
