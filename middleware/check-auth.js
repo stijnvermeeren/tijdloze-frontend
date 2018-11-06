@@ -1,4 +1,5 @@
-import { setAccessToken } from '~/utils/auth'
+import { setAccessToken, unsetAccessToken } from '~/utils/auth'
+import jwtDecode from 'jwt-decode'
 
 export default function ({ store, req, app }) {
   // If nuxt generate, pass this middleware
@@ -6,6 +7,11 @@ export default function ({ store, req, app }) {
 
   const accessToken = app.$cookies.get('access_token');
   if (accessToken) {
-    setAccessToken(accessToken, app, store);
+    const jwt = jwtDecode(accessToken);
+    if (jwt && jwt.exp && jwt.exp > Date.now().valueOf() / 1000) {
+      setAccessToken(accessToken, app, store);
+    } else {
+      unsetAccessToken(app, store)
+    }
   }
 }

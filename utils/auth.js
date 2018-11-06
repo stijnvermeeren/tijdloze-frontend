@@ -32,15 +32,10 @@ export const setAccessTokenCookie = (token, app) => {
 }
 
 export const setAccessToken = (token, app, store) => {
-  // app.$axios.setToken(token, 'Bearer');
   store.commit('setAccessToken', token);
 }
 
 export const unsetAccessToken = (app, store) => {
-  console.log('remove cookie?');
-  console.log(app.$cookies.get('access_token'));
   app.$cookies.remove('access_token', { path: '/' });
-  console.log(app.$cookies.get('access_token'));
-  // app.$axios.setToken(false);
   store.commit('setAccessToken', null);
 }
