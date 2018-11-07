@@ -2,10 +2,9 @@
     <div id="container">
         <div id="maincontainer">
             <div id="header">
-                <div id="logo"><h1><nuxt-link to="/home"><span>Tijdloze Website</span></nuxt-link></h1></div>
+                <div id="logo"><h1><nuxt-link to="/"><span>Tijdloze Website</span></nuxt-link></h1></div>
                 <!-- <div id="searchBox"><input type="text" data-ajax-url="{path route='/search'}?query=%QUERY" placeholder="Zoek artiest, album of nummer..." /></div> -->
-                <div>
-                </div>
+                <tijdloze-search-box></tijdloze-search-box>
                 <div id="menu">
                     <ul>
                         <li><nuxt-link to="/">Home</nuxt-link></li>
@@ -37,10 +36,12 @@
 
 <script>
   import Login from '../components/Login'
+  import SearchBox from '../components/SearchBox'
 
   export default {
     components: {
-      tijdlozeLogin: Login
+      tijdlozeLogin: Login,
+      tijdlozeSearchBox: SearchBox
     },
     computed: {
       years() {
