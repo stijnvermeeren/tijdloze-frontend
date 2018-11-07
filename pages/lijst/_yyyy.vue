@@ -124,9 +124,10 @@
     validate({params, store}) {
       return store.getters.years.find(year => year.yyyy.toString() === params.yyyy);
     },
-    fetch ({ params, redirect }) {
-      if (params.yyyy === '1987') {
-        redirect(301, '/lijst/1987/analyse');
+    fetch ({ params, redirect, route }) {
+      const path1987 = '/lijst/1987/analyse';
+      if (params.yyyy === '1987' && route.path !== path1987) {
+        redirect(301, path1987);
       }
     }
   }
