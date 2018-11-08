@@ -26,7 +26,7 @@
                         Jaar
                     </th>
                 </tr>
-                <tr v-for="song in songs" :class="{lineAfter: song.position(year) % 5 === 0}">
+                <tr v-for="song in songsExtended" :class="{lineAfter: song.position(year) % 5 === 0}">
                     <td v-if="year.previous()" class="n">
                         <tijdloze-position :song="song" :year="year.previous()" />
                     </td>
@@ -67,6 +67,9 @@
       },
       songs() {
         return this.$store.getters.list(this.year);
+      },
+      songsExtended() {
+        return this.$store.getters.list(this.year, true);
       },
       newSongs() {
         if (this.year.previous()) {

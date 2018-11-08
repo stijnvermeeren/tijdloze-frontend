@@ -11,11 +11,11 @@
     props: ["song", "year"],
     computed: {
       position() {
-        return this.song.position(this.year);
+        return this.song.position(this.year, true);
       },
       previousPosition() {
         if (this.year.previous()) {
-          return this.song.position(this.year.previous());
+          return this.song.position(this.year.previous(), true);
         } else {
           return null;
         }

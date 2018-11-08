@@ -72,9 +72,9 @@ const createStore = () => {
       countriesById: state => objectWithIdKeys(state.countries),
       languagesById: state => objectWithIdKeys(state.languages),
       vocalsGendersById: state => objectWithIdKeys(state.vocalsGenders),
-      list: (state, getters) => year => {
+      list: (state, getters) => (year, extended) => {
         return _.sortBy(
-          getters.songs.filter(song => song.position(year)),
+          getters.songs.filter(song => song.position(year, extended)),
           song => song.position(year)
         );
       }

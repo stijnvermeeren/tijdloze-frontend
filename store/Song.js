@@ -24,16 +24,20 @@ export default class Song extends Model {
     };
   }
 
-  position(year) {
+  position(year, extended) {
     const position = this.positions[year.yy];
-    return position > 0 ? position : null;
+    if (extended) {
+      return position > 0 ? position : null;
+    } else {
+      return position > 0 && position <= 100 ? position : null;
+    }
   }
 
-  notInList(year) {
-    if (year.isCurrent() && year.previous() && this.position(year.previous())) {
+  notInList(year, extended) {
+    if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
       return this.exitCurrent;
     } else {
-      return !this.position(year);
+      return !this.position(year, extended);
     }
   }
 

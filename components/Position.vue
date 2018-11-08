@@ -1,7 +1,7 @@
 <template>
     <span>
-        <span v-if="song.notInList(year)">-</span>
-        <span v-else-if="song.position(year)">{{song.position(year)}}</span>
+        <span v-if="song.notInList(year, true)">-</span>
+        <span v-else-if="song.position(year, true)">{{song.position(year, true)}}</span>
         <span v-else>?</span>
     </span>
 </template>
