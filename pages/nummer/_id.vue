@@ -2,6 +2,10 @@
     <div>
         <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}} (<tijdloze-artist :artist="song.artist" />)</h2>
 
+        <div v-if="fullSongData.spotifyId">
+            <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        </div>
+
         <tijdloze-tabs :tabs="[
           { to: `/nummer/${song.id}`, title: 'Informatie' },
           { to: `/nummer/${song.id}/lyrics`, title: 'Songtekst' }]"
