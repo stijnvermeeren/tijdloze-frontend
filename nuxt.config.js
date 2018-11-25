@@ -38,12 +38,6 @@ module.exports = {
       parseJSON: false
     }]
   ],
-  build: {
-    vendor: ['axios'],
-    babel: {
-      presets: ['vue-app']
-    }
-  },
   router: {
     middleware: 'check-auth'
   }
