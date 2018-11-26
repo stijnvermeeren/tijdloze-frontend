@@ -45,7 +45,7 @@
                 </div>
             </div>
 
-            <br class="clear" />
+            <br clear="both" />
         </div>
     </div>
 </template>
@@ -150,7 +150,7 @@
                 font-weight: bold;
             }
         }
-        
+
         div.bericht {
             margin-top: -0.5em;
         }
