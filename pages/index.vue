@@ -40,7 +40,7 @@
             <div class="rechterkant main">
                 <h3><nuxt-link to="/reacties">Reageer en discussieer</nuxt-link></h3>
                 <div v-for="comment in comments" class="reactie">
-                    <p class="reacinfo">{{comment.name}} - {{comment.created}}</p>
+                    <div class="reacinfo">{{comment.name}} - {{comment.created}}</div>
                     <div class="bericht">{{comment.message}}</div>
                 </div>
             </div>
@@ -111,11 +111,6 @@
             }
         }
     }
-    div.main div.reactie {
-        border: none;
-        padding: 0.3em 1em;
-        margin: 1em 0;
-    }
     div.main ul {
         margin-right: 2em;
     }
@@ -135,14 +130,14 @@
         margin-top: 0;
     }
 
-    div.reactie.groen {
-        background-color: #b3f9a3;
-    }
-
     div.reactie {
-        p.reacinfo {
+        border: none;
+        padding: 0.3em 2em;
+        margin: 1em 0;
+
+        div.reacinfo {
             font-size: 90%;
-            margin: 3px 0 20px 15px;
+            margin: 0.2em 0 0.4em 0;
             font-weight: bold;
             border-bottom: @blackLine;
 
@@ -152,7 +147,7 @@
         }
 
         div.bericht {
-            margin-top: -0.5em;
+            white-space: pre-wrap;
         }
     }
 </style>
