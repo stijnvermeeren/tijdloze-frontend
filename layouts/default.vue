@@ -5,6 +5,7 @@
                 <div id="logo"><h1><nuxt-link to="/"><span>Tijdloze Website</span></nuxt-link></h1></div>
                 <!-- <div id="searchBox"><input type="text" data-ajax-url="{path route='/search'}?query=%QUERY" placeholder="Zoek artiest, album of nummer..." /></div> -->
                 <tijdloze-search-box></tijdloze-search-box>
+                <tijdloze-login></tijdloze-login>
                 <div id="menu">
                     <ul>
                         <li><nuxt-link to="/">Home</nuxt-link></li>
@@ -25,7 +26,6 @@
 
             <div class="hidden">De Tijdloze website bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.</div>
             <div id="main">
-                <tijdloze-login></tijdloze-login>
                 <div id="inhoud">
                     <nuxt />
                 </div>

@@ -20,7 +20,6 @@
       setAccessTokenCookie(accessToken, this);
 
       const idTokenDecoded = jwtDecode(idToken);
-      console.log(idTokenDecoded);
       const data = {
         name: idTokenDecoded.name,
         firstName: idTokenDecoded.given_name,
@@ -29,8 +28,12 @@
         email: idTokenDecoded.email,
         emailVerified: idTokenDecoded.email_verified
       };
-      this.$axios.$post(`user`, data).then(result => {
-        this.$router.replace('/');
+      this.$axios.$post(`user`, data).then(user => {
+        this.$store.commit('setUser', user);
+        const sessionRedirectPath = sessionStorage.getItem("redirectPath");
+        sessionStorage.removeItem("redirectPath");
+        const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
+        this.$router.replace(redirectPath);
       });
     }
   }

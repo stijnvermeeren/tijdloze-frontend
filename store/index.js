@@ -28,6 +28,7 @@ const createStore = () => {
     ],
     state: {
       accessToken: null,
+      user: null,
       yearsRaw: [],
       countries: [],
       languages: [],
@@ -35,7 +36,23 @@ const createStore = () => {
     },
     getters: {
       isAuthenticated(state) {
-        return !!state.accessToken
+        return !!state.user;
+      },
+      displayName(state) {
+        if (state.user) {
+          return state.user.displayName;
+        }
+      },
+      displayNameWithFallback(state, getters) {
+        if (state.user) {
+          if (state.user.displayName) {
+            return state.user.displayName;
+          } else if (state.user.name) {
+            return state.user.name;
+          } else {
+            return state.user.email;
+          }
+        }
       },
       songs(state, getters) {
         return _.sortBy(
@@ -88,6 +105,9 @@ const createStore = () => {
       },
       setAccessToken(state, accessToken) {
         state.accessToken = accessToken || null
+      },
+      setUser(state, user) {
+        state.user = user || null
       }
     },
     actions: {
