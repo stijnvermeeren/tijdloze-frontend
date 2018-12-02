@@ -34,7 +34,7 @@ export const getQueryParams = () => {
 }
 
 export const setAccessTokenCookie = (token, app) => {
-  app.$cookies.set('access_token', token, { secure: config.SECURE_COOKIES, path: '/' });
+  app.$cookies.set('access_token', token, { secure: config.SECURE_COOKIES, path: '/', maxAge: 3600 * 24 * 30 });
 }
 
 export const setAccessToken = (token, app, store) => {

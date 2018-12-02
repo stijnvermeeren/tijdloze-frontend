@@ -158,7 +158,7 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../assets/globalStyles.less";
+    @import "~assets/globalStyles.less";
 
     div.reactie {
         border: @blackLine;
