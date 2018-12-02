@@ -1,8 +1,8 @@
 <template>
-    <div>
+    <div class="container">
         <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}} (<tijdloze-artist :artist="song.artist" />)</h2>
 
-        <div v-if="fullSongData.spotifyId">
+        <div v-if="fullSongData.spotifyId" class="spotify">
             <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
         </div>
 
@@ -40,3 +40,14 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    div.container {
+        position: relative;
+    }
+    div.spotify {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+</style>

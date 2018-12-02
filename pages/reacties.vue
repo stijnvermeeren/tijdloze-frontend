@@ -1,61 +1,96 @@
 <template>
-    <div>
-        <h2>Reageer op de Tijdloze</h2>
+  <div>
+    <h2>Reageer op de Tijdloze</h2>
 
-        <div class="notabs">
-            <div v-if="isAuthenticated">
-                <h3>Plaats een nieuwe reactie</h3>
+    <div class="notabs">
+      <CommentsPager
+        :page="page"
+        :pages="pages "
+      />
 
-                <div v-if="!displayName || editDisplayName">
-                    <div>
-                        Kies een gebruikersnaam:
-                        <input v-model="name" :disabled="submittingDisplayName" type="text" class="formtext" />
-                        <button @click="submitDisplayName()" :disabled="submittingDisplayName || invalidDisplayName">Ok</button>
-                    </div>
-                    <div v-if="editDisplayName">
-                        De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-                    </div>
-                </div>
-                <div v-else>
-                    <p v-if="error" class="fout">{{error}}}</p>
-                    <p v-if="confirmation" class="goed">{{confirmation}}}</p>
-
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td class="formlabel">Naam:</td>
-                                <td>{{displayName}} (<a @click="editDisplayName = true">Aanpassen</a>)</td>
-                            </tr>
-                            <tr>
-                                <td class="formlabel">Bericht:</td>
-                                <td><textarea v-model="message" :disabled="submitting" cols="30" rows="4" ></textarea></td>
-                            </tr>
-                            <tr>
-                                <td class="formlabel">&nbsp;</td>
-                                <td><button @click="submit()" :disabled="submitting || invalidMessage" class="formsubmit">Verzenden</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div v-else>
-                Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
-            </div>
-
-            <h3>Alle reacties</h3>
-
-            <comments-pager :page="page" :pages="pages "/>
-
-            <div>
-                <div v-for="comment in comments" :class="['reactie', {'mine': isMine(comment)}]">
-                    <div class="reacinfo">{{comment.name}} - {{comment.created}}</div>
-                    <div class="bericht">{{comment.message}}</div>
-                </div>
-            </div>
-
-            <comments-pager :page="page" :pages="pages "/>
+      <div v-if="isAuthenticated && page === 1">
+        <div
+          class="displayName"
+          v-if="!displayName || editDisplayName"
+        >
+          <div>
+            Kies een gebruikersnaam:
+            <input
+              :disabled="submittingDisplayName"
+              type="text"
+              v-model="name"
+            >
+            <button
+              :disabled="submittingDisplayName || invalidDisplayName"
+              @click="submitDisplayName()"
+            >
+              Ok
+            </button>
+          </div>
+          <div
+            class="info"
+            v-if="editDisplayName"
+          >
+            De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+          </div>
         </div>
+        <div v-else>
+          <div>
+            <div class="reactie mine">
+              <div class="reacinfo">
+                {{ displayName }} (<a @click="editDisplayName = true">
+                  Gebruikersnaam aanpassen
+                </a>)
+              </div>
+              <div class="bericht">
+                <textarea
+                  :disabled="submitting"
+                  cols="60"
+                  placeholder="Schrijf een nieuwe reactie..."
+                  rows="4"
+                  v-model="message"
+                />
+              </div>
+              <div>
+                <button
+                  :disabled="submitting || invalidMessage"
+                  @click="submit()"
+                  class="formsubmit"
+                >
+                  Verzenden
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="!isAuthenticated && page === 1">
+        Om reacties the plaatsen, moet je je <a @click="login()">
+          aanmelden/registeren
+        </a>.
+      </div>
+
+      <div>
+        <div
+          :class="['reactie', {'mine': isMine(comment)}]"
+          :key="comment.id"
+          v-for="comment in comments"
+        >
+          <div class="reacinfo">
+            {{ comment.name }} - {{ comment.created }}
+          </div>
+          <div class="bericht">
+            {{ comment.message }}
+          </div>
+        </div>
+      </div>
+
+      <CommentsPager
+        :page="page"
+        :pages="pages "
+      />
     </div>
+  </div>
 </template>
 
 <script>
@@ -70,8 +105,6 @@
       return {
         name: this.$store.getters.displayNameWithFallback,
         message: "",
-        error: undefined,
-        confirmation: undefined,
         editDisplayName: false,
         submittingDisplayName: false,
         submitting: false,
@@ -161,16 +194,19 @@
     @import "~assets/globalStyles.less";
 
     div.reactie {
-        border: @blackLine;
         padding: 0.3em 4em;
         margin: 1em 0;
 
         &.mine {
-            background-color: @headerBackgroundColor;
+            div.reacinfo {
+                background-color: @headerBackgroundColor;
+            }
         }
 
         div.reacinfo {
+            background-color: #ccc;
             font-size: 90%;
+            padding: 0.1em 0.2em;
             margin: 0.2em 0 0.4em 0;
             font-weight: bold;
             border-bottom: @blackLine;
@@ -182,6 +218,24 @@
 
         div.bericht {
             white-space: pre-wrap;
+            overflow: auto;
+
+            textarea {
+                width: 100%;
+                box-sizing: border-box;
+                height: 5em;
+
+            }
+        }
+    }
+
+    div.displayName {
+        padding: 0.3em 4em;
+        margin: 1em 0;
+
+        div.info {
+            font-size: 90%;
+            font-style: italic;
         }
     }
 </style>

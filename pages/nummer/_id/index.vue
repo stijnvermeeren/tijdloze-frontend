@@ -1,34 +1,55 @@
 <template>
-    <div>
-        <ul class="info">
-            <li><strong>Taal:</strong> {{language.name}}</li>
-            <li><strong>Origineel op album: </strong> <tijdloze-album :album="song.album" /> ({{song.album.releaseYear}})</li>
-            <li v-if="links.length"><strong>Links: </strong>
-                <span v-for="(link, index) in links">
-                    <span v-if="index > 0">, </span>
-                    <a :href="link.href">{{link.title}}</a>
-                </span>
-            </li>
-            <li v-if="fullSongData.notes"><em>{{fullSongData.notes}}</em></li>
-        </ul>
+  <div>
+    <ul class="info">
+      <li><strong>Taal:</strong> {{ language.name }}</li>
+      <li><strong>Origineel op album: </strong> <TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</li>
+      <li v-if="links.length">
+        <strong>Links: </strong>
+        <span
+          v-for="(link, index) in links"
+          :key="index"
+        >
+          <span v-if="index > 0">
+            ,
+          </span>
+          <a :href="link.href">
+            {{ link.title }}
+          </a>
+        </span>
+      </li>
+      <li v-if="fullSongData.notes">
+        <em>{{ fullSongData.notes }}</em>
+      </li>
+    </ul>
 
-        <tijdloze-songs-overview-and-graph :songs="[song]"/>
+    <TijdlozeSongsOverviewAndGraph :songs="[song]" />
 
-        <div class="allPositions">
-            <table>
-                <tr>
-                    <th>Jaar</th>
-                    <th>Positie</th>
-                </tr>
-                <tr v-for="year in years">
-                    <th><tijdloze-year :year="year" /></th>
-                    <td>
-                        <tijdloze-position-change :song="song" :year="year" /> <tijdloze-position :song="song" :year="year" />
-                    </td>
-                </tr>
-            </table>
-        </div>
+    <div class="allPositions">
+      <table>
+        <tbody>
+          <tr>
+            <th>Jaar</th>
+            <th>Positie</th>
+          </tr>
+          <tr
+            v-for="year in years"
+            :key="year.yyyy"
+          >
+            <th><TijdlozeYear :year="year" /></th>
+            <td>
+              <TijdlozePositionChange
+                :song="song"
+                :year="year"
+              /> <TijdlozePosition
+                :song="song"
+                :year="year"
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+  </div>
 </template>
 
 <script>

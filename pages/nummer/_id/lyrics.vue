@@ -1,7 +1,9 @@
 <template>
-    <div>
-        <p class="lyrics">{{fullSongData.lyrics}}</p>
-    </div>
+  <div>
+    <p class="lyrics">
+      {{ fullSongData.lyrics }}
+    </p>
+  </div>
 </template>
 
 <script>

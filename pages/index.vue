@@ -25,7 +25,7 @@
 
                             </th>
                         </tr>
-                        <tr v-for="song in top20" :class="{lineAfter: song.position(year) % 5 === 0}">
+                        <tr v-for="song in top20" :key="song.id" :class="{lineAfter: song.position(year) % 5 === 0}">
                             <td class="a">
                                 <tijdloze-position :song="song" :year="year" />
                             </td>
