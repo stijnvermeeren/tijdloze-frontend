@@ -10,7 +10,7 @@
                     <div>
                         Kies een gebruikersnaam:
                         <input v-model="name" :disabled="submittingDisplayName" type="text" class="formtext" />
-                        <button @click="submitDisplayName()" :disabled="submittingDisplayName">Ok</button>
+                        <button @click="submitDisplayName()" :disabled="submittingDisplayName || invalidDisplayName">Ok</button>
                     </div>
                     <div v-if="editDisplayName">
                         De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
@@ -21,18 +21,20 @@
                     <p v-if="confirmation" class="goed">{{confirmation}}}</p>
 
                     <table>
-                        <tr>
-                            <td class="formlabel">Naam:</td>
-                            <td>{{displayName}} (<a @click="editDisplayName = true">Aanpassen</a>)</td>
-                        </tr>
-                        <tr>
-                            <td class="formlabel">Bericht:</td>
-                            <td><textarea v-model="message" :disabled="submitting" cols="30" rows="4" ></textarea></td>
-                        </tr>
-                        <tr>
-                            <td class="formlabel">&nbsp;</td>
-                            <td><button @click="submit()" :disabled="submitting" class="formsubmit">Verzenden</button></td>
-                        </tr>
+                        <tbody>
+                            <tr>
+                                <td class="formlabel">Naam:</td>
+                                <td>{{displayName}} (<a @click="editDisplayName = true">Aanpassen</a>)</td>
+                            </tr>
+                            <tr>
+                                <td class="formlabel">Bericht:</td>
+                                <td><textarea v-model="message" :disabled="submitting" cols="30" rows="4" ></textarea></td>
+                            </tr>
+                            <tr>
+                                <td class="formlabel">&nbsp;</td>
+                                <td><button @click="submit()" :disabled="submitting || invalidMessage" class="formsubmit">Verzenden</button></td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
             </div>
@@ -42,20 +44,28 @@
 
             <h3>Alle reacties</h3>
 
+            <comments-pager :page="page" :pages="pages "/>
+
             <div>
-                <div v-for="comment in comments" class="reactie">
+                <div v-for="comment in comments" :class="['reactie', {'mine': isMine(comment)}]">
                     <div class="reacinfo">{{comment.name}} - {{comment.created}}</div>
                     <div class="bericht">{{comment.message}}</div>
                 </div>
             </div>
+
+            <comments-pager :page="page" :pages="pages "/>
         </div>
     </div>
 </template>
 
 <script>
   import { unsetAccessToken, login } from '~/utils/auth';
+  import CommentsPager from '../components/comments/CommentsPager'
+
+  const commentsPerPage = 20;
 
   export default {
+    components: {CommentsPager},
     data() {
       return {
         name: this.$store.getters.displayNameWithFallback,
@@ -73,34 +83,72 @@
       },
       displayName() {
         return this.$store.getters.displayName;
+      },
+      invalidDisplayName() {
+        return this.name.length === 0;
+      },
+      invalidMessage() {
+        return this.message.length === 0;
+      },
+      pages() {
+        return Math.ceil(this.commentCount / commentsPerPage);
       }
     },
     methods: {
       submitDisplayName() {
         this.submittingDisplayName = true;
+
         const data = {
           displayName: this.name
         };
         this.$axios.$post(`user/display-name`, data).then(user => {
-          this.editDisplayName = false;
-          this.submittingDisplayName = false;
-          this.$store.commit('setUser', user);
+          const page = this.$route.params.page || 1;
+          this.$axios.$get(`comments/${page}`).then(comments => {
+            this.comments = comments;
+
+            this.editDisplayName = false;
+            this.submittingDisplayName = false;
+            this.$store.commit('setUser', user);
+          });
         });
       },
       submit() {
         this.submitting = true;
-        console.log("submitting");
+
+        const data = {
+          message: this.message
+        };
+        this.$axios.$post(`comment`, data).then(response => {
+          this.$axios.$get(`comments/1`).then(comments => {
+            this.$router.push('/reacties');
+            this.comments = comments;
+            this.submitting = false;
+            this.message = '';
+          })
+        });
       },
       login() {
         sessionStorage.setItem("redirectPath", this.$route.path);
         unsetAccessToken(this, this.$store);
         login();
+      },
+      isMine(comment) {
+        return this.isAuthenticated && this.$store.state.user.id === comment.userId;
       }
     },
-    async asyncData({ params, app }) {
-      const page = params.page || 1;
+    beforeRouteUpdate (to, from, next) {
+      this.page = +to.query.page || 1;
+      this.$axios.$get(`comments/${this.page}`).then(comments => {
+        this.comments = comments;
+        next();
+      });
+    },
+    async asyncData({ route, app }) {
+      const page = +route.query.page || 1;
       return {
-        comments: await app.$axios.$get(`comments/${page}`)
+        page: page,
+        comments: await app.$axios.$get(`comments/${page}`),
+        commentCount: (await app.$axios.$get(`comments/count`)).commentCount,
       };
     },
     head: {
@@ -117,8 +165,8 @@
         padding: 0.3em 4em;
         margin: 1em 0;
 
-        &.groen {
-            background-color: #b3f9a3;
+        &.mine {
+            background-color: @headerBackgroundColor;
         }
 
         div.reacinfo {
