@@ -79,9 +79,7 @@
           <div class="reacinfo">
             {{ comment.name }} - {{ comment.created }}
           </div>
-          <div class="bericht">
-            {{ comment.message }}
-          </div>
+          <div class="bericht">{{ comment.message }}</div>
         </div>
       </div>
 
