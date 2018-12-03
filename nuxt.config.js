@@ -31,9 +31,7 @@ module.exports = {
     '~/plugins/axios'
   ],
   modules: [
-    ['@nuxtjs/axios', {
-      baseURL: config.API_URI
-    }],
+    ['@nuxtjs/axios'],
     ['cookie-universal-nuxt', {
       parseJSON: false
     }]
