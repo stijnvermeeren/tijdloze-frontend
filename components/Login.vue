@@ -1,14 +1,18 @@
 <template>
-    <div>
+    <div id="login">
         <div v-if="isAuthenticated">
-            Aangemeld als {{userName}}
-            <button v-if="isAuthenticated" @click="logout()">
-                Log Out
-            </button>
+            <div>Aangemeld als {{userName}}</div>
+            <div v-if="isAuthenticated">
+                <a @click="logout()">
+                    Afmelden
+                </a>
+            </div>
         </div>
-        <button v-else @click="login()">
-            Log In
-        </button>
+        <div v-else>
+            <a @click="login()">
+                Aanmelden
+            </a>
+        </div>
     </div>
 </template>
 
@@ -43,3 +47,15 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    @import "../assets/styleConfig.less";
+
+    #login {
+        position: absolute;
+        top: 1em;
+        right: 2em;
+        font-size: 80%;
+        text-align: right;
+    }
+</style>

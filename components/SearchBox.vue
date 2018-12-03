@@ -159,7 +159,7 @@
 
     #searchBox {
         position: absolute;
-        top: 1em;
+        top: 3.5em;
         right: 1em;
 
         input {
