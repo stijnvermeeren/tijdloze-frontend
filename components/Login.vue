@@ -52,10 +52,6 @@
     @import "../assets/styleConfig.less";
 
     #login {
-        position: absolute;
-        top: 1em;
-        right: 2em;
         font-size: 80%;
-        text-align: right;
     }
 </style>

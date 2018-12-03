@@ -155,31 +155,31 @@
 <style lang="less" scoped>
     @import "../assets/styleConfig.less";
 
-    @searchBoxWidth: 18em;
-
     #searchBox {
-        position: absolute;
-        top: 3.5em;
-        right: 1em;
+        position: relative;
+        margin: 2em 0;
 
         input {
-            width: @searchBoxWidth;
+            width: 100%;
             background-color: white;
             position: relative;
             vertical-align: top;
         }
     }
     .suggestions {
-        width: @searchBoxWidth;
+        width: 100%;
         border: 1px solid #999;
         background: @backgroundColor;
         overflow: auto;
 
         position: absolute;
         top: 100%;
-        left: 0px;
-        z-index: 100;
+        left: 0;
+        z-index: 1001;
         right: auto;
+
+        font-size: 80%;
+        text-align: left;
 
         > div {
             padding: 0.2em 0.5em;
