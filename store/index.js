@@ -112,7 +112,11 @@ const createStore = () => {
     },
     actions: {
       async nuxtServerInit({commit, dispatch}, {app}) {
+        console.time('init');
         const response = await app.$axios.$get('core-data');
+        console.timeEnd('init');
+
+        console.time('process');
         commit('updateCoreData', response);
 
         dispatch('entities/artists/create', {
@@ -132,6 +136,7 @@ const createStore = () => {
         dispatch('entities/songs/create', {
           data: response.songs
         });
+        console.timeEnd('process');
       }
     }
   });
