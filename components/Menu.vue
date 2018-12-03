@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="sideNav">
+    <div id="sideNav" :class="{closed: !isOpen}">
       <nav>
         <div id="menu">
           <ul>
@@ -25,14 +25,14 @@
         <tijdloze-search-box></tijdloze-search-box>
         <tijdloze-login></tijdloze-login>
 
-        <span class="cross-button" @click="closeMenu">
-          <span class="cross" v-for="(x, index) in 2" :key="x" :style="{ position: 'absolute', width: '3px', height: '14px',transform: index === 1 ? 'rotate(45deg)' : 'rotate(-45deg)'}">
-          </span>
+        <span class="cross-button" @click="isOpen = false">
+          <span class="cross" style="transform: rotate(45deg)" />
+          <span class="cross" style="transform: rotate(-45deg)" />
         </span>
       </nav>
     </div>
 
-    <div class="burger-button" @click="openMenu">
+    <div class="burger-button" @click="isOpen = true">
       <span class="burger-bars" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
     </div>
 
@@ -51,7 +51,7 @@
     data() {
       return {
         allLists: false,
-        isSideBarOpen: false
+        isOpen: false
       };
     },
     computed: {
@@ -59,18 +59,14 @@
         return this.$store.getters.years;
       }
     },
-    methods: {
-      openMenu() {
-        this.$emit('openMenu');
-        this.isSideBarOpen = true;
-      },
-      closeMenu() {
-        this.$emit('closeMenu');
-        this.isSideBarOpen = false;
+    watch: {
+      '$route': function() {
+        this.isOpen = false;
       }
     }
   };
 </script>
+
 
 <style lang="less" scoped>
   @import "../assets/globalStyles.less";
@@ -97,6 +93,15 @@
       min-height: 800px;
       top: 90px;
       position: absolute;
+    }
+
+
+    @media (max-width: 1199px) {
+      padding-top: 70px;
+
+      &.closed {
+        left: -300px;
+      }
     }
   }
 
@@ -129,7 +134,7 @@
     width: 36px;
     height: 30px;
     left: 36px;
-    top: 36px;
+    top: 30px;
     cursor: pointer;
 
     @media (min-width: 1200px) {
@@ -137,7 +142,7 @@
     }
 
     .burger-bars {
-      background-color: #373a47;
+      background-color: #444;
       position: absolute;
       height: 20%;
       left: 0;
@@ -146,9 +151,10 @@
   }
 
   .cross-button {
+    text-align: center;
     position: absolute;
-    top: 12px;
-    right: 2px;
+    top: 20px;
+    right: 20px;
     cursor: pointer;
 
     height: 24px;
@@ -159,7 +165,10 @@
     }
 
     .cross {
-      background: #bdc3c7;
+      background: #ddd;
+      position: absolute;
+      width: 5px;
+      height: 24px;
     }
   }
   .bm-overlay {
