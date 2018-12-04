@@ -63,7 +63,34 @@
       '$route': function() {
         this.isOpen = false;
       }
-    }
+    },
+    methods: {
+      escapeKeyListener: function (evt) {
+        if (evt.code === "Escape" && this.isOpen) {
+          this.isOpen = false;
+        }
+      },
+      documentClick (e) {
+        const burgerButton = document.querySelector('.burger-button');
+        const sideNav = document.querySelector('#sideNav');
+        const target = e.target;
+        if (!sideNav.contains(target) && !burgerButton.contains(target)) {
+          this.isOpen = false;
+        }
+      }
+    },
+    created: function() {
+      if (process.client) {
+        document.addEventListener('keyup', this.escapeKeyListener);
+        document.addEventListener('click', this.documentClick);
+      }
+    },
+    destroyed: function() {
+      if (process.client) {
+        document.removeEventListener('keyup', this.escapeKeyListener);
+        document.removeEventListener('click', this.documentClick);
+      }
+    },
   };
 </script>
 

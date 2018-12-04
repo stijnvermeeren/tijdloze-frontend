@@ -65,9 +65,7 @@
         </div>
       </div>
       <div v-if="!isAuthenticated && page === 1">
-        Om reacties the plaatsen, moet je je <a @click="login()">
-          aanmelden/registeren
-        </a>.
+        Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
       </div>
 
       <div>

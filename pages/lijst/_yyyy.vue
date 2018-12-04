@@ -10,11 +10,11 @@
             <tbody>
                 <tr>
                     <th v-if="year.previous()" class="n">
-                        <nuxt-link :to="`lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
+                        <nuxt-link :to="`/lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
                     </th>
                     <th class="r">{{year._yy}}</th>
                     <th v-if="year.next()" class="n">
-                        <nuxt-link :to="`lijst/${year.next().yyyy}`">{{year.next()._yy}}</nuxt-link>
+                        <nuxt-link :to="`/lijst/${year.next().yyyy}`">{{year.next()._yy}}</nuxt-link>
                     </th>
                     <th class="a">
                         <nuxt-link to="/artiesten">Artiest</nuxt-link>

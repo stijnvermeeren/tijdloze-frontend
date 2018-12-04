@@ -55,7 +55,7 @@
         const MAX = 6;
         const MIN = 3;
 
-        return _.reverse(this.years).map(year => {
+        return _.reverse([...this.years]).map(year => {
           const artistsPerCount = _.groupBy(this.artists, artist => {
             return artist.songs.filter(song => song.position(year)).length;
           });
