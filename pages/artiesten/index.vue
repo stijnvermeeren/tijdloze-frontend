@@ -40,7 +40,10 @@
   export default {
     computed: {
       artists() {
-        return this.$store.getters['entities/artists/query']().with('songs').all();
+        return _.sortBy(
+          this.$store.getters['entities/artists/query']().with('songs').all(),
+          artist => [artist.name.toLowerCase(), artist.firstName.toLowerCase()]
+        )
       },
       countries() {
         return this.$store.getters.countriesById;

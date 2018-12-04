@@ -11,12 +11,13 @@
             <li v-if="fullArtistData.notes"><em><tijdloze-links :text="fullArtistData.notes" /></em></li>
         </ul>
 
-        <tijdloze-songs-overview-and-graph :songs="artist.songs"/>
+        <tijdloze-songs-overview-and-graph :songs="songs"/>
     </div>
 </template>
 
 <script>
   import SongsOverviewAndGraph from "../../../components/SongsOverviewAndGraph";
+  import _ from 'lodash'
 
   export default {
     components: {
@@ -24,6 +25,12 @@
     },
     props: ['artist', 'fullArtistData'],
     computed: {
+      songs() {
+        return _.sortBy(
+          this.artist.songs,
+          song => [song.album.releaseYear, song.title]
+        )
+      },
       country() {
         return this.$store.getters.countriesById[this.artist.countryId];
       },
