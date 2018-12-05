@@ -33,7 +33,9 @@
     </div>
 
     <div class="burger-button" @click="isOpen = true">
-      <span class="burger-bars" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
+      <div class="burger">
+        <span class="burger-bars" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
+      </div>
     </div>
 
   </div>
@@ -158,22 +160,30 @@
 
   .burger-button {
     position: absolute;
-    width: 36px;
-    height: 30px;
-    left: 36px;
-    top: 30px;
+    width: 56px;
+    height: 50px;
+    left: 26px;
+    top: 20px;
     cursor: pointer;
 
     @media (min-width: 1200px) {
       display: none;
     }
 
-    .burger-bars {
-      background-color: #444;
+    .burger {
       position: absolute;
-      height: 20%;
-      left: 0;
-      right: 0;
+      top: 10px;
+      bottom: 10px;
+      left: 10px;
+      right: 10px;
+
+      .burger-bars {
+        background-color: #444;
+        position: absolute;
+        height: 20%;
+        left: 0;
+        right: 0;
+      }
     }
   }
 
