@@ -44,6 +44,7 @@
     #main {
         padding: 1em 2em 2em 2em;
         margin: 0 auto;
+        min-width: 600px;
         max-width: 66em;
     }
 

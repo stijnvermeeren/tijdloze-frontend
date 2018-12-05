@@ -3,7 +3,7 @@
         <h4 v-if="$slots.default || title">
             <slot>{{title}}</slot>
         </h4>
-        <svg :width="fullWidth" :height="fullHeight">
+        <svg :viewBox="`0 0 ${fullWidth} ${fullHeight}`" xmlns="http://www.w3.org/2000/svg">
             <g :transform="`translate(${margin.left},${margin.top})`">
                 <tijdloze-axes :xScale="xScale" :yScale="yScale" :years="years" />
                 <g class="color-1">
@@ -62,8 +62,9 @@
         padding: 20px 0;
 
         svg {
-            height: 400px;
-            width: 750px;
+            box-sizing: border-box;
+            width: 100%;
+            padding: 0 2em;
             background-color: white;
             font-size: 11px;
         }
