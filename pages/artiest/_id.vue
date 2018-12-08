@@ -13,9 +13,7 @@
                 <tr>
                     <th>In de Tijdloze</th>
                     <td>
-                        <div v-for="song in artist.songs">
-                            {{song.title}}: {{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong>
-                        </div>
+                        <in-current-list :songs="artist.songs" />
                     </td>
                 </tr>
                 <tr class="unimportant">
@@ -63,9 +61,11 @@
   import EntryCount from '../../components/EntryCount'
   import Position from '../../components/Position'
   import MakeLinks from '../../components/MakeLinks'
+  import InCurrentList from '../../components/InCurrentList'
 
   export default {
     components: {
+      InCurrentList,
       MakeLinks,
       Position,
       EntryCount,

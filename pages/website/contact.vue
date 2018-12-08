@@ -21,12 +21,12 @@
             <table>
                 <tbody>
                     <tr>
-                        <th>Jouw naam:</th>
+                        <th>Naam:</th>
                         <td><input type="text" class="formtext" v-model="name" placeholder="Verplicht veld" /></td>
                     </tr>
 
                     <tr>
-                        <th>Jouw e-mailadres:</th>
+                        <th>E-mailadres:</th>
                         <td>
                             <div><input @blur="emailTouched = true" class="formtext" name="email" v-model="email" /></div>
                             <div v-if="emailTouched && email.trim() && !validateEmail(email.trim())" class="fout">Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.</div>
@@ -54,8 +54,8 @@
   export default {
     data() {
       return {
-        name: "",
-        email: "",
+        name: this.$store.getters.isAuthenticated ? this.$store.getters.displayNameWithFallback : '',
+        email: this.$store.getters.isAuthenticated ? this.$store.state.user.email: '',
         message: "",
         error: null,
         emailTouched: false,
@@ -80,6 +80,7 @@
       },
       submit() {
         this.inProgress = true;
+        this.error = "";
 
         const payLoad = {
           name: this.name.trim(),
@@ -125,41 +126,23 @@
     }
 
     th {
-        width: 180px;
+        width: 120px;
     }
 
-    input[type="text"] input[type="password"] {
-        width: 350px;
-        background-color: @inputBackgroundColor;
+    input {
+        box-sizing: border-box;
+        width: 100%;
         padding: 2px 5px;
-        font-size: 95%;
-        border-color: @inputBorderColor;
     }
-    input.small {
+    button {
         width: 200px;
     }
-    input.ch, #inhoud input.ra {
-        width: 1em;
-        height: 1em;
-    }
-    input[type=submit], input.formsubmit {
-        width: 360px;
-        padding: 0;
-        font-weight: bold;
-    }
-    select {
-        width: 360px;
-        background-color: @inputBackgroundColor;
-        font-size: 13px;
-        border-color: @inputBorderColor;
-    }
+
     textarea {
-        width: 350px;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 2px 5px;
         height: 90px;
-        background-color: @inputBackgroundColor;
         padding: 5px;
-        font-family: Arial, sans-serif;
-        font-size: 95%;
-        border-color: @inputBorderColor;
     }
 </style>

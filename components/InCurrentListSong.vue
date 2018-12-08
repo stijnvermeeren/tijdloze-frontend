@@ -1,0 +1,68 @@
+<template>
+  <div>
+    <table v-if="song.possiblyInList(currentYear)">
+      <tbody>
+        <tr>
+          <th class="previous"><year-link :year="previousYear" /></th>
+          <th class="current"><year-link :year="currentYear" /></th>
+        </tr>
+        <tr>
+          <td class="previous"><position :year="previousYear" :song="song" /></td>
+          <td class="current">
+            <position-change :year="currentYear" :song="song" />
+            <position :year="currentYear" :song="song" />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-else>
+      Niet in de Tijdloze van <year-link :year="currentYear" />.
+    </div>
+  </div>
+</template>
+
+<script>
+  import PositionChange from './PositionChange'
+  import Position from './Position'
+  import YearLink from './YearLink'
+
+  export default {
+    name: 'InCurrentListSong',
+    components: {YearLink, Position, PositionChange},
+    props: ['song'],
+    computed: {
+      currentYear() {
+        return this.$store.getters.currentYear;
+      },
+      previousYear() {
+        return this.currentYear.previous();
+      }
+    }
+  }
+</script>
+
+<style lang="less" scoped>
+  table {
+    table-layout: fixed;
+    width: auto;
+    margin: 0 auto 0 0;
+
+    th {
+      font-weight: normal;
+    }
+
+    td, th {
+      &.previous {
+        font-size: 14px;
+        text-align: center;
+        width: 50px;
+      }
+
+      &.current{
+        font-weight: bold;
+        text-align: center;
+        width: 80px;
+      }
+    }
+  }
+</style>

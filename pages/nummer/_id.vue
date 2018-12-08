@@ -16,7 +16,9 @@
                 </tr>
                 <tr>
                     <th>In de Tijdloze</th>
-                    <td>{{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong></td>
+                    <td>
+                        <in-current-list-song :song="song" />
+                    </td>
                 </tr>
                 <tr v-if="fullSongData.spotifyId" class="spotify">
                     <th>Beluister fragment</th>
@@ -97,9 +99,11 @@
   import {possiblyInListIntervals} from '~/utils/intervals'
   import Position from '../../components/Position'
   import MakeLinks from '../../components/MakeLinks'
+  import InCurrentListSong from '../../components/InCurrentListSong'
 
   export default {
     components: {
+      InCurrentListSong,
       MakeLinks,
       Position,
       EntryCount,

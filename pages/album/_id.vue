@@ -17,9 +17,7 @@
                 <tr>
                     <th>In de Tijdloze</th>
                     <td>
-                        <div v-for="song in album.songs">
-                            {{song.title}}: {{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong>
-                        </div>
+                        <in-current-list :songs="album.songs" />
                     </td>
                 </tr>
                 <tr class="unimportant">
@@ -49,9 +47,11 @@
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
   import Position from '../../components/Position'
+  import InCurrentList from '../../components/InCurrentList'
 
   export default {
     components: {
+      InCurrentList,
       Position,
       EntryCount,
       Graph,

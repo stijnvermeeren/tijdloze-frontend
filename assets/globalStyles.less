@@ -140,16 +140,16 @@ textarea {
 table.info {
   table-layout: fixed;
 
-  tr {
+  > tbody > tr {
     &:not(:first-child) {
-      td, th {
+      > td, > th {
         border-top: 1px solid grey;
       }
     }
 
     vertical-align: top;
 
-    th {
+    > th {
       width: 120px;
 
       @media (min-width: 1200px) {
@@ -161,7 +161,7 @@ table.info {
       padding: 2px 10px;
       border-right: 1px solid grey;
     }
-    td {
+    > td {
       padding: 2px 10px;
     }
   }
