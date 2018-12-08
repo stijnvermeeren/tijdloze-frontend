@@ -45,14 +45,14 @@
         const filtered = this.songs.filter(song => song.possiblyInList(this.currentYear));
         return _.sortBy(
           filtered,
-          [song => this.sortPosition(song, this.currentYear), song => this.sortPosition(song, this.previousYear)]
+          [song => this.sortPosition(song, this.currentYear, 1), song => this.sortPosition(song, this.previousYear, 101)]
         )
       }
     },
     methods: {
-      sortPosition(song, year) {
+      sortPosition(song, year, defaultValue) {
         const position = song.position(year);
-        return position > 0 ? position : 151;
+        return position > 0 ? position : defaultValue;
       }
     }
   }

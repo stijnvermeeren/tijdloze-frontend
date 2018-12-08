@@ -1,5 +1,5 @@
 <template>
-    <span>
+    <span v-if="position">
         <span v-if="equal" class="equal">=</span>
         <span v-if="down" class="down">&#8600;</span>
         <span v-if="up" class="up">&#8599;</span>

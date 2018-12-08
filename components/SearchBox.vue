@@ -3,7 +3,7 @@
         <span class="fa fa-search"></span>
         <input
             type="text"
-            placeholder="Zoek artiest, album of nummer..."
+            :placeholder="placeholder"
             autocomplete="off"
             spellcheck="false"
             v-model="query"
@@ -47,6 +47,7 @@
   import _ from 'lodash';
 
   export default {
+    props: ['placeholder', 'songsOnly'],
     data() {
       return {
         query: "",
@@ -68,18 +69,18 @@
 
         const songs = this.search(
           this.$store.getters['entities/songs/query']().with('artist').all(),
-          song => song.title,
+          song => `${song.title} ${song.artist.fullName}`,
           'song'
         );
 
         const albums = this.search(
           this.$store.getters['entities/albums/query']().with('artist').all(),
-          album => album.title,
+          album => `${album.title} ${album.artist.fullName}`,
           'album'
         );
 
         return _.sortBy(
-          _.concat(artists, songs, albums),
+          this.songsOnly ? songs : _.concat(artists, songs, albums),
           result => -result.score
         );
       },
@@ -132,25 +133,9 @@
         return ((n % m) + m) % m;
       },
       go(index) {
-        let path = '';
         const result = this.results[index];
-
-        if (!result) {
-          return;
-        }
-
-        if (result.type === 'song') {
-          path = `/nummer/${result.item.id}`
-        } else if (result.type === 'artist') {
-          path = `/artiest/${result.item.id}`
-        } else if (result.type === 'album') {
-          path = `/album/${result.item.id}`
-        }
-
-        if (path) {
-          this.query = '';
-          this.$router.push(path);
-        }
+        this.$emit('selectSearchResult', result);
+        this.query = '';
       },
       escapeKeyListener: function (evt) {
         if (evt.code === "Escape" && this.query) {

@@ -23,7 +23,7 @@
                 <tr v-if="fullSongData.spotifyId" class="spotify">
                     <th>Beluister fragment</th>
                     <td>
-                        <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                        <spotify :spotifyId="fullSongData.spotifyId" />
                     </td>
                 </tr>
                 <tr class="unimportant">
@@ -97,15 +97,15 @@
   import PageTitle from '../../components/PageTitle'
   import EntryCount from '../../components/EntryCount'
   import {possiblyInListIntervals} from '~/utils/intervals'
-  import Position from '../../components/Position'
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentListSong from '../../components/InCurrentListSong'
+  import Spotify from '../../components/Spotify'
 
   export default {
     components: {
+      Spotify,
       InCurrentListSong,
       MakeLinks,
-      Position,
       EntryCount,
       PageTitle,
       Lyrics,

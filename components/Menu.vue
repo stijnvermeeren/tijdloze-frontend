@@ -3,7 +3,10 @@
     <div id="sideNav" :class="{closed: !isOpen}">
       <nav>
         <div id="menu">
-          <tijdloze-search-box></tijdloze-search-box>
+          <tijdloze-search-box
+            placeholder="Zoek artiest, album of nummer..."
+            @selectSearchResult="selectSearchResult($event)"
+          />
           <ul>
             <li><nuxt-link to="/">Home</nuxt-link></li>
             <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
@@ -84,6 +87,21 @@
       }
     },
     methods: {
+      selectSearchResult(result) {
+        let path = ''
+
+        if (result.type === 'song') {
+          path = `/nummer/${result.item.id}`
+        } else if (result.type === 'artist') {
+          path = `/artiest/${result.item.id}`
+        } else if (result.type === 'album') {
+          path = `/album/${result.item.id}`
+        }
+        if (path) {
+          this.$router.push(path);
+        }
+
+      },
       escapeKeyListener: function (evt) {
         if (evt.code === "Escape" && this.isOpen) {
           this.isOpen = false;

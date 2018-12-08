@@ -114,9 +114,9 @@ const createStore = () => {
       }
     },
     actions: {
-      async nuxtServerInit({commit, dispatch}, {app}) {
+      async nuxtServerInit({commit, dispatch}) {
         console.time('init');
-        const response = await app.$axios.$get('core-data');
+        const response = await this.$axios.$get('core-data');
         console.timeEnd('init');
 
         console.time('process');
