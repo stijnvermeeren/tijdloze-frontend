@@ -2,20 +2,36 @@
     <div>
         <page-title icon="album" icon-alt="Album">
             <h2>{{album.title}}</h2>
-            <div class="subtitle">
-                <div>Album van <strong><tijdloze-artist :artist="album.artist" /></strong></div>
-                <div>Uitgebracht in {{ album.releaseYear }}</div>
-            </div>
         </page-title>
 
-        <ul class="info">
-            <li v-if="links.length"><strong>Links: </strong>
-                <span v-for="(link, index) in links">
-                    <span v-if="index > 0">, </span>
-                    <a :href="link.href">{{link.title}}</a>
-                </span>
-            </li>
-        </ul>
+        <table class="info">
+            <tbody>
+                <tr class="important">
+                    <th>Album van</th>
+                    <td><tijdloze-artist :artist="album.artist" /></td>
+                </tr>
+                <tr>
+                    <th>Uitgebracht in</th>
+                    <td>{{ album.releaseYear }}</td>
+                </tr>
+                <tr>
+                    <th>In de Tijdloze</th>
+                    <td>
+                        <div v-for="song in album.songs">
+                            {{song.title}}: {{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="unimportant">
+                    <th>Externe links</th>
+                    <td>
+                        <div v-for="(link, index) in links" :key="index">
+                            <a :href="link.href">{{ link.title }}</a>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
 
         <h3>In de Tijdloze</h3>
 
@@ -32,9 +48,11 @@
   import PageTitle from '~/components/PageTitle'
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
+  import Position from '../../components/Position'
 
   export default {
     components: {
+      Position,
       EntryCount,
       Graph,
       PageTitle
@@ -42,6 +60,9 @@
     computed: {
       album() {
         return this.$store.getters['entities/albums']().withAll().with('songs.album').find(this.fullAlbumData.id);
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       },
       links() {
         const links = [];
@@ -72,10 +93,3 @@
     }
   }
 </script>
-
-<style lang="less" scoped>
-    div.subtitle {
-        font-size: 16px;
-        margin: 10px 0 0 0;
-    }
-</style>

@@ -135,3 +135,38 @@ button[type=submit] {
 textarea {
   font-family: Arial, sans-serif;
 }
+
+
+table.info {
+  tr {
+    &:not(:first-child) {
+      td, th {
+        border-top: 1px solid grey;
+      }
+    }
+
+    vertical-align: top;
+
+    th {
+      font-weight: normal;
+      text-align: right;
+      padding: 2px 10px;
+      border-right: 1px solid grey;
+    }
+    td {
+      padding: 2px 10px;
+    }
+  }
+
+  tr.important {
+    th, td {
+      font-weight: bold;
+    }
+  }
+
+  tr.unimportant {
+    th, td {
+      font-size: 14px;
+    }
+  }
+}

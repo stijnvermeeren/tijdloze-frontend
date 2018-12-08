@@ -2,27 +2,45 @@
     <div class="container">
         <page-title icon="song" icon-alt="Nummer">
             <h2>{{song.title}}</h2>
-            <div class="subtitle">
-                <div>Nummer van <strong><tijdloze-artist :artist="song.artist" /></strong></div>
-                <div>Origineel op album: <TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</div>
-                <div v-if="fullSongData.spotifyId" class="spotify">
-                    <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                </div>
-            </div>
         </page-title>
 
-        <ul class="info">
-            <li>Taal: <strong>{{ language.name }}</strong></li>
-            <li v-if="links.length">
-                Externe links:
-                <span v-for="(link, index) in links" :key="index">
-                    <span v-if="index > 0">, </span><a :href="link.href">{{ link.title }}</a>
-                </span>
-            </li>
-            <li v-if="fullSongData.notes">
-                <em>{{ fullSongData.notes }}</em>
-            </li>
-        </ul>
+        <table class="info">
+            <tbody>
+                <tr class="important">
+                    <th>Nummer van</th>
+                    <td><tijdloze-artist :artist="song.artist" /></td>
+                </tr>
+                <tr>
+                    <th>Origineel op album</th>
+                    <td><TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</td>
+                </tr>
+                <tr>
+                    <th>In de Tijdloze</th>
+                    <td>{{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong></td>
+                </tr>
+                <tr v-if="fullSongData.spotifyId" class="spotify">
+                    <th>Beluister fragment</th>
+                    <td>
+                        <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                    </td>
+                </tr>
+                <tr class="unimportant">
+                    <th>Taal</th>
+                    <td>{{ language.name }}</td>
+                </tr>
+                <tr class="unimportant">
+                    <th>Externe links</th>
+                    <td>
+                        <div v-for="(link, index) in links" :key="index">
+                            <a :href="link.href">{{ link.title }}</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-if="fullSongData.notes" class="unimportant">
+                    <td colspan="2"><make-links :text="fullSongData.notes" /></td>
+                </tr>
+            </tbody>
+        </table>
 
         <lyrics>
             <div class="lyrics">{{ fullSongData.lyrics }}</div>
@@ -77,9 +95,13 @@
   import PageTitle from '../../components/PageTitle'
   import EntryCount from '../../components/EntryCount'
   import {possiblyInListIntervals} from '~/utils/intervals'
+  import Position from '../../components/Position'
+  import MakeLinks from '../../components/MakeLinks'
 
   export default {
     components: {
+      MakeLinks,
+      Position,
       EntryCount,
       PageTitle,
       Lyrics,
@@ -94,6 +116,9 @@
       },
       years() {
         return this.$store.getters.years;
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       },
       links() {
         const links = [];
@@ -128,15 +153,6 @@
 </script>
 
 <style lang="less" scoped>
-    div.subtitle {
-        font-size: 16px;
-        margin: -10px 0 0 0;
-
-        div.spotify {
-            margin: 15px 0;
-        }
-    }
-
     div.allPositions {
         margin: 1em 3em;
         text-align: center;

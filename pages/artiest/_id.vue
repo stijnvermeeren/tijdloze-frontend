@@ -4,16 +4,33 @@
             <h2>{{artist.fullName}}</h2>
         </page-title>
 
-        <ul class="info">
-            <li><tijdloze-country-icon :country="country" /> {{country.name}}</li>
-            <li v-if="links.length"><strong>Links: </strong>
-                <span v-for="(link, index) in links">
-                <span v-if="index > 0">, </span>
-                <a :href="link.href">{{link.title}}</a>
-            </span>
-            </li>
-            <li v-if="fullArtistData.notes"><em><tijdloze-links :text="fullArtistData.notes" /></em></li>
-        </ul>
+        <table class="info">
+            <tbody>
+                <tr>
+                    <th>Land</th>
+                    <td><tijdloze-country-icon :country="country" /> {{country.name}}</td>
+                </tr>
+                <tr>
+                    <th>In de Tijdloze</th>
+                    <td>
+                        <div v-for="song in artist.songs">
+                            {{song.title}}: {{currentYear.yyyy}}: <strong><position :song="song" :year="currentYear" /></strong>
+                        </div>
+                    </td>
+                </tr>
+                <tr class="unimportant">
+                    <th>Externe links</th>
+                    <td>
+                        <div v-for="(link, index) in links" :key="index">
+                            <a :href="link.href">{{ link.title }}</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-if="fullArtistData.notes" class="unimportant">
+                    <td colspan="2"><make-links :text="fullArtistData.notes" /></td>
+                </tr>
+            </tbody>
+        </table>
 
         <h3>Albums en nummers</h3>
 
@@ -44,9 +61,13 @@
   import PageTitle from '~/components/PageTitle'
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
+  import Position from '../../components/Position'
+  import MakeLinks from '../../components/MakeLinks'
 
   export default {
     components: {
+      MakeLinks,
+      Position,
       EntryCount,
       Graph,
       PageTitle
@@ -63,6 +84,9 @@
       },
       country() {
         return this.$store.getters.countriesById[this.artist.countryId];
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       },
       links() {
         const links = [];
