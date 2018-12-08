@@ -30,6 +30,9 @@
         <button @click="add()">Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}</button>
       </div>
     </div>
+
+    <h4>Nummer zoeken op Spotify</h4>
+    <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
   </div>
 </template>
 
@@ -38,9 +41,10 @@
   import SearchBox from '../../components/SearchBox'
   import Position from '../../components/Position'
   import Spotify from '../../components/Spotify'
+  import SpotifySearch from '../../components/SpotifySearch'
 
   export default {
-    components: {Spotify, Position, SearchBox},
+    components: {SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
         nextSong: undefined,
@@ -76,6 +80,9 @@
         this.$axios.$get(`song/${this.nextSong.id}`).then(fullSongData => {
           this.nextSongFullData = fullSongData;
         })
+      },
+      selectSpotifyTrack(track) {
+        console.log(track);
       },
       undo() {
         this.processing = true;
