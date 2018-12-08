@@ -3,6 +3,7 @@
     <div id="sideNav" :class="{closed: !isOpen}">
       <nav>
         <div id="menu">
+          <tijdloze-search-box></tijdloze-search-box>
           <ul>
             <li><nuxt-link to="/">Home</nuxt-link></li>
             <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
@@ -36,7 +37,6 @@
             <li v-if="isAdmin"><nuxt-link to="/admin">Admin</nuxt-link></li>
           </ul>
         </div>
-        <tijdloze-search-box></tijdloze-search-box>
         <tijdloze-login></tijdloze-login>
 
         <span class="cross-button" @click="isOpen = false">
@@ -143,7 +143,7 @@
 
 
     @media (max-width: 1199px) {
-      padding-top: 70px;
+      padding-top: 50px;
 
       &.closed {
         left: -300px;
