@@ -1,7 +1,9 @@
 <template>
+
   <div :class="['container', {open: isOpen, closed: !isOpen}]" ref="lyrics">
-    <h4 @click="isOpen = !isOpen">Lyrics</h4>
-    <div class="lyrics">
+    <h3>Lyrics</h3>
+
+    <div class="lyricsContainer">
       <slot />
       <div @click="toggle()" class="toggle">
         <div>
@@ -26,7 +28,7 @@
         this.isOpen = !this.isOpen;
         if (!this.isOpen) {
           const element = this.$refs['lyrics'];
-          element.scrollIntoView();
+          element.scrollIntoView({block: "nearest"});
         }
       }
     }
@@ -37,41 +39,23 @@
   @import "../assets/globalStyles.less";
 
   div.container {
-    background-color: @inputBackgroundColor;
-    margin: 0 20px 40px 20px;
-
-    h4 {
+    div.lyricsContainer {
       position: relative;
-      margin-left: 0;
-      margin-right: 0;
-      padding: 10px 20px;
-      background-color: @menuBackgroundColor;
-
-      span.arrow {
-        position: absolute;
-        right: 20px;
-        font-weight: bold;
-      }
-    }
-
-    > div.lyrics {
-      position: relative;
-      > div.lyrics {
+      div.lyrics {
         padding: 0 20px 10px 20px;
       }
     }
 
     div.toggle {
-      padding: 5px 0;
       cursor: pointer;
       text-align: center;
       font-weight: bold;
     }
 
     &.closed {
-      > div.lyrics {
+      div.lyricsContainer {
         overflow: hidden;
-        height: 80px;
+        height: 90px;
 
         div.toggle {
           position: absolute;
@@ -81,8 +65,8 @@
           top: 0;
           background: linear-gradient(
             to top,
-            rgba(253, 240, 224, 1) 5px,
-            rgba(253, 240, 224, 0) 40px
+            rgba(255, 255, 255, 1) 15px,
+            rgba(255, 255, 255, 0) 60px
           );
 
           div {
