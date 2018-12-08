@@ -45,23 +45,6 @@ export default class Song extends Model {
     return !this.notInList(year);
   }
 
-  possiblyInListIntervals(years) {
-    const intervals = [];
-    let unprocessedYears = years;
-
-    while (unprocessedYears.length) {
-      unprocessedYears = _.dropWhile(unprocessedYears, year => this.notInList(year));
-
-      const interval = _.takeWhile(unprocessedYears, year => this.possiblyInList(year));
-      if (interval.length) {
-        intervals.push(interval);
-        unprocessedYears = _.dropWhile(unprocessedYears, year => this.possiblyInList(year));
-      }
-    }
-
-    return intervals;
-  }
-
   stationaryIntervals(years) {
     const intervals = [];
     let unprocessedYears = years;

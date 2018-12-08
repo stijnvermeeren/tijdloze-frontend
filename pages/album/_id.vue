@@ -1,9 +1,14 @@
 <template>
     <div>
-        <h2><tijdloze-h2-icon name="album" alt="Album" />{{album.title}} (<tijdloze-artist :artist="album.artist" />)</h2>
+        <page-title icon="album" icon-alt="Album">
+            <h2>{{album.title}}</h2>
+            <div class="subtitle">
+                <div>Album van <strong><tijdloze-artist :artist="album.artist" /></strong></div>
+                <div>Uitgebracht in {{ album.releaseYear }}</div>
+            </div>
+        </page-title>
 
         <ul class="info">
-            <li><strong>Album uit:</strong> {{album.releaseYear}}</li>
             <li v-if="links.length"><strong>Links: </strong>
                 <span v-for="(link, index) in links">
                     <span v-if="index > 0">, </span>
@@ -12,18 +17,27 @@
             </li>
         </ul>
 
-        <tijdloze-songs-overview-and-graph :songs="album.songs"/>
+        <h3>In de Tijdloze</h3>
+
+        <div><entry-count :songs="album.songs" /></div>
+
+        <graph
+          v-if="album.songs.find(song => song.listCount($store.getters.years) > 0)"
+          :songs="album.songs"
+        />
     </div>
 </template>
 
 <script>
-  import SongsOverviewAndGraph from "../../../components/SongsOverviewAndGraph";
-  import H2Icon from "../../../components/H2Icon";
+  import PageTitle from '~/components/PageTitle'
+  import Graph from '../../components/d3/Graph'
+  import EntryCount from '../../components/EntryCount'
 
   export default {
     components: {
-      TijdlozeSongsOverviewAndGraph: SongsOverviewAndGraph,
-      TijdlozeH2Icon: H2Icon
+      EntryCount,
+      Graph,
+      PageTitle
     },
     computed: {
       album() {
@@ -58,3 +72,10 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    div.subtitle {
+        font-size: 16px;
+        margin: -4px 0 0 0;
+    }
+</style>

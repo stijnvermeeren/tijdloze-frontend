@@ -43,7 +43,7 @@
 
     #main {
         box-sizing: border-box;
-        padding: 1em 2em 2em 2em;
+        padding: 10px 20px 20px 20px;
         margin: 0 auto;
         min-width: 600px;
         max-width: 66em;

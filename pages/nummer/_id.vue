@@ -1,37 +1,41 @@
 <template>
     <div class="container">
-        <h2><tijdloze-h2-icon name="song" alt="Nummer" />{{song.title}}</h2>
-        <div class="subtitle">
-            <div>Nummer van <strong><tijdloze-artist :artist="song.artist" /></strong></div>
-            <div>Origineel op album: <TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</div>
-            <div v-if="fullSongData.spotifyId" class="spotify">
-                <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+        <page-title icon="song" icon-alt="Nummer">
+            <h2>{{song.title}}</h2>
+            <div class="subtitle">
+                <div>Nummer van <strong><tijdloze-artist :artist="song.artist" /></strong></div>
+                <div>Origineel op album: <TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</div>
+                <div v-if="fullSongData.spotifyId" class="spotify">
+                    <iframe :src="`https://open.spotify.com/embed/track/${fullSongData.spotifyId}`" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                </div>
             </div>
-        </div>
+        </page-title>
 
         <ul class="info">
-            <li></li>
-            <li></li>
+            <li>Taal: <strong>{{ language.name }}</strong></li>
             <li v-if="links.length">
-                <strong>Links: </strong>
-                <span
-                  v-for="(link, index) in links"
-                  :key="index"
-                >
-      <span v-if="index > 0">
-        ,
-      </span>
-      <a :href="link.href">
-        {{ link.title }}
-      </a>
-    </span>
+                Externe links:
+                <span v-for="(link, index) in links" :key="index">
+                    <span v-if="index > 0">, </span><a :href="link.href">{{ link.title }}</a>
+                </span>
             </li>
             <li v-if="fullSongData.notes">
                 <em>{{ fullSongData.notes }}</em>
             </li>
         </ul>
 
-        <TijdlozeSongsOverviewAndGraph :songs="[song]" />
+        <lyrics>
+            <div class="lyrics">{{ fullSongData.lyrics }}</div>
+        </lyrics>
+
+        <h3>In de Tijdloze</h3>
+
+        <div><entry-count :songs="[song]" /></div>
+
+        <tijdloze-graph
+          v-if="song.listCount($store.getters.years) > 0"
+          :songs="[song]"
+        />
 
         <div class="allPositions">
             <table>
@@ -58,23 +62,21 @@
                 </tbody>
             </table>
         </div>
-
-        <h3>Lyrics</h3>
-        <div><strong>Taal:</strong> {{ language.name }}</div>
-        <p class="lyrics">
-            {{ fullSongData.lyrics }}
-        </p>
     </div>
 </template>
 
 <script>
-  import H2Icon from "~/components/H2Icon";
-  import SongsOverviewAndGraph from "~/components/SongsOverviewAndGraph";
+  import Lyrics from "~/components/Lyrics";
+  import Graph from '~/components/d3/Graph'
+  import PageTitle from '../../components/PageTitle'
+  import EntryCount from '../../components/EntryCount'
 
   export default {
     components: {
-      TijdlozeH2Icon: H2Icon,
-      TijdlozeSongsOverviewAndGraph: SongsOverviewAndGraph
+      EntryCount,
+      PageTitle,
+      Lyrics,
+      TijdlozeGraph: Graph
     },
     computed: {
       song() {
@@ -117,11 +119,11 @@
 
 <style lang="less" scoped>
     div.subtitle {
-        font-size: 18px;
-        margin: -24px 0 0 64px;
+        font-size: 16px;
+        margin: -4px 0 0 0;
 
         div.spotify {
-            margin: 10px 0;
+            margin: 15px 0;
         }
     }
 
@@ -143,10 +145,9 @@
         }
     }
 
-
-    p.lyrics {
+    div.lyrics {
         white-space: pre-line;
         font-style: italic;
-        margin-top: -1em;
+        font-size: 14px;
     }
 </style>

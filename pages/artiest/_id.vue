@@ -1,26 +1,85 @@
 <template>
     <div>
-        <h2><tijdloze-h2-icon name="artist" alt="Artiest" />{{artist.fullName}}</h2>
+        <page-title icon="artist" icon-alt="Artiest">
+            <h2>{{artist.fullName}}</h2>
+        </page-title>
 
-        <tijdloze-tabs :tabs="[
-          { to: `/artiest/${artist.id}`, title: 'Informatie en nummers' },
-          { to: `/artiest/${artist.id}/albums`, title: 'Albums' }
-        ]">
-            <nuxt-child :artist="artist" :fullArtistData="fullArtistData" />
-        </tijdloze-tabs>
+        <ul class="info">
+            <li><tijdloze-country-icon :country="country" /> {{country.name}}</li>
+            <li v-if="links.length"><strong>Links: </strong>
+                <span v-for="(link, index) in links">
+                <span v-if="index > 0">, </span>
+                <a :href="link.href">{{link.title}}</a>
+            </span>
+            </li>
+            <li v-if="fullArtistData.notes"><em><tijdloze-links :text="fullArtistData.notes" /></em></li>
+        </ul>
+
+        <h3>Albums en nummers</h3>
+
+        <div>
+            <ul v-if="artist.albums">
+                <li v-for="album in artist.albums">
+                    <tijdloze-album :album="album" /> ({{album.releaseYear}})
+                    <ul v-if="album.songs">
+                        <li v-for="song in album.songs"><tijdloze-song :song="song" /></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <h3>In de Tijdloze</h3>
+
+        <div><entry-count :songs="artist.songs" /></div>
+
+        <graph
+          v-if="artist.songs.find(song => song.listCount($store.getters.years) > 0)"
+          :songs="artist.songs"
+        />
     </div>
 </template>
 
 <script>
-  import H2Icon from "../../components/H2Icon";
+  import _ from 'lodash'
+  import PageTitle from '~/components/PageTitle'
+  import Graph from '../../components/d3/Graph'
+  import EntryCount from '../../components/EntryCount'
 
   export default {
     components: {
-      TijdlozeH2Icon: H2Icon
+      EntryCount,
+      Graph,
+      PageTitle
     },
     computed: {
       artist() {
         return this.$store.getters['entities/artists']().withAllRecursive(2).find(this.fullArtistData.id);
+      },
+      songs() {
+        return _.sortBy(
+          this.artist.songs,
+          song => [song.album.releaseYear, song.title]
+        )
+      },
+      country() {
+        return this.$store.getters.countriesById[this.artist.countryId];
+      },
+      links() {
+        const links = [];
+        const addLink = (property, title) => {
+          if (this.fullArtistData[property]) {
+            links.push({
+              href: this.fullArtistData[property],
+              title: title
+            })
+          }
+        };
+
+        addLink('urlOfficial', 'Officiële website');
+        addLink('urlWikiEn', 'Wikipedia (Engels)');
+        addLink('urlWikiNl', 'Wikipedia (Nederlands)');
+        addLink('urlAllmusic', 'AllMusic');
+        return links;
       }
     },
     async asyncData({ params, app }) {
@@ -35,3 +94,5 @@
     }
   }
 </script>
+
+

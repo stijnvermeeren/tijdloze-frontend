@@ -27,25 +27,47 @@
                 </g>
             </g>
         </svg>
+
+        <div class="legend">
+            <div v-for="(song, index) in songs"
+                 :key="song.id"
+                 :class="[
+                   'songLegend',
+                   `color-${index}`,
+                   {
+                     highlighted: hoverIndex === index
+                   }]"
+                 @mouseover="onHover(index)"
+                 @mouseleave="onHover(null)"
+            >
+                {{song.title}}
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import BaseGraph from './BaseGraph';
     import BaseGraphAxes from './BaseGraphAxes';
+    import {possiblyInListIntervals} from '~/utils/intervals';
 
     export default {
       extends: BaseGraph,
       components: {
         TijdlozeAxes: BaseGraphAxes
       },
-      props: ['songs', 'hoverIndex'],
+      props: ['songs'],
+      data() {
+        return {
+          hoverIndex: null
+        }
+      },
       methods: {
         onHover(index) {
-          this.$emit('hover', index);
+          this.hoverIndex = index;
         },
         fullSongLine(song) {
-          return this.songLine(song, song.possiblyInListIntervals(this.years), true);
+          return this.songLine(song, possiblyInListIntervals([song], this.years), true);
         }
       }
     }
@@ -56,7 +78,8 @@
 
     div.graph {
         text-align: center;
-        padding: 20px 0;
+        padding: 0;
+        margin-bottom: 20px;
 
         svg {
             box-sizing: border-box;
@@ -77,6 +100,15 @@
                 &.notHighlighted {
                     opacity: 0.5;
                 }
+            }
+        }
+    }
+
+    div.legend {
+        div.songLegend {
+            text-align: center;
+            &.highlighted {
+                font-weight: bold;
             }
         }
     }
