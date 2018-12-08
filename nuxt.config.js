@@ -77,3 +77,11 @@ module.exports = {
     }
   }
 };
+
+if (config.GOOGLE_ANALYTICS_ID) {
+  module.exports.modules.push(
+    ['@nuxtjs/google-analytics', {
+      id: config.GOOGLE_ANALYTICS_ID
+    }]
+  );
+}
