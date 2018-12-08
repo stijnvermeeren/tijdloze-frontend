@@ -1,5 +1,5 @@
 <template>
-    <div class="notabs">
+    <div>
         <h2>De Tijdloze van {{year.yyyy}}</h2>
 
         <tijdloze-tabs :tabs="tabs">

@@ -2,58 +2,79 @@
     <div>
         <h2>De Tijdloze Website</h2>
 
-        <div class="notabs">
+        <p style="text-align: center;">
+            <tijdloze-links text="[*Black] van [Pearl Jam] staat voor het derde jaar op de eerste plaats van de Tijdloze." /><br />
+            <tijdloze-links text="[Mia] gaat weer voorbij aan [Smells Like Teen Spirit] naar de tweede plek." /><br />
+            <tijdloze-links text="[Bohemian Rhapsody] en [Wish You Were Here] zorgen voor meer verandering in de top vijf." /><br />
+            <tijdloze-links text="[Africa] is de hoogste nieuwkomer, [In The End] is de grootste stijger." /><br />
+        </p>
 
-            <p style="text-align: center;">
-                <tijdloze-links text="[*Black] van [Pearl Jam] staat voor het derde jaar op de eerste plaats van de Tijdloze." /><br />
-                <tijdloze-links text="[Mia] gaat weer voorbij aan [Smells Like Teen Spirit] naar de tweede plek." /><br />
-                <tijdloze-links text="[Bohemian Rhapsody] en [Wish You Were Here] zorgen voor meer verandering in de top vijf." /><br />
-                <tijdloze-links text="[Africa] is de hoogste nieuwkomer, [In The End] is de grootste stijger." /><br />
-                <nuxt-link to="/lijst/2017">Bekijk de volledige lijst van 2017</nuxt-link>
-            </p>
+        <h3>
+            De Tijdloze van {{year.yyyy}}
+        </h3>
+        <table class="lijst">
+            <tbody>
+            <tr>
+                <th v-if="year.previous()" class="n">
+                    <nuxt-link :to="`/lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
+                </th>
+                <th class="r">{{year._yy}}</th>
+                <th class="a">
+                    <nuxt-link to="/artiesten">Artiest</nuxt-link>
+                </th>
+                <th>
+                    <nuxt-link to="/nummers">Titel</nuxt-link>
+                </th>
+                <th>
+                    Jaar
+                </th>
+            </tr>
+            <tr v-for="song in top5">
+                <td v-if="year.previous()" class="n">
+                    <tijdloze-position :song="song" :year="year.previous()" />
+                </td>
+                <td class="r">
+                    <tijdloze-position-change :song="song" :year="year" />
+                    <tijdloze-position :song="song" :year="year" />
+                </td>
+                <td class="a">
+                    <tijdloze-artist :artist="song.artist" />
+                </td>
+                <td>
+                    <tijdloze-song :song="song" />
+                </td>
+                <td>
+                    {{song.album.releaseYear}}
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="link">
+            <nuxt-link :to="`lijst/${year.yyyy}`">Bekijk de volledige lijst van {{year.yyyy}}</nuxt-link>
         </div>
 
+        <h3>
+            Reageer en discussieer
+        </h3>
 
-        <div class="kolommen">
+        <comment
+          v-for="comment in comments"
+          :key="comment.id"
+          :comment="comment"
+        />
 
-            <div class="linkerkant main">
-                <table class="lijst home">
-                    <tbody>
-                        <tr>
-                            <th colspan="2">
-                                <nuxt-link :to="`lijst/${year.yyyy}`">Tijdloze {{year.yyyy}}</nuxt-link>
-
-                            </th>
-                        </tr>
-                        <tr v-for="song in top20" :key="song.id" :class="{lineAfter: song.position(year) % 5 === 0}">
-                            <td class="a">
-                                <tijdloze-position :song="song" :year="year" />
-                            </td>
-                            <td>
-                                <tijdloze-artist :artist="song.artist" /> - <tijdloze-song :song="song" />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="rechterkant main">
-                <h3><nuxt-link to="/reacties">Reageer en discussieer</nuxt-link></h3>
-                <div v-for="comment in comments" class="reactie">
-                    <div class="reacinfo">{{comment.name}} - {{comment.created}}</div>
-                    <div class="bericht">{{comment.message}}</div>
-                </div>
-            </div>
-
-            <br clear="both" />
+        <div class="link">
+            <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
         </div>
     </div>
 </template>
 
 <script>
     import _ from 'lodash';
+    import Comment from '../components/comments/Comment'
 
     export default {
+      components: {Comment},
       props: ["coreData"],
       data() {
         return {
@@ -61,8 +82,8 @@
         }
       },
       computed: {
-        top20() {
-          return _.take(this.$store.getters.list(this.year), 20);
+        top5() {
+          return _.take(this.$store.getters.list(this.year), 5);
         }
       },
       async asyncData({ params, app }) {
@@ -77,77 +98,7 @@
 <style lang="less" scoped>
     @import "../assets/globalStyles.less";
 
-    div.kolommen {
-        margin-top: 1.7em;
-    }
-    div.linkerkant {
-        width: 45%;
-        float: left;
-        td {
-            white-space: normal;
-        }
-    }
-    div.main table {
-        border: @blackLine;
-
-        td {
-            padding-top: 0.2em;
-            padding-bottom: 0.2em;
-        }
-    }
-    div.rechterkant {
-        width: 52%;
-        float: right;
-    }
-    div.rechterkant.main {
-        background-color: @inputBackgroundColor;
-        border: @blackLine;
-
-        ul.commentary {
-            font-size: 90%;
-            li {
-                line-height: 1.2em;
-                margin-bottom: 0.5em;
-            }
-        }
-    }
-    div.main ul {
-        margin-right: 2em;
-    }
-    div.main h4 {
-        margin-left: 1em;
-        padding-left: 1em;
-        margin-right: 1em;
-        padding-right: 1em;
-        padding-top: 0.5em;
-        border-top: 1px solid brown;
-    }
-
-    div.kolommen h3 {
-        font-size: 120%;
+    div.link {
         text-align: center;
-        background-color: @headerBackgroundColor;
-        margin-top: 0;
-    }
-
-    div.reactie {
-        border: none;
-        padding: 0.3em 2em;
-        margin: 1em 0;
-
-        div.reacinfo {
-            font-size: 90%;
-            margin: 0.2em 0 0.4em 0;
-            font-weight: bold;
-            border-bottom: @blackLine;
-
-            span {
-                font-weight: bold;
-            }
-        }
-
-        div.bericht {
-            white-space: pre-wrap;
-        }
     }
 </style>

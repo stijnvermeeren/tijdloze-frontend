@@ -2,101 +2,95 @@
   <div>
     <h2>Reageer op de Tijdloze</h2>
 
-    <div class="notabs">
-      <CommentsPager
-        :page="page"
-        :pages="pages "
-      />
+    <CommentsPager
+      :page="page"
+      :pages="pages "
+    />
 
-      <div v-if="isAuthenticated && page === 1">
-        <div
-          class="displayName"
-          v-if="!displayName || editDisplayName"
-        >
-          <div>
-            Kies een gebruikersnaam:
-            <input
-              :disabled="submittingDisplayName"
-              type="text"
-              v-model="name"
-            >
-            <button
-              :disabled="submittingDisplayName || invalidDisplayName"
-              @click="submitDisplayName()"
-            >
-              Ok
-            </button>
-          </div>
-          <div
-            class="info"
-            v-if="editDisplayName"
+    <div v-if="isAuthenticated && page === 1">
+      <div
+        class="displayName"
+        v-if="!displayName || editDisplayName"
+      >
+        <div>
+          Kies een gebruikersnaam:
+          <input
+            :disabled="submittingDisplayName"
+            type="text"
+            v-model="name"
           >
-            De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-          </div>
+          <button
+            :disabled="submittingDisplayName || invalidDisplayName"
+            @click="submitDisplayName()"
+          >
+            Ok
+          </button>
         </div>
-        <div v-else>
-          <div>
-            <div class="reactie mine">
-              <div class="reacinfo">
-                {{ displayName }} (<a @click="editDisplayName = true">
-                  Gebruikersnaam aanpassen
-                </a>)
-              </div>
-              <div class="bericht">
-                <textarea
-                  :disabled="submitting"
-                  cols="60"
-                  placeholder="Schrijf een nieuwe reactie..."
-                  rows="4"
-                  v-model="message"
-                />
-              </div>
-              <div>
-                <button
-                  :disabled="submitting || invalidMessage"
-                  @click="submit()"
-                  class="formsubmit"
-                >
-                  Verzenden
-                </button>
-              </div>
+        <div
+          class="info"
+          v-if="editDisplayName"
+        >
+          De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+        </div>
+      </div>
+      <div v-else>
+        <div>
+          <div class="reactie mine">
+            <div class="reacinfo">
+              {{ displayName }} (<a @click="editDisplayName = true">
+                Gebruikersnaam aanpassen
+              </a>)
+            </div>
+            <div class="bericht">
+              <textarea
+                :disabled="submitting"
+                cols="60"
+                placeholder="Schrijf een nieuwe reactie..."
+                rows="4"
+                v-model="message"
+              />
+            </div>
+            <div>
+              <button
+                :disabled="submitting || invalidMessage"
+                @click="submit()"
+                class="formsubmit"
+              >
+                Verzenden
+              </button>
             </div>
           </div>
         </div>
       </div>
-      <div v-if="!isAuthenticated && page === 1">
-        Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
-      </div>
+    </div>
+    <div v-if="!isAuthenticated && page === 1">
+      Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
+    </div>
 
-      <div>
-        <div
-          :class="['reactie', {'mine': isMine(comment)}]"
-          :key="comment.id"
-          v-for="comment in comments"
-        >
-          <div class="reacinfo">
-            {{ comment.name }} - {{ comment.created }}
-          </div>
-          <div class="bericht">{{ comment.message }}</div>
-        </div>
-      </div>
-
-      <CommentsPager
-        :page="page"
-        :pages="pages "
+    <div>
+      <comment
+        v-for="comment in comments"
+        :key="comment.id"
+        :comment="comment"
       />
     </div>
+
+    <CommentsPager
+      :page="page"
+      :pages="pages "
+    />
   </div>
 </template>
 
 <script>
   import { unsetAccessToken, login } from '~/utils/auth';
   import CommentsPager from '../components/comments/CommentsPager'
+  import Comment from '../components/comments/Comment'
 
   const commentsPerPage = 20;
 
   export default {
-    components: {CommentsPager},
+    components: {Comment, CommentsPager},
     data() {
       return {
         name: this.$store.getters.displayNameWithFallback,
@@ -160,9 +154,6 @@
         sessionStorage.setItem("redirectPath", this.$route.path);
         unsetAccessToken(this, this.$store);
         login();
-      },
-      isMine(comment) {
-        return this.isAuthenticated && this.$store.state.user.id === comment.userId;
       }
     },
     beforeRouteUpdate (to, from, next) {
@@ -181,49 +172,13 @@
       };
     },
     head: {
-      title: 'De Tijdloze Tijdloze'
+      title: 'Reacties'
     }
   }
 </script>
 
 <style lang="less" scoped>
     @import "~assets/globalStyles.less";
-
-    div.reactie {
-        padding: 0.3em 4em;
-        margin: 1em 0;
-
-        &.mine {
-            div.reacinfo {
-                background-color: @headerBackgroundColor;
-            }
-        }
-
-        div.reacinfo {
-            background-color: #ccc;
-            font-size: 90%;
-            padding: 0.1em 0.2em;
-            margin: 0.2em 0 0.4em 0;
-            font-weight: bold;
-            border-bottom: @blackLine;
-
-            span {
-                font-weight: bold;
-            }
-        }
-
-        div.bericht {
-            white-space: pre-wrap;
-            overflow: auto;
-
-            textarea {
-                width: 100%;
-                box-sizing: border-box;
-                height: 5em;
-
-            }
-        }
-    }
 
     div.displayName {
         padding: 0.3em 4em;

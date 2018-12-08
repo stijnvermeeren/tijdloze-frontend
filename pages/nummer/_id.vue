@@ -40,25 +40,31 @@
         <div class="allPositions">
             <table>
                 <tbody>
-                <tr>
-                    <th>Jaar</th>
-                    <th>Positie</th>
-                </tr>
-                <tr
-                  v-for="year in years"
-                  :key="year.yyyy"
-                >
-                    <th><TijdlozeYear :year="year" /></th>
-                    <td>
-                        <TijdlozePositionChange
-                          :song="song"
-                          :year="year"
-                        /> <TijdlozePosition
-                      :song="song"
-                      :year="year"
-                    />
-                    </td>
-                </tr>
+                    <tr>
+                        <th>Jaar</th>
+                        <th>Positie</th>
+                    </tr>
+                    <template v-for="(interval, index) in intervals">
+                        <tr v-if="index">
+                            <td>...</td>
+                            <td></td>
+                        </tr>
+                        <tr
+                          v-for="year in interval"
+                          :key="year.yyyy"
+                        >
+                            <th><TijdlozeYear :year="year" /></th>
+                            <td>
+                                <TijdlozePositionChange
+                                  :song="song"
+                                  :year="year"
+                                /> <TijdlozePosition
+                              :song="song"
+                              :year="year"
+                            />
+                            </td>
+                        </tr>
+                    </template>
                 </tbody>
             </table>
         </div>
@@ -70,6 +76,7 @@
   import Graph from '~/components/d3/Graph'
   import PageTitle from '../../components/PageTitle'
   import EntryCount from '../../components/EntryCount'
+  import {possiblyInListIntervals} from '~/utils/intervals'
 
   export default {
     components: {
@@ -102,6 +109,9 @@
         addLink('urlWikiEn', 'Wikipedia (Engels)');
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
         return links;
+      },
+      intervals() {
+        return possiblyInListIntervals([this.song], this.years, true);
       }
     },
     async asyncData({ params, app }) {
@@ -120,7 +130,7 @@
 <style lang="less" scoped>
     div.subtitle {
         font-size: 16px;
-        margin: -4px 0 0 0;
+        margin: -10px 0 0 0;
 
         div.spotify {
             margin: 15px 0;
@@ -130,18 +140,9 @@
     div.allPositions {
         margin: 1em 3em;
         text-align: center;
+
         table {
-            line-height: 3.2em;
-            tr {
-                line-height: 1em;
-                width: 4.8em;
-                display: inline-block;
-            }
-            td, th {
-                display: block;
-                text-align: center;
-                width: auto;
-            }
+            width: 160px;
         }
     }
 

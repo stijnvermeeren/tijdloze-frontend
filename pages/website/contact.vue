@@ -1,5 +1,7 @@
 <template>
     <div>
+        <h2>Contact</h2>
+
         <p v-if="error" class="fout">Probleem met het verzenden van je bericht! {{error}}</p>
 
         <div v-if="success">

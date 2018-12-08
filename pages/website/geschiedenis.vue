@@ -1,5 +1,7 @@
 <template>
     <div>
+        <h2>Geschiedenis van de Tijdloze Website</h2>
+
         <p>In 1987 zag niet alleen de eerste Tijdloze het levenslicht, maar ook de maker van deze website, Stijn Vermeeren.</p>
 
         <p>Stijn is een liefhebber van zowel goede muziek als interessante statistieken. Die combinatie leidde eerder al tot een <a href="http://www.stijnvermeeren.be/download/afrekening.mp3">kleine interventie in De Afrekening</a>, in de goede oude tijd toen de prille Peter Van de Veire die nog presenteerde.</p>
@@ -16,7 +18,7 @@
 
         <p>Op 24 november 2014, tijdens de stemweek voor de Tijdloze, werd <a href="http://www.stijnvermeeren.be/download/tijdloze20141124.mp3">webmaster Stijn live opgebeld door Studio Brussel</a>.</p>
 
-        <h4>De toekomst</h4>
+        <h3>De toekomst</h3>
 
         <p>Elk jaar steekt webmaster Stijn enkele dagen werk in De Tijdloze Website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:</p>
         <ul>

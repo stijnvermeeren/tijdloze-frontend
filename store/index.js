@@ -38,6 +38,9 @@ const createStore = () => {
       isAuthenticated(state) {
         return !!state.user;
       },
+      isAdmin(state, getters) {
+        return getters.isAuthenticated && state.user.isAdmin;
+      },
       displayName(state) {
         if (state.user) {
           return state.user.displayName;

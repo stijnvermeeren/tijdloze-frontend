@@ -31,16 +31,19 @@ a {
 }
 
 h2 {
-  font-size: 140%;
-  margin: 15px 0 10px 0;
+  font-size: 28px;
+  margin: 15px 0 20px 0;
 }
 h3 {
-  font-size: 115%;
-  margin: 1em 0 1em 0;
-  padding: 0.3em 0 0.3em 1.2em;
+  border-top: 3px solid @headerBackgroundColor;
+  border-bottom: 1px solid @headerBackgroundColor;
+  background-color: @inputBackgroundColor;
+  font-size: 24px;
+  margin: 20px 0 15px 0;
+  padding: 5px 5px 5px 10px;
 }
 h4 {
-  font-size: 110%;
+  font-size: 22px;
   margin-top: 1em;
   margin-bottom: 0.4em;
 }
@@ -60,44 +63,39 @@ ul.info {
 }
 
 
-div.notabs {
-  padding: 0 2em 0 2em;
-
-  // lijst tabs
-  div.tabs {
-    margin-bottom: 2.5em;
-    div.tabtitels {
-      margin: 0.5em 0 0 0;
-      padding: 0.1em 0 0em 1.2em;
+// lijst tabs
+div.listTabs {
+  margin-bottom: 2.5em;
+  div.tabtitels {
+    margin: 0.5em 0 0 0;
+    padding: 0.1em 0 0em 1.2em;
+    vertical-align: top;
+    h3 {
       vertical-align: top;
-      h3 {
-        vertical-align: top;
-        display: inline;
-        font-size: 100%;
-        border: @blackLine;
-        border-radius: @borderRadius @borderRadius 0 0;
-        padding: 0.1em 1em;
-        margin: 0 0.7em;
-        background-color: @headerBackgroundColor;
-      }
-      h3.selected {
-        border-bottom: 2px @backgroundColor solid;
-        background-color: @backgroundColor;
-        a {
-          color: black;
-        }
-      }
+      display: inline;
+      font-size: 100%;
+      border: @blackLine;
+      border-radius: @borderRadius @borderRadius 0 0;
+      padding: 0.1em 1em;
+      margin: 0 0.7em;
+      background-color: @headerBackgroundColor;
     }
-    div.tab {
-      padding: 0.7em 2em 0.7em 2em;
-      .border;
-      div.toelichting {
-        margin-bottom: 0.7em;
+    h3.selected {
+      border-bottom: 2px @backgroundColor solid;
+      background-color: @backgroundColor;
+      a {
+        color: black;
       }
     }
   }
+  div.tab {
+    padding: 0.7em 2em 0.7em 2em;
+    .border;
+    div.toelichting {
+      margin-bottom: 0.7em;
+    }
+  }
 }
-
 
 
 div.toelichting {

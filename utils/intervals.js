@@ -1,12 +1,12 @@
 import _ from 'lodash'
 
-export function possiblyInListIntervals(songs, years) {
+export function possiblyInListIntervals(songs, years, extended) {
   function noneInList(year) {
-    return !songs.find(song => !song.notInList(year));
+    return !songs.find(song => !song.notInList(year, extended));
   }
 
   function possiblyInList(year) {
-    return songs.find(song => song.possiblyInList(year));
+    return songs.find(song => song.possiblyInList(year, extended));
   }
 
   const intervals = [];

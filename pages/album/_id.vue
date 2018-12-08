@@ -76,6 +76,6 @@
 <style lang="less" scoped>
     div.subtitle {
         font-size: 16px;
-        margin: -4px 0 0 0;
+        margin: 10px 0 0 0;
     }
 </style>

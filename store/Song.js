@@ -41,8 +41,8 @@ export default class Song extends Model {
     }
   }
 
-  possiblyInList(year) {
-    return !this.notInList(year);
+  possiblyInList(year, extended) {
+    return !this.notInList(year, extended);
   }
 
   stationaryIntervals(years) {

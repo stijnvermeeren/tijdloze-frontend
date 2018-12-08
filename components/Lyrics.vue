@@ -1,6 +1,6 @@
 <template>
   <div :class="['container', {open: isOpen, closed: !isOpen}]" ref="lyrics">
-    <h3 @click="isOpen = !isOpen">Lyrics</h3>
+    <h4 @click="isOpen = !isOpen">Lyrics</h4>
     <div class="lyrics">
       <slot />
       <div @click="toggle()" class="toggle">
@@ -40,7 +40,7 @@
     background-color: @inputBackgroundColor;
     margin: 0 20px 40px 20px;
 
-    h3 {
+    h4 {
       position: relative;
       margin-left: 0;
       margin-right: 0;

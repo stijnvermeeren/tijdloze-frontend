@@ -43,10 +43,14 @@
 
     #main {
         box-sizing: border-box;
-        padding: 10px 20px 20px 20px;
+        padding: 10px 10px 20px 10px;
         margin: 0 auto;
-        min-width: 600px;
-        max-width: 66em;
+        min-width: 480px;
+        max-width: 840px;
+
+        @media (min-width: 1200px) {
+            padding: 10px 30px 20px 30px;
+        }
     }
 
     #header {
@@ -56,12 +60,15 @@
         h1 {
             display: block;
             background: url("/images/logo.png") no-repeat;
-            .logoDimensions;
+            text-align: center;
+            overflow: hidden;
             margin: 0 auto;
+            max-width: 640px;
 
             a {
                 display: block;
                 .logoDimensions;
+                overflow: hidden;
             }
             span {
                 display: none;

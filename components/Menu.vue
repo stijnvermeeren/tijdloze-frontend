@@ -6,7 +6,7 @@
           <ul>
             <li><nuxt-link to="/">Home</nuxt-link></li>
             <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
-              <ul>
+              <ul class="lists">
                 <template v-for="(year, index) in years">
                   <li v-if="years.length - index < 3 || allLists" :key="year.yyyy">
                     <nuxt-link :to="'/lijst/' + year.yyyy">{{year.yyyy}}</nuxt-link>
@@ -16,10 +16,24 @@
                 <li v-else><a @click="allLists = false">Minder tonen</a></li>
               </ul>
             </li>
-            <li><nuxt-link to="/artiesten">Artiesten en nummers</nuxt-link></li>
-            <li><nuxt-link to="/tijdlozetijdloze">De Tijdloze Tijdloze</nuxt-link></li>
-            <li><nuxt-link to="/statistieken">Statistieken</nuxt-link></li>
-            <li><nuxt-link to="/website">Over deze website</nuxt-link></li>
+            <li><nuxt-link to="/artiesten">Alle artiesten</nuxt-link>
+              <ul>
+                <li><nuxt-link to="/nummers">Alle nummers</nuxt-link></li>
+              </ul>
+            </li>
+            <li><nuxt-link to="/statistieken">Statistieken</nuxt-link>
+              <ul>
+                <li><nuxt-link to="/tijdlozetijdloze">De Tijdloze Tijdloze</nuxt-link></li>
+              </ul>
+            </li>
+            <li><nuxt-link to="/website">Over deze website</nuxt-link>
+              <ul>
+                <li><nuxt-link to="/website/geschiedenis">Geschiedenis</nuxt-link></li>
+                <li><nuxt-link to="/website/privacy">Privacybeleid</nuxt-link></li>
+                <li><nuxt-link to="/website/contact">Contact</nuxt-link></li>
+              </ul>
+            </li>
+            <li v-if="isAdmin"><nuxt-link to="/admin">Admin</nuxt-link></li>
           </ul>
         </div>
         <tijdloze-search-box></tijdloze-search-box>
@@ -59,6 +73,9 @@
     computed: {
       years() {
         return this.$store.getters.years;
+      },
+      isAdmin() {
+        return this.$store.getters.isAdmin;
       }
     },
     watch: {
@@ -151,7 +168,12 @@
             margin: 0.2em 0 0.2em 1em;
             padding: 0;
             font-weight: normal;
-            display: inline-block;
+          }
+
+          &.lists {
+            li {
+              display: inline-block;
+            }
           }
         }
       }
