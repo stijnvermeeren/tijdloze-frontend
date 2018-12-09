@@ -18,18 +18,22 @@
         <artist-select v-model="artistId" />
       </div>
       <div v-if="artistNew">
-        <tr>
-          <th>Voornaam</th>
-          <td><input v-model="artistDetails.firstName" placeholder="The / Bob / ..." /></td>
-        </tr>
-        <tr>
-          <th>Naam</th>
-          <td><input v-model="artistDetails.name" placeholder="Beatles / Dylan / ..." /></td>
-        </tr>
-        <tr>
-          <th>Land</th>
-          <td><country-input v-model="artistDetails.countryId" /></td>
-        </tr>
+        <table class="info">
+          <tbody>
+            <tr>
+              <th>Voornaam</th>
+              <td><input v-model="artistDetails.firstName" placeholder="The / Bob / ..." /></td>
+            </tr>
+            <tr>
+              <th>Naam</th>
+              <td><input v-model="artistDetails.name" placeholder="Beatles / Dylan / ..." /></td>
+            </tr>
+            <tr>
+              <th>Land</th>
+              <td><country-input v-model="artistDetails.countryId" /></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -49,19 +53,42 @@
         <album-select v-model="albumId" :artist-id="artistId" />
       </div>
       <div v-if="albumNew">
-        <tr>
-          <th>Titel</th>
-          <td><input v-model="albumDetails.title" /></td>
-        </tr>
-        <tr>
-          <th>Jaar</th>
-          <td><input v-model="albumDetails.releaseYear" /></td>
-        </tr>
+        <table class="info">
+          <tbody>
+            <tr>
+              <th>Titel</th>
+              <td><input v-model="albumDetails.title" /></td>
+            </tr>
+            <tr>
+              <th>Jaar</th>
+              <td><input v-model="albumDetails.releaseYear" /></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <div v-if="artistValid && albumValid">
       <h4>Nummer</h4>
+      <div>
+        <table class="info">
+          <tbody>
+            <tr>
+              <th>Titel</th>
+              <td><input v-model="songDetails.title" /></td>
+            </tr>
+            <tr>
+              <th>Taal</th>
+              <td><language-input v-model="songDetails.languageId" /></td>
+            </tr>
+            <tr>
+              <th>Lead vocals</th>
+              <td><lead-vocals-input v-model="songDetails.leadVocals" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div><button :disabled="!songValid">Toevoegen</button></div>
     </div>
   </div>
 </template>
@@ -70,9 +97,11 @@
   import CountryInput from './CountryInput'
   import ArtistSelect from './ArtistSelect'
   import AlbumSelect from './AlbumSelect'
+  import LanguageInput from './LanguageInput'
+  import LeadVocalsInput from './LeadVocalsInput'
   export default {
     name: 'NewSongWizard',
-    components: {AlbumSelect, ArtistSelect, CountryInput},
+    components: {LeadVocalsInput, LanguageInput, AlbumSelect, ArtistSelect, CountryInput},
     props: {
       songTitle: {
         type: String
@@ -132,6 +161,9 @@
         } else {
           return !! this.albumId;
         }
+      },
+      songValid() {
+        return this.songDetails.title && this.songDetails.languageId && this.songDetails.leadVocals;
       }
     },
     watch: {

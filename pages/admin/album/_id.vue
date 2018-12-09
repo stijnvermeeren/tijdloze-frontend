@@ -90,11 +90,6 @@
 </script>
 
 <style lang="less" scoped>
-  input, textarea {
-    box-sizing: border-box;
-    width: 100%;
-  }
-
   textarea.notes {
     height: 60px;
   }

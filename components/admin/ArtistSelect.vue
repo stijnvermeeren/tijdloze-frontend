@@ -5,6 +5,7 @@
       <search-box
         :song-filter="song => false"
         :album-filter="album => false"
+        placeholder="Zoek artiest..."
         @selectSearchResult="selectArtist($event.item)"
       />
       <button @click="editing = false">Annuleren</button>

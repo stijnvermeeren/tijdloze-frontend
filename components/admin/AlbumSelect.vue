@@ -6,6 +6,7 @@
         :song-filter="song => false"
         :album-filter="album => album.artistId === artistId"
         :artist-filter="artist => false"
+        placeholder="Zoek album..."
         @selectSearchResult="selectAlbum($event.item)"
       />
       <button @click="editing = false">Annuleren</button>
