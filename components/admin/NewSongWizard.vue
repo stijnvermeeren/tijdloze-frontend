@@ -61,7 +61,7 @@
             </tr>
             <tr>
               <th>Jaar</th>
-              <td><input v-model="albumDetails.releaseYear" /></td>
+              <td><input v-model.number="albumDetails.releaseYear" type="number" /></td>
             </tr>
           </tbody>
         </table>
@@ -88,7 +88,7 @@
           </tbody>
         </table>
       </div>
-      <div><button :disabled="!songValid">Toevoegen</button></div>
+      <div><button :disabled="!songValid || submitting" @click="submit()">Toevoegen</button></div>
     </div>
   </div>
 </template>
@@ -103,43 +103,12 @@
     name: 'NewSongWizard',
     components: {LeadVocalsInput, LanguageInput, AlbumSelect, ArtistSelect, CountryInput},
     props: {
-      songTitle: {
-        type: String
-      },
-      artistName: {
-        type: String
-      },
-      albumTitle: {
-        type: String
-      },
-      albumYear: {
-        type: Number
-      },
-      spotifyId: {
-        type: String
+      preset: {
+        type: Object
       }
     },
     data() {
-      return {
-        artistType: 'existing',
-        artistId: undefined, // this.artist ? this.artist.id : undefined,
-        artistDetails: {
-          firstName: this.firstName(this.artistName),
-          name: this.name(this.artistName),
-          countryId: undefined
-        },
-        albumType: 'existing',
-        albumId: undefined, // this.album ? this.album.id : undefined,
-        albumDetails: {
-          title: this.albumTitle,
-          releaseYear: this.albumYear
-        },
-        songDetails: {
-          title: this.songTitle,
-          languageId: undefined,
-          leadVocals: undefined
-        }
-      }
+      return this.initialData();
     },
     computed: {
       artistNew() {
@@ -147,6 +116,9 @@
       },
       albumNew() {
         return this.albumType === 'new';
+      },
+      album() {
+        return this.$store.getters['entities/albums']().find(this.albumId);
       },
       artistValid() {
         if (this.artistNew) {
@@ -168,21 +140,89 @@
     },
     watch: {
       artistId() {
-        if (this.artistId && this.artistType === 'existing') {
-          this.albumType = 'existing';
-        } else {
-          this.albumType = 'new';
-        }
+        this.checkAlbum();
       },
       artistType() {
-        if (this.artistId && this.artistType === 'existing') {
-          this.albumType = 'existing';
-        } else {
-          this.albumType = 'new';
-        }
+        this.checkAlbum();
+      },
+      preset() {
+        Object.assign(this.$data, this.initialData());
       }
     },
     methods: {
+      checkAlbum() {
+        if (this.artistId && this.artistType === 'existing') {
+          this.albumType = 'existing';
+        } else {
+          this.albumType = 'new';
+        }
+
+        if (this.albumId && this.album.artistId !== this.artistId) {
+          this.albumId = undefined;
+        }
+      },
+      initialData() {
+        const artist = this.artistMatch(this.preset.artistName)
+        const album = artist
+          ? this.albumMatch(artist.id, this.preset.albumTitle, this.preset.albumYear)
+          : undefined;
+
+        return {
+          artistType: (artist || !this.preset.artistName) ? 'existing' : 'new',
+          artistId: artist ? artist.id : undefined,
+          artistDetails: {
+            firstName: this.firstName(this.preset.artistName),
+            name: this.name(this.preset.artistName),
+            countryId: undefined
+          },
+          albumType: (album || !this.preset.albumTitle) ? 'existing' : 'new',
+          albumId: album ? album.id : undefined,
+          albumDetails: {
+            title: this.preset.albumTitle,
+            releaseYear: this.preset.albumYear
+          },
+          songDetails: {
+            title: this.preset.songTitle,
+            languageId: undefined,
+            leadVocals: undefined
+          },
+          submitting: false
+        }
+      },
+      preProcessArtistName(artistName) {
+        let query = artistName.toLowerCase()
+        if (query.substr(0,4) === 'the') {
+          query = artistName.substr(4);
+        }
+        return query;
+      },
+      artistMatch(artistName) {
+        if (artistName) {
+          const query = this.preProcessArtistName(artistName);
+
+          return this.$store.getters['entities/artists/query']().all().find(artist => {
+            const matchName = this.preProcessArtistName(artist.fullName);
+            return query === matchName;
+          })
+        } else {
+          return undefined;
+        }
+      },
+      albumMatch(artistId, albumName, releaseYear) {
+        if (artistId && albumName && releaseYear) {
+          const query = albumName.toLowerCase();
+
+          return this.$store.getters['entities/albums/query']().all().find(album => {
+            const matchName = album.title.toLowerCase();
+            const minLength = Math.min(query.length, matchName.length);
+            return album.artistId === artistId &&
+              query.substr(0, minLength) === matchName.substr(0, minLength) &&
+              album.releaseYear === releaseYear;
+          })
+        } else {
+          return undefined;
+        }
+      },
       firstName(fullName) {
         if (fullName && fullName.substr(0,4) === "The ") {
           return "The";
@@ -196,6 +236,48 @@
         } else {
           return fullName;
         }
+      },
+      async submit() {
+        this.submitting = true;
+
+        let artistId = undefined;
+        if (this.artistNew) {
+          const artistData = {
+            firstName: this.artistDetails.firstName,
+            name: this.artistDetails.name,
+            countryId: this.artistDetails.countryId
+          }
+          const artist = await this.$axios.$post('/artist', artistData);
+          artistId = artist.id;
+        } else {
+          artistId = this.artistId;
+        }
+
+        let albumId = undefined;
+        if (this.albumNew) {
+          const albumData = {
+            artistId,
+            title: this.albumDetails.title,
+            releaseYear: this.albumDetails.releaseYear
+          }
+          const album = await this.$axios.$post('/album', albumData);
+          albumId = album.id;
+        } else {
+          albumId = this.albumId;
+        }
+
+        const songData = {
+          artistId,
+          albumId,
+          title: this.songDetails.title,
+          languageId: this.songDetails.languageId,
+          leadVocals: this.songDetails.leadVocals
+        }
+        const song = await this.$axios.$post('/song', songData);
+
+        this.submitting = false;
+        Object.assign(this.$data, this.initialData());
+        this.$emit('newSong', song);
       }
     }
   }

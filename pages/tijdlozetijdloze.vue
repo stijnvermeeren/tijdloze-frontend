@@ -117,14 +117,14 @@
         <tr>
           <th class="r" />
           <th class="a">
-            <NuxtLink to="/artiesten">
+            <nuxt-link to="/artiesten">
               Artiest
-            </NuxtLink>
+            </nuxt-link>
           </th>
           <th>
-            <NuxtLink to="/nummers">
+            <nuxt-link to="/nummers">
               Nummer
-            </NuxtLink>
+            </nuxt-link>
           </th>
           <th>Score</th>
         </tr>
@@ -152,9 +152,9 @@
         <tr>
           <th class="r" />
           <th class="l">
-            <NuxtLink to="/artiesten">
+            <nuxt-link to="/artiesten">
               Artiest
-            </NuxtLink>
+            </nuxt-link>
           </th>
           <th>Score</th>
         </tr>
@@ -181,9 +181,9 @@
         <tr>
           <th class="r" />
           <th class="a">
-            <NuxtLink to="/artiesten">
+            <nuxt-link to="/artiesten">
               Artiest
-            </NuxtLink>
+            </nuxt-link>
           </th>
           <th>Album</th>
           <th>Score</th>

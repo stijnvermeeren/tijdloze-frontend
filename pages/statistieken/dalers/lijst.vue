@@ -6,7 +6,7 @@
                 <th>Jaar</th>
                 <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
                 <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
-                <th colspan="2">Gestegen</th>
+                <th colspan="2">Gedaald</th>
             </tr>
             <tr v-for="{entry, position} in ranking">
                 <td class="r">{{position}}</td>

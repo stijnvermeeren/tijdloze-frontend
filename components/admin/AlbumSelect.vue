@@ -6,10 +6,11 @@
         :song-filter="song => false"
         :album-filter="album => album.artistId === artistId"
         :artist-filter="artist => false"
+        :min-query-length="0"
         placeholder="Zoek album..."
         @selectSearchResult="selectAlbum($event.item)"
       />
-      <button @click="editing = false">Annuleren</button>
+      <button v-if="album" @click="editing = false">Annuleren</button>
     </div>
     <div v-else>
       <button @click="editing = true">Wijzigen</button>
@@ -42,6 +43,13 @@
           return this.$store.getters['entities/albums']().find(this.value);
         } else {
           return undefined;
+        }
+      }
+    },
+    watch: {
+      value() {
+        if (!this.value) {
+          this.editing = true;
         }
       }
     },

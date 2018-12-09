@@ -8,7 +8,7 @@
         placeholder="Zoek artiest..."
         @selectSearchResult="selectArtist($event.item)"
       />
-      <button @click="editing = false">Annuleren</button>
+      <button v-if="artist" @click="editing = false">Annuleren</button>
     </div>
     <div v-else>
       <button @click="editing = true">Wijzigen</button>
@@ -37,6 +37,13 @@
           return this.$store.getters['entities/artists']().find(this.value);
         } else {
           return undefined;
+        }
+      }
+    },
+    watch: {
+      value() {
+        if (!this.value) {
+          this.editing = true;
         }
       }
     },

@@ -30,7 +30,7 @@
                     <th>Taal</th>
                     <td>{{ language.name }}</td>
                 </tr>
-                <tr class="unimportant">
+                <tr v-if="links.length" class="unimportant">
                     <th>Externe links</th>
                     <td>
                         <div v-for="(link, index) in links" :key="index">
@@ -44,7 +44,7 @@
             </tbody>
         </table>
 
-        <lyrics>
+        <lyrics v-if="fullSongData.lyrics">
             <div class="lyrics">{{ fullSongData.lyrics }}</div>
         </lyrics>
 

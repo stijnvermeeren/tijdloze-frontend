@@ -97,6 +97,15 @@ const createStore = () => {
           getters.songs.filter(song => song.position(year, extended)),
           song => song.position(year)
         );
+      },
+      lastSong(state, getters) {
+        return _.first(getters.list(getters.currentYear));
+      },
+      lastPosition(state, getters) {
+        return getters.lastSong.position(getters.currentYear)
+      },
+      completedYear(state, getters) {
+        return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
       }
     },
     mutations: {

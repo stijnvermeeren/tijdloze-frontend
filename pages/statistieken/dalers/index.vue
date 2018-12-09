@@ -4,7 +4,7 @@
             <tr>
                 <th class="r">Jaar</th>
                 <th>Aantal</th>
-                <th class="l" colspan="4">Grootste stijger</th>
+                <th class="l" colspan="4">Grootste daler</th>
             </tr>
             <tr v-for="year in listYears">
                 <td class="r"><tijdloze-year :year="year" /></td>

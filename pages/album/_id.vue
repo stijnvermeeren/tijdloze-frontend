@@ -20,7 +20,7 @@
                         <in-current-list :songs="album.songs" />
                     </td>
                 </tr>
-                <tr class="unimportant">
+                <tr v-if="links.length" class="unimportant">
                     <th>Externe links</th>
                     <td>
                         <div v-for="(link, index) in links" :key="index">

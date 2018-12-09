@@ -28,14 +28,14 @@
         <spotify :spotifyId="nextSongFullData.spotifyId" />
       </div>
       <div>
-        <button @click="add()">Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}</button>
+        <button @click="add(nextSong.id)">Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}</button>
       </div>
     </div>
 
-    <h4>Nummer zoeken op Spotify</h4>
+    <h3>Nummer zoeken op Spotify</h3>
     <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
 
-    <new-song-wizard />
+    <new-song-wizard :preset="spotifyData" @newSong="add($event.id)" />
   </div>
 </template>
 
@@ -53,7 +53,8 @@
       return {
         nextSong: undefined,
         nextSongFullData: undefined,
-        processing: false
+        processing: false,
+        spotifyData: {}
       }
     },
     computed: {
@@ -61,13 +62,10 @@
         return this.$store.getters.currentYear;
       },
       lastSong() {
-        return _.first(this.$store.getters.list(this.currentYear));
+        return this.$store.getters.lastSong;
       },
       lastPosition() {
-        return this.lastSong.position(this.currentYear)
-      },
-      yearBeforeNext() {
-        return this.lastPosition === 1 ? this.currentYear : this.currentYear.previous();
+        return this.$store.getters.lastPosition
       },
       nextYearYyyy() {
         return this.lastPosition === 1 ? this.currentYear.yyyy + 1 : this.currentYear.yyyy;
@@ -86,7 +84,13 @@
         })
       },
       selectSpotifyTrack(track) {
-        console.log(track);
+        this.spotifyData = {
+          songTitle: track.title,
+          artistName: track.artist,
+          albumTitle: track.album,
+          albumYear: track.year,
+          spotifyId: track.spotifyId
+        };
       },
       undo() {
         this.processing = true;
@@ -95,10 +99,10 @@
           this.processing = false;
         })
       },
-      add() {
+      add(songId) {
         this.processing = true;
         const data = {
-          'songId': this.nextSong.id
+          songId
         }
         this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data).then(response => {
           this.$store.dispatch('nuxtServerInit');
@@ -108,7 +112,10 @@
         })
       }
     },
-    middleware: 'admin'
+    middleware: 'admin',
+    head: {
+      title: 'Admin: Live'
+    }
   }
 </script>
 
