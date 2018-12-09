@@ -4,7 +4,6 @@
       <nav>
         <div id="menu">
           <tijdloze-search-box
-            placeholder="Zoek artiest, album of nummer..."
             @selectSearchResult="selectSearchResult($event)"
           />
           <ul>

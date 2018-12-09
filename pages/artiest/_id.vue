@@ -59,7 +59,6 @@
   import PageTitle from '~/components/PageTitle'
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
-  import Position from '../../components/Position'
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentList from '../../components/InCurrentList'
 
@@ -67,7 +66,6 @@
     components: {
       InCurrentList,
       MakeLinks,
-      Position,
       EntryCount,
       Graph,
       PageTitle
@@ -102,7 +100,7 @@
         addLink('urlOfficial', 'Officiële website');
         addLink('urlWikiEn', 'Wikipedia (Engels)');
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-        addLink('urlAllmusic', 'AllMusic');
+        addLink('urlAllMusic', 'AllMusic');
         return links;
       }
     },

@@ -16,8 +16,9 @@
     <h4>Nummer dat reeds in de Tijdloze stond</h4>
     <div>
       <search-box
-        placeholder="Zoek artiest, album of nummer..."
-        :songs-only="true"
+        placeholder="Zoek nummer..."
+        :artist-filter="artist => false"
+        :album-filter="album => false"
         @selectSearchResult="selectSearchResult($event)"
       />
       <div v-if="nextSong">

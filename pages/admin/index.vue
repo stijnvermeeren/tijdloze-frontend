@@ -6,7 +6,6 @@
       <li>
         Aanpassen:
         <search-box
-          placeholder="Zoek artiest, album of nummer..."
           @selectSearchResult="selectSearchResult($event)"
         />
       </li>

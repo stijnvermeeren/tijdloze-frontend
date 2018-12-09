@@ -46,13 +46,11 @@
   import PageTitle from '~/components/PageTitle'
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
-  import Position from '../../components/Position'
   import InCurrentList from '../../components/InCurrentList'
 
   export default {
     components: {
       InCurrentList,
-      Position,
       EntryCount,
       Graph,
       PageTitle
@@ -77,7 +75,7 @@
 
         addLink('urlWikiEn', 'Wikipedia (Engels)');
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-        addLink('urlAllmusic', 'AllMusic');
+        addLink('urlAllMusic', 'AllMusic');
         return links;
       }
     },

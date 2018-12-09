@@ -47,7 +47,24 @@
   import _ from 'lodash';
 
   export default {
-    props: ['placeholder', 'songsOnly'],
+    props: {
+      placeholder: {
+        type: String,
+        default: 'Zoek artiest, album of nummer...'
+      },
+      songFilter: {
+        type: Function,
+        default: song => true
+      },
+      artistFilter: {
+        type: Function,
+        default: artist => true
+      },
+      albumFilter: {
+        type: Function,
+        default: album => true
+      }
+    },
     data() {
       return {
         query: "",
@@ -62,25 +79,25 @@
         }
 
         const artists = this.search(
-          this.$store.getters['entities/artists/query']().all(),
+          this.$store.getters['entities/artists/query']().all().filter(this.artistFilter),
           artist => artist.fullName,
           'artist'
         );
 
         const songs = this.search(
-          this.$store.getters['entities/songs/query']().with('artist').all(),
+          this.$store.getters['entities/songs/query']().with('artist').all().filter(this.songFilter),
           song => `${song.title} ${song.artist.fullName}`,
           'song'
         );
 
         const albums = this.search(
-          this.$store.getters['entities/albums/query']().with('artist').all(),
+          this.$store.getters['entities/albums/query']().with('artist').all().filter(this.albumFilter),
           album => `${album.title} ${album.artist.fullName}`,
           'album'
         );
 
         return _.sortBy(
-          this.songsOnly ? songs : _.concat(artists, songs, albums),
+          _.concat(artists, songs, albums),
           result => -result.score
         );
       },

@@ -8,12 +8,12 @@
 
 <script>
   export default {
-    name: 'WikiUrlInput',
-    props: ['value', 'lang', 'query'],
+    name: 'AllMusicUrlInput',
+    props: ['value', 'query'],
     computed: {
       searchUrl() {
         const query = encodeURIComponent(this.query)
-        return `https://${this.lang}.wikipedia.org/w/index.php?search=${query}`
+        return `https://www.allmusic.com/search/all/${query}`
       }
     },
     methods: {

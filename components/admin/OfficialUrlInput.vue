@@ -8,12 +8,12 @@
 
 <script>
   export default {
-    name: 'WikiUrlInput',
-    props: ['value', 'lang', 'query'],
+    name: 'OfficialUrlInput',
+    props: ['value', 'query'],
     computed: {
       searchUrl() {
         const query = encodeURIComponent(this.query)
-        return `https://${this.lang}.wikipedia.org/w/index.php?search=${query}`
+        return `https://www.google.ch/search?q=${query}`
       }
     },
     methods: {

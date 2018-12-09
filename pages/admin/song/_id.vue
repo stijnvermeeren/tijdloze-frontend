@@ -16,11 +16,19 @@
           <td>{{song.album.title}} ({{song.album.releaseYear}})</td>
         </tr>
         <tr>
+          <th>Taal</th>
+          <td><language-input v-model="fullSongData.languageId" /></td>
+        </tr>
+        <tr>
+          <th>Lead vocals</th>
+          <td><lead-vocals-input v-model="fullSongData.leadVocals" /></td>
+        </tr>
+        <tr>
           <th>Lyrics</th>
           <td><textarea v-model="fullSongData.lyrics" class="lyrics" /></td>
         </tr>
         <tr>
-          <th>Notes</th>
+          <th>Opmerkingen</th>
           <td><textarea v-model="fullSongData.notes" class="notes" /></td>
         </tr>
         <tr>
@@ -52,8 +60,11 @@
 <script>
   import WikiUrlInput from '../../../components/admin/WikiUrlInput'
   import Spotify from '../../../components/Spotify'
+  import LanguageInput from '../../../components/admin/LanguageInput'
+  import LeadVocalsInput from '../../../components/admin/LeadVocalsInput'
+
   export default {
-    components: {Spotify, WikiUrlInput},
+    components: {LeadVocalsInput, LanguageInput, Spotify, WikiUrlInput},
     data() {
       return {
         processing: false
@@ -64,7 +75,8 @@
         return this.$store.getters['entities/songs']().withAll().find(this.fullSongData.id);
       },
       disabled() {
-        return this.processing || !this.fullSongData.title || !this.fullSongData.artistId || !this.fullSongData.albumId
+        return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||
+          !this.fullSongData.albumId || !this.fullSongData.languageId || !this.fullSongData.leadVocals
       }
     },
     methods: {
@@ -85,29 +97,23 @@
     middleware: 'admin',
     head() {
       return {
-        title: `Admin: Song: ${this.fullSongData.title}`
+        title: `Admin: Song: ${this.song.title}`
       }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  table {
-    table-layout: fixed;
+  input, textarea {
+    box-sizing: border-box;
+    width: 100%;
+  }
 
-    td {
-      input, textarea {
-        box-sizing: border-box;
-        width: 100%;
-      }
+  textarea.lyrics {
+    height: 200px;
+  }
 
-      textarea.lyrics {
-        height: 200px;
-      }
-
-      textarea.notes {
-        height: 60px;
-      }
-    }
+  textarea.notes {
+    height: 60px;
   }
 </style>
