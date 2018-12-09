@@ -9,7 +9,9 @@
         </tr>
         <tr>
           <th>Artist</th>
-          <td>{{album.artist.fullName}}</td>
+          <td>
+            <artist-select v-model="fullAlbumData.artistId" />
+          </td>
         </tr>
         <tr>
           <th>Jaar</th>
@@ -21,15 +23,15 @@
         </tr>
         <tr>
           <th>Wikipedia Nederlands</th>
-          <td><wiki-url-input v-model="fullAlbumData.urlWikiNl" lang="nl" :query="`${fullAlbumData.title} ${album.artist.fullName}`" /></td>
+          <td><wiki-url-input v-model="fullAlbumData.urlWikiNl" lang="nl" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
           <th>Wikipedia Engels</th>
-          <td><wiki-url-input v-model="fullAlbumData.urlWikiEn" lang="en" :query="`${fullAlbumData.title} ${album.artist.fullName}`" /></td>
+          <td><wiki-url-input v-model="fullAlbumData.urlWikiEn" lang="en" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
           <th>Wikipedia Nederlands</th>
-          <td><all-music-url-input v-model="fullAlbumData.urlAllMusic" lang="nl" :query="`${fullAlbumData.title} ${album.artist.fullName}`" /></td>
+          <td><all-music-url-input v-model="fullAlbumData.urlAllMusic" lang="nl" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
           <th></th>
@@ -43,9 +45,10 @@
 <script>
   import WikiUrlInput from '../../../components/admin/WikiUrlInput'
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
+  import ArtistSelect from '../../../components/admin/ArtistSelect'
 
   export default {
-    components: {AllMusicUrlInput, WikiUrlInput},
+    components: {ArtistSelect, AllMusicUrlInput, WikiUrlInput},
     data() {
       return {
         processing: false
@@ -53,7 +56,10 @@
     },
     computed: {
       album() {
-        return this.$store.getters['entities/albums']().withAll().find(this.fullAlbumData.id);
+        return this.$store.getters['entities/albums']().find(this.fullAlbumData.id);
+      },
+      artist() {
+        return this.$store.getters['entities/artists']().find(this.fullAlbumData.artistId);
       },
       disabled() {
         return this.processing || !this.fullAlbumData.title || !this.fullAlbumData.artistId || !this.fullAlbumData.releaseYear

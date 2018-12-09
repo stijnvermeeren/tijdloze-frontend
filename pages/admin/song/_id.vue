@@ -9,11 +9,15 @@
         </tr>
         <tr>
           <th>Artist</th>
-          <td>{{song.artist.fullName}}</td>
+          <td>
+            <artist-select v-model="fullSongData.artistId" />
+          </td>
         </tr>
         <tr>
           <th>Album</th>
-          <td>{{song.album.title}} ({{song.album.releaseYear}})</td>
+          <td>
+            <album-select v-model="fullSongData.albumId" :artist-id="fullSongData.artistId" />
+          </td>
         </tr>
         <tr>
           <th>Taal</th>
@@ -33,11 +37,11 @@
         </tr>
         <tr>
           <th>Wikipedia Nederlands</th>
-          <td><wiki-url-input v-model="fullSongData.urlWikiNl" lang="nl" :query="`${fullSongData.title} ${song.artist.fullName}`" /></td>
+          <td><wiki-url-input v-model="fullSongData.urlWikiNl" lang="nl" :query="`${fullSongData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
           <th>Wikipedia Engels</th>
-          <td><wiki-url-input v-model="fullSongData.urlWikiEn" lang="en" :query="`${fullSongData.title} ${song.artist.fullName}`" /></td>
+          <td><wiki-url-input v-model="fullSongData.urlWikiEn" lang="en" :query="`${fullSongData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
           <th>Spotify ID</th>
@@ -62,9 +66,11 @@
   import Spotify from '../../../components/Spotify'
   import LanguageInput from '../../../components/admin/LanguageInput'
   import LeadVocalsInput from '../../../components/admin/LeadVocalsInput'
+  import ArtistSelect from '../../../components/admin/ArtistSelect'
+  import AlbumSelect from '../../../components/admin/AlbumSelect'
 
   export default {
-    components: {LeadVocalsInput, LanguageInput, Spotify, WikiUrlInput},
+    components: {AlbumSelect, ArtistSelect, LeadVocalsInput, LanguageInput, Spotify, WikiUrlInput},
     data() {
       return {
         processing: false
@@ -72,11 +78,22 @@
     },
     computed: {
       song() {
-        return this.$store.getters['entities/songs']().withAll().find(this.fullSongData.id);
+        return this.$store.getters['entities/songs']().find(this.fullSongData.id);
+      },
+      album() {
+        return this.$store.getters['entities/albums']().find(this.fullSongData.albumId);
+      },
+      artist() {
+        return this.$store.getters['entities/artists']().find(this.fullSongData.artistId);
       },
       disabled() {
         return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||
           !this.fullSongData.albumId || !this.fullSongData.languageId || !this.fullSongData.leadVocals
+      }
+    },
+    watch: {
+      artist() {
+        this.fullSongData.albumId = undefined;
       }
     },
     methods: {

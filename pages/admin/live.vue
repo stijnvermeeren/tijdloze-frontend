@@ -34,6 +34,8 @@
 
     <h4>Nummer zoeken op Spotify</h4>
     <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
+
+    <new-song-wizard />
   </div>
 </template>
 
@@ -43,9 +45,10 @@
   import Position from '../../components/Position'
   import Spotify from '../../components/Spotify'
   import SpotifySearch from '../../components/SpotifySearch'
+  import NewSongWizard from '../../components/admin/NewSongWizard'
 
   export default {
-    components: {SpotifySearch, Spotify, Position, SearchBox},
+    components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
         nextSong: undefined,
