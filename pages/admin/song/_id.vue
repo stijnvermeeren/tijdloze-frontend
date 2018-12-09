@@ -77,6 +77,9 @@
       }
     },
     computed: {
+      artistId() {
+        return this.fullSongData.artistId;
+      },
       song() {
         return this.$store.getters['entities/songs']().find(this.fullSongData.id);
       },
@@ -92,7 +95,7 @@
       }
     },
     watch: {
-      artist() {
+      artistId() {
         this.fullSongData.albumId = undefined;
       }
     },

@@ -2,15 +2,12 @@
   <div>
     <div v-if="album">{{album.title}} ({{album.releaseYear}})</div>
     <div v-if="editing">
-      <search-box
-        :song-filter="song => false"
-        :album-filter="album => album.artistId === artistId"
-        :artist-filter="artist => false"
-        :min-query-length="0"
-        placeholder="Zoek album..."
-        @selectSearchResult="selectAlbum($event.item)"
-      />
-      <button v-if="album" @click="editing = false">Annuleren</button>
+      <select v-model="albumId">
+        <option v-for="album in candidateAlbums" :key="album.id" :value="album.id">
+          {{album.title}} ({{album.releaseYear}})
+        </option>
+      </select>
+      <button @click="submit()">Bevestigen</button>
     </div>
     <div v-else>
       <button @click="editing = true">Wijzigen</button>
@@ -19,11 +16,10 @@
 </template>
 
 <script>
-  import SearchBox from '../SearchBox'
+  import _ from 'lodash'
 
   export default {
     name: 'AlbumSelect',
-    components: {SearchBox},
     props: {
       value: {
         type: Number
@@ -34,34 +30,38 @@
     },
     data() {
       return {
-        editing: !this.value
+        editing: !this.value,
+        albumId: this.value
       }
     },
     computed: {
-      album() {
-        if (this.value) {
-          return this.$store.getters['entities/albums']().find(this.value);
+      candidateAlbums() {
+        const artist = this.$store.getters['entities/artists']().with('albums').find(this.artistId);
+        if (artist) {
+          return _.sortBy(
+            artist.albums,
+            [album => album.year, album => album.title]
+          )
         } else {
-          return undefined;
+          return [];
         }
+      },
+      album() {
+        return this.$store.getters['entities/albums']().find(this.value);
       }
     },
     watch: {
-      value() {
+      value(newValue) {
         if (!this.value) {
           this.editing = true;
         }
-      }
+      },
     },
     methods: {
-      selectAlbum(album) {
-        this.$emit('input', album.id);
+      submit() {
+        this.$emit('input', this.albumId);
         this.editing = false;
       }
     }
   }
 </script>
-
-<style scoped>
-
-</style>
