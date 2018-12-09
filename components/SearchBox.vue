@@ -30,7 +30,7 @@
                 </div>
                 <div v-if="result.type === 'album'">
                     {{result.item.title}}
-                    <span class="info">(album van <span class="artiest">{{result.item.artist.fullName}}</span>)</span>
+                    <span class="info">(album van <span class="artiest">{{result.item.artist.fullName}}</span> uit {{result.item.releaseYear}})</span>
                 </div>
             </div>
             <div v-if="resultsCount > resultsLimit" class="more-suggestions">
