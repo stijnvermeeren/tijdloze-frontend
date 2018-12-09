@@ -7,15 +7,15 @@
                 <th v-for="year in years">{{year._yy}}</th>
                 <th class="r">Algemeen</th>
             </tr>
-            <tr v-for="{cutoff, cutoffData, total} in data">
+            <tr v-for="{cutoff, cutoffData, overallSum, overallSize} in data">
                 <td class="r">
                     Top {{cutoff}}
                 </td>
-                <td v-for="{average} in cutoffData">
-                    {{Math.round(average * 10) / 10}}
+                <td v-for="{sum, size} in cutoffData">
+                    {{displayAverage(sum, size)}}
                 </td>
                 <td class="r">
-                    {{Math.round(total * 10) / 10}}
+                    {{displayAverage(overallSum, overallSize)}}
                 </td>
             </tr>
             </tbody>
@@ -53,20 +53,25 @@
             return {
               year: year,
               size: ages.length,
-              average: _.sum(ages) / ages.length
+              sum: _.sum(ages)
             }
           });
 
-          const agesSum = _.sumBy(cutoffData, yearData => yearData.size * yearData.average);
+          const agesSum = _.sumBy(cutoffData, yearData => yearData.sum);
           const sizeSum = _.sumBy(cutoffData, yearData => yearData.size);
-          const total = agesSum / sizeSum;
 
           return {
             cutoff: cutoff,
             cutoffData: cutoffData,
-            total: total
+            overallSum: agesSum,
+            overallSize: sizeSum
           }
         });
+      }
+    },
+    methods: {
+      displayAverage(sum, size) {
+        return size === 0 ? '-' : Math.round(sum / size * 10) / 10
       }
     }
   }
