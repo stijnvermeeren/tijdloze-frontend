@@ -5,6 +5,7 @@
       <search-box
         :placeholder="`Zoek nummer uit de Tijdloze van ${completedYear.yyyy}`"
         :song-filter="songValid"
+        :songs-year="completedYear"
         :album-filter="album => false"
         :artist-filter="artist => false"
         @selectSearchResult="markExit($event.item)"
@@ -41,8 +42,9 @@
       songValid(song) {
         const inCompletedYear = song.position(this.completedYear);
         const nextYear = this.completedYear.next();
-        const possiblyInNextYear = nextYear ? song.possiblyInList(nextYear) : true;
-        return inCompletedYear && possiblyInNextYear;
+        const notYearInNextYear = nextYear ? !song.position(nextYear) : true;
+        const notYetMarked = nextYear ? !song.exitCurrent : true;
+        return inCompletedYear && notYearInNextYear && notYetMarked;
       },
       async unmarkAll() {
         await this.$axios.$delete('/list-exit');

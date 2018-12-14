@@ -146,7 +146,7 @@
     background-color: @menuBackgroundColor;
     overflow-x: hidden;
     padding: 1em 2em;
-    transition: 0.5s;
+    transition: 0.3s;
 
     font-size: 115%;
     text-align: right;

@@ -26,7 +26,12 @@
                 </div>
                 <div v-if="result.type === 'song'">
                     {{result.item.title}}
-                    <span class="info">(nummer van <span class="artiest">{{result.item.artist.fullName}}</span>)</span>
+                    <span v-if="songsYear && result.item.position(songsYear)" class="info">
+                        (nummer van <span class="artiest">{{result.item.artist.fullName}}</span>; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}})
+                    </span>
+                    <span v-else class="info">
+                        (nummer van <span class="artiest">{{result.item.artist.fullName}}</span>)
+                    </span>
                 </div>
                 <div v-if="result.type === 'album'">
                     {{result.item.title}}
@@ -63,6 +68,9 @@
       albumFilter: {
         type: Function,
         default: album => true
+      },
+      songsYear: {
+        type: Object
       }
     },
     data() {
@@ -118,11 +126,12 @@
         return data.filter(item => {
           return matchAttribute(item).toLowerCase().indexOf(this.query.toLowerCase()) > -1
         }).map(item => {
-          return {
-            type: type,
-            item: item,
-            score: this.score(this.query, matchAttribute(item))
+          let score = this.score(this.query, matchAttribute(item));
+          if (this.songsYear && type === 'song') {
+            score = score / 100 + item.position(this.songsYear);
           }
+
+          return {type, item, score}
         });
       },
       score(query, match) {
@@ -196,7 +205,7 @@
             position: absolute;
             top: 8px;
             left: 10px;
-            z-index: 1001;
+            z-index: 1;
         }
 
         input {

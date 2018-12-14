@@ -19,6 +19,8 @@
         placeholder="Zoek nummer..."
         :artist-filter="artist => false"
         :album-filter="album => false"
+        :song-filter="possibleSong"
+        :songs-year="completedYear"
         @selectSearchResult="selectSearchResult($event)"
       />
       <div v-if="nextSong">
@@ -113,6 +115,13 @@
           this.nextSongFullData = undefined;
           this.processing = false;
         })
+      },
+      possibleSong(song) {
+        if (this.nextYearYyyy === this.currentYear.yyyy) {
+          return !song.position(this.currentYear) && !song.exitCurrent;
+        } else {
+          return true;
+        }
       }
     },
     middleware: 'admin',
