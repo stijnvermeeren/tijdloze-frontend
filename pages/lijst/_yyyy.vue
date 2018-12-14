@@ -2,19 +2,53 @@
     <div>
         <h2>De Tijdloze van {{year.yyyy}}</h2>
 
-        <tijdloze-tabs :tabs="tabs">
-            <nuxt-child :songs="songs" :year="year" :exits="exits" :newSongs="newSongs" :analyse="analyse" />
-        </tijdloze-tabs>
+        <full-list :songs="songsExtended" :year="year" />
 
-        <table class="lijst" v-if="songs.length">
-            <tbody>
+        <div v-if="year.previous()">
+            <h3>{{songs.length >= 100 ? 'Hoogtepunten' : 'Voorlopige hoogtepunten'}}</h3>
+
+            <table class="list-summary">
+                <tbody>
                 <tr>
-                    <th v-if="year.previous()" class="n">
-                        <nuxt-link :to="`/lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
-                    </th>
-                    <th class="r">{{year._yy}}</th>
-                    <th v-if="year.next()" class="n">
-                        <nuxt-link :to="`/lijst/${year.next().yyyy}`">{{year.next()._yy}}</nuxt-link>
+                    <th>Hoogste nieuwkomer</th>
+                    <td>
+                    <span v-if="highestNew">
+                        <tijdloze-song :song="highestNew" /> - <tijdloze-artist :artist="highestNew.artist" /> (<tijdloze-position :song="highestNew" :year="year" />) <span v-if="highestNew.isReEntry($store.getters.years, year)">(re-entry)</span>
+                    </span>
+                        <span v-else>/</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Grootste stijger</th>
+                    <td>
+                    <span v-if="biggestUp">
+                        <tijdloze-song :song="biggestUp" /> - <tijdloze-artist :artist="biggestUp.artist" /> (<tijdloze-position :song="biggestUp" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestUp" :year="year" />)
+                    </span>
+                        <span v-else>/</span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Grootste daler</th>
+                    <td>
+                    <span v-if="biggestDown">
+                        <tijdloze-song :song="biggestDown" /> - <tijdloze-artist :artist="biggestDown.artist" /> (<tijdloze-position :song="biggestDown" :year="year.previous()" /> &rarr; <tijdloze-position :song="biggestDown" :year="year" />)
+                    </span>
+                        <span v-else>/</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div v-if="exits.length">
+            <h3>Exits</h3>
+
+            <table class="lijst perVijf">
+                <tbody>
+                <tr>
+                    <th class="r">
+                        {{year.previous()._yy}}
                     </th>
                     <th class="a">
                         <nuxt-link to="/artiesten">Artiest</nuxt-link>
@@ -22,20 +56,51 @@
                     <th>
                         <nuxt-link to="/nummers">Titel</nuxt-link>
                     </th>
-                    <th>
+                    <th class="releaseYear">
                         Jaar
                     </th>
                 </tr>
-                <tr v-for="song in songsExtended" :class="{lineAfter: song.position(year) % 5 === 0}">
-                    <td v-if="year.previous()" class="n">
+                <tr v-for="song in exits">
+                    <td class="r">
                         <tijdloze-position :song="song" :year="year.previous()" />
                     </td>
-                    <td class="r">
-                        <tijdloze-position-change :song="song" :year="year" />
-                        <tijdloze-position :song="song" :year="year" />
+                    <td class="a">
+                        <tijdloze-artist :artist="song.artist" />
                     </td>
-                    <td v-if="year.next()" class="n">
-                        <tijdloze-position :song="song" :year="year.next()" />
+                    <td>
+                        <tijdloze-song :song="song" />
+                    </td>
+                    <td class="releaseYear">
+                        {{song.album.releaseYear}}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div v-if="newSongs.length">
+            <h3>Nieuwkomers</h3>
+
+            <table class="lijst perVijf">
+                <tbody>
+                <tr>
+                    <th class="r">
+                        {{year._yy}}
+                    </th>
+                    <th class="a">
+                        <nuxt-link to="/artiesten">Artiest</nuxt-link>
+                    </th>
+                    <th>
+                        <nuxt-link to="/nummers">Titel</nuxt-link>
+                    </th>
+                    <th></th>
+                    <th class="releaseYear">
+                        Jaar
+                    </th>
+                </tr>
+                <tr v-for="song in newSongs">
+                    <td class="r">
+                        <tijdloze-position :song="song" :year="year" />
                     </td>
                     <td class="a">
                         <tijdloze-artist :artist="song.artist" />
@@ -44,21 +109,37 @@
                         <tijdloze-song :song="song" />
                     </td>
                     <td>
+                        <span v-if="song.isReEntry($store.getters.years, year)">Re-entry</span>
+                    </td>
+                    <td class="releaseYear">
                         {{song.album.releaseYear}}
                     </td>
                 </tr>
-            </tbody>
-        </table>
-        <p v-else>Nog geen nummers in de Tijdloze van {{year.yyyy}}.</p>
+                </tbody>
+            </table>
+        </div>
+
+        <div v-if="analyse">
+            <h3>Interessante feiten</h3>
+            <div class="analyse">
+                <ul>
+                    <li v-for="text in analyse">
+                        <tijdloze-links :text="text" />
+                    </li>
+                </ul>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
     import _ from 'lodash';
     import analyse from '../../store/analyse';
+    import FullList from '../../components/FullList'
 
     export default {
-    computed: {
+      components: {FullList},
+      computed: {
       years() {
         return this.$store.getters.years;
       },
@@ -94,29 +175,32 @@
         const item = analyse.find(item => item.yyyy === this.year.yyyy);
         if (item) {
           return item.analyse;
+        } else {
+          return null;
         }
       },
-      tabs() {
-        let tabs = [];
-
-        if (this.year.previous()) {
-          const overviewTitle = this.songs.length >= 100 ? 'Overzicht' : 'Voorlopig overzicht';
-          tabs.push({ to: `/lijst/${this.year.yyyy}`, title: overviewTitle});
-        }
-
-        if (this.analyse) {
-          tabs.push({ to: `/lijst/${this.year.yyyy}/analyse`, title: 'Analyse'});
-        }
-
-        if (this.newSongs.length > 0) {
-          tabs.push({ to: `/lijst/${this.year.yyyy}/nieuwkomers`, title: 'Nieuwkomers' });
-        }
-
-        if (this.exits.length > 0) {
-          tabs.push({ to: `/lijst/${this.year.yyyy}/exits`, title: 'Exits' });
-        }
-
-        return tabs;
+      highestNew() {
+        return _.first(this.newSongs);
+      },
+      biggestUp() {
+        return _.last(
+          _.sortBy(
+            this.songs.filter(song => {
+              return song.position(this.year.previous()) && song.position(this.year) < song.position(this.year.previous());
+            }),
+            [song => song.position(this.year.previous()) - song.position(this.year), song => -song.position(this.year)]
+          )
+        );
+      },
+      biggestDown() {
+        return _.last(
+          _.sortBy(
+            this.songs.filter(song => {
+              return song.position(this.year.previous()) && song.position(this.year) > song.position(this.year.previous());
+            }),
+            [song => song.position(this.year) - song.position(this.year.previous()), song => -song.position(this.year)]
+          )
+        );
       }
     },
     head() {
@@ -135,3 +219,16 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+    div.analyse {
+        font-size: 14px;
+    }
+
+    .releaseYear {
+        @media (max-width: 660px) {
+            display: none;
+        }
+    }
+
+</style>

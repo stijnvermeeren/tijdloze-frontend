@@ -95,7 +95,7 @@ const createStore = () => {
       list: (state, getters) => (year, extended) => {
         return _.sortBy(
           getters.songs.filter(song => song.position(year, extended)),
-          song => song.position(year)
+          song => song.position(year, extended)
         );
       },
       lastSong(state, getters) {

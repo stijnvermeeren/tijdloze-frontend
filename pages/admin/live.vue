@@ -22,9 +22,9 @@
         @selectSearchResult="selectSearchResult($event)"
       />
       <div v-if="nextSong">
-        {{nextSong.artist.fullName}} - {{nextSong.title}} ({{yearBeforeNext.yyyy}}: <position :year="yearBeforeNext" :song="nextSong" />)
+        {{nextSong.artist.fullName}} - {{nextSong.title}} ({{completedYear.yyyy}}: <position :year="completedYear" :song="nextSong" />)
       </div>
-      <div v-if="nextSongFullData">
+      <div v-if="nextSongFullData && nextSongFullData.spotifyId">
         <spotify :spotifyId="nextSongFullData.spotifyId" />
       </div>
       <div>
@@ -60,6 +60,9 @@
     computed: {
       currentYear() {
         return this.$store.getters.currentYear;
+      },
+      completedYear() {
+        return this.$store.getters.completedYear;
       },
       lastSong() {
         return this.$store.getters.lastSong;

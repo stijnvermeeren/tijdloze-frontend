@@ -112,13 +112,13 @@ export default [
   {
     yyyy: 1999,
     analyse: [
+      `In 1999 bestond de Tijdloze uitzonderlijk niet uit 100, maar uit <strong>150 nummers</strong>. In de meeste statistieken op deze website zijn de vijftig laagste noteringen niet meegeteld.`,
       `[Nirvana] pakt de eerste plaats af van [Deep Purple]! Met [*Smells Like Teen Spirit] staat er voor het eerst een nummer dat niet [Angie] of [Child In Time] heet op de eerste plaats.`,
       `[*Deep Purple] staat op twee, [*Led Zeppelin] blijft op drie en de [*Rolling Stones] blijven staan op vier.`,
       `[Nothing Else Matters] is na een snelle start in de eerste helft van de jaren '90 wat blijven hangen, maar stijgt nu plots terug van vijftien naar vijf. Ook [One;Metallica] van [*Metallica] hangt nog steeds in de top tien, in 1999 stijgt het nummer van negen naar acht.`,
       `[*My Bond With You... Disco] van [Zita Swoon] komt nieuw binnen op 47.`,
       `[*Live] stijgt met [I Alone] (eerder al in [1995] op 47 binnengekomen maar toen meteen weer weggevallen) spectaculair van 100 naar 35. [Live] doet het in het algemeen goed in 1999: [The Dolphin's Cry] komt nieuw binnen op 53 en [Lightning Crashes] op 63.`,
-      `[*dEUS] evenaart met zes nummers in de Tijdloze het record van [U2] uit [1992]. Zowel [Suds & Soda] (13), [Roses] (23), [Hotellounge] (24), [Instant Street] (58), [Little Arithmetics] (79) als [Sister Dew] (97) staan in de Tijdloze. En gezien dEUS een hogere gemiddelde positie heeft, kunnen we stellen dat dEUS dit record overtroffen heeft!`,
-      `In 1999 bestond de Tijdloze overigens niet uit 100, maar uit <strong>150 nummers</strong>. Alle 150 noteringen vind je hieronder. In de meeste statistieken zijn de vijftig laagste noteringen echter niet meegeteld.`
+      `[*dEUS] evenaart met zes nummers in de Tijdloze het record van [U2] uit [1992]. Zowel [Suds & Soda] (13), [Roses] (23), [Hotellounge] (24), [Instant Street] (58), [Little Arithmetics] (79) als [Sister Dew] (97) staan in de Tijdloze. En gezien dEUS een hogere gemiddelde positie heeft, kunnen we stellen dat dEUS dit record overtroffen heeft!`
     ]
   },
   {
