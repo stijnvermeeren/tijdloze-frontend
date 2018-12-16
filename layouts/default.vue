@@ -24,6 +24,16 @@
     components: {
       tijdlozeMenu: Menu
     },
+    computed: {
+      lastPosition() {
+        return this.$store.getters.lastPosition
+      }
+    },
+    watch: {
+      lastPosition() {
+        this.$store.dispatch('setRefreshInterval');
+      }
+    },
     mounted() {
       if (process.client && !this.$store.state.refreshInterval) {
         this.$store.dispatch('setRefreshInterval');
@@ -33,7 +43,14 @@
         const accessToken = this.$cookies.get('access_token');
         if (accessToken) {
           if (!this.$store.state.accessToken || secondsToExpiry(accessToken) < 0) {
-            this.$auth.checkSession()
+            this.$auth.checkSession(
+              error => {
+                this.$auth.unsetAccessToken()
+              },
+              authResult => {
+                this.$auth.loginCallback(authResult.idToken, authResult.accessToken)
+              }
+            )
           }
         }
       }

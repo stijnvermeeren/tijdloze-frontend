@@ -75,15 +75,12 @@
 
     export default {
       components: {Comment},
-      props: ["coreData"],
-      data() {
-        return {
-          year: this.$store.getters.currentYear
-        }
-      },
       computed: {
         top5() {
           return _.take(this.$store.getters.list(this.year), 5);
+        },
+        year() {
+          return this.$store.getters.currentYear;
         }
       },
       async asyncData({ params, app }) {

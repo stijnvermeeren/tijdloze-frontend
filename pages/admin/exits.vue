@@ -48,15 +48,15 @@
       },
       async unmarkAll() {
         await this.$axios.$delete('/list-exit');
-        this.$store.dispatch('nuxtServerInit');
+        this.$store.dispatch('refreshCurrentList');
       },
       async unmarkExit(song) {
         await this.$axios.$delete(`/list-exit/${song.id}`);
-        this.$store.dispatch('nuxtServerInit');
+        this.$store.dispatch('refreshCurrentList');
       },
       async markExit(song) {
         await this.$axios.$post(`/list-exit/${song.id}`);
-        this.$store.dispatch('nuxtServerInit');
+        this.$store.dispatch('refreshCurrentList');
       }
     },
     middleware: 'admin',

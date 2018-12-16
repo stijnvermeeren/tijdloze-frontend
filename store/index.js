@@ -104,7 +104,11 @@ const createStore = () => {
         return _.first(getters.list(getters.currentYear));
       },
       lastPosition(state, getters) {
-        return getters.lastSong.position(getters.currentYear)
+        if (getters.lastSong) {
+          return getters.lastSong.position(getters.currentYear)
+        } else {
+          return undefined
+        }
       },
       completedYear(state, getters) {
         return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
@@ -132,14 +136,22 @@ const createStore = () => {
       setUser(state, user) {
         state.user = user || null
       },
+      setCurrentYear(state, currentYear) {
+        state.yearsRaw = state.yearsRaw.filter(year => year < currentYear)
+        state.yearsRaw.push(currentYear)
+      },
       setRefreshInterval(state, interval) {
+        if (state.refreshInterval) {
+          clearInterval(state.refreshInterval)
+        }
         state.refreshInterval = interval
       }
     },
     actions: {
       async refreshCurrentList({commit, dispatch}) {
         const response = await this.$axios.$get('current-list');
-        console.log(response)
+
+        commit('setCurrentYear', response.year)
 
         Artist.insertOrUpdate({
           data: response.newArtists
@@ -186,8 +198,10 @@ const createStore = () => {
         });
         console.timeEnd('process');
       },
-      setRefreshInterval({commit, dispatch}) {
-        const interval = setInterval(() => dispatch('refreshCurrentList'), 15000);
+      setRefreshInterval({commit, dispatch, getters}) {
+        const timeout = getters.lastPosition === 1 ? 5 * 60 * 1000 : 15 * 1000;
+        console.log(timeout)
+        const interval = setInterval(() => dispatch('refreshCurrentList'), timeout);
         commit('setRefreshInterval', interval);
       }
     }

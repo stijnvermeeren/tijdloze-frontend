@@ -100,7 +100,7 @@
       undo() {
         this.processing = true;
         this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.lastPosition}`).then(response => {
-          this.$store.dispatch('nuxtServerInit');
+          this.$store.dispatch('refreshCurrentList');
           this.processing = false;
         })
       },
@@ -110,7 +110,7 @@
           songId
         }
         this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data).then(response => {
-          this.$store.dispatch('nuxtServerInit');
+          this.$store.dispatch('refreshCurrentList');
           this.nextSong = undefined;
           this.nextSongFullData = undefined;
           this.processing = false;

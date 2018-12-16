@@ -67,13 +67,13 @@ export default ({ app, store, route }, inject) => {
     unsetAccessToken() {
       unsetAccessToken()
     },
-    checkSession() {
-      auth.checkSession(authParams, (err, authResult) => {
-        if (err) {
-          unsetAccessToken()
+    checkSession(onError, onSuccess) {
+      auth.checkSession(authParams, (error, authResult) => {
+        if (error) {
+          onError(error)
         }
         if (authResult) {
-          loginCallback(authResult.idToken, authResult.accessToken)
+          onSuccess(authResult)
         }
       })
     },

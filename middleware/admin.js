@@ -1,6 +1,6 @@
 
-export default function ({ store, redirect }) {
+export default function ({ store, redirect, route }) {
   if (!store.getters.isAdmin) {
-    redirect('/')
+    redirect('/auth/admin', { redirect: route.path })
   }
 }
