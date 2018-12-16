@@ -25,6 +25,10 @@
       tijdlozeMenu: Menu
     },
     mounted() {
+      if (process.client && !this.$store.state.refreshInterval) {
+        this.$store.dispatch('setRefreshInterval');
+      }
+
       if (!this.$store.isAuthenticated) {
         const accessToken = this.$cookies.get('access_token');
         if (accessToken) {

@@ -42,10 +42,6 @@ export default ({ app, store, route }, inject) => {
     };
     app.$axios.$post('user', data).then(user => {
       store.commit('setUser', user);
-      const sessionRedirectPath = sessionStorage.getItem("redirectPath");
-      sessionStorage.removeItem("redirectPath");
-      const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
-      app.router.replace(redirectPath);
     });
   }
 
@@ -72,7 +68,6 @@ export default ({ app, store, route }, inject) => {
       unsetAccessToken()
     },
     checkSession() {
-      console.log("checkSession")
       auth.checkSession(authParams, (err, authResult) => {
         if (err) {
           unsetAccessToken()

@@ -14,6 +14,11 @@
       const accessToken = params.access_token;
 
       this.$auth.loginCallback(idToken, accessToken);
+
+      const sessionRedirectPath = sessionStorage.getItem("redirectPath");
+      sessionStorage.removeItem("redirectPath");
+      const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
+      app.router.replace(redirectPath);
     }
   }
 </script>

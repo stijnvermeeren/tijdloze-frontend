@@ -30,6 +30,7 @@ const createStore = () => {
     state: {
       accessToken: null,
       user: null,
+      refreshInterval: null,
       yearsRaw: [],
       countries: [],
       languages: [],
@@ -130,9 +131,40 @@ const createStore = () => {
       },
       setUser(state, user) {
         state.user = user || null
+      },
+      setRefreshInterval(state, interval) {
+        state.refreshInterval = interval
       }
     },
     actions: {
+      async refreshCurrentList({commit, dispatch}) {
+        const response = await this.$axios.$get('current-list');
+        console.log(response)
+
+        Artist.insertOrUpdate({
+          data: response.newArtists
+        })
+        Album.insertOrUpdate({
+          data: response.newAlbums
+        })
+        Song.insertOrUpdate({
+          data: response.newSongs
+        })
+
+        Song.update({
+          where: song => true,
+          data: song => {
+            song.exitCurrent = response.exits.includes(song.id)
+
+            const entry = response.entries.find(entry => entry.songId == song.id)
+            if (entry) {
+              song.positions[response.year % 100] = entry.position
+            } else {
+              delete song.positions[response.year % 100]
+            }
+          }
+        })
+      },
       async nuxtServerInit({commit, dispatch}) {
         console.time('init');
         const response = await this.$axios.$get('core-data');
@@ -142,23 +174,21 @@ const createStore = () => {
         commit('updateCoreData', response);
 
         dispatch('entities/artists/create', {
-          data: _.sortBy(
-            response.artists,
-            artist => [artist.name.toLowerCase(), artist.firstName.toLowerCase()]
-          )
+          data: response.artists
         });
 
         dispatch('entities/albums/create', {
-          data: _.sortBy(
-            response.albums,
-            album => [album.releaseYear, album.title.toLowerCase()]
-          )
+          data: response.albums
         });
 
         dispatch('entities/songs/create', {
           data: response.songs
         });
         console.timeEnd('process');
+      },
+      setRefreshInterval({commit, dispatch}) {
+        const interval = setInterval(() => dispatch('refreshCurrentList'), 15000);
+        commit('setRefreshInterval', interval);
       }
     }
   });
