@@ -13,8 +13,15 @@
 
     <h3>Volgend nummer</h3>
     <div><strong>Positie {{nextPosition}} in {{nextYearYyyy}}</strong></div>
-    <h4>Nummer dat reeds in de Tijdloze stond</h4>
+
     <div>
+      <input type="radio" value="existing" v-model="nextSongType" id="nextType-existing" />
+      <label for="nextType-existing">Nummer dat reeds in de Tijdloze stond</label>
+      <input type="radio" value="new" v-model="nextSongType" id="nextType-new" />
+      <label for="nextType-new">Nieuw nummer</label>
+    </div>
+
+    <div class="box" v-if="nextSongType === 'existing'">
       <search-box
         placeholder="Zoek nummer..."
         :artist-filter="artist => false"
@@ -24,35 +31,46 @@
         @selectSearchResult="selectSearchResult($event)"
       />
       <div v-if="nextSong">
-        {{nextSong.artist.fullName}} - {{nextSong.title}} ({{completedYear.yyyy}}: <position :year="completedYear" :song="nextSong" />)
+        <strong>{{nextSong.artist.fullName}} - {{nextSong.title}}</strong>
+        (in {{completedYear.yyyy}} op positie <position :year="completedYear" :song="nextSong" />)
       </div>
       <div v-if="nextSongFullData && nextSongFullData.spotifyId">
         <spotify :spotifyId="nextSongFullData.spotifyId" />
       </div>
+
       <div>
-        <button @click="add(nextSong.id)">Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}</button>
+        <button @click="add(nextSong.id)" :disabled="!nextValid">
+          Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
+        </button>
       </div>
     </div>
 
-    <h3>Nummer zoeken op Spotify</h3>
-    <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
+    <div class="box" v-if="nextSongType === 'new'">
+      <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
 
-    <new-song-wizard :preset="spotifyData" @newSong="add($event.id)" />
+      <hr />
+
+      <new-song-wizard
+        :preset="spotifyData"
+        :button-label="`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`"
+        @newSong="add($event.id)"
+      />
+    </div>
   </div>
 </template>
 
 <script>
-  import _ from 'lodash'
   import SearchBox from '../../components/SearchBox'
   import Position from '../../components/Position'
   import Spotify from '../../components/Spotify'
-  import SpotifySearch from '../../components/SpotifySearch'
+  import SpotifySearch from '../../components/admin/SpotifySearch'
   import NewSongWizard from '../../components/admin/NewSongWizard'
 
   export default {
     components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
+        nextSongType: 'existing',
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
@@ -78,6 +96,13 @@
       nextPosition() {
         return this.lastPosition === 1 ? 100 : this.lastPosition - 1;
       },
+      nextValid() {
+        if (this.nextSongType === 'existing') {
+          return !!this.nextSong
+        } else {
+          return true
+        }
+      }
     },
     methods: {
       selectSearchResult(result) {
@@ -111,6 +136,7 @@
         }
         this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data).then(response => {
           this.$store.dispatch('refreshCurrentList');
+          this.nextSongType = 'existing';
           this.nextSong = undefined;
           this.nextSongFullData = undefined;
           this.processing = false;
@@ -132,5 +158,9 @@
 </script>
 
 <style scoped>
-
+  div.box {
+    border: 1px solid grey;
+    padding: 5px 10px;
+    margin: 10px 0;
+  }
 </style>

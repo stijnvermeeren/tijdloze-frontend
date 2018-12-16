@@ -42,9 +42,7 @@
     },
     watch: {
       value() {
-        if (!this.value) {
-          this.editing = true;
-        }
+        this.editing = !this.value;
       }
     },
     methods: {

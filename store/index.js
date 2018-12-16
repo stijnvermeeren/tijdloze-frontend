@@ -126,7 +126,6 @@ const createStore = () => {
 
         if (process.client && accessToken) {
           if (secondsToExpiry(accessToken) > 2) {
-            console.log("set timeout", secondsToExpiry(accessToken) - 2)
             setTimeout(() => {
               this.$auth.checkSession();
             }, 1000 * (secondsToExpiry(accessToken) - 2))
@@ -200,7 +199,6 @@ const createStore = () => {
       },
       setRefreshInterval({commit, dispatch, getters}) {
         const timeout = getters.lastPosition === 1 ? 5 * 60 * 1000 : 15 * 1000;
-        console.log(timeout)
         const interval = setInterval(() => dispatch('refreshCurrentList'), timeout);
         commit('setRefreshInterval', interval);
       }

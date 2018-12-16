@@ -1,28 +1,28 @@
 <template>
   <div>
     <div>
-      <input v-model="query" @keypress.enter="search()" />
+      <input v-model="query" @keypress.enter="search()" placeholder="Titel en/of artiest" />
       <button @click="search()" :disabled="processing">
         Zoeken op Spotify
       </button>
     </div>
     <div v-if="spotifyTracks.length">
-      <ul>
-        <li v-for="track in spotifyTracks" :key="track.spotifyId">
-          <div>Titel: <strong>{{ track.title }}</strong></div>
-          <div>Artiest: <strong>{{ track.artist }}</strong></div>
-          <div>Album: {{ track.album }} ({{ track.year }})</div>
-          <div><spotify :spotifyId="track.spotifyId" /></div>
-          <div><button @click="select(track)">Selecteren</button></div>
-        </li>
-      </ul>
+      <table>
+        <tbody>
+          <tr v-for="track in spotifyTracks" :key="track.spotifyId">
+            <td><spotify :spotifyId="track.spotifyId" /></td>
+            <td><button @click="select(track)">Selecteren</button></td>
+          </tr>
+        </tbody>
+      </table>
       <div><button @click="cancel()">Zoeken annuleren</button></div>
     </div>
   </div>
 </template>
 
 <script>
-  import Spotify from './Spotify'
+  import Spotify from '../Spotify'
+
   export default {
     name: 'SpotifySearch',
     components: {Spotify},
@@ -53,3 +53,14 @@
     }
   }
 </script>
+
+<style lang="less" scoped>
+  input {
+    width: 300px;
+  }
+
+  table {
+    width: auto;
+    margin: 10px auto 10px 0
+  }
+</style>

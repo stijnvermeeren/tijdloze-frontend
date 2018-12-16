@@ -1,7 +1,5 @@
 <template>
   <div>
-    <h3>Nieuw nummer toevoegen</h3>
-
     <h4>Artiest</h4>
     <div>
       <div>
@@ -14,26 +12,28 @@
           <label for="artist-new">Nieuwe artiest</label>
         </span>
       </div>
-      <div v-if="!artistNew">
-        <artist-select v-model="artistId" />
-      </div>
-      <div v-if="artistNew">
-        <table class="info">
-          <tbody>
-            <tr>
-              <th>Voornaam</th>
-              <td><input v-model="artistDetails.firstName" placeholder="The / Bob / ..." /></td>
-            </tr>
-            <tr>
-              <th>Naam</th>
-              <td><input v-model="artistDetails.name" placeholder="Beatles / Dylan / ..." /></td>
-            </tr>
-            <tr>
-              <th>Land</th>
-              <td><country-input v-model="artistDetails.countryId" /></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="box">
+        <div v-if="!artistNew">
+          <artist-select v-model="artistId" />
+        </div>
+        <div v-if="artistNew">
+          <table class="info">
+            <tbody>
+              <tr>
+                <th>Voornaam</th>
+                <td><input v-model="artistDetails.firstName" placeholder="The / Bob / ..." /></td>
+              </tr>
+              <tr>
+                <th>Naam</th>
+                <td><input v-model="artistDetails.name" placeholder="Beatles / Dylan / ..." /></td>
+              </tr>
+              <tr>
+                <th>Land</th>
+                <td><country-input v-model="artistDetails.countryId" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -49,28 +49,30 @@
           <label for="album-new">Nieuw album</label>
         </span>
       </div>
-      <div v-if="!albumNew">
-        <album-select v-model="albumId" :artist-id="artistId" />
-      </div>
-      <div v-if="albumNew">
-        <table class="info">
-          <tbody>
-            <tr>
-              <th>Titel</th>
-              <td><input v-model="albumDetails.title" /></td>
-            </tr>
-            <tr>
-              <th>Jaar</th>
-              <td><input v-model.number="albumDetails.releaseYear" type="number" /></td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="box">
+        <div v-if="!albumNew">
+          <album-select v-model="albumId" :artist-id="artistId" />
+        </div>
+        <div v-if="albumNew">
+          <table class="info">
+            <tbody>
+              <tr>
+                <th>Titel</th>
+                <td><input v-model="albumDetails.title" /></td>
+              </tr>
+              <tr>
+                <th>Jaar</th>
+                <td><input v-model.number="albumDetails.releaseYear" type="number" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <div v-if="artistValid && albumValid">
       <h4>Nummer</h4>
-      <div>
+      <div class="box">
         <table class="info">
           <tbody>
             <tr>
@@ -88,7 +90,10 @@
           </tbody>
         </table>
       </div>
-      <div><button :disabled="!songValid || submitting" @click="submit()">Toevoegen</button></div>
+    </div>
+
+    <div>
+      <button :disabled="!(artistValid && albumValid && songValid) || submitting" @click="submit()">{{buttonLabel}}</button>
     </div>
   </div>
 </template>
@@ -99,12 +104,17 @@
   import AlbumSelect from './AlbumSelect'
   import LanguageInput from './LanguageInput'
   import LeadVocalsInput from './LeadVocalsInput'
+
   export default {
     name: 'NewSongWizard',
     components: {LeadVocalsInput, LanguageInput, AlbumSelect, ArtistSelect, CountryInput},
     props: {
       preset: {
         type: Object
+      },
+      buttonLabel: {
+        type: String,
+        default: "Toevoegen"
       }
     },
     data() {
@@ -284,5 +294,9 @@
 </script>
 
 <style scoped>
-
+  div.box {
+    border: 1px solid grey;
+    padding: 5px 10px;
+    margin: 10px 0;
+  }
 </style>
