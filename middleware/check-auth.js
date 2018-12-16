@@ -11,7 +11,6 @@ export default function ({ store, req, app }) {
     if (secondsToExpiry(accessToken) > 0) {
       store.commit('setAccessToken', accessToken);
 
-      console.log("getting user")
       return app.$axios.get(`user`).then(response => {
         store.commit('setUser', response.data);
       });

@@ -28,7 +28,7 @@
     },
     methods: {
       login() {
-        this.$auth.login();
+        this.$auth.login(this.$route.path);
       },
       logout() {
         this.$store.commit('setUser', null);

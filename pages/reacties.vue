@@ -150,7 +150,7 @@
         });
       },
       login() {
-        this.$auth.login();
+        this.$auth.login(this.$route.path);
       }
     },
     beforeRouteUpdate (to, from, next) {

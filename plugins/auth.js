@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 
 const config = require('~/config.json');
 
-export default ({ app, store, route }, inject) => {
+export default ({ app, store }, inject) => {
   const SCOPE = 'openid profile email';
 
   const authParams = {
@@ -46,8 +46,8 @@ export default ({ app, store, route }, inject) => {
   }
 
   inject('auth', {
-    login() {
-      sessionStorage.setItem("redirectPath", route.path);
+    login(redirectPath) {
+      sessionStorage.setItem("redirectPath", redirectPath);
       unsetAccessToken()
       auth.authorize(authParams);
     },

@@ -67,7 +67,11 @@
           this.hoverIndex = index;
         },
         fullSongLine(song) {
-          return this.songLine(song, possiblyInListIntervals([song], this.years), true);
+          return this.songLine(
+            song,
+            possiblyInListIntervals([song], this.years),
+            !song.position(this.years[0])
+          );
         }
       }
     }

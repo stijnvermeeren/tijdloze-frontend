@@ -1,5 +1,5 @@
 <template>
-    <p>Signing in...</p>
+    <p>Je wordt aangemeld...</p>
 </template>
 
 <script>
@@ -18,7 +18,7 @@
       const sessionRedirectPath = sessionStorage.getItem("redirectPath");
       sessionStorage.removeItem("redirectPath");
       const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
-      app.router.replace(redirectPath);
+      this.$router.replace(redirectPath);
     }
   }
 </script>
