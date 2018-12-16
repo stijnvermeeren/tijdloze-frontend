@@ -5,7 +5,7 @@
 
     <div class="lyricsContainer">
       <slot />
-      <div @click="toggle()" class="toggle">
+      <div @click.prevent="toggle()" class="toggle">
         <div>
           <a v-if="!isOpen">Meer tonen</a>
           <a v-else>Minder tonen</a>

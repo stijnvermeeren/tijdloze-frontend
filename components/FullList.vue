@@ -44,7 +44,7 @@
         </tr>
         </tbody>
       </table>
-      <div v-if="collapsable" @click="toggle()" class="collapseLink">
+      <div v-if="collapsable" @click.prevent="toggle()" class="collapseLink">
         <div v-if="collapsed">
           <a>Toon de hele lijst</a>
         </div>
