@@ -121,6 +121,7 @@ const createStore = () => {
 
         if (process.client && accessToken) {
           if (secondsToExpiry(accessToken) > 2) {
+            console.log("set timeout", secondsToExpiry(accessToken) - 2)
             setTimeout(() => {
               this.$auth.checkSession();
             }, 1000 * (secondsToExpiry(accessToken) - 2))

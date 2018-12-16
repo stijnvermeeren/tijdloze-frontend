@@ -30,7 +30,7 @@ module.exports = {
   plugins: [
     '~/plugins/global.js',
     '~/plugins/axios',
-    '~/plugins/auth.js'
+    '~/plugins/auth'
   ],
   modules: [
     ['@nuxtjs/axios'],

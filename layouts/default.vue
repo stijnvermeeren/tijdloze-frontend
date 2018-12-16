@@ -25,12 +25,10 @@
       tijdlozeMenu: Menu
     },
     mounted() {
-      console.log("mounted");
-      const accessToken = this.$cookies.get('access_token');
-      console.log(secondsToExpiry(accessToken));
       if (!this.$store.isAuthenticated) {
+        const accessToken = this.$cookies.get('access_token');
         if (accessToken) {
-          if (secondsToExpiry(accessToken) < 0) {
+          if (!this.$store.state.accessToken || secondsToExpiry(accessToken) < 0) {
             this.$auth.checkSession()
           }
         }
