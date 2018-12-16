@@ -17,8 +17,6 @@
 </template>
 
 <script>
-  import { unsetAccessToken, login, logout } from '~/utils/auth';
-
   export default {
     computed: {
       isAuthenticated() {
@@ -30,19 +28,11 @@
     },
     methods: {
       login() {
-        sessionStorage.setItem("redirectPath", this.$route.path);
-        unsetAccessToken(this, this.$store);
-        login();
+        this.$auth.login();
       },
       logout() {
         this.$store.commit('setUser', null);
-        unsetAccessToken(this, this.$store);
-        logout();
-      },
-      test() {
-        this.$axios.$post(`user`).then(result => {
-          console.log(result);
-        })
+        this.$auth.logout();
       }
     }
   }

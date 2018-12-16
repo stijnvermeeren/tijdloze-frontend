@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import VuexORM from '@vuex-orm/core'
 import _ from 'lodash';
+import {secondsToExpiry} from '~/utils/jwt'
 
 import Album from './Album';
 import Artist from './Artist';
@@ -117,6 +118,14 @@ const createStore = () => {
       },
       setAccessToken(state, accessToken) {
         state.accessToken = accessToken || null
+
+        if (process.client && accessToken) {
+          if (secondsToExpiry(accessToken) > 2) {
+            setTimeout(() => {
+              this.$auth.checkSession();
+            }, 1000 * (secondsToExpiry(accessToken) - 2))
+          }
+        }
       },
       setUser(state, user) {
         state.user = user || null

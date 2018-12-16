@@ -1,5 +1,4 @@
-import { setAccessToken, unsetAccessToken } from '~/utils/auth'
-import jwtDecode from 'jwt-decode'
+import {secondsToExpiry} from '~/utils/jwt'
 
 export default function ({ store, req, app }) {
   // If nuxt generate, pass this middleware
@@ -9,15 +8,17 @@ export default function ({ store, req, app }) {
 
   const accessToken = app.$cookies.get('access_token');
   if (accessToken) {
-    const jwt = jwtDecode(accessToken);
-    if (jwt && jwt.exp && jwt.exp > Date.now().valueOf() / 1000) {
-      setAccessToken(accessToken, app, store);
+    if (secondsToExpiry(accessToken) > 0) {
+      store.commit('setAccessToken', accessToken);
 
+      console.log("getting user")
       return app.$axios.get(`user`).then(response => {
         store.commit('setUser', response.data);
       });
     } else {
-      unsetAccessToken(app, store)
+      if (process.client) {
+        app.$auth.checkSession()
+      }
     }
   }
 }

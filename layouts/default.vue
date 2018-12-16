@@ -18,10 +18,23 @@
 
 <script>
   import Menu from '../components/Menu'
+  import {secondsToExpiry} from '~/utils/jwt'
 
   export default {
     components: {
       tijdlozeMenu: Menu
+    },
+    mounted() {
+      console.log("mounted");
+      const accessToken = this.$cookies.get('access_token');
+      console.log(secondsToExpiry(accessToken));
+      if (!this.$store.isAuthenticated) {
+        if (accessToken) {
+          if (secondsToExpiry(accessToken) < 0) {
+            this.$auth.checkSession()
+          }
+        }
+      }
     }
   }
 </script>

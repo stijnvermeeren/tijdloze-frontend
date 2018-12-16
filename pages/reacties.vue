@@ -83,7 +83,6 @@
 </template>
 
 <script>
-  import { unsetAccessToken, login } from '~/utils/auth';
   import CommentsPager from '../components/comments/CommentsPager'
   import Comment from '../components/comments/Comment'
 
@@ -151,9 +150,7 @@
         });
       },
       login() {
-        sessionStorage.setItem("redirectPath", this.$route.path);
-        unsetAccessToken(this, this.$store);
-        login();
+        this.$auth.login();
       }
     },
     beforeRouteUpdate (to, from, next) {
