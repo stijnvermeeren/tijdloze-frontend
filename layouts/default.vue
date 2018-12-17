@@ -1,7 +1,7 @@
 <template>
     <div id="container">
         <div id="header">
-            <div id="logo" @click.prevent="test => true"><h1>De Tijdloze Website</h1></div>
+            <div id="logo" @click="$router.push('/')"><h1>De Tijdloze Website</h1></div>
         </div>
         <div id="container2">
             <div id="left"></div>
@@ -116,6 +116,10 @@
             margin: 0 auto;
             height: 90px;
             width: 480px;
+            cursor: pointer;
+
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            -moz-tap-highlight-color: rgba(0, 0, 0, 0);
 
             h1 {
                 display: none;
