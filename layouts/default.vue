@@ -118,9 +118,6 @@
             width: 480px;
             cursor: pointer;
 
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            -moz-tap-highlight-color: rgba(0, 0, 0, 0);
-
             h1 {
                 display: none;
             }

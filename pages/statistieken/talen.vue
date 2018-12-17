@@ -12,22 +12,22 @@
         <div class="scrollbox">
             <table class="lijst">
                 <tbody>
-                    <tr>
-                        <th class="r">Land</th>
-                        <th v-for="year in years">{{year._yy}}</th>
-                        <th class="r">Tot.</th>
-                    </tr>
-                    <tr v-for="{language, total, perYear} in counts">
-                        <td class="r">
-                            {{language.name}}
-                        </td>
-                        <td v-for="{count} in perYear">
-                            {{count}}
-                        </td>
-                        <td class="r">
-                            {{total}}
-                        </td>
-                    </tr>
+                <tr>
+                    <th class="r">Land</th>
+                    <th v-for="year in years">{{year._yy}}</th>
+                    <th class="r">Tot.</th>
+                </tr>
+                <tr v-for="{language, total, perYear} in counts">
+                    <td class="r">
+                        {{language.name}}
+                    </td>
+                    <td v-for="{count} in perYear">
+                        {{count}}
+                    </td>
+                    <td class="r">
+                        {{total}}
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>

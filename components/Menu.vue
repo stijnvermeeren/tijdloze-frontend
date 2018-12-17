@@ -15,8 +15,8 @@
                     <nuxt-link :to="'/lijst/' + year.yyyy">{{year.yyyy}}</nuxt-link>
                   </li>
                 </template>
-                <li v-if="!allLists"><a @click="allLists = true">Meer tonen</a></li>
-                <li v-else><a @click="allLists = false">Minder tonen</a></li>
+                <li v-if="!allLists"><a @click.stop="allLists = true">Meer tonen</a></li>
+                <li v-else><a @click.stop="allLists = false">Minder tonen</a></li>
               </ul>
             </li>
             <li><nuxt-link to="/artiesten">Alle artiesten</nuxt-link>
@@ -80,11 +80,6 @@
         return this.$store.getters.isAdmin;
       }
     },
-    watch: {
-      '$route': function() {
-        this.isOpen = false;
-      }
-    },
     methods: {
       selectSearchResult(result) {
         let path = ''
@@ -97,6 +92,7 @@
           path = `/album/${result.item.id}`
         }
         if (path) {
+          this.isOpen = false;
           this.$router.push(path);
         }
 
@@ -107,9 +103,13 @@
         }
       },
       documentClick (e) {
+        const target = e.target;
+        if (event.target.tagName.toLowerCase() === 'a') {
+          this.isOpen = false;
+        }
+
         const burgerButton = document.querySelector('.burger-button');
         const sideNav = document.querySelector('#sideNav');
-        const target = e.target;
         if (!sideNav.contains(target) && !burgerButton.contains(target)) {
           this.isOpen = false;
         }

@@ -5,6 +5,9 @@
 
 html {
   touch-action: manipulation;
+
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -moz-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
 body {
@@ -32,6 +35,13 @@ a {
   color: @linkColor;
   &:hover {
     color: @hoverLinkColor;
+  }
+
+  &.nuxt-link-exact-active {
+    cursor: default;
+    &:hover {
+      color: @linkColor;
+    }
   }
 }
 
@@ -118,6 +128,9 @@ div.toelichting {
 
 div.scrollbox {
   overflow: auto;
+  margin: 0 auto;
+  max-width: 90vw;
+
   table.lijst {
     margin: 0;
   }
