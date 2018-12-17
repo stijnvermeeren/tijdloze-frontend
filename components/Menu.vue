@@ -144,6 +144,7 @@
     top: 0;
     left: 0;
     background-color: @menuBackgroundColor;
+    border-right: 2px solid @headerBackgroundColor;
     overflow-x: hidden;
     padding: 1em 2em;
     transition: 0.3s;
@@ -154,8 +155,7 @@
     @media (min-width: 1200px) {
       height: 100%;
       min-height: 800px;
-      top: 90px;
-      position: absolute;
+      position: relative;
     }
 
 
@@ -241,7 +241,7 @@
     }
 
     .cross {
-      background: #ddd;
+      background-color: #444;
       position: absolute;
       width: 5px;
       height: 24px;

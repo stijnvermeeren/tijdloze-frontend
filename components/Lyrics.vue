@@ -1,6 +1,6 @@
 <template>
-
-  <div :class="['container', {open: isOpen, closed: !isOpen}]" ref="lyrics">
+  <div :class="['container', {open: isOpen, closed: !isOpen}]">
+    <div ref="lyrics" />
     <h3>Lyrics</h3>
 
     <div class="lyricsContainer">

@@ -1,17 +1,21 @@
 <template>
     <div id="container">
-        <tijdloze-menu />
-
         <div id="header">
-            <div id="logo"><h1><nuxt-link to="/"><span>Tijdloze Website</span></nuxt-link></h1></div>
+            <div id="logo" @click.prevent="test => true"><h1>De Tijdloze Website</h1></div>
         </div>
-        <div id="maincontainer">
-            <div class="hidden">De Tijdloze website bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.</div>
-            <div id="main">
-                <div id="inhoud">
-                    <nuxt />
+        <div id="container2">
+            <div id="left"></div>
+            <tijdloze-menu />
+
+            <div id="maincontainer">
+                <div class="hidden">De Tijdloze website bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.</div>
+                <div id="main">
+                    <div id="inhoud">
+                        <nuxt />
+                    </div>
                 </div>
             </div>
+            <div id="right"></div>
         </div>
     </div>
 </template>
@@ -63,13 +67,29 @@
 
     #container {
         position: relative;
-    }
 
-    #maincontainer {
-        position: relative;
+        #container2 {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
 
-        @media (min-width: 1200px) {
-            margin-left: 300px;
+            #maincontainer {
+                flex-grow: 1;
+            }
+
+            @media (min-width: 1200px) {
+                #left {
+                    background-color: @menuBackgroundColor;
+                    flex-grow: 1;
+                }
+                #maincontainer {
+                    width: 900px;
+                    flex-grow: 0;
+                }
+                #right {
+                    flex-grow: 1;
+                }
+            }
         }
     }
 
@@ -87,22 +107,17 @@
 
     #header {
         background-color: @headerBackgroundColor;
-    }
-    #logo {
-        h1 {
+
+        #logo {
             display: block;
             background: url("/images/logo.png") no-repeat;
-            text-align: center;
+            background-position-x: 65px;
             overflow: hidden;
             margin: 0 auto;
-            max-width: 640px;
+            height: 90px;
+            width: 480px;
 
-            a {
-                display: block;
-                .logoDimensions;
-                overflow: hidden;
-            }
-            span {
+            h1 {
                 display: none;
             }
         }
