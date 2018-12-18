@@ -16,7 +16,8 @@ module.exports = {
       { name: 'keywords', content: 'Tijdloze, Tijdloze 100, De Tijdloze Website, Tijdloos, Tijdloze100, StuBru, Studio Brussel, muziek, aller tijden, allertijden, beste' },
       { name: 'description', content: 'Statistieken en informatie over de Tijdloze 100, de allertijden-lijst van Studio Brussel' },
       { name: 'robots', content: 'all' },
-      { name: 'viewport', content: 'width=480, initial-scale=1'}
+      { name: 'viewport', content: 'width=480, initial-scale=1'},
+      { 'http-equiv': 'cache-control', content: 'public, max-age: 30' }
     ],
     link: [
       { rel: 'icon', href: '/images/favicon.png?v=3' },
