@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="sideNav" :class="{closed: !isOpen}">
+    <div id="sideNav" :class="{closed: !isOpen}" @click.stop="menuClick($event)">
       <nav>
         <div id="menu">
           <tijdloze-search-box
@@ -48,7 +48,7 @@
       </nav>
     </div>
 
-    <div class="burger-button" @click="isOpen = true">
+    <div class="burger-button" @click.stop="isOpen = true">
       <div class="burger">
         <span class="burger-bars" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
       </div>
@@ -102,15 +102,13 @@
           this.isOpen = false;
         }
       },
-      documentClick (e) {
-        const target = e.target;
-        if (event.target.tagName.toLowerCase() === 'a') {
+      close(e) {
+        if (this.isOpen) {
           this.isOpen = false;
         }
-
-        const burgerButton = document.querySelector('.burger-button');
-        const sideNav = document.querySelector('#sideNav');
-        if (!sideNav.contains(target) && !burgerButton.contains(target)) {
+      },
+      menuClick(event) {
+        if (event.target.tagName.toLowerCase() === 'a') {
           this.isOpen = false;
         }
       }
@@ -118,13 +116,13 @@
     created: function() {
       if (process.client) {
         document.addEventListener('keyup', this.escapeKeyListener);
-        document.addEventListener('click', this.documentClick);
+        document.addEventListener('click', this.close);
       }
     },
     destroyed: function() {
       if (process.client) {
         document.removeEventListener('keyup', this.escapeKeyListener);
-        document.removeEventListener('click', this.documentClick);
+        document.removeEventListener('click', this.close);
       }
     },
   };
