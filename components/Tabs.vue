@@ -23,7 +23,7 @@
 
     div.tabs {
         div.tabtitels {
-            margin: 0 0 -1px 15px;
+            margin: 0 0 0 15px;
             padding: 0;
             vertical-align: top;
             h3 {

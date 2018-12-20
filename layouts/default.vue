@@ -69,12 +69,15 @@
         position: relative;
 
         #container2 {
-            display: flex;
-            justify-content: center;
-            align-items: stretch;
+            @media (min-width: 800px) {
+                display: flex;
+                justify-content: center;
+                align-items: stretch;
+                overflow: auto;
 
-            #maincontainer {
-                flex-grow: 1;
+                #maincontainer {
+                    flex-grow: 1;
+                }
             }
 
             @media (min-width: 1200px) {
