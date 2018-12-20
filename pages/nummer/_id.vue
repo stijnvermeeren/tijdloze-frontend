@@ -14,21 +14,11 @@
                     <th>Origineel op album</th>
                     <td><TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</td>
                 </tr>
-                <tr>
+                <tr :class="{unimportant: !song.possiblyInList(currentYear)}">
                     <th>In de Tijdloze</th>
                     <td>
                         <in-current-list-song :song="song" />
                     </td>
-                </tr>
-                <tr v-if="fullSongData.spotifyId" class="spotify">
-                    <th>Beluister fragment</th>
-                    <td>
-                        <spotify :spotifyId="fullSongData.spotifyId" />
-                    </td>
-                </tr>
-                <tr class="unimportant">
-                    <th>Taal</th>
-                    <td>{{ language.name }}</td>
                 </tr>
                 <tr v-if="links.length" class="unimportant">
                     <th>Externe links</th>
@@ -45,8 +35,22 @@
         </table>
 
         <lyrics v-if="fullSongData.lyrics">
+            <div v-if="fullSongData.spotifyId" class="spotify">
+                <div><spotify :spotifyId="fullSongData.spotifyId" /></div>
+                <div>Beluister fragment via Spotify</div>
+            </div>
             <div class="lyrics">{{ fullSongData.lyrics }}</div>
         </lyrics>
+
+        <div v-if="!fullSongData.lyrics && (fullSongData.spotifyId || fullSongData.languageId === 'ins')">
+            <h3>Lyrics</h3>
+            <div v-if="fullSongData.spotifyId" class="spotify">
+                <div><spotify :spotifyId="fullSongData.spotifyId" /></div>
+                <div>Beluister fragment via Spotify</div>
+            </div>
+            <div v-if="fullSongData.languageId === 'ins'">(Instrumentaal nummer)</div>
+            <div class="clear" />
+        </div>
 
         <h3>In de Tijdloze</h3>
 
@@ -55,6 +59,7 @@
         <tijdloze-graph
           v-if="song.listCount($store.getters.years) > 0"
           :songs="[song]"
+          :no-label="true"
         />
 
         <div class="allPositions">
@@ -170,5 +175,28 @@
         white-space: pre-line;
         font-style: italic;
         font-size: 14px;
+    }
+
+    div.spotify {
+        margin-bottom: 20px;
+
+        @media (min-width: 1200px) {
+            float: right;
+        }
+
+        iframe {
+            border: 1px solid grey;
+        }
+
+        div {
+            font-size: 12px;
+            font-style: italic;
+            text-align: center;
+        }
+    }
+
+
+    table.info > tbody > tr > th {
+        width: 150px;
     }
 </style>

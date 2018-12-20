@@ -25,7 +25,7 @@
                 <th>
                     <nuxt-link to="/nummers">Titel</nuxt-link>
                 </th>
-                <th>
+                <th class="releaseYear">
                     Jaar
                 </th>
             </tr>
@@ -43,7 +43,7 @@
                 <td>
                     <tijdloze-song :song="song" />
                 </td>
-                <td>
+                <td class="releaseYear">
                     {{song.album.releaseYear}}
                 </td>
             </tr>
@@ -97,5 +97,11 @@
 
     div.link {
         text-align: center;
+    }
+
+    .releaseYear {
+        @media (max-width: 660px) {
+            display: none;
+        }
     }
 </style>

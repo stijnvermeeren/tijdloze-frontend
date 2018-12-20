@@ -55,18 +55,22 @@
     &.closed {
       div.lyricsContainer {
         overflow: hidden;
-        height: 90px;
+        max-height: 200px;
+
+        @media (min-width: 1200px) {
+          max-height: 150px;
+        }
 
         div.toggle {
           position: absolute;
           bottom: 0;
           left: 0;
           right: 0;
-          top: 0;
+          height: 50px;
           background: linear-gradient(
             to top,
-            rgba(255, 255, 255, 1) 15px,
-            rgba(255, 255, 255, 0) 60px
+            rgba(255, 255, 255, 1) 10px,
+            rgba(255, 255, 255, 0) 50px
           );
 
           div {
