@@ -51,13 +51,6 @@
     div.bericht {
       white-space: pre-wrap;
       overflow: auto;
-
-      textarea {
-        width: 100%;
-        box-sizing: border-box;
-        height: 5em;
-
-      }
     }
   }
 </style>

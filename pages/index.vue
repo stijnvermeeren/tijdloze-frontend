@@ -57,15 +57,15 @@
             Reageer en discussieer
         </h3>
 
+        <div class="link">
+            <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
+        </div>
+
         <comment
           v-for="comment in comments"
           :key="comment.id"
           :comment="comment"
         />
-
-        <div class="link">
-            <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
-        </div>
     </div>
 </template>
 

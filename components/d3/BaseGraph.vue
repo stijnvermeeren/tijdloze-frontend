@@ -35,7 +35,7 @@
       }
     },
     methods: {
-      songLine(song, yearIntervals, moveIn) {
+      songLine(song, yearIntervals) {
         const halfBandWith = this.xScale.bandwidth() / 2;
         const undefinedPoint = {
           x: null,
@@ -45,7 +45,7 @@
 
         const intervalLines = yearIntervals.map(interval => {
           let start = [];
-          if (moveIn) {
+          if (_.first(interval).yyyy !== 1987) {
             start = {
               x: this.xScale(_.first(interval)._yy) - halfBandWith,
               y: this.height,
@@ -67,14 +67,11 @@
           if (lastYear.isCurrent()) {
             return _.flatten([start, positions, undefinedPoint]);
           } else {
-            let end = [];
-            if (moveIn) {
-              end = {
-                x: this.xScale(lastYear._yy) + halfBandWith,
-                y: this.height,
-                defined: true
-              };
-            }
+            const end = {
+              x: this.xScale(lastYear._yy) + halfBandWith,
+              y: this.height,
+              defined: true
+            };
             return _.flatten([start, positions, end, undefinedPoint]);
           }
         });

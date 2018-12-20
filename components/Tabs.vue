@@ -23,17 +23,17 @@
 
     div.tabs {
         div.tabtitels {
-            margin: 1.5em 0 0 0;
-            padding: 0.2em 0 0.2em 2em;
+            margin: 0 0 -1px 15px;
+            padding: 0;
             vertical-align: top;
             h3 {
                 vertical-align: top;
                 display: inline;
-                font-size: 115%;
+                font-size: 14px;
                 border: @blackLine;
                 border-radius: @borderRadius @borderRadius 0 0;
-                padding: 0.2em 1em;
-                margin: 0 0.7em;
+                padding: 2px 10px;
+                margin: 0 7px;
                 background-color: @headerBackgroundColor;
             }
             h3.selected {
@@ -45,7 +45,7 @@
             }
         }
         div.tab {
-            padding: 1.7em 2em 1.7em 2em;
+            padding: 17px 20px 17px 20px;
             .border;
         }
     }

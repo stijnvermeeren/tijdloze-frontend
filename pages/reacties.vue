@@ -37,9 +37,7 @@
         <div>
           <div class="reactie mine">
             <div class="reacinfo">
-              {{ displayName }} (<a @click="editDisplayName = true">
-                Gebruikersnaam aanpassen
-              </a>)
+              {{ displayName }} (<a @click="editDisplayName = true">Gebruikersnaam aanpassen</a>)
             </div>
             <div class="bericht">
               <textarea
@@ -185,5 +183,41 @@
             font-size: 90%;
             font-style: italic;
         }
+    }
+
+    div.reactie {
+      padding: 0.3em 4em;
+      margin: 1em 0;
+
+      &.mine {
+        div.reacinfo {
+          background-color: @headerBackgroundColor;
+        }
+      }
+
+      div.reacinfo {
+        background-color: #ccc;
+        font-size: 90%;
+        padding: 0.1em 0.2em;
+        margin: 0.2em 0 0.4em 0;
+        font-weight: bold;
+        border-bottom: @blackLine;
+
+        span {
+          font-weight: bold;
+        }
+      }
+
+      div.bericht {
+        white-space: pre-wrap;
+        overflow: auto;
+
+        textarea {
+          width: 100%;
+          box-sizing: border-box;
+          height: 5em;
+
+        }
+      }
     }
 </style>

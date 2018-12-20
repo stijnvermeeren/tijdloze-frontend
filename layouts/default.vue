@@ -87,7 +87,7 @@
                     flex-grow: 0;
                 }
                 #right {
-                    flex-grow: 1;
+                    flex-grow: 2;
                 }
             }
         }

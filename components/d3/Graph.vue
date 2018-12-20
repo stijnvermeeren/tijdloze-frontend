@@ -28,7 +28,7 @@
             </g>
         </svg>
 
-        <div class="legend">
+        <div class="legend" v-if="!noLabel">
             <div v-for="(song, index) in songs"
                  :key="song.id"
                  :class="[
@@ -56,7 +56,7 @@
       components: {
         TijdlozeAxes: BaseGraphAxes
       },
-      props: ['songs'],
+      props: ['songs', 'noLabel'],
       data() {
         return {
           hoverIndex: null
@@ -69,8 +69,7 @@
         fullSongLine(song) {
           return this.songLine(
             song,
-            possiblyInListIntervals([song], this.years),
-            !song.position(this.years[0])
+            possiblyInListIntervals([song], this.years)
           );
         }
       }
