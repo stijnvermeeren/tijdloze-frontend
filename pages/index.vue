@@ -84,10 +84,15 @@
         }
       },
       async asyncData({ params, app }) {
-        const comments = await app.$axios.$get(`comments/1`)
+        const comments = await app.$axios.$get(`comments/2`);
         return {
           comments: _.take(comments, 5)
         };
+      },
+      async mounted() {
+        // refresh on client side in case of server-side caching
+        const comments = await this.$axios.$get(`comments/1`);
+        this.comments = _.take(comments, 5);
       }
     }
 </script>

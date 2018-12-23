@@ -30,7 +30,16 @@
             </tbody>
         </table>
 
-        <h3>Albums en nummers</h3>
+        <h3>In de Tijdloze</h3>
+
+        <div><entry-count :songs="artist.songs" /></div>
+
+        <graph
+          v-if="artist.songs.find(song => song.listCount($store.getters.years) > 0)"
+          :songs="artist.songs"
+        />
+
+        <h3>Tijdloze albums en nummers</h3>
 
         <div>
             <ul v-if="artist.albums">
@@ -42,15 +51,6 @@
                 </li>
             </ul>
         </div>
-
-        <h3>In de Tijdloze</h3>
-
-        <div><entry-count :songs="artist.songs" /></div>
-
-        <graph
-          v-if="artist.songs.find(song => song.listCount($store.getters.years) > 0)"
-          :songs="artist.songs"
-        />
     </div>
 </template>
 

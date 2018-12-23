@@ -31,14 +31,6 @@
             </tbody>
         </table>
 
-        <h3>Nummers</h3>
-
-        <div>
-            <ul v-if="album.songs">
-                <li v-for="song in album.songs"><tijdloze-song :song="song" /></li>
-            </ul>
-        </div>
-
         <h3>In de Tijdloze</h3>
 
         <div><entry-count :songs="album.songs" /></div>
@@ -47,6 +39,14 @@
           v-if="album.songs.find(song => song.listCount($store.getters.years) > 0)"
           :songs="album.songs"
         />
+
+        <h3>Tijdloze nummers</h3>
+
+        <div>
+            <ul v-if="album.songs">
+                <li v-for="song in album.songs"><tijdloze-song :song="song" /></li>
+            </ul>
+        </div>
     </div>
 </template>
 

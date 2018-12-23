@@ -162,9 +162,14 @@
       const page = +route.query.page || 1;
       return {
         page: page,
-        comments: await app.$axios.$get(`comments/${page}`),
+        comments: await app.$axios.$get(`comments/${page + 1}`),
         commentCount: (await app.$axios.$get(`comments/count`)).commentCount,
       };
+    },
+    async mounted() {
+      // refresh on client side in case of server-side caching
+      this.comments = await app.$axios.$get(`comments/${page}`);
+      this.commentCount = (await app.$axios.$get(`comments/count`)).commentCount;
     },
     head: {
       title: 'Reacties'

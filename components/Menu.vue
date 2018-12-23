@@ -8,6 +8,7 @@
           />
           <ul>
             <li><nuxt-link to="/">Home</nuxt-link></li>
+            <li><nuxt-link to="/reacties">Reageer en discussieer</nuxt-link></li>
             <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
               <ul class="lists">
                 <template v-for="(year, index) in years">
