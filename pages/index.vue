@@ -84,7 +84,7 @@
         }
       },
       async asyncData({ params, app }) {
-        const comments = await app.$axios.$get(`comments/2`);
+        const comments = await app.$axios.$get(`comments/1`);
         return {
           comments: _.take(comments, 5)
         };

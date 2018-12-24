@@ -162,7 +162,7 @@
       const page = +route.query.page || 1;
       return {
         page: page,
-        comments: await app.$axios.$get(`comments/${page + 1}`),
+        comments: await app.$axios.$get(`comments/${page}`),
         commentCount: (await app.$axios.$get(`comments/count`)).commentCount,
       };
     },
