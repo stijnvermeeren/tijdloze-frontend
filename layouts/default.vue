@@ -14,6 +14,7 @@
                         <nuxt />
                     </div>
                 </div>
+                <snackbar />
             </div>
             <div id="right"></div>
         </div>
@@ -23,9 +24,11 @@
 <script>
   import Menu from '../components/Menu'
   import {secondsToExpiry} from '~/utils/jwt'
+  import Snackbar from "../components/Snackbar";
 
   export default {
     components: {
+      Snackbar,
       tijdlozeMenu: Menu
     },
     computed: {

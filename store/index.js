@@ -136,8 +136,10 @@ const createStore = () => {
         state.user = user || null
       },
       setCurrentYear(state, currentYear) {
-        state.yearsRaw = state.yearsRaw.filter(year => year < currentYear)
-        state.yearsRaw.push(currentYear)
+        if (_.last(state.yearsRaw) !== currentYear) {
+          state.yearsRaw = state.yearsRaw.filter(year => year < currentYear)
+          state.yearsRaw.push(currentYear)
+        }
       },
       setRefreshInterval(state, interval) {
         if (state.refreshInterval) {
@@ -148,7 +150,9 @@ const createStore = () => {
     },
     actions: {
       async refreshCurrentList({commit, dispatch}) {
-        const response = await this.$axios.$get('current-list');
+        const response = await this.$axios.$get('current-list', {
+          progress: false
+        });
 
         commit('setCurrentYear', response.year)
 
