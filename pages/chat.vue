@@ -49,7 +49,7 @@
         return this.$store.getters.displayName;
       },
       invalidDisplayName() {
-        return this.name.length === 0;
+        return !this.name || this.name.length === 0;
       }
     },
     methods: {
