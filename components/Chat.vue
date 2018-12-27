@@ -5,7 +5,7 @@
     </div>
     <div class="messages" ref="messages">
       <div v-for="message in messages" :key="message.id" :title="message.created">
-        <strong>{{message.userId}}</strong>: {{message.message}}
+        <strong>{{displayName(message.userId, message.displayName)}}</strong>: {{message.message}}
       </div>
       <div v-if="initialLoad">
         Chat wordt geladen...
@@ -28,6 +28,7 @@
       return {
         messages: [],
         online: [],
+        displayNames: {},
         initialLoad: true,
         loading: false,
         lastId: 0,
@@ -49,6 +50,10 @@
       }
     },
     methods: {
+      displayName(userId, fallback) {
+        const savedName = this.displayNames[userId];
+        return savedName ? savedName : fallback;
+      },
       async loadOnce() {
         const messages  = await this.$axios.$get('/chat/message', {
           params: { since: this.lastId },
@@ -79,10 +84,16 @@
         const online = await this.$axios.$get('/chat/online', {
           progress: false
         });
+
+        online.forEach(onlineUser => {
+          this.displayNames[onlineUser.id] = onlineUser.displayName;
+        });
+
         const onlineIds = online.map(onlineUser => onlineUser.id);
         const previouslyOnlineIds = this.online.map(onlineUser => onlineUser.id);
 
-        const stillOnline = this.online.filter(onlineUser => onlineIds.includes(onlineUser.id));
+        const stillOnline = online
+          .filter(onlineUser => previouslyOnlineIds.includes(onlineUser.id));
         const newOnline = online.filter(onlineUser => !previouslyOnlineIds.includes(onlineUser.id));
 
         let currentUser = [];
@@ -173,11 +184,13 @@
         padding: 3px 8px;
         flex: 1;
         background-color: @inputBackgroundColor;
+        font-size: 16px;
       }
 
       button {
         padding: 4px 8px;
         margin: 2px 5px;
+        font-size: 16px;
       }
     }
   }
