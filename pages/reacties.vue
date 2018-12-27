@@ -168,8 +168,8 @@
     },
     async mounted() {
       // refresh on client side in case of server-side caching
-      this.comments = await app.$axios.$get(`comments/${page}`);
-      this.commentCount = (await app.$axios.$get(`comments/count`)).commentCount;
+      this.comments = await this.$axios.$get(`comments/${this.page}`);
+      this.commentCount = (await this.$axios.$get(`comments/count`)).commentCount;
     },
     head: {
       title: 'Reacties'
@@ -221,8 +221,13 @@
           width: 100%;
           box-sizing: border-box;
           height: 5em;
-
+          font-size: 14px;
+          padding: 2px 4px;
         }
+      }
+
+      button {
+        font-size: 14px;
       }
     }
 </style>
