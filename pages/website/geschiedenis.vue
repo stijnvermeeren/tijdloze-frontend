@@ -18,15 +18,16 @@
 
         <p>Op 24 november 2014, tijdens de stemweek voor de Tijdloze, werd <a href="http://www.stijnvermeeren.be/download/tijdloze20141124.mp3">webmaster Stijn live opgebeld door Studio Brussel</a>.</p>
 
+        <p>In 2018 werd de technologie van de website volledig vernieuwd. Een moderne "single page application" op basis van Vue.js kwam in de plaats van de oude PHP-technologie.</p>
+
         <h3>De toekomst</h3>
 
         <p>Elk jaar steekt webmaster Stijn enkele dagen werk in De Tijdloze Website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:</p>
         <ul>
-            <li>Geleidelijke overgang naar een modernere layout voor de website.</li>
-            <li>Vervangen van alle oude grafieken door moderene D3.js-grafieken met interactieve elementen.</li>
-            <li>Polls tijdens de uitzending.</li>
+            <li>Geleidelijke overgang naar een modernere "responsive" layout voor de website.</li>
+            <li>Meer interactieve elementen in de grafieken.</li>
             <li>Betere integratie van de chatbox in de website.</li>
-            <li>Involveren van meerdere medewerkers, vooral tijdens de uitzending, zodat de website niet langer afhankelijk is van een enkele webmater.</li>
+            <li>Involveren van meerdere medewerkers, vooral tijdens de uitzending, zodat de website niet langer afhankelijk is van een enkele webmaster.</li>
         </ul>
     </div>
 </template>
