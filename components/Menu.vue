@@ -11,6 +11,14 @@
             <li v-if="!listInProgress">
               <nuxt-link to="/reacties">Reageer en discussieer</nuxt-link>
             </li>
+            <li v-if="listInProgress">
+              <nuxt-link to="/lijst/2018">De Tijdloze 2018</nuxt-link>
+              <ul>
+                <li><nuxt-link to="/lijst/opkomst">Nog op komst...</nuxt-link></li>
+                <li><nuxt-link to="/chat">Chatbox</nuxt-link></li>
+                <li><nuxt-link to="/polls">Polls</nuxt-link></li>
+              </ul>
+            </li>
             <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
               <ul class="lists">
                 <template v-for="(year, index) in years">

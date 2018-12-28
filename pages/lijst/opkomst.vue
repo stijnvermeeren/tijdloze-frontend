@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Welke nummer zijn op komst in de Tijdloze van {{year.yyyy}}?</h2>
+        <h2>Op komst in de Tijdloze van {{year.yyyy}}?</h2>
 
         <div id="toelichting" style="margin-bottom: 1.5em;">
             <p>Welke nummers zijn nog op komst in de Tijdloze van dit jaar? De nummers zijn geordend volgens de posities van vorig jaar.</p>
