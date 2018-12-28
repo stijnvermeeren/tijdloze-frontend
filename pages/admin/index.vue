@@ -6,6 +6,7 @@
     <ul>
       <li><nuxt-link to="/admin/live">Live updates</nuxt-link></li>
       <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
+      <li><nuxt-link to="/admin/polls">Polls</nuxt-link></li>
     </ul>
 
     <h3>Database</h3>

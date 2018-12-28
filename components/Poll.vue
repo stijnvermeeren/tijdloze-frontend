@@ -1,12 +1,19 @@
 <template>
   <div class="poll">
-    <div class="question">{{poll.question}}</div>
+    <poll-question :question="poll.question" :poll-id="poll.id" :is-admin="isAdmin" />
     <div v-for="answer in poll.answers" class="answer">
       <div class="answerVotes">
         <span class="bar" :style="{width: barWidth(answer.voteCount) + 'px'}"></span>
         <span class="count">{{percentage(answer.voteCount)}}%</span>
       </div>
-      <div class="answerText">{{answer.answer}}</div>
+      <div class="answerText">
+        <poll-answer
+            :answer="answer.answer"
+            :poll-id="poll.id"
+            :poll-answer-id="answer.id"
+            :is-admin="isAdmin"
+        />
+      </div>
     </div>
     <div class="voteCount">{{voteCount}} stemmen</div>
   </div>
@@ -14,10 +21,21 @@
 
 <script>
   import _ from 'lodash';
+  import PollQuestion from "./PollQuestion";
+  import PollAnswer from "./PollAnswer";
 
   export default {
     name: "Poll",
-    props: ['poll'],
+    components: {PollAnswer, PollQuestion},
+    props: {
+      poll: {
+        type: Object
+      },
+      isAdmin: {
+        type: Boolean,
+        default: false
+      }
+    },
     computed: {
       voteCount() {
         return _.sumBy(this.poll.answers, answer => answer.voteCount);
@@ -43,11 +61,12 @@
     border: 1px solid grey;
     background-color: @inputBackgroundColor;
 
-    div.question {
-      font-weight: bold;
-    }
 
     div.answer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
       margin: 4px 0;
 
       div.answerVotes {
@@ -70,7 +89,8 @@
       }
 
       div.answerText {
-        display: inline-block;
+        margin: 0 10px;
+        flex: 1;
       }
     }
 
