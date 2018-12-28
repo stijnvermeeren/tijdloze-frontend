@@ -19,7 +19,7 @@
     components: {Poll},
     computed: {
       currentYearPolls() {
-        return this.polls.filter(poll => poll.year === 2018)
+        return this.polls.filter(poll => poll.year === 2018 && !poll.isDeleted)
       }
     },
     async asyncData({ app }) {

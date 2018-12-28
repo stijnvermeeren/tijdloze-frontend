@@ -16,6 +16,15 @@
       </div>
     </div>
     <div class="voteCount">{{voteCount}} stemmen</div>
+    <div v-if="isAdmin">
+      <div v-if="isDeleted" class="isDeleted">
+        Poll is verborgen op de website.
+        <button @click="restore()" :disabled="deleting">Opnieuw tonen</button>
+      </div>
+      <div v-else>
+        <button @click="deletePoll()" :disabled="deleting">Poll verbergen op de website</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -36,6 +45,12 @@
         default: false
       }
     },
+    data() {
+      return {
+        isDeleted: this.poll.isDeleted,
+        deleting: false
+      }
+    },
     computed: {
       voteCount() {
         return _.sumBy(this.poll.answers, answer => answer.voteCount);
@@ -47,6 +62,18 @@
       },
       percentage(answerVotes) {
         return Math.round(100 * answerVotes / this.voteCount);
+      },
+      async deletePoll() {
+        this.deleting = true;
+        await this.$axios.$post(`poll/${this.poll.id}/hide`);
+        this.isDeleted = true;
+        this.deleting = false;
+      },
+      async restore() {
+        this.deleting = true;
+        await this.$axios.$delete(`poll/${this.poll.id}/hide`);
+        this.isDeleted = false;
+        this.deleting = false;
       }
     }
   }
@@ -96,6 +123,10 @@
 
     div.voteCount {
       font-size: 14px;
+    }
+
+    div.isDeleted {
+      color: red;
     }
   }
 </style>
