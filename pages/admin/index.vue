@@ -1,6 +1,8 @@
 <template>
   <div>
     <h2>Admin</h2>
+
+    <h3>De Tijdloze Live</h3>
     <ul>
       <li><nuxt-link to="/admin/live">Live updates</nuxt-link></li>
       <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
@@ -10,6 +12,11 @@
           @selectSearchResult="selectSearchResult($event)"
         />
       </li>
+    </ul>
+
+    <h3>Gebruikers</h3>
+    <ul>
+      <li><nuxt-link to="admin/users">User admin</nuxt-link></li>
     </ul>
   </div>
 </template>
