@@ -184,11 +184,8 @@ const createStore = () => {
         })
       },
       async nuxtServerInit({commit, dispatch}) {
-        console.time('init');
         const response = await this.$axios.$get('core-data');
-        console.timeEnd('init');
 
-        console.time('process');
         commit('updateCoreData', response);
 
         dispatch('entities/artists/create', {
@@ -202,7 +199,6 @@ const createStore = () => {
         dispatch('entities/songs/create', {
           data: response.songs
         });
-        console.timeEnd('process');
       },
       setRefreshInterval({commit, dispatch, getters}) {
         const timeout = getters.lastPosition === 1 ? 5 * 60 * 1000 : 15 * 1000;

@@ -4,7 +4,7 @@
 
 <script>
   export default {
-    mounted () {
+    async mounted () {
       // In the frontend, we assume that we get valid tokens back. Validation will be handled where it matters,
       // i.e. in the backend. The parseHash from the auth0 library looks useful, but actually fetches the public
       // key from the server every time, which is not only inefficient, but it's also implemented with an
@@ -13,7 +13,7 @@
       const idToken = params.id_token;
       const accessToken = params.access_token;
 
-      this.$auth.loginCallback(idToken, accessToken);
+      await this.$auth.loginCallback(idToken, accessToken);
 
       const sessionRedirectPath = sessionStorage.getItem("redirectPath");
       sessionStorage.removeItem("redirectPath");

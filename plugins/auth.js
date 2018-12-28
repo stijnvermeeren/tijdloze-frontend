@@ -23,7 +23,7 @@ export default ({ app, store }, inject) => {
     store.commit('setAccessToken', null);
   }
 
-  function loginCallback(idToken, accessToken) {
+  async function loginCallback(idToken, accessToken) {
     store.commit('setAccessToken', accessToken);
     app.$cookies.set(
       'access_token',
@@ -40,7 +40,7 @@ export default ({ app, store }, inject) => {
       email: idTokenDecoded.email,
       emailVerified: idTokenDecoded.email_verified
     };
-    app.$axios.$post('user', data).then(user => {
+    await app.$axios.$post('user', data).then(user => {
       store.commit('setUser', user);
     });
   }
@@ -77,8 +77,8 @@ export default ({ app, store }, inject) => {
         }
       })
     },
-    loginCallback(idToken, accessToken) {
-      loginCallback(idToken, accessToken)
+    async loginCallback(idToken, accessToken) {
+      await loginCallback(idToken, accessToken)
     }
   });
 }

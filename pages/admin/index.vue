@@ -6,6 +6,10 @@
     <ul>
       <li><nuxt-link to="/admin/live">Live updates</nuxt-link></li>
       <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
+    </ul>
+
+    <h3>Database</h3>
+    <ul>
       <li>
         Aanpassen:
         <search-box

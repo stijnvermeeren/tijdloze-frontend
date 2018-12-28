@@ -3,10 +3,10 @@
         <h2>De Tijdloze Website</h2>
 
         <p style="text-align: center;">
-            <tijdloze-links text="[*Black] van [Pearl Jam] staat voor het derde jaar op de eerste plaats van de Tijdloze." /><br />
-            <tijdloze-links text="[Mia] gaat weer voorbij aan [Smells Like Teen Spirit] naar de tweede plek." /><br />
-            <tijdloze-links text="[Bohemian Rhapsody] en [Wish You Were Here] zorgen voor meer verandering in de top vijf." /><br />
-            <tijdloze-links text="[Africa] is de hoogste nieuwkomer, [In The End] is de grootste stijger." /><br />
+            De <strong>Tijdloze van 2018</strong> wordt uitgezonden door Studio Brussel op <strong>31 december</strong>.<br />
+            Op deze website komen er opnieuw live updates van alle statistieken.<br />
+            <br />
+            De technologie in de website werd volledig vernieuwd. Als er iets niet goed werkt, geef <nuxt-link to="/website/contact">dan een seintje</nuxt-link>.
         </p>
 
         <h3>
