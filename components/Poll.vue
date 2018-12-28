@@ -4,7 +4,7 @@
     <div v-for="answer in poll.answers" class="answer">
       <div class="answerVotes">
         <span class="bar" :style="{width: barWidth(answer.voteCount) + 'px'}"></span>
-        <span class="count">{{percentage(answer.voteCount)}}%</span>
+        <span class="count">{{percentage(answer.voteCount)}}</span>
       </div>
       <div class="answerText">
         <poll-answer
@@ -61,7 +61,11 @@
         return 150 * answerVotes / this.voteCount;
       },
       percentage(answerVotes) {
-        return Math.round(100 * answerVotes / this.voteCount);
+        if (this.voteCount) {
+          return Math.round(100 * answerVotes / this.voteCount) + '%';
+        } else {
+          return '-';
+        }
       },
       async deletePoll() {
         this.deleting = true;
