@@ -7,63 +7,70 @@
       :pages="pages "
     />
 
-    <div v-if="isAuthenticated && page === 1">
-      <div
-        class="displayName"
-        v-if="!displayName || editDisplayName"
-      >
-        <div>
-          Kies een gebruikersnaam:
-          <input
-            :disabled="submittingDisplayName"
-            type="text"
-            v-model="name"
+    <template v-if="page === 1">
+      <template v-if="listInProgress">
+        <div>Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.</div>
+      </template>
+      <template v-else>
+        <div v-if="isAuthenticated">
+          <div
+              class="displayName"
+              v-if="!displayName || editDisplayName"
           >
-          <button
-            :disabled="submittingDisplayName || invalidDisplayName"
-            @click="submitDisplayName()"
-          >
-            Ok
-          </button>
-        </div>
-        <div
-          class="info"
-          v-if="editDisplayName"
-        >
-          De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-        </div>
-      </div>
-      <div v-else>
-        <div>
-          <div class="reactie mine">
-            <div class="reacinfo">
-              {{ displayName }} (<a @click="editDisplayName = true">Gebruikersnaam aanpassen</a>)
-            </div>
-            <div class="bericht">
-              <textarea
-                :disabled="submitting"
-                cols="60"
-                placeholder="Schrijf een nieuwe reactie..."
-                rows="4"
-                v-model="message"
-              />
-            </div>
             <div>
-              <button
-                :disabled="submitting || invalidMessage"
-                @click="submit()"
-                class="formsubmit"
+              Kies een gebruikersnaam:
+              <input
+                  :disabled="submittingDisplayName"
+                  type="text"
+                  v-model="name"
               >
-                Verzenden
+              <button
+                  :disabled="submittingDisplayName || invalidDisplayName"
+                  @click="submitDisplayName()"
+              >
+                Ok
               </button>
+            </div>
+            <div
+                class="info"
+                v-if="editDisplayName"
+            >
+              De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+            </div>
+          </div>
+          <div v-else>
+            <div>
+              <div class="reactie mine">
+                <div class="reacinfo">
+                  {{ displayName }} (<a @click="editDisplayName = true">Gebruikersnaam aanpassen</a>)
+                </div>
+                <div class="bericht">
+                <textarea
+                    :disabled="submitting"
+                    cols="60"
+                    placeholder="Schrijf een nieuwe reactie..."
+                    rows="4"
+                    v-model="message"
+                />
+                </div>
+                <div>
+                  <button
+                      :disabled="submitting || invalidMessage"
+                      @click="submit()"
+                      class="formsubmit"
+                  >
+                    Verzenden
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
-    <div v-if="!isAuthenticated && page === 1">
-      Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
-    </div>
+        <div v-if="!isAuthenticated">
+          Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
+        </div>
+      </template>
+    </template>
 
     <div>
       <comment
@@ -98,6 +105,9 @@
       }
     },
     computed: {
+      listInProgress() {
+        return this.$store.getters.listInProgress;
+      },
       isAuthenticated() {
         return this.$store.getters.isAuthenticated;
       },

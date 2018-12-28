@@ -53,19 +53,21 @@
             <nuxt-link :to="`lijst/${year.yyyy}`">Bekijk de volledige lijst van {{year.yyyy}}</nuxt-link>
         </div>
 
-        <h3>
-            Reageer en discussieer
-        </h3>
+        <template v-if="!listInProgress">
+            <h3>
+                Reageer en discussieer
+            </h3>
 
-        <div class="link">
-            <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
-        </div>
+            <div class="link">
+                <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
+            </div>
 
-        <comment
-          v-for="comment in comments"
-          :key="comment.id"
-          :comment="comment"
-        />
+            <comment
+              v-for="comment in comments"
+              :key="comment.id"
+              :comment="comment"
+            />
+        </template>
     </div>
 </template>
 
@@ -76,6 +78,9 @@
     export default {
       components: {Comment},
       computed: {
+        listInProgress() {
+          return this.$store.getters.listInProgress;
+        },
         top5() {
           return _.take(this.$store.getters.list(this.year), 5);
         },

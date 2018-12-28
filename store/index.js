@@ -110,6 +110,9 @@ const createStore = () => {
           return undefined
         }
       },
+      listInProgress(state, getters) {
+        return getters.lastPosition !== 1;
+      },
       completedYear(state, getters) {
         return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
       }
