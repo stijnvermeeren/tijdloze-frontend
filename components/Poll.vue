@@ -1,20 +1,33 @@
 <template>
   <div class="poll">
-    <poll-question :question="poll.question" :poll-id="poll.id" :is-admin="isAdmin" />
-    <div v-for="answer in poll.answers" class="answer">
-      <div class="answerVotes">
-        <span class="bar" :style="{width: barWidth(answer.voteCount) + 'px'}"></span>
-        <span class="count">{{percentage(answer.voteCount)}}</span>
-      </div>
-      <div class="answerText">
-        <poll-answer
-            :answer="answer.answer"
-            :poll-id="poll.id"
-            :poll-answer-id="answer.id"
-            :is-admin="isAdmin"
-        />
+    <poll-question :question="livePoll.question" :poll-id="livePoll.id" :is-admin="isAdmin" />
+    <div v-if="showResults">
+      <div
+        v-for="answer in livePoll.answers"
+        :class="['answer', {myVote: answer.id === myVote}]"
+      >
+        <div class="answerVotes">
+          <span class="bar" :style="{width: barWidth(answer.voteCount) + 'px'}"></span>
+          <span class="count">{{percentage(answer.voteCount)}}</span>
+        </div>
+        <div class="answerText">
+          <poll-answer
+              :answer="answer.answer"
+              :poll-id="livePoll.id"
+              :poll-answer-id="answer.id"
+              :is-admin="isAdmin"
+          />
+        </div>
       </div>
     </div>
+    <div v-else>
+      <div v-for="answer in livePoll.answers" class="answer">
+        <input type="radio" v-model="myVoteEdit" :value="answer.id" :id="`vote-${answer.id}`" />
+        <label :for="`vote-${answer.id}`">{{answer.answer}}</label>
+      </div>
+      <div><button @click="vote()" :disabled="!myVoteEdit || voting">Stem afgeven</button></div>
+    </div>
+
     <div class="voteCount">{{voteCount}} stemmen</div>
     <div v-if="isAdmin">
       <div v-if="isDeleted" class="isDeleted">
@@ -43,20 +56,48 @@
       isAdmin: {
         type: Boolean,
         default: false
+      },
+      isActive: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
       return {
+        livePoll: this.poll,
         isDeleted: this.poll.isDeleted,
-        deleting: false
+        deleting: false,
+        voting: false,
+        myVoteEdit: undefined
       }
     },
     computed: {
+      showResults() {
+        return !!this.myVote
+      },
+      myVote() {
+        return this.$store.getters.pollVote(this.poll.id)
+      },
+      isAuthenticated() {
+        return this.$store.getters.isAuthenticated;
+      },
       voteCount() {
         return _.sumBy(this.poll.answers, answer => answer.voteCount);
       }
     },
     methods: {
+      async vote() {
+        if (this.isAuthenticated) {
+          this.voting = true;
+          await this.$axios.$post(`poll/${this.poll.id}/${this.myVoteEdit}`);
+
+          const result = await this.$axios.$get(`poll/my-votes`);
+          this.$store.commit('setPollVotes', result.votes);
+
+          this.livePoll = this.$axios.$get(`poll/${this.poll.id}`);
+          this.voting = false;
+        }
+      },
       barWidth(answerVotes) {
         return 150 * answerVotes / this.voteCount;
       },
@@ -99,6 +140,18 @@
       align-items: center;
 
       margin: 4px 0;
+
+      &.myVote {
+        div.answerVotes {
+          span.bar {
+            background-color: red;
+          }
+        }
+
+        div.answerText {
+          font-weight: bold;
+        }
+      }
 
       div.answerVotes {
         display: inline-block;

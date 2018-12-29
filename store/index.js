@@ -34,7 +34,8 @@ const createStore = () => {
       yearsRaw: [],
       countries: [],
       languages: [],
-      vocalsGenders: []
+      vocalsGenders: [],
+      pollVotes: []
     },
     getters: {
       isAuthenticated(state) {
@@ -115,6 +116,10 @@ const createStore = () => {
       },
       completedYear(state, getters) {
         return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
+      },
+      pollVote: (state) => (pollId) => {
+        const vote = state.pollVotes.find(vote => vote.pollId === pollId);
+        return vote ? vote.answerId : undefined;
       }
     },
     mutations: {
@@ -125,7 +130,7 @@ const createStore = () => {
         state.yearsRaw = json.years;
       },
       setAccessToken(state, accessToken) {
-        state.accessToken = accessToken || null
+        state.accessToken = accessToken || null;
 
         if (process.client && accessToken) {
           if (secondsToExpiry(accessToken) > 2) {
@@ -137,6 +142,9 @@ const createStore = () => {
       },
       setUser(state, user) {
         state.user = user || null
+      },
+      setPollVotes(state, votes) {
+        state.pollVotes = votes
       },
       setCurrentYear(state, currentYear) {
         if (_.last(state.yearsRaw) !== currentYear) {

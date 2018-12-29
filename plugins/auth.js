@@ -43,6 +43,11 @@ export default ({ app, store }, inject) => {
     await app.$axios.$post('user', data).then(user => {
       store.commit('setUser', user);
     });
+
+    // Don't await / do in the background
+    app.$axios.$get('poll/my-votes').then(result => {
+      store.commit('setPollVotes', result.votes);
+    });
   }
 
   inject('auth', {
