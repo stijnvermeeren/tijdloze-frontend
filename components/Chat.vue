@@ -6,7 +6,7 @@
           v-for="onlineUser in newOnline"
           :class="{isAdmin: onlineUser.isAdmin}"
       >
-        {{onlineUser.displayName}}
+        <user :user="onlineUser" />
       </span>
       <a @click="showAllOnline = true">Toon alle {{online.length}} aanwezigen</a>
     </div>
@@ -16,7 +16,7 @@
           v-for="onlineUser in onlineSorted"
           :class="{isAdmin: onlineUser.isAdmin}"
       >
-        {{onlineUser.displayName}}
+        <user :user="onlineUser" />
       </span>
       <a @click="showAllOnline = false">Minder tonen</a>
     </div>
@@ -27,7 +27,7 @@
           :title="message.created"
           :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
       >
-        <strong>{{displayName(message.userId, message.displayName)}}</strong>: {{message.message}}
+        <strong><user :user="messageUser(message)" /></strong>: {{message.message}}
       </div>
       <div v-if="initialLoad">
         Chat wordt geladen...
@@ -48,9 +48,11 @@
 <script>
   import Vue from 'vue'
   import _ from 'lodash'
+  import User from "./User";
 
   export default {
     name: "Chat",
+    components: {User},
     data() {
       return {
         messages: [],
@@ -88,6 +90,18 @@
       isAdmin(userId) {
         const user = this.online.find(user => user.id === userId);
         return user ? user.isAdmin : false;
+      },
+      messageUser(message) {
+        const user = this.online.find(user => user.id === message.userId);
+        if (user) {
+          return user;
+        } else {
+          return {
+            id: message.userId,
+            displayName: this.displayName(message.userId, message.displayName),
+            isAdmin: false
+          };
+        }
       },
       async loadOnce() {
         const messages  = await this.$axios.$get('/chat/message', {
@@ -197,7 +211,7 @@
         overflow: auto;
       }
 
-      span {
+      > span {
         border: 1px solid lightgray;
         border-radius: 4px;
         padding: 1px 4px;

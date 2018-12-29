@@ -38,6 +38,11 @@ module.exports = {
       parseJSON: false
     }]
   ],
+  build: {
+    extend (config, { loaders: { vue } }) {
+      vue.compilerOptions = { preserveWhitespace: false }
+    }
+  },
   router: {
     middleware: 'check-auth',
     scrollBehavior: function (to, from, savedPosition) {
