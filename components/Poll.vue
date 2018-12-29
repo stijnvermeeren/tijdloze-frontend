@@ -25,7 +25,12 @@
         <input type="radio" v-model="myVoteEdit" :value="answer.id" :id="`vote-${answer.id}`" />
         <label :for="`vote-${answer.id}`">{{answer.answer}}</label>
       </div>
-      <div><button @click="vote()" :disabled="!myVoteEdit || voting">Stem afgeven</button></div>
+      <div v-if="isAuthenticated">
+        <button @click="vote()" :disabled="!myVoteEdit || voting">Stem afgeven</button>
+      </div>
+      <div v-else>
+        Om te kunnen stemmen, moet je je <a @click="login()">aanmelden/registeren</a>.
+      </div>
     </div>
 
     <div class="voteCount">{{voteCount}} stemmen</div>
@@ -73,7 +78,7 @@
     },
     computed: {
       showResults() {
-        return !!this.myVote
+        return this.isAdmin || !!this.myVote
       },
       myVote() {
         return this.$store.getters.pollVote(this.poll.id)
@@ -82,7 +87,7 @@
         return this.$store.getters.isAuthenticated;
       },
       voteCount() {
-        return _.sumBy(this.poll.answers, answer => answer.voteCount);
+        return _.sumBy(this.livePoll.answers, answer => answer.voteCount);
       }
     },
     methods: {
@@ -94,7 +99,7 @@
           const result = await this.$axios.$get(`poll/my-votes`);
           this.$store.commit('setPollVotes', result.votes);
 
-          this.livePoll = this.$axios.$get(`poll/${this.poll.id}`);
+          this.livePoll = await this.$axios.$get(`poll/${this.poll.id}`);
           this.voting = false;
         }
       },
@@ -119,6 +124,9 @@
         await this.$axios.$delete(`poll/${this.poll.id}/hide`);
         this.isDeleted = false;
         this.deleting = false;
+      },
+      login() {
+        this.$auth.login(this.$route.path);
       }
     }
   }
@@ -144,7 +152,7 @@
       &.myVote {
         div.answerVotes {
           span.bar {
-            background-color: red;
+            background-color: darkorange;
           }
         }
 
