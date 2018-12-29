@@ -9,9 +9,12 @@
 
     <template v-if="page === 1">
       <template v-if="listInProgress">
-        <div>Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.</div>
+        <div class="message">Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.</div>
       </template>
       <template v-else>
+        <div class="message">De Tijdloze van 2018 werd reeds gelekt door Studio Brussel. Om te voorkomen dat de gelekte lijst zich verder verspreidt, is het plaatsen van reacties niet mogelijk tot en met de uitzending op 31 december.</div>
+      </template>
+      <template v-if="false">
         <div v-if="isAuthenticated">
           <div
               class="displayName"
@@ -66,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div v-if="!isAuthenticated">
+        <div v-if="!isAuthenticated" class="message">
           Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
         </div>
       </template>
@@ -189,6 +192,11 @@
 
 <style lang="less" scoped>
     @import "~assets/globalStyles.less";
+
+    div.message {
+      font-style: italic;
+      margin: 10px 0;
+    }
 
     div.displayName {
         padding: 0.3em 4em;
