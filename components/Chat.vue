@@ -1,10 +1,32 @@
 <template>
   <div class="chat">
-    <div class="online">
-      Online: <span v-for="onlineUser in onlineSorted">{{onlineUser.displayName}}</span>
+    <div v-if="!showAllOnline" class="online new">
+      Nieuw in de chat:
+      <span
+          v-for="onlineUser in newOnline"
+          :class="{isAdmin: onlineUser.isAdmin}"
+      >
+        {{onlineUser.displayName}}
+      </span>
+      <a @click="showAllOnline = true">Toon alle {{online.length}} aanwezigen</a>
+    </div>
+    <div v-else class="online all">
+      Online:
+      <span
+          v-for="onlineUser in onlineSorted"
+          :class="{isAdmin: onlineUser.isAdmin}"
+      >
+        {{onlineUser.displayName}}
+      </span>
+      <a @click="showAllOnline = false">Minder tonen</a>
     </div>
     <div class="messages" ref="messages">
-      <div v-for="message in messages" :key="message.id" :title="message.created">
+      <div
+          v-for="message in messages"
+          :key="message.id"
+          :title="message.created"
+          :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
+      >
         <strong>{{displayName(message.userId, message.displayName)}}</strong>: {{message.message}}
       </div>
       <div v-if="initialLoad">
@@ -12,7 +34,12 @@
       </div>
     </div>
     <div class="input">
-      <input v-model="message" @keypress.enter="send()" placeholder="Schrijf je berichtje..." />
+      <input
+          v-model="message"
+          @keypress.enter="send()"
+          placeholder="Schrijf je berichtje..."
+          maxlength="500"
+      />
       <button @click="send()" :disabled="sending || !message.length">Verzenden</button>
     </div>
   </div>
@@ -35,12 +62,16 @@
         message: '',
         sending: false,
         loadMessagesTimeout: undefined,
-        loadOnlineTimeout: undefined
+        loadOnlineTimeout: undefined,
+        showAllOnline: false
       }
     },
     computed: {
       messageIds() {
         return new Set(this.messages.map(message => message.id))
+      },
+      newOnline() {
+        return _.take(this.online, 2)
       },
       onlineSorted() {
         return _.sortBy(this.online, onlineUser => onlineUser.displayName.toLowerCase())
@@ -53,6 +84,10 @@
       displayName(userId, fallback) {
         const savedName = this.displayNames[userId];
         return savedName ? savedName : fallback;
+      },
+      isAdmin(userId) {
+        const user = this.online.find(user => user.id === userId);
+        return user ? user.isAdmin : false;
       },
       async loadOnce() {
         const messages  = await this.$axios.$get('/chat/message', {
@@ -144,19 +179,34 @@
     display: flex;
     flex-flow: column;
     min-height: 300px;
-    height: calc(100vh - 220px);
+    height: calc(100vh - 200px);
     border: 1px solid grey;
 
     div.online {
       background-color: @inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
+      text-align: left;
+
+      &.new {
+
+      }
+
+      &.all {
+        max-height: 4em;
+        overflow: auto;
+      }
 
       span {
         border: 1px solid lightgray;
         border-radius: 4px;
         padding: 1px 4px;
         margin: 1px 4px;
+        white-space: nowrap;
+
+        &.isAdmin {
+          background-color: @headerBackgroundColor;
+        }
       }
     }
 
@@ -170,7 +220,12 @@
 
       padding: 4px 8px;
 
-      div {
+      div.myMessage {
+        background-color: @inputBackgroundColor;
+      }
+
+      div.isAdmin {
+        background-color: @headerBackgroundColor;
       }
     }
 
