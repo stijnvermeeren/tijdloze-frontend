@@ -176,7 +176,11 @@
         if (item) {
           return item.analyse;
         } else {
-          return null;
+          if (this.year.yyyy === 2018) {
+            return this.analyse2018.split(/\r?\n/);
+          } else {
+            return null;
+          }
         }
       },
       highestNew() {
@@ -201,6 +205,14 @@
             [song => song.position(this.year) - song.position(this.year.previous()), song => -song.position(this.year)]
           )
         );
+      }
+    },
+    async asyncData({ params, app }) {
+      if (params.yyyy === '2018') {
+        const analyse2018 = await app.$axios.$get('text/analyse2018');
+        return {
+          analyse2018: analyse2018 ? analyse2018.value : ''
+        }
       }
     },
     head() {
