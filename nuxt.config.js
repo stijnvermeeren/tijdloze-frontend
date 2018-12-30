@@ -50,12 +50,18 @@ module.exports = {
       // will retain current scroll position.
       let position = false
 
-      const maxPathLength = Math.max(from.matched.length, to.matched.length);
-      const minPathLength = Math.min(from.matched.length, to.matched.length);
-      const criticalPositionIndex = maxPathLength - 2;
+      const fromParts = from.path.split('/').filter(fragment => fragment.length > 0);
+      const toParts = to.path.split('/').filter(fragment => fragment.length > 0);
+
+      const maxPathLength = Math.max(fromParts.length, toParts.length);
+      const minPathLength = Math.min(fromParts.length, toParts.length);
+
+      const equalParents = fromParts.slice(0, maxPathLength - 1).every((fromPart, i) => {
+        return fromPart === toParts[i];
+      });
 
       // not parent-child or siblings
-      if (maxPathLength < 2 || (maxPathLength - minPathLength) > 1 || to.matched[criticalPositionIndex].path !== from.matched[criticalPositionIndex].path) {
+      if (maxPathLength < 2 || (maxPathLength - minPathLength) > 1 || !equalParents) {
         // scroll to the top of the page
         position = { x: 0, y: 0 }
       } else if (to.matched.some((r) => r.components.default.options.scrollToTop)) {
