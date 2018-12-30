@@ -2,7 +2,11 @@
   <div class="chat">
     <div class="header">
       <span v-if="changeName">
-        <input v-model="displayNameEdit" placeholder="Kies een gebruikersnaam" />
+        <input
+            v-model="displayNameEdit"
+            placeholder="Kies een gebruikersnaam"
+            @keypress.enter="saveDisplayName()"
+        />
         <button
             @click="saveDisplayName()"
             :disabled="!displayNameValid || savingDisplayName"

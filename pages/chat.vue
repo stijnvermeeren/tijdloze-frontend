@@ -13,6 +13,7 @@
                 :disabled="submittingDisplayName"
                 type="text"
                 v-model="name"
+                @keypress.enter="submitDisplayName()"
             >
             <button
                 :disabled="submittingDisplayName || invalidDisplayName"
