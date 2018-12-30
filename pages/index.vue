@@ -18,7 +18,9 @@
                 <th v-if="year.previous()" class="n">
                     <nuxt-link :to="`/lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
                 </th>
-                <th class="r">{{year._yy}}</th>
+                <th class="r">
+                    <nuxt-link :to="`/lijst/${year.yyyy}`">{{year._yy}}</nuxt-link>
+                </th>
                 <th class="a">
                     <nuxt-link to="/artiesten">Artiest</nuxt-link>
                 </th>

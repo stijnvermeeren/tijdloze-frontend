@@ -59,10 +59,10 @@
     background-color: @inputBackgroundColor;
     text-align: center;
 
-    transition: transform 1.0s;
+    transition: transform 2.0s;
 
     &.isHidden {
-      transform: translateY(calc(-100% - 20px));
+      transform: translateY(calc(-200% - 20px));
     }
 
     div.header {

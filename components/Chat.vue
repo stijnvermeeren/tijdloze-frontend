@@ -1,18 +1,27 @@
 <template>
   <div class="chat">
     <div class="header">
-      Hallo <strong>{{currentUser.displayName}}</strong> (naam veranderen).
-      Er zijn {{online.length}} aanwezigen in de chat<span v-if="!showAllOnline"> (<a @click="showAllOnline = true">Toon iedereen</a>)</span>.
+      <span v-if="changeName">
+        <input v-model="displayNameEdit" placeholder="Kies een gebruikersnaam" />
+        <button
+            @click="saveDisplayName()"
+            :disabled="!displayNameValid || savingDisplayName"
+        >Wijzigen</button>
+        <button @click="cancelDisplayName()">Terug</button>.
+      </span>
+      <span v-else>
+        Hallo <strong>{{currentUser.displayName}}</strong> (<a @click="changeName = true">naam veranderen</a>).
+      </span>
+      Er zijn {{online.length}} aanwezigen in de chat<span v-if="!showAllOnline"> (<a @click="showAllOnline = true">toon iedereen</a>)</span>.
     </div>
     <div v-if="showAllOnline" class="online">
-      Online:
+      Online <a @click="showAllOnline = false">(lijst verbergen)</a>:
       <span
           v-for="onlineUser in onlineSorted"
           :class="{isAdmin: onlineUser.isAdmin}"
       >
         <user :user="onlineUser" />
       </span>
-      <a @click="showAllOnline = false">Minder tonen</a>
     </div>
     <div class="messages" ref="messages">
       <template v-for="message in messages">
@@ -63,7 +72,10 @@
         sending: false,
         loadMessagesTimeout: undefined,
         loadOnlineTimeout: undefined,
-        showAllOnline: false
+        showAllOnline: false,
+        changeName: false,
+        displayNameEdit: this.$store.state.user.displayName,
+        savingDisplayName: false
       }
     },
     computed: {
@@ -77,7 +89,30 @@
         return this.$store.state.user;
       }
     },
+    watch: {
+      'currentUser.displayName'() {
+        this.displayNameEdit = this.currentUser.displayName;
+      }
+    },
     methods: {
+      displayNameValid() {
+        this.displayNameEdit.trim().length > 0;
+      },
+      async saveDisplayName() {
+        this.savingDisplayName = true;
+        const data = {
+          displayName: this.displayNameEdit.trim()
+        };
+        const user = await this.$axios.$post(`user/display-name`, data);
+        this.$store.commit('setUser', user);
+        await this.loadOnlineOnce();
+        this.savingDisplayName = false;
+        this.changeName = false;
+      },
+      cancelDisplayName() {
+        this.changeName = false;
+        this.displayNameEdit = this.currentUser.displayName;
+      },
       displayName(userId, fallback) {
         const savedName = this.displayNames[userId];
         return savedName ? savedName : fallback;
@@ -128,13 +163,21 @@
         this.loadOnce();
         this.loadMessagesTimeout = setTimeout(this.load, 3000);
       },
-      async loadOnline() {
+      async loadOnlineOnce() {
         const online = await this.$axios.$get('/chat/online', {
           progress: false
         });
 
         online.forEach(onlineUser => {
-          this.displayNames[onlineUser.id] = onlineUser.displayName;
+          if (this.displayNames[onlineUser.id] !== onlineUser.displayName) {
+            if (this.displayNames[onlineUser.id]) {
+              this.messages.push({
+                message: `"${this.displayNames[onlineUser.id]}" heeft nu als nieuwe naam "${onlineUser.displayName}".`
+              })
+            }
+
+            this.displayNames[onlineUser.id] = onlineUser.displayName;
+          }
         });
 
         const onlineIds = online.map(onlineUser => onlineUser.id);
@@ -142,7 +185,9 @@
 
         const stillOnline = online
           .filter(onlineUser => previouslyOnlineIds.includes(onlineUser.id));
-        const newOnline = online.filter(onlineUser => !previouslyOnlineIds.includes(onlineUser.id));
+
+        const newOnline = online
+          .filter(onlineUser => !previouslyOnlineIds.includes(onlineUser.id));
 
         if (previouslyOnlineIds.includes(this.currentUser.id) && newOnline.length > 0) {
           const names = newOnline.map(onlineUser => onlineUser.displayName).join(", ");
@@ -160,7 +205,9 @@
         }
 
         this.online = _.concat(currentUser, newOnline, stillOnline);
-
+      },
+      async loadOnline() {
+        this.loadOnlineOnce()
         this.loadOnlineTimeout = setTimeout(this.loadOnline, 15000);
       },
       async send() {
@@ -208,6 +255,10 @@
       border-bottom: 1px solid grey;
       text-align: left;
       font-size: 14px;
+
+      input {
+        width: 150px;
+      }
     }
 
     div.online {
@@ -215,6 +266,7 @@
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       text-align: left;
+      font-size: 14px;
 
       max-height: 4em;
       overflow: auto;
