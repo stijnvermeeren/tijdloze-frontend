@@ -47,7 +47,14 @@
                 <li><nuxt-link to="/website/contact">Contact</nuxt-link></li>
               </ul>
             </li>
-            <li v-if="isAdmin"><nuxt-link to="/admin">Admin</nuxt-link></li>
+            <li v-if="isAdmin"><nuxt-link to="/admin">Admin</nuxt-link>
+              <ul>
+                <li><nuxt-link to="/admin/live">Nummers toevoeren</nuxt-link></li>
+                <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
+                <li><nuxt-link to="/admin/polls">Polls</nuxt-link></li>
+                <li><nuxt-link to="/admin/analysis">Interessante feiten</nuxt-link></li>
+              </ul>
+            </li>
           </ul>
         </div>
         <tijdloze-login></tijdloze-login>

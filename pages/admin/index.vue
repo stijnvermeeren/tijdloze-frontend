@@ -4,10 +4,11 @@
 
     <h3>De Tijdloze Live</h3>
     <ul>
-      <li><nuxt-link to="/admin/live">Live updates</nuxt-link></li>
+      <li><nuxt-link to="/admin/live">Nummers toevoeren</nuxt-link></li>
       <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
       <li><nuxt-link to="/admin/polls">Polls</nuxt-link></li>
       <li><nuxt-link to="/admin/analysis">Interessante feiten</nuxt-link></li>
+      <li><nuxt-link to="/admin/chat">Chat activeren</nuxt-link></li>
     </ul>
 
     <h3>Database</h3>

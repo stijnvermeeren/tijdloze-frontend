@@ -1,33 +1,39 @@
 <template>
   <div>
     <h2>De Tijdloze chatbox</h2>
-    <div v-if="isAuthenticated">
-      <div v-if="displayName">
-        <chat />
-      </div>
-      <div v-else>
-        <div class="displayName">
-          <div>
-            Kies een gebruikersnaam:
-            <input
-                :disabled="submittingDisplayName"
-                type="text"
-                v-model="name"
-                @keypress.enter="submitDisplayName()"
-            >
-            <button
-                :disabled="submittingDisplayName || invalidDisplayName"
-                @click="submitDisplayName()"
-            >
-              Naar de chatbox
-            </button>
+    <template v-if="chatEnabled">
+      <div v-if="isAuthenticated">
+        <div v-if="displayName">
+          <chat />
+          <div class="note"><em>Hou het spannend voor iedereen alsjeblieft. Wie in de chat informatie lekt over noteringen in de Tijdloze die nog niet op de radio zijn uitgezonden, kan onmiddellijk en zonder waarschuwing geblokkeerd worden.</em></div>
+        </div>
+        <div v-else>
+          <div class="displayName">
+            <div>
+              Kies een gebruikersnaam:
+              <input
+                  :disabled="submittingDisplayName"
+                  type="text"
+                  v-model="name"
+                  @keypress.enter="submitDisplayName()"
+              >
+              <button
+                  :disabled="submittingDisplayName || invalidDisplayName"
+                  @click="submitDisplayName()"
+              >
+                Naar de chatbox
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else>
-      Om toegang te krijgen tot de chatbox moet je je <a @click="login()">aanmelden/registeren</a>.
-    </div>
+      <div v-else>
+        Om toegang te krijgen tot de chatbox moet je je <a @click="login()">aanmelden/registeren</a>.
+      </div>
+    </template>
+    <template v-else>
+      <div>Sorry, de chatbox is tijdelijk gesloten. Probeer later nog eens.</div>
+    </template>
   </div>
 </template>
 
@@ -69,6 +75,12 @@
         this.$auth.login(this.$route.path);
       }
     },
+    async asyncData({ app }) {
+      const modeResponse = await app.$axios.$get(`text/mode`);
+      return {
+        chatEnabled: modeResponse.value === 'chat'
+      }
+    },
     head: {
       title: 'Chatbox'
     }
@@ -91,4 +103,9 @@
         font-style: italic;
       }
     }
+
+  div.note {
+    font-size: 14px;
+    margin: 10px 0;
+  }
 </style>

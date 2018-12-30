@@ -61,26 +61,28 @@
             <nuxt-link :to="`lijst/${year.yyyy}`">Bekijk de volledige lijst van {{year.yyyy}}</nuxt-link>
         </div>
 
-        <template v-if="!listInProgress">
-            <h3>
-                Reageer en discussieer
-            </h3>
-
-            <div class="link">
-                <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
-            </div>
-
-            <comment
-              v-for="comment in comments"
-              :key="comment.id"
-              :comment="comment"
-            />
+        <template v-if="mode === 'chat'">
+          <h3>Chatbox</h3>
+          <div><nuxt-link to="chat">Ga naar de chatbox!</nuxt-link></div>
         </template>
 
-        <template v-else>
-            <h3>Chatbox</h3>
-            <div><nuxt-link to="chat">Ga naar de chatbox!</nuxt-link></div>
+        <template v-if="mode === 'comments' && !listInProgress">
+          <h3>
+              Reageer en discussieer
+          </h3>
 
+          <div class="link">
+              <nuxt-link to="/reacties">Meer reacties / Schrijf zelf een reactie</nuxt-link>
+          </div>
+
+          <comment
+            v-for="comment in comments"
+            :key="comment.id"
+            :comment="comment"
+          />
+        </template>
+
+        <template v-if="listInProgress">
             <template v-if="poll">
               <h3>Poll</h3>
               <div>
@@ -113,7 +115,12 @@
         }
       },
       async asyncData({ params, app, store }) {
-        const comments = await app.$axios.$get(`comments/1`);
+        const modeResponse = await app.$axios.$get(`text/mode`);
+
+        let comments = [];
+        if (!store.getters.listInProgress && modeResponse.value === 'comments') {
+          comments = await app.$axios.$get(`comments/1`);
+        }
 
         let latestPoll = undefined;
         if (store.getters.listInProgress) {
@@ -125,6 +132,7 @@
 
         return {
           poll: latestPoll,
+          mode: modeResponse.value,
           comments: _.take(comments, 5)
         };
       },
