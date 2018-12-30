@@ -43,15 +43,15 @@
       }
     },
     methods: {
-      async block(userId) {
+      async block() {
         this.blocking = true;
-        await this.$axios.$post(`/user/${userId}/block`);
+        await this.$axios.$post(`/user/${this.user.id}/block`);
         this.isBlocked = true;
         this.blocking = false;
       },
-      async unblock(userId) {
+      async unblock() {
         this.blocking = true;
-        await this.$axios.$delete(`/user/${userId}/block`);
+        await this.$axios.$delete(`/user/${this.user.id}/block`);
         this.isBlocked = false;
         this.blocking = false;
       }
