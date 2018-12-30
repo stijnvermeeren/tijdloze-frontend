@@ -16,28 +16,30 @@
     </div>
     <div v-if="showAllOnline" class="online">
       Online <a @click="showAllOnline = false">(lijst verbergen)</a>:
-      <span
+      <div
           v-for="onlineUser in onlineSorted"
-          :class="{isAdmin: onlineUser.isAdmin}"
+          :class="['user', {isAdmin: onlineUser.isAdmin}]"
       >
         <user :user="onlineUser" />
-      </span>
+      </div>
     </div>
     <div class="messages" ref="messages">
-      <template v-for="message in messages">
-        <div
-            v-if="message.userId"
-            :title="message.created"
-            :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
-        >
-          <span class="userName"><user :user="messageUser(message)" /></span>: {{message.message}}
+      <div class="messagesContainer">
+        <template v-for="message in messages">
+          <div
+              v-if="message.userId"
+              :title="message.created"
+              :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
+          >
+            <span class="userName"><user :user="messageUser(message)" /></span>: {{message.message}}
+          </div>
+          <div v-else class="systemMessage">
+            {{message.message}}
+          </div>
+        </template>
+        <div v-if="initialLoad">
+          Chat wordt geladen...
         </div>
-        <div v-else class="systemMessage">
-          {{message.message}}
-        </div>
-      </template>
-      <div v-if="initialLoad">
-        Chat wordt geladen...
       </div>
     </div>
     <div class="input">
@@ -83,7 +85,10 @@
         return new Set(this.messages.map(message => message.id))
       },
       onlineSorted() {
-        return _.sortBy(this.online, onlineUser => onlineUser.displayName.toLowerCase())
+        return _.sortBy(
+          _.concat(this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online),
+          onlineUser => onlineUser.displayName.toLowerCase()
+        )
       },
       currentUser() {
         return this.$store.state.user;
@@ -92,6 +97,9 @@
     watch: {
       'currentUser.displayName'() {
         this.displayNameEdit = this.currentUser.displayName;
+      },
+      showAllOnline() {
+        this.autoScroll();
       }
     },
     methods: {
@@ -150,10 +158,13 @@
           this.lastId = lastMessage.id;
         }
 
+        this.autoScroll();
+      },
+      autoScroll() {
         const elem = this.$refs['messages'];
 
         // auto-scroll if within 100px from bottom
-        if (elem.scrollHeight - elem.clientHeight - elem.scrollTop < 100) {
+        if (elem.scrollHeight - elem.clientHeight - elem.scrollTop < 50) {
           Vue.nextTick(() => {
             elem.scrollTop = elem.scrollHeight;
           });
@@ -207,7 +218,7 @@
         this.online = _.concat(currentUser, newOnline, stillOnline);
       },
       async loadOnline() {
-        this.loadOnlineOnce()
+        this.loadOnlineOnce();
         this.loadOnlineTimeout = setTimeout(this.loadOnline, 15000);
       },
       async send() {
@@ -271,7 +282,8 @@
       max-height: 4em;
       overflow: auto;
 
-      > span {
+      div.user {
+        display: inline-block;
         border: 1px solid lightgray;
         border-radius: 4px;
         padding: 1px 4px;
@@ -286,30 +298,34 @@
 
     div.messages {
       display: flex;
-      flex-flow: column;
-      justify-content: flex-end;
-
-      flex: 1;
       overflow: auto;
 
+      flex: 1;
       padding: 4px 8px;
 
-      span.userName {
-        font-weight: bold;
-      }
+      div.messagesContainer {
+        min-height: min-content;
+        display: flex;
+        flex-flow: column;
+        justify-content: flex-end;
 
-      div.isAdmin {
         span.userName {
-          color: darkred;
+          font-weight: bold;
         }
-      }
 
-      div.myMessage {
-        background-color: @inputBackgroundColor;
-      }
+        div.isAdmin {
+          span.userName {
+            color: darkred;
+          }
+        }
 
-      div.systemMessage {
-        font-style: italic;
+        div.myMessage {
+          background-color: @inputBackgroundColor;
+        }
+
+        div.systemMessage {
+          font-style: italic;
+        }
       }
     }
 

@@ -1,6 +1,9 @@
 <template>
   <span class="container">
-    <span @click="showInfo = !showInfo" :class="{isAdmin: user.isAdmin}">{{user.displayName}}</span>
+    <span
+        @click.alt="showInfo = !showInfo"
+        :class="{isAdmin: user.isAdmin}"
+    >{{user.displayName}}</span>
     <div v-if="showInfo" class="info">
       <div>Unieke ID: {{user.id}}</div>
       <div v-if="user.isAdmin">Moderator</div>
@@ -16,6 +19,9 @@
             Opnieuw toelaten
           </button>
         </div>
+      </div>
+      <div>
+        <a @click="showInfo = false">Sluiten</a>
       </div>
     </div>
   </span>
@@ -76,6 +82,13 @@
       text-align: left;
       font-weight: normal;
       color: black;
+
+      white-space: nowrap;
+      font-size: 14px;
+
+      div.close {
+        text-align: right;
+      }
     }
   }
 </style>
