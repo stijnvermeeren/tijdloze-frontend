@@ -105,13 +105,11 @@
       }
     },
     methods: {
-      selectSearchResult(result) {
+      async selectSearchResult(result) {
         this.nextSong = result.item;
         this.nextSongFullData = undefined;
 
-        this.$axios.$get(`song/${this.nextSong.id}`).then(fullSongData => {
-          this.nextSongFullData = fullSongData;
-        })
+        this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {
@@ -122,25 +120,23 @@
           spotifyId: track.spotifyId
         };
       },
-      undo() {
+      async undo() {
         this.processing = true;
-        this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.lastPosition}`).then(response => {
-          this.$store.dispatch('refreshCurrentList');
-          this.processing = false;
-        })
+        await this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.lastPosition}`)
+        this.$store.dispatch('refreshCurrentList');
+        this.processing = false;
       },
-      add(songId) {
+      async add(songId) {
         this.processing = true;
         const data = {
           songId
         }
-        this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data).then(response => {
-          this.$store.dispatch('refreshCurrentList');
-          this.nextSongType = 'existing';
-          this.nextSong = undefined;
-          this.nextSongFullData = undefined;
-          this.processing = false;
-        })
+        await this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data)
+        this.$store.dispatch('refreshCurrentList');
+        this.nextSongType = 'existing';
+        this.nextSong = undefined;
+        this.nextSongFullData = undefined;
+        this.processing = false;
       },
       possibleSong(song) {
         if (this.nextYearYyyy === this.currentYear.yyyy) {

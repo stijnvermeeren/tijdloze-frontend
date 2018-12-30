@@ -1,16 +1,10 @@
 <template>
   <div class="chat">
-    <div v-if="!showAllOnline" class="online new">
-      Nieuw in de chat:
-      <span
-          v-for="onlineUser in newOnline"
-          :class="{isAdmin: onlineUser.isAdmin}"
-      >
-        <user :user="onlineUser" />
-      </span>
-      <a @click="showAllOnline = true">Toon alle {{online.length}} aanwezigen</a>
+    <div class="header">
+      Hallo <strong>{{currentUser.displayName}}</strong> (naam veranderen).
+      Er zijn {{online.length}} aanwezigen in de chat<span v-if="!showAllOnline"> (<a @click="showAllOnline = true">Toon iedereen</a>)</span>.
     </div>
-    <div v-else class="online all">
+    <div v-if="showAllOnline" class="online">
       Online:
       <span
           v-for="onlineUser in onlineSorted"
@@ -21,14 +15,18 @@
       <a @click="showAllOnline = false">Minder tonen</a>
     </div>
     <div class="messages" ref="messages">
-      <div
-          v-for="message in messages"
-          :key="message.id"
-          :title="message.created"
-          :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
-      >
-        <strong><user :user="messageUser(message)" /></strong>: {{message.message}}
-      </div>
+      <template v-for="message in messages">
+        <div
+            v-if="message.userId"
+            :title="message.created"
+            :class="{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}"
+        >
+          <span class="userName"><user :user="messageUser(message)" /></span>: {{message.message}}
+        </div>
+        <div v-else class="systemMessage">
+          {{message.message}}
+        </div>
+      </template>
       <div v-if="initialLoad">
         Chat wordt geladen...
       </div>
@@ -72,9 +70,6 @@
       messageIds() {
         return new Set(this.messages.map(message => message.id))
       },
-      newOnline() {
-        return _.take(this.online, 2)
-      },
       onlineSorted() {
         return _.sortBy(this.online, onlineUser => onlineUser.displayName.toLowerCase())
       },
@@ -111,6 +106,10 @@
         const newMessages = messages.filter(message => !this.messageIds.has(message.id));
         this.messages = _.concat(this.messages, newMessages);
 
+        if (this.messages.length > 1000) {
+          this.messages = this.messages.slice(500);
+        }
+
         const lastMessage = _.last(this.messages);
         if (lastMessage) {
           this.lastId = lastMessage.id;
@@ -144,6 +143,13 @@
         const stillOnline = online
           .filter(onlineUser => previouslyOnlineIds.includes(onlineUser.id));
         const newOnline = online.filter(onlineUser => !previouslyOnlineIds.includes(onlineUser.id));
+
+        if (previouslyOnlineIds.includes(this.currentUser.id) && newOnline.length > 0) {
+          const names = newOnline.map(onlineUser => onlineUser.displayName).join(", ");
+          this.messages.push({
+            message: `Nieuw in de chat: ${names}.`
+          })
+        }
 
         let currentUser = [];
         if (!onlineIds.includes(this.currentUser.id)) {
@@ -196,20 +202,22 @@
     height: calc(100vh - 200px);
     border: 1px solid grey;
 
+    div.header {
+      background-color: @inputBackgroundColor;
+      padding: 4px 8px;
+      border-bottom: 1px solid grey;
+      text-align: left;
+      font-size: 14px;
+    }
+
     div.online {
       background-color: @inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       text-align: left;
 
-      &.new {
-
-      }
-
-      &.all {
-        max-height: 4em;
-        overflow: auto;
-      }
+      max-height: 4em;
+      overflow: auto;
 
       > span {
         border: 1px solid lightgray;
@@ -219,7 +227,7 @@
         white-space: nowrap;
 
         &.isAdmin {
-          background-color: @headerBackgroundColor;
+          color: darkred;
         }
       }
     }
@@ -234,12 +242,22 @@
 
       padding: 4px 8px;
 
+      span.userName {
+        font-weight: bold;
+      }
+
+      div.isAdmin {
+        span.userName {
+          color: darkred;
+        }
+      }
+
       div.myMessage {
         background-color: @inputBackgroundColor;
       }
 
-      div.isAdmin {
-        background-color: @headerBackgroundColor;
+      div.systemMessage {
+        font-style: italic;
       }
     }
 
