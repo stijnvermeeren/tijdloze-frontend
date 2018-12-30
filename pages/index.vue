@@ -2,12 +2,18 @@
     <div>
         <h2>De Tijdloze Website</h2>
 
-        <p style="text-align: center;">
-            De <strong>Tijdloze van 2018</strong> wordt uitgezonden door Studio Brussel op <strong>31 december</strong>.<br />
-            Op deze website komen er opnieuw live updates van alle statistieken.<br />
-            <br />
-            De technologie in de website werd volledig vernieuwd. Als er iets niet goed werkt, geef <nuxt-link to="/website/contact">dan een seintje</nuxt-link>.
-        </p>
+        <div class="description">
+            <template v-if="listInProgress">
+                De <strong>Tijdloze van 2018</strong> wordt momenteel uitgezonden door <a href="https://stubru.be/">Studio Brussel</a>.<br />
+                Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
+            </template>
+            <template v-else>
+                De <strong>Tijdloze van 2018</strong> wordt uitgezonden door <a href="https://stubru.be/">Studio Brussel</a> op <strong>31 december</strong>.<br />
+                Op deze website komen er opnieuw live updates van alle statistieken.<br />
+                <br />
+                De technologie in de website werd volledig vernieuwd. Als er iets niet goed werkt, geef <nuxt-link to="/website/contact">dan een seintje</nuxt-link>.
+            </template>
+        </div>
 
         <h3>
             De Tijdloze van {{year.yyyy}}
@@ -70,15 +76,31 @@
               :comment="comment"
             />
         </template>
+
+        <template v-else>
+            <h3>Chatbox</h3>
+            <div><nuxt-link to="chat">Ga naar de chatbox!</nuxt-link></div>
+
+            <template v-if="poll">
+              <h3>Poll</h3>
+              <div>
+                  <poll :poll="poll" />
+              </div>
+              <div>
+                <nuxt-link to="polls">Alle polls</nuxt-link>
+              </div>
+            </template>
+        </template>
     </div>
 </template>
 
 <script>
     import _ from 'lodash';
     import Comment from '../components/comments/Comment'
+    import Poll from "../components/Poll";
 
     export default {
-      components: {Comment},
+      components: {Poll, Comment},
       computed: {
         listInProgress() {
           return this.$store.getters.listInProgress;
@@ -90,9 +112,19 @@
           return this.$store.getters.currentYear;
         }
       },
-      async asyncData({ params, app }) {
+      async asyncData({ params, app, store }) {
         const comments = await app.$axios.$get(`comments/1`);
+
+        let latestPoll = undefined;
+        if (store.getters.listInProgress) {
+          const poll = await app.$axios.$get('poll/latest');
+          if (poll.year === 2018) {
+            latestPoll = poll;
+          }
+        }
+
         return {
+          poll: latestPoll,
           comments: _.take(comments, 5)
         };
       },
@@ -106,6 +138,10 @@
 
 <style lang="less" scoped>
     @import "../assets/globalStyles.less";
+
+    div.description {
+        text-align: center;
+    }
 
     div.link {
         text-align: center;

@@ -49,7 +49,7 @@ const createStore = () => {
           return state.user.displayName;
         }
       },
-      displayNameWithFallback(state, getters) {
+      displayNameWithFallback(state) {
         if (state.user) {
           if (state.user.displayName) {
             return state.user.displayName;

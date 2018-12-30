@@ -18,7 +18,7 @@
                 :disabled="submittingDisplayName || invalidDisplayName"
                 @click="submitDisplayName()"
             >
-              Ok
+              Naar de chatbox
             </button>
           </div>
         </div>
@@ -37,7 +37,7 @@
     components: { Chat },
     data() {
       return {
-        name: this.$store.getters.displayNameWithFallback,
+        name: this.$store.getters.displayName,
         submittingDisplayName: false
       }
     },
@@ -80,6 +80,10 @@
     div.displayName {
       padding: 0.3em 4em;
       margin: 1em 0;
+
+      input {
+        width: 150px;
+      }
 
       div.info {
         font-size: 90%;

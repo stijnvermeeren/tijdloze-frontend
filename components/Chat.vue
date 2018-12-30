@@ -86,7 +86,7 @@
       },
       onlineSorted() {
         return _.sortBy(
-          _.concat(this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online,this.online),
+          this.online,
           onlineUser => onlineUser.displayName.toLowerCase()
         )
       },
