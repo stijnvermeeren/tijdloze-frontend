@@ -15,7 +15,7 @@
         </tr>
         <tr>
           <th>Jaar</th>
-          <td><input v-model="fullAlbumData.releaseYear" /></td>
+          <td><input v-model.number="fullAlbumData.releaseYear" type="number" /></td>
         </tr>
         <tr>
           <th>Opmerkingen</th>
@@ -30,7 +30,7 @@
           <td><wiki-url-input v-model="fullAlbumData.urlWikiEn" lang="en" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
-          <th>Wikipedia Nederlands</th>
+          <th>AllMusic</th>
           <td><all-music-url-input v-model="fullAlbumData.urlAllMusic" lang="nl" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
         </tr>
         <tr>
