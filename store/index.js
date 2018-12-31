@@ -162,7 +162,10 @@ const createStore = () => {
     actions: {
       async refreshCurrentList({commit, dispatch}) {
         const response = await this.$axios.$get('current-list', {
-          progress: false
+          progress: false,
+          params: {
+            cacheBust: new Date().valueOf()
+          }
         });
 
         commit('setCurrentYear', response.year)
