@@ -21,7 +21,7 @@
       <label for="nextType-new">Nieuw nummer</label>
     </div>
 
-    <div class="box" v-if="nextSongType === 'existing'">
+    <div class="box" v-show="nextSongType === 'existing'">
       <search-box
         placeholder="Zoek nummer..."
         :artist-filter="artist => false"
@@ -45,7 +45,7 @@
       </div>
     </div>
 
-    <div class="box" v-if="nextSongType === 'new'">
+    <div class="box" v-show="nextSongType === 'new'">
       <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
 
       <hr />
@@ -74,7 +74,7 @@
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
-        spotifyData: {}
+        spotifyData: undefined
       }
     },
     computed: {
@@ -136,6 +136,7 @@
         this.nextSongType = 'existing';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
+        this.spotifyData = undefined;
         this.processing = false;
       },
       possibleSong(song) {

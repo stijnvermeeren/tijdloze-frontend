@@ -118,7 +118,7 @@
       }
     },
     data() {
-      return this.initialData();
+      return this.initialData(this.preset);
     },
     computed: {
       artistNew() {
@@ -156,7 +156,7 @@
         this.checkAlbum();
       },
       preset() {
-        Object.assign(this.$data, this.initialData());
+        Object.assign(this.$data, this.initialData(this.preset));
       }
     },
     methods: {
@@ -171,33 +171,53 @@
           this.albumId = undefined;
         }
       },
-      initialData() {
-        const artist = this.artistMatch(this.preset.artistName)
-        const album = artist
-          ? this.albumMatch(artist.id, this.preset.albumTitle, this.preset.albumYear)
-          : undefined;
-
-        return {
-          artistType: (artist || !this.preset.artistName) ? 'existing' : 'new',
-          artistId: artist ? artist.id : undefined,
+      initialData(preset) {
+        const data = {
+          artistType: 'new',
+          artistId: undefined,
           artistDetails: {
-            firstName: this.firstName(this.preset.artistName),
-            name: this.name(this.preset.artistName),
+            firstName: '',
+            name: '',
             countryId: undefined
           },
-          albumType: (album || !this.preset.albumTitle) ? 'existing' : 'new',
-          albumId: album ? album.id : undefined,
+          albumType: 'new',
+          albumId: undefined,
           albumDetails: {
-            title: this.preset.albumTitle,
-            releaseYear: this.preset.albumYear
+            title: '',
+            releaseYear: undefined
           },
           songDetails: {
-            title: this.preset.songTitle,
+            title: '',
             languageId: undefined,
             leadVocals: undefined
           },
           submitting: false
+        };
+
+        if (preset) {
+          const artist = this.artistMatch(preset.artistName);
+          const album = artist
+            ? this.albumMatch(artist.id, preset.albumTitle, preset.albumYear)
+            : undefined;
+
+          data.artistDetails.firstName = this.firstName(preset.artistName);
+          data.artistDetails.name = this.name(preset.artistName);
+          if (artist) {
+            data.artistType = 'existing';
+            data.artistId = artist.id;
+          }
+
+          data.albumDetails.title = preset.albumTitle;
+          data.albumDetails.releaseYear = preset.albumYear;
+          if (album) {
+            data.albumType = 'existing';
+            data.albumId = album.id;
+          }
+
+          data.songDetails.title = preset.songTitle;
         }
+
+        return data;
       },
       preProcessArtistName(artistName) {
         let query = artistName.toLowerCase()
