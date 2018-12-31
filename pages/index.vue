@@ -7,12 +7,6 @@
                 De <strong>Tijdloze van 2018</strong> wordt momenteel uitgezonden door <a href="https://stubru.be/">Studio Brussel</a>.<br />
                 Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
             </template>
-            <template v-else>
-                De <strong>Tijdloze van 2018</strong> wordt uitgezonden door <a href="https://stubru.be/">Studio Brussel</a> op <strong>31 december</strong>.<br />
-                Op deze website komen er opnieuw live updates van alle statistieken.<br />
-                <br />
-                De technologie in de website werd volledig vernieuwd. Als er iets niet goed werkt, geef <nuxt-link to="/website/contact">dan een seintje</nuxt-link>.
-            </template>
         </div>
 
         <h3>

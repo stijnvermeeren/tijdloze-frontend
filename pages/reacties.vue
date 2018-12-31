@@ -12,9 +12,6 @@
         <div class="message">Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.</div>
       </template>
       <template v-else>
-        <div class="message">De Tijdloze van 2018 werd reeds gelekt door Studio Brussel. Om te voorkomen dat de gelekte lijst zich verder verspreidt, is het plaatsen van reacties niet mogelijk tot en met de uitzending op 31 december.</div>
-      </template>
-      <template v-if="false">
         <div v-if="isAuthenticated">
           <div
               class="displayName"
