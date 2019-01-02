@@ -10,7 +10,7 @@ export default class Artist extends Model {
   static fields() {
     return {
       id: this.attr(null),
-      firstName: this.attr(null),
+      namePrefix: this.attr(null),
       name: this.attr(null),
       countryId: this.attr(null),
 
@@ -20,6 +20,6 @@ export default class Artist extends Model {
   }
 
   get fullName() {
-    return this.firstName ? `${this.firstName} ${this.name}` : this.name;
+    return this.namePrefix ? `${this.namePrefix} ${this.name}` : this.name;
   }
 }

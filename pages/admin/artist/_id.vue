@@ -4,8 +4,8 @@
     <table class="info">
       <tbody>
         <tr>
-          <th>Voornaam</th>
-          <td><input v-model="fullArtistData.firstName" placeholder="The / Bob / ..." /></td>
+          <th>Naam (prefix)</th>
+          <td><input v-model="fullArtistData.namePrefix" placeholder="The / Bob / ..." /></td>
         </tr>
         <tr>
           <th>Naam</th>
