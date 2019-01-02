@@ -194,7 +194,6 @@
 
 <style lang="less" scoped>
     @import "../assets/styleConfig.less";
-    @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css");
 
     #searchBox {
         position: relative;
