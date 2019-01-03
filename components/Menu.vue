@@ -44,6 +44,7 @@
               <ul>
                 <li><nuxt-link to="/website/geschiedenis">Geschiedenis</nuxt-link></li>
                 <li><nuxt-link to="/website/privacy">Privacybeleid</nuxt-link></li>
+                <li><nuxt-link to="/website/opendata">Open data</nuxt-link></li>
                 <li><nuxt-link to="/website/contact">Contact</nuxt-link></li>
               </ul>
             </li>

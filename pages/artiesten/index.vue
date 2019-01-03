@@ -37,7 +37,7 @@
       artists() {
         return _.sortBy(
           this.$store.getters['entities/artists/query']().with('songs').all(),
-          artist => [artist.name.toLowerCase(), artist.namePrefix.toLowerCase()]
+          artist => [artist.name.toLowerCase(), artist.namePrefix ? artist.namePrefix.toLowerCase() : '']
         )
       },
       countries() {
