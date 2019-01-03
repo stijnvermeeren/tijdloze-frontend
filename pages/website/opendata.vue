@@ -13,16 +13,44 @@
             <li><em>song</em>: alle nummers, met foreign keys die naar <em>artist</em> en <em>album</em> verwijzen.</li>
             <li><em>list_entry</em>: alle noteringen in alle edities van de Tijdloze, met een foreign key die naar <em>song</em> verwijst.</li>
         </ul>
-        <p><a href="/data/tijdloze.sql">Download <strong>tijdloze.sql</strong></a></p>
+        <p>
+            <a href="/data/tijdloze.sql">Download <strong>tijdloze.sql</strong></a>
+            <span v-if="lastUpdateSql"> (laatst gewijzigd op {{formatDate(lastUpdateSql)}})</span>
+        </p>
 
         <h3>Tab-separated file (bv. voor Excel)</h3>
         <p>Onderstaande TSV-export is een bestand met waardes die met tabs gescheiden zijn. Dit bestand bevat een <em>vlakke</em> versie van de belangrijkste gegevens uit de bovenstaande MySQL-export. Alle artiesten, albums, nummers en noteringen werden hier dus in één tabel samengevat. Dit bestand kan gelezen worden door programma's zoals Microsoft Excel.</p>
-        <p><a href="/data/tijdloze.tsv">Download <strong>tijdloze.tsv</strong></a></p>
+        <p>
+            <a href="/data/tijdloze.tsv">Download <strong>tijdloze.tsv</strong></a>
+            <span v-if="lastUpdateTsv"> (laatst gewijzigd op {{formatDate(lastUpdateTsv)}})</span>
+        </p>
     </div>
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
+    data() {
+      return {
+        lastUpdateSql: undefined,
+        lastUpdateTsv: undefined
+      }
+    },
+    methods: {
+      formatDate(date) {
+        return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
+      }
+    },
+    mounted() {
+      axios.head('/data/tijdloze.sql').then(result => {
+        this.lastUpdateSql = new Date(result.headers['last-modified']);
+      })
+
+      axios.head('/data/tijdloze.tsv').then(result => {
+        this.lastUpdateTsv = new Date(result.headers['last-modified']);
+      })
+    },
     head: {
       title: "Open Data"
     }
