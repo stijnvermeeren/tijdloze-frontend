@@ -1,62 +1,57 @@
-<template>
-  <div>
-    <h2>Admin: live updates</h2>
+<template lang="pug">
+  div
+    h2 Admin: live updates
 
-    <h3>Vorig nummer</h3>
-    <div>
-      <strong>Positie {{lastPosition}} in {{currentYear.yyyy}}:</strong>
-    </div>
-    <div>
-      {{ lastSong.artist.fullName }} - {{ lastSong.title }}
-      <button @click="undo()" :disabled="processing">Ongedaan maken</button>
-    </div>
+    h3 Vorig nummer
+    div
+      strong Positie {{lastPosition}} in {{currentYear.yyyy}}:
+    div
+      | {{ lastSong.artist.fullName }} - {{ lastSong.title }}
+      button(@click='undo()', :disabled='processing') Ongedaan maken
 
-    <h3>Volgend nummer</h3>
-    <div><strong>Positie {{nextPosition}} in {{nextYearYyyy}}</strong></div>
+    h3 Volgend nummer
+    div
+      strong Positie {{nextPosition}} in {{nextYearYyyy}}
+    div
+      input#nextType-existing(
+        type='radio'
+        value='existing'
+        v-model='nextSongType'
+      )
+      label(for='nextType-existing') Nummer dat reeds in de Tijdloze stond
+      input#nextType-new(
+        type='radio',
+        value='new',
+        v-model='nextSongType'
+      )
+      label(for='nextType-new') Nieuw nummer
 
-    <div>
-      <input type="radio" value="existing" v-model="nextSongType" id="nextType-existing" />
-      <label for="nextType-existing">Nummer dat reeds in de Tijdloze stond</label>
-      <input type="radio" value="new" v-model="nextSongType" id="nextType-new" />
-      <label for="nextType-new">Nieuw nummer</label>
-    </div>
+    .box(v-show="nextSongType === 'existing'")
+      search-box(
+        placeholder='Zoek nummer...'
+        :artist-filter='artist => false'
+        :album-filter='album => false'
+        :song-filter='possibleSong'
+        :songs-year='completedYear'
+        @selectsearchresult='selectSearchResult($event)'
+      )
+        div(v-if='nextSong')
+          strong {{nextSong.artist.fullName}} - {{nextSong.title}}
+          |  (in {{completedYear.yyyy}} op positie #[position(:year='completedYear', :song='nextSong')])
+        div(v-if='nextSongFullData && nextSongFullData.spotifyId')
+          spotify(:spotifyid='nextSongFullData.spotifyId')
+        div
+          button(@click='add(nextSong.id)', :disabled='!nextValid')
+            | Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
 
-    <div class="box" v-show="nextSongType === 'existing'">
-      <search-box
-        placeholder="Zoek nummer..."
-        :artist-filter="artist => false"
-        :album-filter="album => false"
-        :song-filter="possibleSong"
-        :songs-year="completedYear"
-        @selectSearchResult="selectSearchResult($event)"
-      />
-      <div v-if="nextSong">
-        <strong>{{nextSong.artist.fullName}} - {{nextSong.title}}</strong>
-        (in {{completedYear.yyyy}} op positie <position :year="completedYear" :song="nextSong" />)
-      </div>
-      <div v-if="nextSongFullData && nextSongFullData.spotifyId">
-        <spotify :spotifyId="nextSongFullData.spotifyId" />
-      </div>
-
-      <div>
-        <button @click="add(nextSong.id)" :disabled="!nextValid">
-          Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
-        </button>
-      </div>
-    </div>
-
-    <div class="box" v-show="nextSongType === 'new'">
-      <spotify-search @selectSpotifyTrack="selectSpotifyTrack($event)" />
-
-      <hr />
-
-      <new-song-wizard
-        :preset="spotifyData"
-        :button-label="`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`"
-        @newSong="add($event.id)"
-      />
-    </div>
-  </div>
+    .box(v-show="nextSongType === 'new'")
+      spotify-search(@selectspotifytrack='selectSpotifyTrack($event)')
+        hr
+        new-song-wizard(
+          :preset='spotifyData'
+          :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
+          @newsong='add($event.id)'
+        )
 </template>
 
 <script>

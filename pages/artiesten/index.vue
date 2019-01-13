@@ -1,32 +1,21 @@
-<template>
-    <div>
-        <h2>Alle Tijdloze artiesten</h2>
-
-        <table class="lijst perVijf">
-            <tbody>
-                <tr>
-                    <th>Artiest</th>
-                    <th></th>
-                    <th>Nummers</th>
-                </tr>
-                <tr v-for="artist in artists">
-                    <td>
-                        <tijdloze-artist :artist="artist"></tijdloze-artist>
-                    </td>
-                    <td>
-                        <tijdloze-country-icon :country="countries[artist.countryId]"></tijdloze-country-icon>
-                    </td>
-                    <td class="s wrap">
-                        <ul v-if="artist.songs.length">
-                            <li v-for="song in artist.songs">
-                                <tijdloze-song :song="song"></tijdloze-song>
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  div
+    h2 Alle Tijdloze artiesten
+    table.lijst.perVijf
+      tbody
+        tr
+          th Artiest
+          th
+          th Nummers
+        tr(v-for='artist in artists')
+          td
+            tijdloze-artist(:artist='artist')
+          td
+            tijdloze-country-icon(:country='countries[artist.countryId]')
+          td.s.wrap
+            ul(v-if='artist.songs.length')
+              li(v-for='song in artist.songs')
+                tijdloze-song(:song='song')
 </template>
 
 <script>

@@ -1,53 +1,36 @@
-<template>
-    <div>
-        <page-title icon="album" icon-alt="Album">
-            <h2>{{album.title}}</h2>
-        </page-title>
+<template lang="pug">
+  div
+    page-title(icon='album' icon-alt='Album')
+      h2 {{album.title}}
+    table.info
+      tbody
+        tr.important
+          th Album van
+          td
+            tijdloze-artist(:artist='album.artist')
+        tr
+          th Uitgebracht in
+          td {{ album.releaseYear }}
+        tr
+          th In de Tijdloze
+          td
+            in-current-list(:songs='album.songs')
+        tr.unimportant(v-if='links.length')
+          th Externe links
+          td
+            div(v-for='(link, index) in links' :key='index')
+              a(:href='link.href') {{ link.title }}
 
-        <table class="info">
-            <tbody>
-                <tr class="important">
-                    <th>Album van</th>
-                    <td><tijdloze-artist :artist="album.artist" /></td>
-                </tr>
-                <tr>
-                    <th>Uitgebracht in</th>
-                    <td>{{ album.releaseYear }}</td>
-                </tr>
-                <tr>
-                    <th>In de Tijdloze</th>
-                    <td>
-                        <in-current-list :songs="album.songs" />
-                    </td>
-                </tr>
-                <tr v-if="links.length" class="unimportant">
-                    <th>Externe links</th>
-                    <td>
-                        <div v-for="(link, index) in links" :key="index">
-                            <a :href="link.href">{{ link.title }}</a>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    h3 In de Tijdloze
+    div
+      entry-count(:songs='album.songs')
+    graph(v-if='album.songs.find(song => song.listCount($store.getters.years) > 0)' :songs='album.songs')
 
-        <h3>In de Tijdloze</h3>
-
-        <div><entry-count :songs="album.songs" /></div>
-
-        <graph
-          v-if="album.songs.find(song => song.listCount($store.getters.years) > 0)"
-          :songs="album.songs"
-        />
-
-        <h3>Tijdloze nummers</h3>
-
-        <div>
-            <ul v-if="album.songs">
-                <li v-for="song in album.songs"><tijdloze-song :song="song" /></li>
-            </ul>
-        </div>
-    </div>
+    h3 Tijdloze nummers
+    div
+      ul(v-if='album.songs')
+        li(v-for='song in album.songs')
+          tijdloze-song(:song='song')
 </template>
 
 <script>

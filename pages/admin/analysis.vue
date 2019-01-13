@@ -1,28 +1,21 @@
-<template>
-  <div>
-    <h2>"Interessante feiten" 2018</h2>
+<template lang="pug">
+  div
+    h2 "Interessante feiten" 2018
+    div
+      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
 
-    <div>
-      <button @click="refresh()" :disabled="refreshing">Opnieuw laden</button>
-    </div>
+    h3 Aanpassen
+    div
+      textarea(v-model='analyse')
+    div
+      button(@click='save()', :disabled='saving') Opslaan
 
-    <h3>Aanpassen</h3>
-    <div>
-      <textarea v-model="analyse" />
-    </div>
-    <div><button @click="save()" :disabled="saving">Opslaan</button></div>
-
-    <h3>Preview</h3>
-    <div>
-      <div class="analyse">
-        <ul>
-          <li v-for="text in analysePreview">
-            <tijdloze-links :text="text" />
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
+    h3 Preview
+    div
+      .analyse
+        ul
+          li(v-for='text in analysePreview')
+            tijdloze-links(:text='text')
 </template>
 
 <script>

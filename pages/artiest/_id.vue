@@ -1,57 +1,40 @@
-<template>
-    <div>
-        <page-title icon="artist" icon-alt="Artiest">
-            <h2>{{artist.fullName}}</h2>
-        </page-title>
+<template lang="pug">
+  div
+    page-title(icon='artist' icon-alt='Artiest')
+      h2 {{artist.fullName}}
+    table.info
+      tbody
+        tr
+          th Land
+          td
+            tijdloze-country-icon(:country='country')  {{country.name}}
+        tr
+          th In de Tijdloze
+          td
+            in-current-list(:songs='artist.songs')
+        tr.unimportant(v-if='links.length')
+          th Externe links
+          td
+            div(v-for='(link, index) in links' :key='index')
+              a(:href='link.href') {{ link.title }}
+        tr.unimportant(v-if='fullArtistData.notes')
+          td(colspan='2')
+            make-links(:text='fullArtistData.notes')
 
-        <table class="info">
-            <tbody>
-                <tr>
-                    <th>Land</th>
-                    <td><tijdloze-country-icon :country="country" /> {{country.name}}</td>
-                </tr>
-                <tr>
-                    <th>In de Tijdloze</th>
-                    <td>
-                        <in-current-list :songs="artist.songs" />
-                    </td>
-                </tr>
-                <tr v-if="links.length" class="unimportant">
-                    <th>Externe links</th>
-                    <td>
-                        <div v-for="(link, index) in links" :key="index">
-                            <a :href="link.href">{{ link.title }}</a>
-                        </div>
-                    </td>
-                </tr>
-                <tr v-if="fullArtistData.notes" class="unimportant">
-                    <td colspan="2"><make-links :text="fullArtistData.notes" /></td>
-                </tr>
-            </tbody>
-        </table>
+    h3 In de Tijdloze
+    div
+      entry-count(:songs='artist.songs')
+    graph(v-if='artist.songs.find(song => song.listCount($store.getters.years) > 0)' :songs='artist.songs')
 
-        <h3>In de Tijdloze</h3>
-
-        <div><entry-count :songs="artist.songs" /></div>
-
-        <graph
-          v-if="artist.songs.find(song => song.listCount($store.getters.years) > 0)"
-          :songs="artist.songs"
-        />
-
-        <h3>Tijdloze albums en nummers</h3>
-
-        <div>
-            <ul v-if="artist.albums">
-                <li v-for="album in artist.albums">
-                    <tijdloze-album :album="album" /> ({{album.releaseYear}})
-                    <ul v-if="album.songs">
-                        <li v-for="song in album.songs"><tijdloze-song :song="song" /></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
+    h3 Tijdloze albums en nummers
+    div
+      ul(v-if='artist.albums')
+        li(v-for='album in artist.albums')
+          tijdloze-album(:album='album')
+            | ({{album.releaseYear}})
+            ul(v-if='album.songs')
+              li(v-for='song in album.songs')
+                tijdloze-song(:song='song')
 </template>
 
 <script>

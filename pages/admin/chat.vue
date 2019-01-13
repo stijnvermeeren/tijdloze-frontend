@@ -1,20 +1,16 @@
-<template>
-  <div>
-    <h2>Chat activeren</h2>
-
-    <div>
-      <button @click="refresh()" :disabled="refreshing">Opnieuw laden</button>
-    </div>
-
-    <template v-if="mode == 'chat'">
-      <h3>Chat actief</h3>
-      <div><button @click="save('comments')" :disabled="saving">Chat deactiveren</button></div>
-    </template>
-    <template v-else>
-      <h3>Chat niet actief</h3>
-      <div><button @click="save('chat')" :disabled="saving">Chat activeren</button></div>
-    </template>
-  </div>
+<template lang="pug">
+  div
+    h2 Chat activeren
+    div
+      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
+    template(v-if="mode === 'chat'")
+      h3 Chat actief
+      div
+        button(@click="save('comments')", :disabled='saving') Chat deactiveren
+    template(v-else='')
+      h3 Chat niet actief
+      div
+        button(@click="save('chat')", :disabled='saving') Chat activeren
 </template>
 
 <script>

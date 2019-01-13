@@ -1,53 +1,45 @@
-<template>
-    <div>
-        <h2>Contact</h2>
+<template lang="pug">
+  div
+    h2 Contact
 
-        <p v-if="error" class="fout">Probleem met het verzenden van je bericht! {{error}}</p>
+    p.fout(v-if='error') Probleem met het verzenden van je bericht! {{error}}
+    div(v-if='success')
+      p
+        Bedankt voor je mail. #[a(@click='reset()') Verzend een nieuw bericht].
+      h3 Verzonden bericht:
+      h4 Van:
+      p
+        | {{name}}
+        span(v-if='email.trim()') ({{email}})
+      h4 Bericht:
+      p.message {{message}}
+    div(v-if='inProgress')
+      | Bericht wordt verzonden...
 
-        <div v-if="success">
-            <p>Bedankt voor je mail. <a href="#" @click="reset()">Verzend een nieuw bericht</a>.</p>
-            <h3>Verzonden bericht:</h3>
-            <h4>Van:</h4><p>{{name}} <span v-if="email.trim()">({{email}})</span></p>
-            <h4>Bericht:</h4><p class="message">{{message}}</p>
-        </div>
-
-        <div v-if="inProgress">
-            Bericht wordt verzonden...
-        </div>
-
-        <div v-if="!success && !inProgress">
-            <p>Alle suggesties, verbeteringen of andere berichten zijn van harte welkom!</p>
-
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Naam:</th>
-                        <td><input type="text" class="formtext" v-model="name" placeholder="Verplicht veld" /></td>
-                    </tr>
-
-                    <tr>
-                        <th>E-mailadres:</th>
-                        <td>
-                            <div><input @blur="emailTouched = true" class="formtext" name="email" v-model="email" /></div>
-                            <div v-if="emailTouched && email.trim() && !validateEmail(email.trim())" class="fout">Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Bericht:</th>
-                        <td><textarea cols="30" rows="4" v-model="message" placeholder="Verplicht veld"></textarea></td>
-                    </tr>
-                    <tr>
-                        <th>&nbsp;</th>
-                        <td>
-                            <button @click="submit" :disabled="submitDisabled" type="submit" class="formsubmit">
-                                Bericht verzenden
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    div(v-if='!success && !inProgress')
+      p Alle suggesties, verbeteringen of andere berichten zijn van harte welkom!
+      table
+        tbody
+          tr
+            th Naam:
+            td
+              input.formtext(type='text' v-model='name' placeholder='Verplicht veld')
+          tr
+            th E-mailadres:
+            td
+              div
+                input.formtext(@blur='emailTouched = true' name='email' v-model='email')
+              .fout(v-if='emailTouched && email.trim() && !validateEmail(email.trim())')
+                | Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
+          tr
+            th Bericht:
+            td
+              textarea(cols='30' rows='4' v-model='message' placeholder='Verplicht veld')
+          tr
+            th &nbsp;
+            td
+              button.formsubmit(@click='submit' :disabled='submitDisabled' type='submit')
+                | Bericht verzenden
 </template>
 
 <script>
@@ -114,7 +106,6 @@
 
     .fout {
         color: #CC0000;
-        font-weight: bold;
     }
     .goed {
         color: #007700;

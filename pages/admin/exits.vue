@@ -1,28 +1,24 @@
-<template>
-  <div>
-    <h2>Exits markeren</h2>
-    <div>
-      <search-box
-        :placeholder="`Zoek nummer uit de Tijdloze van ${completedYear.yyyy}`"
-        :song-filter="songValid"
-        :songs-year="completedYear"
-        :album-filter="album => false"
-        :artist-filter="artist => false"
-        @selectSearchResult="markExit($event.item)"
-      />
-    </div>
-    <div v-if="exits.length">
-      <h3>Exits</h3>
-      <div>
-        <ul>
-          <li v-for="song in exits" :key="song.id">
-            {{song.artist.fullName}} - {{song.title}} <button @click="unmarkExit(song)">Terugzetten</button>
-          </li>
-        </ul>
-        <div><button @click="unmarkAll()">Alle exits terugzetten</button></div>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    h2 Exits markeren
+    div
+      search-box(
+        :placeholder='`Zoek nummer uit de Tijdloze van ${completedYear.yyyy}`'
+        :song-filter='songValid', :songs-year='completedYear'
+        :album-filter='album => false'
+        :artist-filter='artist => false'
+        @selectsearchresult='markExit($event.item)'
+      )
+
+    div(v-if='exits.length')
+      h3 Exits
+      div
+        ul
+          li(v-for='song in exits', :key='song.id')
+            | {{song.artist.fullName}} - {{song.title}}
+            button(@click='unmarkExit(song)') Terugzetten
+        div
+          button(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
 <script>

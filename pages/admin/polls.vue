@@ -1,35 +1,29 @@
-<template>
-  <div>
-    <h2>Admin: polls</h2>
-
-    <div>
-      <button @click="refresh()" :disabled="refreshing">Opnieuw laden</button>
-    </div>
-
-    <h3>Maak een nieuwe poll</h3>
-    <div>
-      <div><strong>Vraag</strong></div>
-      <div><input v-model="question" /></div>
-      <div>
-        <strong>Antwoorden</strong>
-        - <a @click="answers.push({text: ''})">Nog een antwoord</a>
-        <template v-if="answers.length > 2">- <a @click="answers.pop()">Laatste antwoord verwijderen</a></template>
-      </div>
-      <div v-for="answer in answers">
-        <input v-model="answer.text" />
-      </div>
-      <div>
-        <button @click="submit()" :disabled="!formValid">Opslaan</button>
-      </div>
-    </div>
-
-    <template v-for="{year, polls} in groupedPolls">
-      <h3>{{year}}</h3>
-      <div v-for="poll in polls" :key="poll.id">
-        <poll :poll="poll" :is-admin="true" />
-      </div>
-    </template>
-  </div>
+<template lang="pug">
+  div
+    h2 Admin: polls
+    div
+      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
+    h3 Maak een nieuwe poll
+    div
+      div
+        strong Vraag
+      div
+        input(v-model='question')
+      div
+        strong Antwoorden
+        | -
+        a(@click="answers.push({text: ''})") Nog een antwoord
+        template(v-if='answers.length > 2')
+          | -
+          a(@click='answers.pop()') Laatste antwoord verwijderen
+      div(v-for='answer in answers')
+        input(v-model='answer.text')
+      div
+        button(@click='submit()', :disabled='!formValid') Opslaan
+    template(v-for='{year, polls} in groupedPolls')
+      h3 {{year}}
+      div(v-for='poll in polls', :key='poll.id')
+        poll(:poll='poll', :is-admin='true')
 </template>
 
 <script>

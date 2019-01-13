@@ -1,64 +1,35 @@
-<template>
-  <div>
-    <h2>Gebruikers</h2>
-    <div>
-      <div>
-        {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
-      </div>
-      <div>
-        <button @click="refresh()" :disabled="refreshing">
-          Opnieuw laden
-        </button>
-      </div>
-    </div>
-    <h3>Lijst</h3>
-    <div>
-      Sorteren op:
-      <input type="radio" v-model="sortProperty" value="displayName" id="sort-displayName" />
-      <label for="sort-displayName">Gebruikersnaam</label>
-
-      <input type="radio" v-model="sortProperty" value="lastSeen" id="sort-lastSeen" />
-      <label for="sort-lastSeen">Laatste login</label>
-
-      <input type="radio" v-model="sortProperty" value="created" id="sort-created" />
-      <label for="sort-created">Laatst geregistreerd</label>
-    </div>
-    <ul>
-      <li v-for="user in usersSorted">
-        <div v-if="user.displayName" class="displayName">
-          {{user.displayName}}
-        </div>
-        <div v-else class="anonymous">
-          Geen gebruikernaam
-        </div>
-        <div v-if="user.isAdmin" class="admin">
-          Admin
-        </div>
-        <div class="details">
-          <div v-if="user.id !== currentUser.id">
-            <div v-if="user.isBlocked" class="blocked">
-              Geblokkeerd - <button @click="unblock(user.id)" :disabled="refreshing">weer toelaten</button>
-            </div>
-            <div v-else>
-              <button @click="block(user.id)" :disabled="refreshing">blokkeren</button>
-            </div>
-          </div>
-          <div>
-            Naam: <strong>{{user.name}}</strong>
-          </div>
-          <div>
-            ID: {{user.id}}
-          </div>
-          <div>
-            Registratie: {{user.created}}
-          </div>
-          <div>
-            Laatste login: {{user.lastSeen}}
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
+<template lang="pug">
+  div
+    h2 Gebruikers
+    div
+      div {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
+      div
+        button(@click='refresh()', :disabled='refreshing') Opnieuw laden
+    h3 Lijst
+    div
+      | Sorteren op:
+      input#sort-displayName(type='radio', v-model='sortProperty', value='displayName')
+      label(for='sort-displayName') Gebruikersnaam
+      input#sort-lastSeen(type='radio', v-model='sortProperty', value='lastSeen')
+      label(for='sort-lastSeen') Laatste login
+      input#sort-created(type='radio', v-model='sortProperty', value='created')
+      label(for='sort-created') Laatst geregistreerd
+    ul
+      li(v-for='user in usersSorted')
+        .displayName(v-if='user.displayName') {{user.displayName}}
+        .anonymous(v-else='') Geen gebruikernaam
+        .admin(v-if='user.isAdmin') Admin
+        .details
+          div(v-if='user.id !== currentUser.id')
+            .blocked(v-if='user.isBlocked')
+              | Geblokkeerd -
+              button(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
+            div(v-else='')
+              button(@click='block(user.id)', :disabled='refreshing') blokkeren
+          div Naam: #[strong {{user.name}}]
+          div ID: {{user.id}}
+          div Registratie: {{user.created}}
+          div Laatste login: {{user.lastSeen}}
 </template>
 
 <script>

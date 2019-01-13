@@ -1,99 +1,66 @@
-<template>
-    <div class="container">
-        <page-title icon="song" icon-alt="Nummer">
-            <h2>{{song.title}}</h2>
-        </page-title>
+<template lang="pug">
+  .container
+    page-title(icon='song' icon-alt='Nummer')
+      h2 {{song.title}}
+    table.info
+      tbody
+        tr.important
+          th Nummer van
+          td
+            tijdloze-artist(:artist='song.artist')
+        tr
+          th Origineel op album
+          td
+            tijdloze-album(:album='song.album')  ({{ song.album.releaseYear }})
+        tr(:class='{unimportant: !song.possiblyInList(currentYear)}')
+          th In de Tijdloze
+          td
+            in-current-list-song(:song='song')
+        tr.unimportant(v-if='links.length')
+          th Externe links
+          td
+            div(v-for='(link, index) in links' :key='index')
+              a(:href='link.href') {{ link.title }}
+        tr.unimportant(v-if='fullSongData.notes')
+          td(colspan='2')
+            make-links(:text='fullSongData.notes')
 
-        <table class="info">
-            <tbody>
-                <tr class="important">
-                    <th>Nummer van</th>
-                    <td><tijdloze-artist :artist="song.artist" /></td>
-                </tr>
-                <tr>
-                    <th>Origineel op album</th>
-                    <td><TijdlozeAlbum :album="song.album" /> ({{ song.album.releaseYear }})</td>
-                </tr>
-                <tr :class="{unimportant: !song.possiblyInList(currentYear)}">
-                    <th>In de Tijdloze</th>
-                    <td>
-                        <in-current-list-song :song="song" />
-                    </td>
-                </tr>
-                <tr v-if="links.length" class="unimportant">
-                    <th>Externe links</th>
-                    <td>
-                        <div v-for="(link, index) in links" :key="index">
-                            <a :href="link.href">{{ link.title }}</a>
-                        </div>
-                    </td>
-                </tr>
-                <tr v-if="fullSongData.notes" class="unimportant">
-                    <td colspan="2"><make-links :text="fullSongData.notes" /></td>
-                </tr>
-            </tbody>
-        </table>
+    lyrics(v-if='fullSongData.lyrics')
+      .spotify(v-if='fullSongData.spotifyId')
+        div
+          spotify(:spotify-id='fullSongData.spotifyId')
+        div Beluister fragment via Spotify
+      .lyrics {{ fullSongData.lyrics }}
 
-        <lyrics v-if="fullSongData.lyrics">
-            <div v-if="fullSongData.spotifyId" class="spotify">
-                <div><spotify :spotifyId="fullSongData.spotifyId" /></div>
-                <div>Beluister fragment via Spotify</div>
-            </div>
-            <div class="lyrics">{{ fullSongData.lyrics }}</div>
-        </lyrics>
+    div(v-if="!fullSongData.lyrics && (fullSongData.spotifyId || fullSongData.languageId === 'ins')")
+      h3 Lyrics
+      .spotify(v-if='fullSongData.spotifyId')
+        div
+          spotify(:spotify-id='fullSongData.spotifyId')
+        div Beluister fragment via Spotify
+      div(v-if="fullSongData.languageId === 'ins'") (Instrumentaal nummer)
+      .clear
 
-        <div v-if="!fullSongData.lyrics && (fullSongData.spotifyId || fullSongData.languageId === 'ins')">
-            <h3>Lyrics</h3>
-            <div v-if="fullSongData.spotifyId" class="spotify">
-                <div><spotify :spotifyId="fullSongData.spotifyId" /></div>
-                <div>Beluister fragment via Spotify</div>
-            </div>
-            <div v-if="fullSongData.languageId === 'ins'">(Instrumentaal nummer)</div>
-            <div class="clear" />
-        </div>
-
-        <h3>In de Tijdloze</h3>
-
-        <div><entry-count :songs="[song]" /></div>
-
-        <tijdloze-graph
-          v-if="song.listCount($store.getters.years) > 0"
-          :songs="[song]"
-          :no-label="true"
-        />
-
-        <div class="allPositions">
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Jaar</th>
-                        <th>Positie</th>
-                    </tr>
-                    <template v-for="(interval, index) in intervals">
-                        <tr v-if="index">
-                            <td>...</td>
-                            <td></td>
-                        </tr>
-                        <tr
-                          v-for="year in interval"
-                          :key="year.yyyy"
-                        >
-                            <th><TijdlozeYear :year="year" /></th>
-                            <td>
-                                <TijdlozePositionChange
-                                  :song="song"
-                                  :year="year"
-                                /> <TijdlozePosition
-                              :song="song"
-                              :year="year"
-                            />
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    h3 In de Tijdloze
+    div
+      entry-count(:songs='[song]')
+    tijdloze-graph(v-if='song.listCount($store.getters.years) > 0' :songs='[song]' :no-label='true')
+    .allPositions
+      table
+        tbody
+          tr
+            th Jaar
+            th Positie
+          template(v-for='(interval, index) in intervals')
+            tr(v-if='index')
+              td ...
+              td
+            tr(v-for='year in interval' :key='year.yyyy')
+              th
+                tijdloze-year(:year='year')
+              td
+                tijdloze-position-change(:song='song' :year='year')
+                tijdloze-position(:song='song' :year='year')
 </template>
 
 <script>

@@ -1,28 +1,18 @@
-<template>
-    <div>
-        <h2>Artiesten: {{this.country.name}}</h2>
-
-        <table class="lijst perVijf">
-            <tbody>
-                <tr>
-                    <th>Artiest</th>
-                    <th>Nummers</th>
-                </tr>
-                <tr v-for="artist in artists">
-                    <td>
-                        <tijdloze-artist :artist="artist"></tijdloze-artist>
-                    </td>
-                    <td class="s wrap">
-                        <ul v-if="artist.songs.length">
-                            <li v-for="song in artist.songs">
-                                <tijdloze-song :song="song"></tijdloze-song>
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  div
+    h2 Artiesten: {{this.country.name}}
+    table.lijst.perVijf
+      tbody
+        tr
+          th Artiest
+          th Nummers
+        tr(v-for='artist in artists')
+          td
+            tijdloze-artist(:artist='artist')
+          td.s.wrap
+            ul(v-if='artist.songs.length')
+              li(v-for='song in artist.songs')
+                tijdloze-song(:song='song')
 </template>
 
 <script>

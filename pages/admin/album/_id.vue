@@ -1,45 +1,40 @@
-<template>
-  <div>
-    <h2>Album aanpassen</h2>
-    <table class="info">
-      <tbody>
-        <tr>
-          <th>Titel</th>
-          <td><input v-model="fullAlbumData.title" /></td>
-        </tr>
-        <tr>
-          <th>Artist</th>
-          <td>
-            <artist-select v-model="fullAlbumData.artistId" />
-          </td>
-        </tr>
-        <tr>
-          <th>Jaar</th>
-          <td><input v-model.number="fullAlbumData.releaseYear" type="number" /></td>
-        </tr>
-        <tr>
-          <th>Opmerkingen</th>
-          <td><textarea v-model="fullAlbumData.notes" class="notes" /></td>
-        </tr>
-        <tr>
-          <th>Wikipedia Nederlands</th>
-          <td><wiki-url-input v-model="fullAlbumData.urlWikiNl" lang="nl" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
-        </tr>
-        <tr>
-          <th>Wikipedia Engels</th>
-          <td><wiki-url-input v-model="fullAlbumData.urlWikiEn" lang="en" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
-        </tr>
-        <tr>
-          <th>AllMusic</th>
-          <td><all-music-url-input v-model="fullAlbumData.urlAllMusic" lang="nl" :query="`${fullAlbumData.title} ${artist.fullName}`" /></td>
-        </tr>
-        <tr>
-          <th></th>
-          <td><button @click="submit" :disabled="disabled">Aanpassen</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<template lang="pug">
+  div
+    h2 Album aanpassen
+    table.info
+      tbody
+        tr
+          th Titel
+          td
+            input(v-model='fullAlbumData.title')
+        tr
+          th Artist
+          td
+            artist-select(v-model='fullAlbumData.artistId')
+        tr
+          th Jaar
+          td
+            input(v-model.number='fullAlbumData.releaseYear' type='number')
+        tr
+          th Opmerkingen
+          td
+            textarea.notes(v-model='fullAlbumData.notes')
+        tr
+          th Wikipedia Nederlands
+          td
+            wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+        tr
+          th Wikipedia Engels
+          td
+            wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
+        tr
+          th AllMusic
+          td
+            all-music-url-input(v-model='fullAlbumData.urlAllMusic' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+        tr
+          th
+          td
+            button(@click='submit' :disabled='disabled') Aanpassen
 </template>
 
 <script>

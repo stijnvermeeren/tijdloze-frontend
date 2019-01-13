@@ -1,47 +1,44 @@
-<template>
-  <div>
-    <h2>Artiest aanpassen</h2>
-    <table class="info">
-      <tbody>
-        <tr>
-          <th>Naam (prefix)</th>
-          <td><input v-model="fullArtistData.namePrefix" placeholder="The / Bob / ..." /></td>
-        </tr>
-        <tr>
-          <th>Naam</th>
-          <td><input v-model="fullArtistData.name" placeholder="Beatles / Dylan / ..." /></td>
-        </tr>
-        <tr>
-          <th>Land</th>
-          <td><country-input v-model="fullArtistData.countryId" /></td>
-        </tr>
-        <tr>
-          <th>Opmerkingen</th>
-          <td><textarea v-model="fullArtistData.notes" class="notes" /></td>
-        </tr>
-        <tr>
-          <th>Officiële website</th>
-          <td><official-url-input v-model="fullArtistData.urlOfficial" :query="`${artist.fullName} official`" /></td>
-        </tr>
-        <tr>
-          <th>Wikipedia Nederlands</th>
-          <td><wiki-url-input v-model="fullArtistData.urlWikiNl" lang="nl" :query="artist.fullName" /></td>
-        </tr>
-        <tr>
-          <th>Wikipedia Engels</th>
-          <td><wiki-url-input v-model="fullArtistData.urlWikiEn" lang="en" :query="artist.fullName" /></td>
-        </tr>
-        <tr>
-          <th>AllMusic</th>
-          <td><all-music-url-input v-model="fullArtistData.urlAllMusic" :query="artist.fullName" /></td>
-        </tr>
-        <tr>
-          <th></th>
-          <td><button @click="submit" :disabled="disabled">Aanpassen</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<template lang="pug">
+  div
+    h2 Artiest aanpassen
+    table.info
+      tbody
+        tr
+          th Naam (prefix)
+          td
+            input(v-model='fullArtistData.namePrefix' placeholder='The / Bob / ...')
+        tr
+          th Naam
+          td
+            input(v-model='fullArtistData.name' placeholder='Beatles / Dylan / ...')
+        tr
+          th Land
+          td
+            country-input(v-model='fullArtistData.countryId')
+        tr
+          th Opmerkingen
+          td
+            textarea.notes(v-model='fullArtistData.notes')
+        tr
+          th Offici&euml;le website
+          td
+            official-url-input(v-model='fullArtistData.urlOfficial' :query='`${artist.fullName} official`')
+        tr
+          th Wikipedia Nederlands
+          td
+            wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='artist.fullName')
+        tr
+          th Wikipedia Engels
+          td
+            wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='artist.fullName')
+        tr
+          th AllMusic
+          td
+            all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='artist.fullName')
+        tr
+          th
+          td
+            button(@click='submit' :disabled='disabled') Aanpassen
 </template>
 
 <script>
