@@ -1,33 +1,25 @@
-<template>
-    <table class="lijst perVijf">
-        <tbody>
-            <tr>
-                <th class="r">Jaar</th>
-                <th>Aantal</th>
-                <th class="l" colspan="4">Grootste daler</th>
-            </tr>
-            <tr v-for="year in listYears">
-                <td class="r"><tijdloze-year :year="year" /></td>
-                <td>{{entriesPerYear(year).length}}</td>
-
-                <td v-if="topEntry(year)">
-                    {{topEntry(year).newPosition - topEntry(year).oldPosition}} posities
-                </td>
-                <td v-if="topEntry(year)" class="i">
-                    {{topEntry(year).oldPosition}} &rarr; {{topEntry(year).newPosition}}
-                </td>
-                <td v-if="topEntry(year)" class="a">
-                    <tijdloze-artist :artist="topEntry(year).song.artist" />
-                </td>
-                <td v-if="topEntry(year)">
-                    <tijdloze-song :song="topEntry(year).song" />
-                </td>
-                <td v-if="!topEntry(year)" class="l" colspan="4">
-                    /
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<template lang="pug">
+  table.lijst.perVijf
+    tbody
+      tr
+        th.r Jaar
+        th Aantal
+        th.l(colspan='4') Grootste daler
+      tr(v-for='year in listYears')
+        td.r
+          tijdloze-year(:year='year')
+        td
+          | {{entriesPerYear(year).length}}
+        td(v-if='topEntry(year)')
+          | {{topEntry(year).newPosition - topEntry(year).oldPosition}} posities
+        td.i(v-if='topEntry(year)')
+          | {{topEntry(year).oldPosition}} &rarr; {{topEntry(year).newPosition}}
+        td.a(v-if='topEntry(year)')
+          tijdloze-artist(:artist='topEntry(year).song.artist')
+        td(v-if='topEntry(year)')
+          tijdloze-song(:song='topEntry(year).song')
+        td.l(v-if='!topEntry(year)' colspan='4')
+          | /
 </template>
 
 <script>

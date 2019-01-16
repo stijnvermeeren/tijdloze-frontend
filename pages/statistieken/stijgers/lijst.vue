@@ -1,23 +1,24 @@
-<template>
-    <table class="lijst perVijf">
-        <tbody>
-            <tr>
-                <th></th>
-                <th>Jaar</th>
-                <th class="a"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
-                <th><nuxt-link to="/nummers">Nummer</nuxt-link></th>
-                <th colspan="2">Gestegen</th>
-            </tr>
-            <tr v-for="{entry, position} in ranking">
-                <td class="r">{{position}}</td>
-                <td><tijdloze-year :year="entry.year" /></td>
-                <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
-                <td><tijdloze-song :song="entry.song" /></td>
-                <td>{{entry.oldPosition - entry.newPosition}} posities</td>
-                <td class="i">{{entry.oldPosition}} &rarr; {{entry.newPosition}}</td>
-            </tr>
-        </tbody>
-    </table>
+<template lang="pug">
+  table.lijst.perVijf
+    tbody
+      tr
+        th
+        th Jaar
+        th.a
+          nuxt-link(to='/artiesten') Artiest
+        th
+          nuxt-link(to='/nummers') Nummer
+        th(colspan='2') Gestegen
+      tr(v-for='{entry, position} in ranking')
+        td.r {{position}}
+        td
+          tijdloze-year(:year='entry.year')
+        td.a
+          tijdloze-artist(:artist='entry.song.artist')
+        td
+          tijdloze-song(:song='entry.song')
+        td {{entry.oldPosition - entry.newPosition}} posities
+        td.i {{entry.oldPosition}} &rarr; {{entry.newPosition}}
 </template>
 
 <script>

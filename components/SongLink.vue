@@ -1,5 +1,5 @@
-<template>
-    <nuxt-link :to="`/nummer/${song.id}`">{{song.title}}</nuxt-link>
+<template lang="pug">
+  nuxt-link(:to='`/nummer/${song.id}`') {{song.title}}
 </template>
 
 <script>
@@ -9,7 +9,7 @@
 </script>
 
 <style lang="less" scoped>
-    a {
-        font-style: italic;
-    }
+  a {
+    font-style: italic;
+  }
 </style>

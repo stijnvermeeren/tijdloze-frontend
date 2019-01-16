@@ -1,14 +1,14 @@
-<template>
-    <div>
-        <tijdloze-distribution-graph :points="finalPoints" :secondaryPoints="nonFinalPoints" />
-
-        <div class="legende">
-            <ul>
-                <li><tijdloze-color-label :index="1" /> Definitieve eenjaarsvliegen (slechts één notering in alle lijsten)</li>
-                <li><tijdloze-color-label :index="2" /> Niet-definitieve eenjaarsvliegen</li>
-            </ul>
-        </div>
-    </div>
+<template lang="pug">
+  div
+    tijdloze-distribution-graph(:points='finalPoints' :secondary-points='nonFinalPoints')
+    .legende
+      ul
+        li
+          tijdloze-color-label(:index='1')
+          |  Definitieve eenjaarsvliegen (slechts één notering in alle lijsten)
+        li
+          tijdloze-color-label(:index='2')
+          |  Niet-definitieve eenjaarsvliegen
 </template>
 
 <script>
@@ -33,21 +33,21 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../../../assets/styleConfig";
+  @import "../../../assets/styleConfig";
 
-    div.legende {
-        ul {
-            .noBullets;
-            max-width: 40em;
-            margin: 0 auto;
-            li {
-                text-align: left;
-            }
-            img {
-                margin-right: 2em;
-                vertical-align: bottom;
-                .border;
-            }
-        }
+  div.legende {
+    ul {
+      .noBullets;
+      max-width: 40em;
+      margin: 0 auto;
+      li {
+        text-align: left;
+      }
+      img {
+        margin-right: 2em;
+        vertical-align: bottom;
+        .border;
+      }
     }
+  }
 </style>

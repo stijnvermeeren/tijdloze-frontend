@@ -1,15 +1,13 @@
-<template>
-    <div>
-        <h2>Tijdloze nieuwkomers</h2>
+<template lang="pug">
+  div
+    h2 Tijdloze nieuwkomers
+    tijdloze-tabs(:tabs="[\
+      { to: '/statistieken/nieuwkomers', title: 'Per jaar' },\
+      { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },\
+      { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }\
+    ]")
+      nuxt-child(:data='data' :years='years')
 
-        <tijdloze-tabs :tabs="[
-            { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
-            { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
-            { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }
-          ]">
-            <nuxt-child :data="data" :years="years" />
-        </tijdloze-tabs>
-    </div>
 </template>
 
 <script>

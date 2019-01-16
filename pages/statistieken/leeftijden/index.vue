@@ -1,26 +1,18 @@
-<template>
-    <div class="scrollbox">
-        <table class="lijst">
-            <tbody>
-            <tr>
-                <th class="r"></th>
-                <th v-for="year in years">{{year._yy}}</th>
-                <th class="r">Algemeen</th>
-            </tr>
-            <tr v-for="{cutoff, cutoffData, overallSum, overallSize} in data">
-                <td class="r">
-                    Top {{cutoff}}
-                </td>
-                <td v-for="{sum, size} in cutoffData">
-                    {{displayAverage(sum, size)}}
-                </td>
-                <td class="r">
-                    {{displayAverage(overallSum, overallSize)}}
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  .scrollbox
+    table.lijst
+      tbody
+        tr
+          th.r
+          th(v-for='year in years') {{year._yy}}
+          th.r Algemeen
+        tr(v-for='{cutoff, cutoffData, overallSum, overallSize} in data')
+          td.r
+            | Top {{cutoff}}
+          td(v-for='{sum, size} in cutoffData')
+            | {{displayAverage(sum, size)}}
+          td.r
+            | {{displayAverage(overallSum, overallSize)}}
 </template>
 
 <script>

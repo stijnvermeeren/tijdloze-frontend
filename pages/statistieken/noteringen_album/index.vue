@@ -1,26 +1,21 @@
-<template>
-    <div>
-        <div class="toelichting">
-            <p><tijdloze-links text="Deze lijst toont het aantal keer dat een nummer vanop een bepaald album in een Tijdloze top 100 stond.
-
-" /></p>
-        </div>
-
-        <table class="lijst perVijf">
-            <tbody>
-                <tr>
-                    <th class="r"></th>
-                    <th class="l">Album</th>
-                    <th>Noteringen</th>
-                </tr>
-                <tr v-for="{position, entry} in ranking">
-                    <td class="r">{{position}}</td>
-                    <td class="l"><tijdloze-album :album="entry.album" /> (<tijdloze-artist :artist="entry.album.artist" />)</td>
-                    <td>{{entry.count}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  div
+    .toelichting
+      p
+        tijdloze-links(text='Deze lijst toont het aantal keer dat een nummer vanop een bepaald album in een Tijdloze top 100 stond.')
+    table.lijst.perVijf
+      tbody
+        tr
+          th.r
+          th.l Album
+          th Noteringen
+        tr(v-for='{position, entry} in ranking')
+          td.r {{position}}
+          td.l
+            tijdloze-album(:album='entry.album')
+              | (
+              tijdloze-artist(:artist='entry.album.artist') )
+          td {{entry.count}}
 </template>
 
 <script>

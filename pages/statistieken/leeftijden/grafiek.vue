@@ -1,13 +1,10 @@
-<template>
-    <div>
-        <TijdlozeAgesGraph />
-
-        <div class="legende">
-            <ul>
-                <li>Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.</li>
-            </ul>
-        </div>
-    </div>
+<template lang="pug">
+  div
+    tijdloze-ages-graph
+      .legende
+        ul
+          li
+            | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
 </template>
 
 <script>
@@ -22,21 +19,21 @@
 
 
 <style lang="less" scoped>
-    @import "../../../assets/styleConfig";
+  @import "../../../assets/styleConfig";
 
-    div.legende {
-        ul {
-            .noBullets;
-            max-width: 40em;
-            margin: 0 auto;
-            li {
-                text-align: left;
-            }
-            img {
-                margin-right: 2em;
-                vertical-align: bottom;
-                .border;
-            }
-        }
+  div.legende {
+    ul {
+      .noBullets;
+      max-width: 40em;
+      margin: 0 auto;
+      li {
+        text-align: left;
+      }
+      img {
+        margin-right: 2em;
+        vertical-align: bottom;
+        .border;
+      }
     }
+  }
 </style>

@@ -1,41 +1,30 @@
-<template>
+<template lang="pug">
+  table.lijst.perEen
+    tbody
+      tr
+        th.r Aantal jaren
+        th
+          table.valueValueDataData
+            tr
+              th.i Jaren
+              th.i Positie
+              th.a Artiest
+              th Nummer
+      tr(v-for='data in byNumberOfYears')
+        td.r {{data.numberOfYears}}
+        td
+          table.valueValueDataData
+            tbody
+              tr(v-for='entry in data.entries')
+                td.i
+                  | {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
+                td.i
+                  | {{entry.song.position(entry.years[0])}}
+                td.a
+                  tijdloze-artist(:artist='entry.song.artist')
+                td
+                  tijdloze-song(:song='entry.song')
 
-    <table class="lijst perEen">
-        <tbody>
-            <tr>
-                <th class="r">Aantal jaren</th>
-                <th>
-                    <table class="valueValueDataData">
-                        <tr>
-                            <th class="i">Jaren</th>
-                            <th class="i">Positie</th>
-                            <th class="a">Artiest</th>
-                            <th>Nummer</th>
-                        </tr>
-                    </table>
-                </th>
-            </tr>
-            <tr v-for="data in byNumberOfYears">
-                <td class="r">{{data.numberOfYears}}</td>
-                <td>
-                    <table class="valueValueDataData">
-                        <tbody>
-                            <tr v-for="entry in data.entries">
-                                <td class="i">
-                                    {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
-                                </td>
-                                <td class="i">
-                                    {{entry.song.position(entry.years[0])}}
-                                </td>
-                                <td class="a"><tijdloze-artist :artist="entry.song.artist" /></td>
-                                <td><tijdloze-song :song="entry.song" /></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </tbody>
-    </table>
 </template>
 
 <script>

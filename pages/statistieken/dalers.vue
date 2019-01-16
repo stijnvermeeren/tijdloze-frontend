@@ -1,14 +1,12 @@
-<template>
-    <div>
-        <h2>Tijdloze dalers</h2>
+<template lang="pug">
+  div
+    h2 Tijdloze dalers
+    tijdloze-tabs(:tabs="[\
+      { to: '/statistieken/dalers', title: 'Per jaar' },\
+      { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }\
+    ]")
+      nuxt-child(:data='data' :years='years')
 
-        <tijdloze-tabs :tabs="[
-            { to: '/statistieken/dalers', title: 'Per jaar' },
-            { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }
-          ]">
-            <nuxt-child :data="data" :years="years" />
-        </tijdloze-tabs>
-    </div>
 </template>
 
 <script>

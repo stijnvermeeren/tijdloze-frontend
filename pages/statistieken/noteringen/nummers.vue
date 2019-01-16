@@ -1,24 +1,20 @@
-<template>
-    <div>
-        <div class="toelichting">
-            <p><tijdloze-links text="Hoeveel verschillende nummers van eenzelfde artiest stonden ooit in een top 100 van de Tijdloze (niet noodzakelijk in hetzelfde jaar)?" /></p>
-        </div>
-
-        <table class="lijst perVijf">
-            <tbody>
-                <tr>
-                    <th class="r"></th>
-                    <th class="l"><nuxt-link to="/artiesten">Artiest</nuxt-link></th>
-                    <th>Aantal nummers</th>
-                </tr>
-                <tr v-for="{position, entry} in ranking">
-                    <td class="r">{{position}}</td>
-                    <td class="l"><tijdloze-artist :artist="entry.artist" /></td>
-                    <td>{{entry.count}}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  div
+    .toelichting
+      p
+        tijdloze-links(text='Hoeveel verschillende nummers van eenzelfde artiest stonden ooit in een top 100 van de Tijdloze (niet noodzakelijk in hetzelfde jaar)?')
+    table.lijst.perVijf
+      tbody
+        tr
+          th.r
+          th.l
+            nuxt-link(to='/artiesten') Artiest
+          th Aantal nummers
+        tr(v-for='{position, entry} in ranking')
+          td.r {{position}}
+          td.l
+            tijdloze-artist(:artist='entry.artist')
+          td {{entry.count}}
 </template>
 
 <script>

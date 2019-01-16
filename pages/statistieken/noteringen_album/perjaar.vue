@@ -1,43 +1,31 @@
-<template>
-    <div>
-        <div class="toelichting">
-            <p><tijdloze-links text="Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden." /></p>
-        </div>
-
-        <table class="lijst perEen">
-            <tbody>
-                <tr>
-                    <th class="r">Jaar</th>
-                    <th>
-                        <table class="valueData">
-                            <tbody>
-                                <tr>
-                                    <th>Not.</th>
-                                    <th class="l">Albums</th>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </th>
-                </tr>
-                <tr v-for="{year, counts} in data">
-                    <td class="r"><year-link :year="year" /></td>
-                    <td>
-                        <table class="valueData">
-                            <tbody>
-                                <tr v-for="{count, albums} in counts">
-                                    <td>{{count}}</td>
-                                    <td class="l" v-if="albums">
-                                        <template v-for="(album, index) in albums"><span v-if="index > 0">, </span><tijdloze-album :album="album" /> (<tijdloze-artist :artist="album.artist" />)</template>
-                                    </td>
-                                    <td class="l" v-else>/</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+<template lang="pug">
+  div
+    .toelichting
+      p
+        tijdloze-links(text='Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden.')
+    table.lijst.perEen
+      tbody
+        tr
+          th.r Jaar
+          th
+            table.valueData
+              tbody
+                tr
+                  th Not.
+                  th.l Albums
+        tr(v-for='{year, counts} in data')
+          td.r
+            year-link(:year='year')
+          td
+            table.valueData
+              tbody
+                tr(v-for='{count, albums} in counts')
+                  td {{count}}
+                  td.l(v-if='albums')
+                    template(v-for='(album, index) in albums')
+                      span(v-if='index > 0') ,
+                      | #[tijdloze-album(:album='album')] (#[tijdloze-artist(:artist='album.artist')])
+                  td.l(v-else='') /
 </template>
 
 <script>

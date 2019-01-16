@@ -32,7 +32,7 @@
       props: ['songs'],
       methods: {
         stationarySongLine(song) {
-          return this.songLine(song, song.stationaryIntervals(this.years));
+          return this.songLine(song, song.stationaryIntervals(this.years), true);
         },
         stationaryYears(song) {
           return _.flatten(song.stationaryIntervals(this.years));

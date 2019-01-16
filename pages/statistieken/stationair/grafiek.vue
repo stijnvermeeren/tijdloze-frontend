@@ -1,5 +1,5 @@
-<template>
-    <TijdlozeStationaryGraph :songs="songs" />
+<template lang="pug">
+  tijdloze-stationary-graph(:songs='songs')
 </template>
 
 <script>

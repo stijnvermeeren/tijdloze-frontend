@@ -1,33 +1,24 @@
-<template>
-    <table class="lijst perEen">
-        <tbody>
-            <tr>
-                <th class="r">Jaar</th>
-                <th>Aantal</th>
-                <th class="l">Nieuwkomers</th>
-            </tr>
-            <tr v-for="year in listYears">
-                <td class="r"><tijdloze-year :year="year" /></td>
-                <td>{{entriesPerYear(year).length}}</td>
-                <td>
-                    <table v-if="entriesPerYear(year).length" class="valueDataData">
-                        <tbody>
-                        <tr v-for="entry in entriesPerYear(year)">
-                            <td>{{entry.song.position(entry.year)}}</td>
-                            <td class="a">
-                                <tijdloze-artist :artist="entry.song.artist" />
-                            </td>
-                            <td>
-                                <tijdloze-song :song="entry.song" />
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div v-else>/</div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+<template lang="pug">
+  table.lijst.perEen
+    tbody
+      tr
+        th.r Jaar
+        th Aantal
+        th.l Nieuwkomers
+      tr(v-for='year in listYears')
+        td.r
+          tijdloze-year(:year='year')
+        td {{entriesPerYear(year).length}}
+        td
+          table.valueDataData(v-if='entriesPerYear(year).length')
+            tbody
+              tr(v-for='entry in entriesPerYear(year)')
+                td {{entry.song.position(entry.year)}}
+                td.a
+                  tijdloze-artist(:artist='entry.song.artist')
+                td
+                  tijdloze-song(:song='entry.song')
+          div(v-else='') /
 </template>
 
 <script>
