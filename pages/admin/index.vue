@@ -17,7 +17,7 @@
     ul
       li
         | Aanpassen:
-        search-box(@selectsearchresult='selectSearchResult($event)')
+        search-box(@selectSearchResult='selectSearchResult($event)')
     h3 Gebruikers
     ul
       li

@@ -1,19 +1,11 @@
-<template>
-    <div id="login">
-        <div v-if="isAuthenticated">
-            <div>Aangemeld als {{userName}}</div>
-            <div v-if="isAuthenticated">
-                <a @click="logout()">
-                    Afmelden
-                </a>
-            </div>
-        </div>
-        <div v-else>
-            <a @click="login()">
-                Aanmelden
-            </a>
-        </div>
-    </div>
+<template lang="pug">
+  #login
+    div(v-if='isAuthenticated')
+      div Aangemeld als {{userName}}
+      div
+        a(@click='logout()') Afmelden
+    div(v-else)
+      a(@click='login()') Aanmelden
 </template>
 
 <script>
@@ -39,9 +31,9 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../assets/styleConfig.less";
+  @import "../assets/styleConfig.less";
 
-    #login {
-        font-size: 80%;
-    }
+  #login {
+    font-size: 80%;
+  }
 </style>

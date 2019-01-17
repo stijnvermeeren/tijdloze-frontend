@@ -1,60 +1,40 @@
-<template>
-  <div>
-    <div v-if="songs.length">
-      <table class="lijst" ref="list">
-        <tbody>
-        <tr>
-          <th v-if="year.previous()" class="n">
-            <nuxt-link :to="`/lijst/${year.previous().yyyy}`">{{year.previous()._yy}}</nuxt-link>
-          </th>
-          <th class="r">{{year._yy}}</th>
-          <th v-if="year.next()" class="n">
-            <nuxt-link :to="`/lijst/${year.next().yyyy}`">{{year.next()._yy}}</nuxt-link>
-          </th>
-          <th class="a">
-            <nuxt-link to="/artiesten">Artiest</nuxt-link>
-          </th>
-          <th>
-            <nuxt-link to="/nummers">Titel</nuxt-link>
-          </th>
-          <th class="releaseYear">
-            Jaar
-          </th>
-        </tr>
-        <tr v-for="song in shownSongs" :key="song.id" :class="{lineAfter: song.position(year, true) % 5 === 0}">
-          <td v-if="year.previous()" class="n">
-            <tijdloze-position :song="song" :year="year.previous()" />
-          </td>
-          <td class="r">
-            <tijdloze-position-change :song="song" :year="year" />
-            <tijdloze-position :song="song" :year="year" />
-          </td>
-          <td v-if="year.next()" class="n">
-            <tijdloze-position :song="song" :year="year.next()" />
-          </td>
-          <td class="a">
-            <tijdloze-artist :artist="song.artist" />
-          </td>
-          <td>
-            <tijdloze-song :song="song" />
-          </td>
-          <td class="releaseYear">
-            {{song.album.releaseYear}}
-          </td>
-        </tr>
-        </tbody>
-      </table>
-      <div v-if="collapsable" @click.prevent="toggle()" class="collapseLink">
-        <div v-if="collapsed">
-          <a>Toon de hele lijst</a>
-        </div>
-        <div v-else>
-          <a>Minder tonen</a>
-        </div>
-      </div>
-    </div>
-    <p v-else>Nog geen nummers in de Tijdloze van {{year.yyyy}}.</p>
-  </div>
+<template lang="pug">
+  div
+    div(v-if='songs.length')
+      table.lijst(ref='list')
+        tbody
+          tr
+            th.n(v-if='year.previous()')
+              nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
+            th.r {{year._yy}}
+            th.n(v-if='year.next()')
+              nuxt-link(:to='`/lijst/${year.next().yyyy}`') {{year.next()._yy}}
+            th.a
+              nuxt-link(to='/artiesten') Artiest
+            th
+              nuxt-link(to='/nummers') Titel
+            th.releaseYear
+              | Jaar
+          tr(v-for='song in shownSongs' :key='song.id' :class='{lineAfter: song.position(year, true) % 5 === 0}')
+            td.n(v-if='year.previous()')
+              tijdloze-position(:song='song' :year='year.previous()')
+            td.r
+              tijdloze-position-change(:song='song' :year='year')
+                tijdloze-position(:song='song' :year='year')
+            td.n(v-if='year.next()')
+              tijdloze-position(:song='song' :year='year.next()')
+            td.a
+              tijdloze-artist(:artist='song.artist')
+            td
+              tijdloze-song(:song='song')
+            td.releaseYear
+              | {{song.album.releaseYear}}
+      .collapseLink(v-if='collapsable' @click.prevent='toggle()')
+        div(v-if='collapsed')
+          a Toon de hele lijst
+        div(v-else='')
+          a Minder tonen
+    p(v-else='') Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script>

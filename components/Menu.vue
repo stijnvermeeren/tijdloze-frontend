@@ -1,79 +1,72 @@
-<template>
-  <div>
-    <div id="sideNav" :class="{closed: !isOpen}" @click.stop="menuClick($event)">
-      <nav>
-        <div id="menu">
-          <tijdloze-search-box
-            @selectSearchResult="selectSearchResult($event)"
-          />
-          <ul>
-            <li><nuxt-link to="/">Home</nuxt-link></li>
-            <li v-if="!listInProgress">
-              <nuxt-link to="/reacties">Reageer en discussieer</nuxt-link>
-            </li>
-            <li v-if="listInProgress">
-              <nuxt-link to="/lijst/2018">De Tijdloze 2018</nuxt-link>
-              <ul>
-                <li><nuxt-link to="/lijst/opkomst">Nog op komst...</nuxt-link></li>
-                <li><nuxt-link to="/chat">Chatbox</nuxt-link></li>
-                <li><nuxt-link to="/polls">Polls</nuxt-link></li>
-              </ul>
-            </li>
-            <li><nuxt-link to="/lijsten">De Tijdloze van...</nuxt-link>
-              <ul class="lists">
-                <template v-for="(year, index) in years">
-                  <li v-if="years.length - index < 3 || allLists" :key="year.yyyy">
-                    <nuxt-link :to="'/lijst/' + year.yyyy">{{year.yyyy}}</nuxt-link>
-                  </li>
-                </template>
-                <li v-if="!allLists"><a @click.stop="allLists = true">Meer tonen</a></li>
-                <li v-else><a @click.stop="allLists = false">Minder tonen</a></li>
-              </ul>
-            </li>
-            <li><nuxt-link to="/artiesten">Alle artiesten</nuxt-link>
-              <ul>
-                <li><nuxt-link to="/nummers">Alle nummers</nuxt-link></li>
-              </ul>
-            </li>
-            <li><nuxt-link to="/statistieken">Statistieken</nuxt-link>
-              <ul>
-                <li><nuxt-link to="/tijdlozetijdloze">De Tijdloze Tijdloze</nuxt-link></li>
-              </ul>
-            </li>
-            <li><nuxt-link to="/website">Over deze website</nuxt-link>
-              <ul>
-                <li><nuxt-link to="/website/geschiedenis">Geschiedenis</nuxt-link></li>
-                <li><nuxt-link to="/website/privacy">Privacybeleid</nuxt-link></li>
-                <li><nuxt-link to="/website/opendata">Open data</nuxt-link></li>
-                <li><nuxt-link to="/website/contact">Contact</nuxt-link></li>
-              </ul>
-            </li>
-            <li v-if="isAdmin"><nuxt-link to="/admin">Admin</nuxt-link>
-              <ul>
-                <li><nuxt-link to="/admin/live">Nummers toevoeren</nuxt-link></li>
-                <li><nuxt-link to="/admin/exits">Exits markeren</nuxt-link></li>
-                <li><nuxt-link to="/admin/polls">Polls</nuxt-link></li>
-                <li><nuxt-link to="/admin/analysis">Interessante feiten</nuxt-link></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-        <tijdloze-login></tijdloze-login>
-
-        <span class="cross-button" @click="isOpen = false">
-          <span class="cross" style="transform: rotate(45deg)" />
-          <span class="cross" style="transform: rotate(-45deg)" />
-        </span>
-      </nav>
-    </div>
-
-    <div class="burger-button" @click.stop="isOpen = true">
-      <div class="burger">
-        <span class="burger-bars" :style="{top:20 * (index * 2) + '%'}" v-for="(x, index) in 3" :key="index"></span>
-      </div>
-    </div>
-
-  </div>
+<template lang="pug">
+  div
+    #sideNav(:class='{closed: !isOpen}' @click.stop='menuClick($event)')
+      nav
+        #menu
+          tijdloze-search-box(@selectSearchResult='selectSearchResult($event)')
+          ul
+            li
+              nuxt-link(to='/') Home
+            li(v-if='!listInProgress')
+              nuxt-link(to='/reacties') Reageer en discussieer
+            li(v-if='listInProgress')
+              nuxt-link(to='/lijst/2018') De Tijdloze 2018
+              ul
+                li
+                  nuxt-link(to='/lijst/opkomst') Nog op komst...
+                li
+                  nuxt-link(to='/chat') Chatbox
+                li
+                  nuxt-link(to='/polls') Polls
+            li
+              nuxt-link(to='/lijsten') De Tijdloze van...
+              ul.lists
+                template(v-for='(year, index) in years')
+                  li(v-if='years.length - index < 3 || allLists' :key='year.yyyy')
+                    nuxt-link(:to="'/lijst/' + year.yyyy") {{year.yyyy}}
+                li(v-if='!allLists')
+                  a(@click.stop='allLists = true') Meer tonen
+                li(v-else='')
+                  a(@click.stop='allLists = false') Minder tonen
+            li
+              nuxt-link(to='/artiesten') Alle artiesten
+              ul
+                li
+                  nuxt-link(to='/nummers') Alle nummers
+            li
+              nuxt-link(to='/statistieken') Statistieken
+              ul
+                li
+                  nuxt-link(to='/tijdlozetijdloze') De Tijdloze Tijdloze
+            li
+              nuxt-link(to='/website') Over deze website
+              ul
+                li
+                  nuxt-link(to='/website/geschiedenis') Geschiedenis
+                li
+                  nuxt-link(to='/website/privacy') Privacybeleid
+                li
+                  nuxt-link(to='/website/opendata') Open data
+                li
+                  nuxt-link(to='/website/contact') Contact
+            li(v-if='isAdmin')
+              nuxt-link(to='/admin') Admin
+              ul
+                li
+                  nuxt-link(to='/admin/live') Nummers toevoeren
+                li
+                  nuxt-link(to='/admin/exits') Exits markeren
+                li
+                  nuxt-link(to='/admin/polls') Polls
+                li
+                  nuxt-link(to='/admin/analysis') Interessante feiten
+      tijdloze-login
+      span.cross-button(@click='isOpen = false')
+        span.cross(style='transform: rotate(45deg)')
+        span.cross(style='transform: rotate(-45deg)')
+    .burger-button(@click.stop='isOpen = true')
+      .burger
+        span.burger-bars(:style="{top:20 * (index * 2) + '%'}" v-for='(x, index) in 3' :key='index')
 </template>
 
 <script>

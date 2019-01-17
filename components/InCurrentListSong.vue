@@ -1,24 +1,20 @@
-<template>
-  <div>
-    <table v-if="song.possiblyInList(currentYear)">
-      <tbody>
-        <tr>
-          <th class="previous"><year-link :year="previousYear" /></th>
-          <th class="current"><year-link :year="currentYear" /></th>
-        </tr>
-        <tr>
-          <td class="previous"><position :year="previousYear" :song="song" /></td>
-          <td class="current">
-            <position-change :year="currentYear" :song="song" />
-            <position :year="currentYear" :song="song" />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-else>
-      Niet in de Tijdloze van <year-link :year="currentYear" />.
-    </div>
-  </div>
+<template lang="pug">
+  div
+    table(v-if='song.possiblyInList(currentYear)')
+      tbody
+        tr
+          th.previous
+            year-link(:year='previousYear')
+          th.current
+            year-link(:year='currentYear')
+        tr
+          td.previous
+            position(:year='previousYear' :song='song')
+          td.current
+            position-change(:year='currentYear' :song='song')
+              position(:year='currentYear' :song='song')
+    div(v-else='')
+      | Niet in de Tijdloze van #[year-link(:year='currentYear')].
 </template>
 
 <script>

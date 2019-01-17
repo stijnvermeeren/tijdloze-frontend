@@ -1,8 +1,9 @@
-<template>
-  <div id="snackbar" :class="{isHidden: isHidden}">
-    <div class="header">Positie {{song.position(year)}} in de Tijdloze van <tijdloze-year :year="year" /></div>
-    <div class="song"><tijdloze-artist :artist="song.artist" /> - <tijdloze-song :song="song" /></div>
-  </div>
+<template lang="pug">
+  #snackbar(:class='{isHidden: isHidden}')
+    .header
+      | Positie {{song.position(year)}} in de Tijdloze van #[tijdloze-year(:year='year')]
+    .song
+      | #[tijdloze-artist(:artist='song.artist')] - #[tijdloze-song(:song='song')]
 </template>
 
 <script>

@@ -1,10 +1,9 @@
-<template>
-  <div>
-    <div class="icon"><img :src="`/images/icon/${icon}.png`" :alt="iconAlt" class="icon" /></div>
-    <div class="pageTitle">
-      <slot />
-    </div>
-  </div>
+<template lang="pug">
+  div
+    .icon
+      img.icon(:src='`/images/icon/${icon}.png`' :alt='iconAlt')
+    .pageTitle
+      slot
 </template>
 
 <script>

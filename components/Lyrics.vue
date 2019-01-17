@@ -1,18 +1,13 @@
-<template>
-  <div :class="['container', {open: isOpen, closed: !isOpen}]">
-    <div ref="lyrics" />
-    <h3>Lyrics</h3>
-
-    <div class="lyricsContainer">
-      <slot />
-      <div @click.prevent="toggle()" class="toggle">
-        <div>
-          <a v-if="!isOpen">Meer tonen</a>
-          <a v-else>Minder tonen</a>
-        </div>
-      </div>
-    </div>
-  </div>
+<template lang="pug">
+  div(:class="['container', {open: isOpen, closed: !isOpen}]")
+    div(ref='lyrics')
+      h3 Lyrics
+      .lyricsContainer
+        slot
+          .toggle(@click.prevent='toggle()')
+            div
+              a(v-if='!isOpen') Meer tonen
+              a(v-else='') Minder tonen
 </template>
 
 <script>

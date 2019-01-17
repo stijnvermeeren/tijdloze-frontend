@@ -1,9 +1,8 @@
-<template>
-    <span v-if="position">
-        <span v-if="equal" class="equal">=</span>
-        <span v-if="down" class="down">&#8600;</span>
-        <span v-if="up" class="up">&#8599;</span>
-    </span>
+<template lang="pug">
+  span(v-if='position')
+    span.equal(v-if='equal') =
+    span.down(v-if='down') &searr;
+    span.up(v-if='up') &nearr;
 </template>
 
 <script>
@@ -34,18 +33,18 @@
 </script>
 
 <style lang="less" scoped>
-    .movement(@color) {
-        padding-right: 0.6em;
-        color: @color;
-    }
+  .movement(@color) {
+    padding-right: 0.6em;
+    color: @color;
+  }
 
-    span.up {
-        .movement(#007700);
-    }
-    span.down {
-        .movement(#aa0000);
-    }
-    span.equal {
-        .movement(#444444);
-    }
+  span.up {
+    .movement(#007700);
+  }
+  span.down {
+    .movement(#aa0000);
+  }
+  span.equal {
+    .movement(#444444);
+  }
 </style>

@@ -1,51 +1,25 @@
-<template>
-    <div id="searchBox">
-        <span class="fa fa-search"></span>
-        <input
-            type="text"
-            :placeholder="placeholder"
-            autocomplete="off"
-            spellcheck="false"
-            v-model="query"
-            @keyup.down="move(1)"
-            @keyup.up="move(-1)"
-            @keyup.enter="go(selectedIndex)"
-            @keydown.up.prevent="() => true"
-            @keydown.down.prevent="() => true"
-        />
-        <div v-if="query.length > 0" id="searchResults">
-            <div
-                v-for="(result, index) in visibleResults"
-                @click="go(index)"
-                @mousemove="selectedIndex = index"
-                class="suggestion"
-                :class="{selected: index === selectedIndex}"
-            >
-                <div v-if="result.type === 'artist'">
-                    {{result.item.fullName}}
-                </div>
-                <div v-if="result.type === 'song'">
-                    {{result.item.title}}
-                    <span v-if="songsYear && result.item.position(songsYear)" class="info">
-                        (nummer van <span class="artiest">{{result.item.artist.fullName}}</span>; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}})
-                    </span>
-                    <span v-else class="info">
-                        (nummer van <span class="artiest">{{result.item.artist.fullName}}</span>)
-                    </span>
-                </div>
-                <div v-if="result.type === 'album'">
-                    {{result.item.title}}
-                    <span class="info">(album van <span class="artiest">{{result.item.artist.fullName}}</span> uit {{result.item.releaseYear}})</span>
-                </div>
-            </div>
-            <div v-if="resultsCount > resultsLimit" class="more-suggestions">
-                Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
-            </div>
-            <div v-if="resultsCount === 0" class="more-suggestions">
-                Geen resultaten gevonden.
-            </div>
-        </div>
-    </div>
+<template lang="pug">
+  #searchBox
+    span.fa.fa-search
+    input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true')
+    #searchResults(v-if='query.length > 0')
+      .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
+        div(v-if="result.type === 'artist'")
+          | {{result.item.fullName}}
+        div(v-if="result.type === 'song'")
+          | {{result.item.title}}
+          span.info(v-if='songsYear && result.item.position(songsYear)')
+            | (nummer van #[span.artiest {{result.item.artist.fullName}}]; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}})
+          span.info(v-else='')
+            | (nummer van #[span.artiest {{result.item.artist.fullName}}])
+        div(v-if="result.type === 'album'")
+          | {{result.item.title}}
+          span.info
+            | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
+      .more-suggestions(v-if='resultsCount > resultsLimit')
+        | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
+      .more-suggestions(v-if='resultsCount === 0')
+        | Geen resultaten gevonden.
 </template>
 
 <script>
@@ -193,79 +167,79 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../assets/styleConfig.less";
+  @import "../assets/styleConfig.less";
 
-    #searchBox {
-        position: relative;
-        margin: 10px 0;
-        font-size: 16px;
+  #searchBox {
+    position: relative;
+    margin: 10px 0;
+    font-size: 16px;
 
-        .fa-search {
-            position: absolute;
-            top: 8px;
-            left: 10px;
-            z-index: 1;
-        }
-
-        input {
-            width: 100%;
-            height: 28px;
-            text-indent: 32px;
-
-            background: @inputBackgroundColor;
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
-
-            position: relative;
-            vertical-align: top;
-        }
-
-        #searchResults {
-            width: 100%;
-            border: 1px solid #999;
-            background: @inputBackgroundColor;
-            overflow: auto;
-
-            position: absolute;
-            top: 100%;
-            left: 0;
-            z-index: 1001;
-            right: auto;
-
-            font-size: 80%;
-            text-align: left;
-
-            > div {
-                padding: 0.2em 0.5em;
-                white-space: nowrap;
-                overflow: hidden;
-                border-bottom: 1px solid black;
-                font-size: 89%;
-
-
-                &.suggestion {
-                    cursor: pointer;
-
-                    span.info {
-                        display: block;
-                        margin-left: 2em;
-                        font-size: 80%;
-                        span.artiest {
-                            font-weight: bold;
-                        }
-                    }
-
-                    &.selected {
-                        background: @headerBackgroundColor;
-                    }
-                }
-
-                &.more-suggestions {
-                    font-size: 80%;
-                    font-style: italic;
-                }
-            }
-        }
+    .fa-search {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      z-index: 1;
     }
+
+    input {
+      width: 100%;
+      height: 28px;
+      text-indent: 32px;
+
+      background: @inputBackgroundColor;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+      box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
+
+      position: relative;
+      vertical-align: top;
+    }
+
+    #searchResults {
+      width: 100%;
+      border: 1px solid #999;
+      background: @inputBackgroundColor;
+      overflow: auto;
+
+      position: absolute;
+      top: 100%;
+      left: 0;
+      z-index: 1001;
+      right: auto;
+
+      font-size: 80%;
+      text-align: left;
+
+      > div {
+        padding: 0.2em 0.5em;
+        white-space: nowrap;
+        overflow: hidden;
+        border-bottom: 1px solid black;
+        font-size: 89%;
+
+
+        &.suggestion {
+          cursor: pointer;
+
+          span.info {
+            display: block;
+            margin-left: 2em;
+            font-size: 80%;
+            span.artiest {
+              font-weight: bold;
+            }
+          }
+
+          &.selected {
+            background: @headerBackgroundColor;
+          }
+        }
+
+        &.more-suggestions {
+          font-size: 80%;
+          font-style: italic;
+        }
+      }
+    }
+  }
 </style>

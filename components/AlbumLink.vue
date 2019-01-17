@@ -1,5 +1,5 @@
-<template>
-    <nuxt-link :to="`/album/${album.id}`">{{album.title}}</nuxt-link>
+<template lang="pug">
+  nuxt-link(:to='`/album/${album.id}`') {{album.title}}
 </template>
 
 <script>
@@ -9,7 +9,7 @@
 </script>
 
 <style lang="less" scoped>
-    a {
-        font-style: italic;
-    }
+  a {
+    font-style: italic;
+  }
 </style>

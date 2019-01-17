@@ -1,15 +1,12 @@
-<template>
-  <div v-if="isAdmin && editing" class="answer">
-    <input v-model="answerEdit" />
-    <button @click="send()">Opslaan</button>
-    <button @click="cancel()">Terug</button>
-  </div>
-  <div v-else>
-    <div class="answer">
-      {{answerEdit}}
-      <button v-if="isAdmin" @click="editing = true">Aanpassen</button>
-    </div>
-  </div>
+<template lang="pug">
+  .answer(v-if='isAdmin && editing')
+    input(v-model='answerEdit')
+    button(@click='send()') Opslaan
+    button(@click='cancel()') Terug
+  div(v-else='')
+    .answer
+      | {{answerEdit}}
+      button(v-if='isAdmin' @click='editing = true') Aanpassen
 </template>
 
 <script>

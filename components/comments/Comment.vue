@@ -1,10 +1,8 @@
-<template>
-  <div :class="['reactie', {'mine': isMine}]">
-    <div class="reacinfo">
-      {{ comment.name }} - {{ comment.created }}
-    </div>
-    <div class="bericht">{{ comment.message }}</div>
-  </div>
+<template lang="pug">
+  div(:class="['reactie', {'mine': isMine}]")
+    .reacinfo
+      | {{ comment.name }} - {{ comment.created }}
+    .bericht {{ comment.message }}
 </template>
 
 <script>

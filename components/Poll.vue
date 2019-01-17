@@ -1,49 +1,29 @@
-<template>
-  <div class="poll">
-    <poll-question :question="livePoll.question" :poll-id="livePoll.id" :is-admin="isAdmin" />
-    <div v-if="showResults">
-      <div
-        v-for="answer in livePoll.answers"
-        :class="['answer', {myVote: answer.id === myVote}]"
-      >
-        <div class="answerVotes">
-          <span class="bar" :style="{width: barWidth(answer.voteCount) + 'px'}"></span>
-          <span class="count">{{percentage(answer.voteCount)}}</span>
-        </div>
-        <div class="answerText">
-          <poll-answer
-              :answer="answer.answer"
-              :poll-id="livePoll.id"
-              :poll-answer-id="answer.id"
-              :is-admin="isAdmin"
-          />
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      <div v-for="answer in livePoll.answers" class="answer">
-        <input type="radio" v-model="myVoteEdit" :value="answer.id" :id="`vote-${answer.id}`" />
-        <label :for="`vote-${answer.id}`">{{answer.answer}}</label>
-      </div>
-      <div v-if="isAuthenticated">
-        <button @click="vote()" :disabled="!myVoteEdit || voting">Stem afgeven</button>
-      </div>
-      <div v-else>
-        Om te kunnen stemmen, moet je je <a @click="login()">aanmelden/registeren</a>.
-      </div>
-    </div>
+<template lang="pug">
+  .poll
+    poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
+    div(v-if='showResults')
+      div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
+        .answerVotes
+          span.bar(:style="{width: barWidth(answer.voteCount) + 'px'}")
+          span.count {{percentage(answer.voteCount)}}
+        .answerText
+          poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
+    div(v-else='')
+      .answer(v-for='answer in livePoll.answers')
+        input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
+        label(:for='`vote-${answer.id}`') {{answer.answer}}
+      div(v-if='isAuthenticated')
+        button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
+      div(v-else='')
+        | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
+    .voteCount {{voteCount}} stemmen
+    div(v-if='isAdmin')
+      .isDeleted(v-if='isDeleted')
+        | Poll is verborgen op de website.
+        button(@click='restore()' :disabled='deleting') Opnieuw tonen
+      div(v-else='')
+        button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
 
-    <div class="voteCount">{{voteCount}} stemmen</div>
-    <div v-if="isAdmin">
-      <div v-if="isDeleted" class="isDeleted">
-        Poll is verborgen op de website.
-        <button @click="restore()" :disabled="deleting">Opnieuw tonen</button>
-      </div>
-      <div v-else>
-        <button @click="deletePoll()" :disabled="deleting">Poll verbergen op de website</button>
-      </div>
-    </div>
-  </div>
 </template>
 
 <script>

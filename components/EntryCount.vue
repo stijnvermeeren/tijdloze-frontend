@@ -1,11 +1,9 @@
-<template>
-  <span>
-    <span v-if="listCount">
-        {{listCount}} {{listCount > 1 ? 'noteringen' : 'notering'}}
-        ({{inListSummary}})
-    </span>
-    <span v-else>Geen top-100 noteringen</span>
-  </span>
+<template lang="pug">
+  span
+    span(v-if='listCount')
+      | {{listCount}} {{listCount > 1 ? 'noteringen' : 'notering' }}
+      | ({{inListSummary}})
+    span(v-else='') Geen top-100 noteringen
 </template>
 
 <script>

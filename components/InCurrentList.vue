@@ -1,26 +1,23 @@
-<template>
-  <div>
-    <table v-if="filteredAndSorted.length">
-      <tbody>
-        <tr>
-          <th class="previous"><year-link :year="previousYear" /></th>
-          <th class="current"><year-link :year="currentYear" /></th>
-          <th class="song"></th>
-        </tr>
-        <tr v-for="song in filteredAndSorted" :key="song.id">
-          <td class="previous"><position :year="previousYear" :song="song" /></td>
-          <td class="current">
-            <position-change :year="currentYear" :song="song" />
-            <position :year="currentYear" :song="song" />
-          </td>
-          <td class="song"><song-link :song="song" /></td>
-        </tr>
-      </tbody>
-    </table>
-    <div v-else>
-      Geen nummers in de Tijdloze van <year-link :year="currentYear" />.
-    </div>
-  </div>
+<template lang="pug">
+  div
+    table(v-if='filteredAndSorted.length')
+      tbody
+        tr
+          th.previous
+            year-link(:year='previousYear')
+          th.current
+            year-link(:year='currentYear')
+          th.song
+        tr(v-for='song in filteredAndSorted' :key='song.id')
+          td.previous
+            position(:year='previousYear' :song='song')
+          td.current
+            position-change(:year='currentYear' :song='song')
+              position(:year='currentYear' :song='song')
+          td.song
+            song-link(:song='song')
+    div(v-else='')
+      | Geen nummers in de Tijdloze van #[year-link(:year='currentYear')].
 </template>
 
 <script>

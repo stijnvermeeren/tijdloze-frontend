@@ -1,30 +1,19 @@
-<template>
-  <span class="container">
-    <span
-        @click.alt="showInfo = !showInfo"
-        :class="{isAdmin: user.isAdmin}"
-    >{{user.displayName}}</span>
-    <div v-if="showInfo" class="info">
-      <div>Unieke ID: {{user.id}}</div>
-      <div v-if="user.isAdmin">Moderator</div>
-      <div v-if="currentUser.isAdmin && user.id !== currentUser.id && !user.isAdmin">
-        <div v-if="!isBlocked">
-          <button @click="block()" :disabled="blocking">
-            Blokkeren
-          </button>
-        </div>
-        <div v-else>
-          Gebruiker geblokkeerd!
-          <button @click="unblock()" :disabled="blocking">
-            Opnieuw toelaten
-          </button>
-        </div>
-      </div>
-      <div>
-        <a @click="showInfo = false">Sluiten</a>
-      </div>
-    </div>
-  </span>
+<template lang="pug">
+  span.container
+    span(@click.alt='showInfo = !showInfo' :class='{isAdmin: user.isAdmin}') {{user.displayName}}
+    .info(v-if='showInfo')
+      div Unieke ID: {{user.id}}
+      div(v-if='user.isAdmin') Moderator
+      div(v-if='currentUser.isAdmin && user.id !== currentUser.id && !user.isAdmin')
+        div(v-if='!isBlocked')
+          button(@click='block()' :disabled='blocking')
+            | Blokkeren
+        div(v-else='')
+          | Gebruiker geblokkeerd!
+          button(@click='unblock()' :disabled='blocking')
+            | Opnieuw toelaten
+      div
+        a(@click='showInfo = false') Sluiten
 </template>
 
 <script>
