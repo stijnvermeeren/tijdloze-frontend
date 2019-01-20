@@ -18,7 +18,7 @@
                   tijdloze-artist(:artist='entry.song.artist')
                 td
                   tijdloze-song(:song='entry.song')
-          div(v-else='') /
+          div(v-else) /
 </template>
 
 <script>

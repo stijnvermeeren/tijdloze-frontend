@@ -33,7 +33,7 @@
         :album-filter='album => false'
         :song-filter='possibleSong'
         :songs-year='completedYear'
-        @selectsearchresult='selectSearchResult($event)'
+        @selectSearchResult='selectSearchResult($event)'
       )
         div(v-if='nextSong')
           strong {{nextSong.artist.fullName}} - {{nextSong.title}}

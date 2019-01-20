@@ -3,7 +3,7 @@
     input(v-model='answerEdit')
     button(@click='send()') Opslaan
     button(@click='cancel()') Terug
-  div(v-else='')
+  div(v-else)
     .answer
       | {{answerEdit}}
       button(v-if='isAdmin' @click='editing = true') Aanpassen

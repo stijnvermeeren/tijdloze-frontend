@@ -3,7 +3,7 @@
     span(v-if='listCount')
       | {{listCount}} {{listCount > 1 ? 'noteringen' : 'notering' }}
       | ({{inListSummary}})
-    span(v-else='') Geen top-100 noteringen
+    span(v-else) Geen top-100 noteringen
 </template>
 
 <script>

@@ -29,7 +29,7 @@
                   tijdloze-song(:song='entry.song')
                 td
                   template(v-if='entry.isFinal') *
-          div(v-else='') /
+          div(v-else) /
 </template>
 
 <script>

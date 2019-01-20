@@ -32,9 +32,9 @@
       .collapseLink(v-if='collapsable' @click.prevent='toggle()')
         div(v-if='collapsed')
           a Toon de hele lijst
-        div(v-else='')
+        div(v-else)
           a Minder tonen
-    p(v-else='') Nog geen nummers in de Tijdloze van {{year.yyyy}}.
+    p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script>

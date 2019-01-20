@@ -1,13 +1,9 @@
-<template>
-  <div>
-    <div>
-      <select :value="value" @input="update()" ref="input">
-        <option v-for="language in languages" :key="language.id" :value="language.id">
-          {{language.name}}
-        </option>
-      </select>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div
+      select(:value='value' @input='update()' ref='input')
+        option(v-for='language in languages' :key='language.id' :value='language.id')
+          | {{language.name}}
 </template>
 
 <script>

@@ -1,14 +1,10 @@
-<template>
-    <div>
-        <h2>Tijdloze 2018: polls</h2>
-
-        <div v-for="poll in currentYearPolls" :key="poll.id">
-            <poll :poll="poll" />
-        </div>
-        <div v-if="!currentYearPolls.length">
-            Nog geen polls...
-        </div>
-    </div>
+<template lang="pug">
+  div
+    h2 Tijdloze 2018: polls
+    div(v-for='poll in currentYearPolls' :key='poll.id')
+      poll(:poll='poll')
+    div(v-if='!currentYearPolls.length')
+      | Nog geen polls...
 </template>
 
 <script>

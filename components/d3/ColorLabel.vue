@@ -1,5 +1,6 @@
-<template>
-    <svg :class="['colorLabel', 'color-' + index]"><rect class="coloredRect" x="0" y="0" width="30" height="14"></rect></svg>
+<template lang="pug">
+  svg(:class="['colorLabel', 'color-' + index]")
+    rect.coloredRect(x='0' y='0' width='30' height='14')
 </template>
 
 <script>
@@ -9,10 +10,10 @@
 </script>
 
 <style lang="less" scoped>
-    @import "../../assets/graphColors.less";
+  @import "../../assets/graphColors.less";
 
-    svg.colorLabel {
-        width: 30px;
-        height: 14px;
-    }
+  svg.colorLabel {
+    width: 30px;
+    height: 14px;
+  }
 </style>

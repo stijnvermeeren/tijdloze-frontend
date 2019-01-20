@@ -4,7 +4,7 @@
     tijdloze-artist(v-else-if='artist' :artist='artist' :text='input')
     tijdloze-year(v-else-if='year' :year='year')
     tijdloze-year-short(v-else-if='yearShort' :year='yearShort')
-    span(v-else='') {{input}}
+    span(v-else) {{input}}
 </template>
 
 <script>

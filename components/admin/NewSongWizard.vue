@@ -1,101 +1,74 @@
-<template>
-  <div>
-    <h4>Artiest</h4>
-    <div>
-      <div>
-        <span>
-          <input type="radio" v-model="artistType" value="existing" id="artist-existing">
-          <label for="artist-existing">Bestaande artiest</label>
-        </span>
-        <span>
-          <input type="radio" v-model="artistType" value="new" id="artist-new">
-          <label for="artist-new">Nieuwe artiest</label>
-        </span>
-      </div>
-      <div class="box">
-        <div v-if="!artistNew">
-          <artist-select v-model="artistId" />
-        </div>
-        <div v-if="artistNew">
-          <table class="info">
-            <tbody>
-              <tr>
-                <th>Voornaam</th>
-                <td><input v-model="artistDetails.firstName" placeholder="The / Bob / ..." /></td>
-              </tr>
-              <tr>
-                <th>Naam</th>
-                <td><input v-model="artistDetails.name" placeholder="Beatles / Dylan / ..." /></td>
-              </tr>
-              <tr>
-                <th>Land</th>
-                <td><country-input v-model="artistDetails.countryId" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="artistValid">
-      <h4>Album</h4>
-      <div>
-        <span>
-          <input type="radio" v-model="albumType" value="existing" id="album-existing" :disabled="!artistId || artistType === 'new'">
-          <label for="album-existing">Bestaand album</label>
-        </span>
-        <span>
-          <input type="radio" v-model="albumType" value="new" id="album-new">
-          <label for="album-new">Nieuw album</label>
-        </span>
-      </div>
-      <div class="box">
-        <div v-if="!albumNew">
-          <album-select v-model="albumId" :artist-id="artistId" />
-        </div>
-        <div v-if="albumNew">
-          <table class="info">
-            <tbody>
-              <tr>
-                <th>Titel</th>
-                <td><input v-model="albumDetails.title" /></td>
-              </tr>
-              <tr>
-                <th>Jaar</th>
-                <td><input v-model.number="albumDetails.releaseYear" type="number" /></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <div v-if="artistValid && albumValid">
-      <h4>Nummer</h4>
-      <div class="box">
-        <table class="info">
-          <tbody>
-            <tr>
-              <th>Titel</th>
-              <td><input v-model="songDetails.title" /></td>
-            </tr>
-            <tr>
-              <th>Taal</th>
-              <td><language-input v-model="songDetails.languageId" /></td>
-            </tr>
-            <tr>
-              <th>Lead vocals</th>
-              <td><lead-vocals-input v-model="songDetails.leadVocals" /></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div>
-      <button :disabled="!(artistValid && albumValid && songValid) || submitting" @click="submit()">{{buttonLabel}}</button>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    h4 Artiest
+    div
+      div
+        span
+          input#artist-existing(type='radio' v-model='artistType' value='existing')
+          label(for='artist-existing') Bestaande artiest
+        span
+          input#artist-new(type='radio' v-model='artistType' value='new')
+          label(for='artist-new') Nieuwe artiest
+      .box
+        div(v-if='!artistNew')
+          artist-select(v-model='artistId')
+        div(v-if='artistNew')
+          table.info
+            tbody
+              tr
+                th Voornaam
+                td
+                  input(v-model='artistDetails.firstName' placeholder='The / Bob / ...')
+              tr
+                th Naam
+                td
+                  input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...')
+              tr
+                th Land
+                td
+                  country-input(v-model='artistDetails.countryId')
+    div(v-if='artistValid')
+      h4 Album
+      div
+        span
+          input#album-existing(type='radio' v-model='albumType' value='existing' :disabled="!artistId || artistType === 'new'")
+          label(for='album-existing') Bestaand album
+        span
+          input#album-new(type='radio' v-model='albumType' value='new')
+          label(for='album-new') Nieuw album
+      .box
+        div(v-if='!albumNew')
+          album-select(v-model='albumId' :artist-id='artistId')
+        div(v-if='albumNew')
+          table.info
+            tbody
+              tr
+                th Titel
+                td
+                  input(v-model='albumDetails.title')
+              tr
+                th Jaar
+                td
+                  input(v-model.number='albumDetails.releaseYear' type='number')
+    div(v-if='artistValid && albumValid')
+      h4 Nummer
+      .box
+        table.info
+          tbody
+            tr
+              th Titel
+              td
+                input(v-model='songDetails.title')
+            tr
+              th Taal
+              td
+                language-input(v-model='songDetails.languageId')
+            tr
+              th Lead vocals
+              td
+                lead-vocals-input(v-model='songDetails.leadVocals')
+    div
+      button(:disabled='!(artistValid && albumValid && songValid) || submitting' @click='submit()') {{buttonLabel}}
 </template>
 
 <script>

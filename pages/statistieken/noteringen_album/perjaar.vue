@@ -25,7 +25,7 @@
                     template(v-for='(album, index) in albums')
                       span(v-if='index > 0') ,
                       | #[tijdloze-album(:album='album')] (#[tijdloze-artist(:artist='album.artist')])
-                  td.l(v-else='') /
+                  td.l(v-else) /
 </template>
 
 <script>

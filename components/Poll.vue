@@ -8,20 +8,20 @@
           span.count {{percentage(answer.voteCount)}}
         .answerText
           poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
-    div(v-else='')
+    div(v-else)
       .answer(v-for='answer in livePoll.answers')
         input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
         label(:for='`vote-${answer.id}`') {{answer.answer}}
       div(v-if='isAuthenticated')
         button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
-      div(v-else='')
+      div(v-else)
         | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
     .voteCount {{voteCount}} stemmen
     div(v-if='isAdmin')
       .isDeleted(v-if='isDeleted')
         | Poll is verborgen op de website.
         button(@click='restore()' :disabled='deleting') Opnieuw tonen
-      div(v-else='')
+      div(v-else)
         button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
 
 </template>

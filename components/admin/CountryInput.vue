@@ -1,13 +1,9 @@
-<template>
-  <div>
-    <div>
-      <select :value="value" @input="update()" ref="input">
-        <option v-for="country in countries" :key="country.id" :value="country.id">
-          {{country.name}}
-        </option>
-      </select>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div
+      select(:value='value' @input='update()' ref='input')
+        option(v-for='country in countries' :key='country.id' :value='country.id')
+          | {{country.name}}
 </template>
 
 <script>

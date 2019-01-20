@@ -1,40 +1,24 @@
-<template>
-  <div>
-    <h2>De Tijdloze chatbox</h2>
-    <template v-if="chatEnabled">
-      <div v-if="isAuthenticated">
-        <div v-if="displayName">
-          <chat />
-          <div class="note"><em>Hou het spannend voor iedereen alsjeblieft. Wie in de chat informatie lekt over noteringen in de Tijdloze die nog niet op de radio zijn uitgezonden, kan onmiddellijk en zonder waarschuwing geblokkeerd worden.</em></div>
-        </div>
-        <div v-else>
-          <div class="displayName">
-            <div>
-              Kies een gebruikersnaam:
-              <input
-                  :disabled="submittingDisplayName"
-                  type="text"
-                  v-model="name"
-                  @keypress.enter="submitDisplayName()"
-              >
-              <button
-                  :disabled="submittingDisplayName || invalidDisplayName"
-                  @click="submitDisplayName()"
-              >
-                Naar de chatbox
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-else>
-        Om toegang te krijgen tot de chatbox moet je je <a @click="login()">aanmelden/registeren</a>.
-      </div>
-    </template>
-    <template v-else>
-      <div>Sorry, de chatbox is tijdelijk gesloten. Probeer later nog eens.</div>
-    </template>
-  </div>
+<template lang="pug">
+  div
+    h2 De Tijdloze chatbox
+    template(v-if='chatEnabled')
+      div(v-if='isAuthenticated')
+        div(v-if='displayName')
+          chat
+            .note
+              em
+                | Hou het spannend voor iedereen alsjeblieft. Wie in de chat informatie lekt over noteringen in de Tijdloze die nog niet op de radio zijn uitgezonden, kan onmiddellijk en zonder waarschuwing geblokkeerd worden.
+        div(v-else)
+          .displayName
+            div
+              | Kies een gebruikersnaam:
+              input(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()')
+              button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+                | Naar de chatbox
+      div(v-else)
+        | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
+    template(v-else)
+      div Sorry, de chatbox is tijdelijk gesloten. Probeer later nog eens.
 </template>
 
 <script>

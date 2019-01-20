@@ -10,7 +10,7 @@
           | {{result.item.title}}
           span.info(v-if='songsYear && result.item.position(songsYear)')
             | (nummer van #[span.artiest {{result.item.artist.fullName}}]; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}})
-          span.info(v-else='')
+          span.info(v-else)
             | (nummer van #[span.artiest {{result.item.artist.fullName}}])
         div(v-if="result.type === 'album'")
           | {{result.item.title}}

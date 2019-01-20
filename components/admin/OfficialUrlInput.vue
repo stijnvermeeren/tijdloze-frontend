@@ -1,9 +1,11 @@
-<template>
-  <div>
-    <div><input :value="value" ref="input" @input="update()" /></div>
-    <div v-if="value" class="visit"><a :href="value">Visit</a></div>
-    <div v-if="query" class="search"><a :href="searchUrl">Search</a></div>
-  </div>
+<template lang="pug">
+  div
+    div
+      input(:value='value' ref='input' @input='update()')
+    .visit(v-if='value')
+      a(:href='value') Visit
+    .search(v-if='query')
+      a(:href='searchUrl') Search
 </template>
 
 <script>

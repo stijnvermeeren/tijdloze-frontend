@@ -29,7 +29,7 @@
                   tijdloze-song(:song='entry.song')
                 td
                   | {{entry.absenceYears}} jaar
-          div(v-else='') /
+          div(v-else) /
 
 </template>
 

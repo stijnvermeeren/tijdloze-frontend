@@ -8,7 +8,7 @@
         div(v-if='!isBlocked')
           button(@click='block()' :disabled='blocking')
             | Blokkeren
-        div(v-else='')
+        div(v-else)
           | Gebruiker geblokkeerd!
           button(@click='unblock()' :disabled='blocking')
             | Opnieuw toelaten

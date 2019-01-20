@@ -17,14 +17,14 @@
     ul
       li(v-for='user in usersSorted')
         .displayName(v-if='user.displayName') {{user.displayName}}
-        .anonymous(v-else='') Geen gebruikernaam
+        .anonymous(v-else) Geen gebruikernaam
         .admin(v-if='user.isAdmin') Admin
         .details
           div(v-if='user.id !== currentUser.id')
             .blocked(v-if='user.isBlocked')
               | Geblokkeerd -
               button(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
-            div(v-else='')
+            div(v-else)
               button(@click='block(user.id)', :disabled='refreshing') blokkeren
           div Naam: #[strong {{user.name}}]
           div ID: {{user.id}}

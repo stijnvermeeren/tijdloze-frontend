@@ -7,7 +7,7 @@
       h3 Chat actief
       div
         button(@click="save('comments')", :disabled='saving') Chat deactiveren
-    template(v-else='')
+    template(v-else)
       h3 Chat niet actief
       div
         button(@click="save('chat')", :disabled='saving') Chat activeren

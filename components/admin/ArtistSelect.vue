@@ -1,19 +1,16 @@
-<template>
-  <div>
-    <div v-if="artist">{{artist.fullName}}</div>
-    <div v-if="editing">
-      <search-box
-        :song-filter="song => false"
-        :album-filter="album => false"
-        placeholder="Zoek artiest..."
-        @selectSearchResult="selectArtist($event.item)"
-      />
-      <button v-if="artist" @click="editing = false">Annuleren</button>
-    </div>
-    <div v-else>
-      <button @click="editing = true">Wijzigen</button>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div(v-if='artist') {{artist.fullName}}
+    div(v-if='editing')
+      search-box(
+        :song-filter='song => false'
+        :album-filter='album => false'
+        placeholder='Zoek artiest...'
+        @selectSearchResult='selectArtist($event.item)'
+      )
+        button(v-if='artist' @click='editing = false') Annuleren
+    div(v-else)
+      button(@click='editing = true') Wijzigen
 </template>
 
 <script>

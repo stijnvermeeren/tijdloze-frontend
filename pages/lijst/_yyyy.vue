@@ -13,17 +13,17 @@
               span(v-if='highestNew')
                 | #[tijdloze-song(:song='highestNew')] - #[tijdloze-artist(:artist='highestNew.artist')] (#[tijdloze-position(:song='highestNew' :year='year')])
                 span(v-if='highestNew.isReEntry($store.getters.years, year)') (re-entry)
-              span(v-else='') /
+              span(v-else) /
           tr
             th Grootste stijger
             td
               span(v-if='biggestUp') #[tijdloze-song(:song='biggestUp')] - #[tijdloze-artist(:artist='biggestUp.artist')] (#[tijdloze-position(:song='biggestUp' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestUp' :year='year')])
-              span(v-else='') /
+              span(v-else) /
           tr
             th Grootste daler
             td
               span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-artist(:artist='biggestDown.artist')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
-              span(v-else='') /
+              span(v-else) /
 
     div(v-if='exits.length')
       h3 Exits

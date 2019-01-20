@@ -3,7 +3,7 @@
     .tabtitels
       h3(v-for='tab in tabs' :key='tab.to' :class='{selected: tab.to === $route.path}')
         nuxt-link(v-if='tab.to !== $route.path' :to='tab.to') {{tab.title}}
-        span(v-else='') {{tab.title}}
+        span(v-else) {{tab.title}}
     .tab
       slot
 </template>

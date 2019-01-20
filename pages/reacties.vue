@@ -1,90 +1,40 @@
-<template>
-  <div>
-    <h2>Reageer op de Tijdloze</h2>
+<template lang="pug">
+  div
+    h2 Reageer op de Tijdloze
+    comments-pager(:page='page' :pages='pages ')
+    template(v-if='page === 1')
+      template(v-if='listInProgress')
+        .message
+          | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
+      template(v-else)
+        div(v-if='isAuthenticated')
+          .displayName(v-if='!displayName || editDisplayName')
+            div
+              | Kies een gebruikersnaam:
+              input(:disabled='submittingDisplayName' type='text' v-model='name')
+              button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+                | Ok
+            .info(v-if='editDisplayName')
+              | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+          div(v-else)
+            div
+              .reactie.mine
+                .reacinfo
+                  | {{ displayName }} (
+                  a(@click='editDisplayName = true') Gebruikersnaam aanpassen
+                  | )
+                .bericht
+                  textarea(:disabled='submitting' cols='60' placeholder='Schrijf een nieuwe reactie...' rows='4' v-model='message')
+                div
+                  button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+                    | Verzenden
+        .message(v-if='!isAuthenticated')
+          | Om reacties the plaatsen, moet je je #[a(@click='login()') aanmelden/registeren].
 
-    <CommentsPager
-      :page="page"
-      :pages="pages "
-    />
+    div
+      comment(v-for='comment in comments' :key='comment.id' :comment='comment')
 
-    <template v-if="page === 1">
-      <template v-if="listInProgress">
-        <div class="message">Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.</div>
-      </template>
-      <template v-else>
-        <div v-if="isAuthenticated">
-          <div
-              class="displayName"
-              v-if="!displayName || editDisplayName"
-          >
-            <div>
-              Kies een gebruikersnaam:
-              <input
-                  :disabled="submittingDisplayName"
-                  type="text"
-                  v-model="name"
-              >
-              <button
-                  :disabled="submittingDisplayName || invalidDisplayName"
-                  @click="submitDisplayName()"
-              >
-                Ok
-              </button>
-            </div>
-            <div
-                class="info"
-                v-if="editDisplayName"
-            >
-              De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-            </div>
-          </div>
-          <div v-else>
-            <div>
-              <div class="reactie mine">
-                <div class="reacinfo">
-                  {{ displayName }} (<a @click="editDisplayName = true">Gebruikersnaam aanpassen</a>)
-                </div>
-                <div class="bericht">
-                <textarea
-                    :disabled="submitting"
-                    cols="60"
-                    placeholder="Schrijf een nieuwe reactie..."
-                    rows="4"
-                    v-model="message"
-                />
-                </div>
-                <div>
-                  <button
-                      :disabled="submitting || invalidMessage"
-                      @click="submit()"
-                      class="formsubmit"
-                  >
-                    Verzenden
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div v-if="!isAuthenticated" class="message">
-          Om reacties the plaatsen, moet je je <a @click="login()">aanmelden/registeren</a>.
-        </div>
-      </template>
-    </template>
-
-    <div>
-      <comment
-        v-for="comment in comments"
-        :key="comment.id"
-        :comment="comment"
-      />
-    </div>
-
-    <CommentsPager
-      :page="page"
-      :pages="pages "
-    />
-  </div>
+    comments-pager(:page='page' :pages='pages ')
 </template>
 
 <script>

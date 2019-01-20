@@ -27,7 +27,7 @@
                     span(v-for='(artist, index) in artists')
                       span(v-if='index > 0') ,
                       tijdloze-artist(:artist='artist')
-                  td.l(v-else='') /
+                  td.l(v-else) /
 </template>
 
 <script>

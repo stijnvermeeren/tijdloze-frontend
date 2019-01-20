@@ -1,18 +1,13 @@
-<template>
-  <div>
-    <div v-if="album">{{album.title}} ({{album.releaseYear}})</div>
-    <div v-if="editing">
-      <select v-model="albumId">
-        <option v-for="album in candidateAlbums" :key="album.id" :value="album.id">
-          {{album.title}} ({{album.releaseYear}})
-        </option>
-      </select>
-      <button @click="submit()">Bevestigen</button>
-    </div>
-    <div v-else>
-      <button @click="editing = true">Wijzigen</button>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div(v-if='album') {{album.title}} ({{album.releaseYear}})
+    div(v-if='editing')
+      select(v-model='albumId')
+        option(v-for='album in candidateAlbums' :key='album.id' :value='album.id')
+          | {{album.title}} ({{album.releaseYear}})
+      button(@click='submit()') Bevestigen
+    div(v-else)
+      button(@click='editing = true') Wijzigen
 </template>
 
 <script>

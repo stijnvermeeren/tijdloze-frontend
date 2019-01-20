@@ -1,13 +1,9 @@
-<template>
-  <div>
-    <div>
-      <select :value="value" ref="input" @input="update()">
-        <option v-for="gender in vocalsGenders" :key="gender.id" :value="gender.id">
-          {{gender.name}}
-        </option>
-      </select>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div
+      select(:value='value' ref='input' @input='update()')
+        option(v-for='gender in vocalsGenders' :key='gender.id' :value='gender.id')
+          | {{gender.name}}
 </template>
 
 <script>

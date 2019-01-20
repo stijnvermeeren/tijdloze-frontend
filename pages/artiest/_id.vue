@@ -24,17 +24,20 @@
     h3 In de Tijdloze
     div
       entry-count(:songs='artist.songs')
-    graph(v-if='artist.songs.find(song => song.listCount($store.getters.years) > 0)' :songs='artist.songs')
+    graph(
+      v-if='artist.songs.find(song => song.listCount($store.getters.years) > 0)'
+      :songs='artist.songs'
+    )
 
     h3 Tijdloze albums en nummers
     div
       ul(v-if='artist.albums')
         li(v-for='album in artist.albums')
           tijdloze-album(:album='album')
-            | ({{album.releaseYear}})
-            ul(v-if='album.songs')
-              li(v-for='song in album.songs')
-                tijdloze-song(:song='song')
+          |  ({{album.releaseYear}})
+          ul(v-if='album.songs')
+            li(v-for='song in album.songs')
+              tijdloze-song(:song='song')
 </template>
 
 <script>

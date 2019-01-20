@@ -1,209 +1,114 @@
-<template>
-  <div>
-    <h2>De Tijdloze Tijdloze</h2>
+<template lang="pug">
+  div
+    h2 De Tijdloze Tijdloze
+    #toelichting(v-if='!active')
+      p
+        tijdlozelinks(text='Wat als je alle edities van de Tijdloze bij elkaar gooit? Wie komt er dan uit als het ultieme tijdloze Tijdloze nummer? Veel mensen willen het weten, maar het antwoord is niet zo eenvoudig. Want op welke manier geef je punten aan de nummers? Bekijk je enkel nummers die in elke Tijdloze genoteerd waren? Is het eerlijk om een nummer uit 1967 te vergelijken met een nummer uit 2001?')
+      p
+        tijdlozelinks(text='Op deze pagina kan je zelf met verschillende instellingen experimenteren, de Tijdloze Tijdloze wordt automatisch gegenereerd. Naargelang de instellingen zal je verschillende nummers aan kop vinden, dus we zullen hier ook geen ultieme winnaar uitroepen. Maar toch enkele algemene observaties: [Child In Time] staat in de meeste lijstjes bovenaan, samen met klassiekers als [Angie], [Stairway To Heaven] en [Bohemian Rhapsody]. De recentere jaren worden echter aangevoerd door [Smells Like Teen Spirit], [Mia], [One;Metallica] en [Creep]. Slechts 15 nummers stonden in elke Tijdloze, terwijl [Smells Like Teen Spirit] meestal het hoogste recentere nummer is.')
+      p
+        tijdlozelinks(text='Je kan hier ook de punten per artiest laten samentellen, en zo een ranglijst van de beste Tijdloze Artiesten krijgen. Hier vind je weer de grote kleppers aan de top als [Deep Purple], [The Rolling Stones] en [Led Zeppelin]. Maar ook groepen als [The Doors], [U2], [dEUS] en [Radiohead], die geen heel hoge maar wel veel noteringen hebben, scoren hier goed. Om [Gorky], die enkel scoorde met [Mia], te vinden moet je echter naar beneden scrollen.')
 
-    <div
-      v-if="!active"
-      id="toelichting"
-    >
-      <p><TijdlozeLinks text="Wat als je alle edities van de Tijdloze bij elkaar gooit? Wie komt er dan uit als het ultieme tijdloze Tijdloze nummer? Veel mensen willen het weten, maar het antwoord is niet zo eenvoudig. Want op welke manier geef je punten aan de nummers? Bekijk je enkel nummers die in elke Tijdloze genoteerd waren? Is het eerlijk om een nummer uit 1967 te vergelijken met een nummer uit 2001?" /></p>
-      <p><TijdlozeLinks text="Op deze pagina kan je zelf met verschillende instellingen experimenteren, de Tijdloze Tijdloze wordt automatisch gegenereerd. Naargelang de instellingen zal je verschillende nummers aan kop vinden, dus we zullen hier ook geen ultieme winnaar uitroepen. Maar toch enkele algemene observaties: [Child In Time] staat in de meeste lijstjes bovenaan, samen met klassiekers als [Angie], [Stairway To Heaven] en [Bohemian Rhapsody]. De recentere jaren worden echter aangevoerd door [Smells Like Teen Spirit], [Mia], [One;Metallica] en [Creep]. Slechts 15 nummers stonden in elke Tijdloze, terwijl [Smells Like Teen Spirit] meestal het hoogste recentere nummer is." /></p>
-      <p><TijdlozeLinks text="Je kan hier ook de punten per artiest laten samentellen, en zo een ranglijst van de beste Tijdloze Artiesten krijgen. Hier vind je weer de grote kleppers aan de top als [Deep Purple], [The Rolling Stones] en [Led Zeppelin]. Maar ook groepen als [The Doors], [U2], [dEUS] en [Radiohead], die geen heel hoge maar wel veel noteringen hebben, scoren hier goed. Om [Gorky], die enkel scoorde met [Mia], te vinden moet je echter naar beneden scrollen." /></p>
-    </div>
+    table
+      tbody
+        tr
+          th Vergelijk:
+          td
+            select(v-model='type')
+              option(value='nummers')
+                | Nummers
+              option(value='artiesten')
+                | Artiesten
+              option(value='albums')
+                | Albums
+        tr
+          th Van:
+          td
+            select(v-model='startYear')
+              option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+                | {{ year.yyyy }}
+        tr
+          th Tot:
+          td
+            select(v-model='endYear')
+              option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+                | {{ year.yyyy }}
+        tr
+          th
+          td
+            input.ch(type='checkbox' v-model='strict')
+            | Tel enkel nummers die in elke Tijdloze stonden
+        tr
+          th Methode:
+          td
+            div
+              input.ra(v-model='method' type='radio' value='1')
+              |  Eenvoudige telling
+            .noot
+              | Het nummer op de eerste plaats krijgt 100 punten, de tweede 99, de derde 98, en zo verder tot de honderste die nog 1 punt krijgt... #[em Formule: punten = 101 - positie].
+            div
+              input.ra(v-model='method' type='radio' value='2')
+              |  Realistische telling
+            .noot
+              | Deze telling leunt dichter aan bij het aantal stemmen dat elk nummer waarschijnlijk door de jaren heen gekregen heeft. De formule hiervoor is gebaseerd op de Tijdloze van 1998. Toen was de schiftingsvraag 'hoeveel stemmen hebben alle nummers in de top 100 gekregen'. Tijdens de uitzending werden er af en toe #[em updates] gegeven over hoeveel stemmen sommige nummers kregen, en wat het subtotaal van de stemmen was. Een formule die grofweg het aantal stemmen per positie benadert, is #[em 400 / (positie + 5)]. Deze formule wordt hier gebruikt.
+        tr(v-if='!active')
+          th
+          td
+            button(@click='submit()' type='submit')
+              | Bereken Tijdloze Tijdloze
 
-    <table>
-      <tbody>
-        <tr>
-          <th>Vergelijk:</th>
-          <td>
-            <select v-model="type">
-              <option value="nummers">
-                Nummers
-              </option>
-              <option value="artiesten">
-                Artiesten
-              </option>
-              <option value="albums">
-                Albums
-              </option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <th>Van:</th>
-          <td>
-            <select v-model="startYear">
-              <option
-                v-for="year in completedYears"
-                :key="year.yyyy"
-                :value="year.yyyy"
-              >
-                {{ year.yyyy }}
-              </option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <th>Tot:</th>
-          <td>
-            <select v-model="endYear">
-              <option
-                v-for="year in completedYears"
-                :key="year.yyyy"
-                :value="year.yyyy"
-              >
-                {{ year.yyyy }}
-              </option>
-            </select>
-          </td>
-        </tr>
-        <tr>
-          <th />
-          <td>
-            <input
-              type="checkbox"
-              v-model="strict"
-              class="ch"
-            >
-            Tel enkel nummers die in elke Tijdloze stonden
-          </td>
-        </tr>
-        <tr>
-          <th>Methode:</th>
-          <td>
-            <div>
-              <input
-                v-model="method"
-                type="radio"
-                class="ra"
-                value="1"
-              > Eenvoudige telling
-            </div>
-            <div class="noot">
-              Het nummer op de eerste plaats krijgt 100 punten, de tweede 99, de derde 98, en zo verder tot de honderste die nog 1 punt krijgt... <em>Formule: punten = 101 - positie</em>.
-            </div>
-            <div>
-              <input
-                v-model="method"
-                type="radio"
-                class="ra"
-                value="2"
-              > Realistische telling
-            </div>
-            <div class="noot">
-              Deze telling leunt dichter aan bij het aantal stemmen dat elk nummer waarschijnlijk door de jaren heen gekregen heeft. De formule hiervoor is gebaseerd op de Tijdloze van 1998. Toen was de schiftingsvraag 'hoeveel stemmen hebben alle nummers in de top 100 gekregen'. Tijdens de uitzending werden er af en toe <em>updates</em> gegeven over hoeveel stemmen sommige nummers kregen, en wat het subtotaal van de stemmen was. Een formule die grofweg het aantal stemmen per positie benadert, is <em>400 / (positie + 5)</em>. Deze formule wordt hier gebruikt.
-            </div>
-          </td>
-        </tr>
-        <tr v-if="!active">
-          <th />
-          <td>
-            <button
-              @click="submit()"
-              type="submit"
-            >
-              Bereken Tijdloze Tijdloze
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    table.lijst.perVijf(v-if="active && type === 'nummers'")
+      tbody
+        tr
+          th.r
+          th.a
+            nuxt-link(to='/artiesten')
+              | Artiest
+          th
+            nuxt-link(to='/nummers')
+              | Nummer
+          th Score
+        tr(v-for='{entry, position} in songData' :key='entry.song.id')
+          td.r
+            | {{ position }}
+          td.a
+            tijdloze-artist(:artist='entry.song.artist')
+          td
+            tijdloze-song(:song='entry.song')
+          td {{ Math.round(entry.points * 10) / 10 }}
 
-    <table
-      v-if="active && type === 'nummers'"
-      class="lijst perVijf"
-    >
-      <tbody>
-        <tr>
-          <th class="r" />
-          <th class="a">
-            <nuxt-link to="/artiesten">
-              Artiest
-            </nuxt-link>
-          </th>
-          <th>
-            <nuxt-link to="/nummers">
-              Nummer
-            </nuxt-link>
-          </th>
-          <th>Score</th>
-        </tr>
-        <tr
-          v-for="{entry, position} in songData"
-          :key="entry.song.id"
-        >
-          <td class="r">
-            {{ position }}
-          </td>
-          <td class="a">
-            <TijdlozeArtist :artist="entry.song.artist" />
-          </td>
-          <td><TijdlozeSong :song="entry.song" /></td>
-          <td>{{ Math.round(entry.points * 10) / 10 }}</td>
-        </tr>
-      </tbody>
-    </table>
+    table.lijst.perVijf(v-if="active && type === 'artiesten'")
+      tbody
+        tr
+          th.r
+          th.l
+            nuxt-link(to='/artiesten')
+              | Artiest
+          th Score
+        tr(v-for='{entry, position} in artistData' :key='entry.artist.id')
+          td.r
+            | {{ position }}
+          td.l
+            tijdloze-artist(:artist='entry.artist')
+          td {{ Math.round(entry.points * 10) / 10 }}
 
-    <table
-      v-if="active && type === 'artiesten'"
-      class="lijst perVijf"
-    >
-      <tbody>
-        <tr>
-          <th class="r" />
-          <th class="l">
-            <nuxt-link to="/artiesten">
-              Artiest
-            </nuxt-link>
-          </th>
-          <th>Score</th>
-        </tr>
-        <tr
-          v-for="{entry, position} in artistData"
-          :key="entry.artist.id"
-        >
-          <td class="r">
-            {{ position }}
-          </td>
-          <td class="l">
-            <TijdlozeArtist :artist="entry.artist" />
-          </td>
-          <td>{{ Math.round(entry.points * 10) / 10 }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table
-      v-if="active && type === 'albums'"
-      class="lijst perVijf"
-    >
-      <tbody>
-        <tr>
-          <th class="r" />
-          <th class="a">
-            <nuxt-link to="/artiesten">
-              Artiest
-            </nuxt-link>
-          </th>
-          <th>Album</th>
-          <th>Score</th>
-        </tr>
-        <tr
-          v-for="{entry, position} in albumData"
-          :key="entry.album.id"
-        >
-          <td class="r">
-            {{ position }}
-          </td>
-          <td class="a">
-            <TijdlozeArtist :artist="entry.artist" />
-          </td>
-          <td><TijdlozeAlbum :album="entry.album" /></td>
-          <td>{{ Math.round(entry.points * 10) / 10 }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    table.lijst.perVijf(v-if="active && type === 'albums'")
+      tbody
+        tr
+          th.r
+          th.a
+            nuxt-link(to='/artiesten')
+              | Artiest
+          th Album
+          th Score
+        tr(v-for='{entry, position} in albumData' :key='entry.album.id')
+          td.r
+            | {{ position }}
+          td.a
+            tijdloze-artist(:artist='entry.artist')
+          td
+            tijdloze-album(:album='entry.album')
+          td {{ Math.round(entry.points * 10) / 10 }}
 </template>
 
 <script>

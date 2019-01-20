@@ -26,7 +26,7 @@
                     nuxt-link(:to="'/lijst/' + year.yyyy") {{year.yyyy}}
                 li(v-if='!allLists')
                   a(@click.stop='allLists = true') Meer tonen
-                li(v-else='')
+                li(v-else)
                   a(@click.stop='allLists = false') Minder tonen
             li
               nuxt-link(to='/artiesten') Alle artiesten

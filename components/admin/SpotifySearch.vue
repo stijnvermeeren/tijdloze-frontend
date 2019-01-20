@@ -1,23 +1,19 @@
-<template>
-  <div>
-    <div>
-      <input v-model="query" @keypress.enter="search()" placeholder="Titel en/of artiest" />
-      <button @click="search()" :disabled="processing">
-        Zoeken op Spotify
-      </button>
-    </div>
-    <div v-if="spotifyTracks.length">
-      <table>
-        <tbody>
-          <tr v-for="track in spotifyTracks" :key="track.spotifyId">
-            <td><spotify :spotifyId="track.spotifyId" /></td>
-            <td><button @click="select(track)">Selecteren</button></td>
-          </tr>
-        </tbody>
-      </table>
-      <div><button @click="cancel()">Zoeken annuleren</button></div>
-    </div>
-  </div>
+<template lang="pug">
+  div
+    div
+      input(v-model='query' @keypress.enter='search()' placeholder='Titel en/of artiest')
+      button(@click='search()' :disabled='processing')
+        | Zoeken op Spotify
+    div(v-if='spotifyTracks.length')
+      table
+        tbody
+          tr(v-for='track in spotifyTracks' :key='track.spotifyId')
+            td
+              spotify(:spotify-id='track.spotifyId')
+            td
+              button(@click='select(track)') Selecteren
+      div
+        button(@click='cancel()') Zoeken annuleren
 </template>
 
 <script>

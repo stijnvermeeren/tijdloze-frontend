@@ -16,7 +16,7 @@
               position(:year='currentYear' :song='song')
           td.song
             song-link(:song='song')
-    div(v-else='')
+    div(v-else)
       | Geen nummers in de Tijdloze van #[year-link(:year='currentYear')].
 </template>
 

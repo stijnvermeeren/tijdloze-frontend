@@ -7,7 +7,7 @@
           .toggle(@click.prevent='toggle()')
             div
               a(v-if='!isOpen') Meer tonen
-              a(v-else='') Minder tonen
+              a(v-else) Minder tonen
 </template>
 
 <script>

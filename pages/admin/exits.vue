@@ -7,7 +7,7 @@
         :song-filter='songValid', :songs-year='completedYear'
         :album-filter='album => false'
         :artist-filter='artist => false'
-        @selectsearchresult='markExit($event.item)'
+        @selectSearchResult='markExit($event.item)'
       )
 
     div(v-if='exits.length')
