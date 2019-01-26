@@ -2,56 +2,64 @@
   div
     h2 Admin: live updates
 
-    h3 Vorig nummer
-    div
-      strong Positie {{lastPosition}} in {{currentYear.yyyy}}:
-    div
-      | {{ lastSong.artist.fullName }} - {{ lastSong.title }}
-      button(@click='undo()', :disabled='processing') Ongedaan maken
+    template(v-if='lastSong')
+      h3 Vorig nummer
+      div
+        strong Positie {{lastPosition}} in {{currentYear.yyyy}}:
+      div
+        | {{ lastSong.artist.fullName }} - {{ lastSong.title }}
+        button(@click='undo()', :disabled='processing') Ongedaan maken
 
-    h3 Volgend nummer
-    div
-      strong Positie {{nextPosition}} in {{nextYearYyyy}}
-    div
-      input#nextType-existing(
-        type='radio'
-        value='existing'
-        v-model='nextSongType'
-      )
-      label(for='nextType-existing') Nummer dat reeds in de Tijdloze stond
-      input#nextType-new(
-        type='radio',
-        value='new',
-        v-model='nextSongType'
-      )
-      label(for='nextType-new') Nieuw nummer
+    template(v-if='lastPosition === 1 && nextYearYyyy !== currentYear')
+      h3 Volgend nummer
+      div
+        button(@click='startYear()')
+          | Jaar {{nextYearYyyy}} starten
 
-    .box(v-show="nextSongType === 'existing'")
-      search-box(
-        placeholder='Zoek nummer...'
-        :artist-filter='artist => false'
-        :album-filter='album => false'
-        :song-filter='possibleSong'
-        :songs-year='completedYear'
-        @selectSearchResult='selectSearchResult($event)'
-      )
+    template(v-if='!lastSong || lastPosition > 1')
+      h3 Volgend nummer
+      div
+        strong Positie {{nextPosition}} in {{nextYearYyyy}}
+      div
+        input#nextType-existing(
+          type='radio'
+          value='existing'
+          v-model='nextSongType'
+        )
+        label(for='nextType-existing') Nummer dat reeds in de Tijdloze stond
+        input#nextType-new(
+          type='radio',
+          value='new',
+          v-model='nextSongType'
+        )
+        label(for='nextType-new') Nieuw nummer
+
+      .box(v-show="nextSongType === 'existing'")
+        search-box(
+          placeholder='Zoek nummer...'
+          :artist-filter='artist => false'
+          :album-filter='album => false'
+          :song-filter='possibleSong'
+          :songs-year='previousYear'
+          @selectSearchResult='selectSearchResult($event)'
+        )
         div(v-if='nextSong')
           strong {{nextSong.artist.fullName}} - {{nextSong.title}}
-          |  (in {{completedYear.yyyy}} op positie #[position(:year='completedYear', :song='nextSong')])
+          |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
         div(v-if='nextSongFullData && nextSongFullData.spotifyId')
-          spotify(:spotifyid='nextSongFullData.spotifyId')
+          spotify(:spotify-id='nextSongFullData.spotifyId')
         div
           button(@click='add(nextSong.id)', :disabled='!nextValid')
             | Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
 
-    .box(v-show="nextSongType === 'new'")
-      spotify-search(@selectspotifytrack='selectSpotifyTrack($event)')
-        hr
-        new-song-wizard(
-          :preset='spotifyData'
-          :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
-          @newsong='add($event.id)'
-        )
+      .box(v-show="nextSongType === 'new'")
+        spotify-search(@selectSpotifyTrack='selectSpotifyTrack($event)')
+          hr
+          new-song-wizard(
+            :preset='spotifyData'
+            :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
+            @newSong='add($event.id)'
+          )
 </template>
 
 <script>
@@ -76,8 +84,8 @@
       currentYear() {
         return this.$store.getters.currentYear;
       },
-      completedYear() {
-        return this.$store.getters.completedYear;
+      previousYear() {
+        return this.currentYear.previous();
       },
       lastSong() {
         return this.$store.getters.lastSong;
@@ -86,10 +94,10 @@
         return this.$store.getters.lastPosition
       },
       nextYearYyyy() {
-        return this.lastPosition === 1 ? this.currentYear.yyyy + 1 : this.currentYear.yyyy;
+        return (new Date()).getFullYear();
       },
       nextPosition() {
-        return this.lastPosition === 1 ? 100 : this.lastPosition - 1;
+        return this.lastPosition ? this.lastPosition - 1 : 100;
       },
       nextValid() {
         if (this.nextSongType === 'existing') {
@@ -121,12 +129,18 @@
         this.$store.dispatch('refreshCurrentList');
         this.processing = false;
       },
+      async startYear() {
+        this.processing = true;
+        await this.$axios.$post(`year/${this.nextYearYyyy}`)
+        this.$store.dispatch('refreshCurrentList');
+        this.processing = false;
+      },
       async add(songId) {
         this.processing = true;
         const data = {
           songId
         }
-        await this.$axios.$post(`list-entry/${this.nextYearYyyy}/${this.nextPosition}`, data)
+        await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
         this.$store.dispatch('refreshCurrentList');
         this.nextSongType = 'existing';
         this.nextSong = undefined;
@@ -135,11 +149,7 @@
         this.processing = false;
       },
       possibleSong(song) {
-        if (this.nextYearYyyy === this.currentYear.yyyy) {
-          return !song.position(this.currentYear) && !song.exitCurrent;
-        } else {
-          return true;
-        }
+        return !song.position(this.currentYear) && song.possiblyInList(this.currentYear);
       }
     },
     middleware: 'admin',

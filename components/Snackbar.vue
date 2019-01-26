@@ -1,5 +1,5 @@
 <template lang="pug">
-  #snackbar(:class='{isHidden: isHidden}')
+  #snackbar(v-if='song' :class='{isHidden: isHidden}')
     .header
       | Positie {{song.position(year)}} in de Tijdloze van #[tijdloze-year(:year='year')]
     .song

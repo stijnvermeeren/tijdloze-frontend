@@ -23,7 +23,7 @@
             tijdloze-position(:song='song' :year='year.previous().previous()')
           td.r
             tijdloze-position-change(:song='song' :year='year.previous()')
-              tijdloze-position(:song='song' :year='year.previous()')
+            tijdloze-position(:song='song' :year='year.previous()')
           td.a
             tijdloze-artist(:artist='song.artist')
           td
@@ -40,7 +40,7 @@
         return this.$store.getters.currentYear;
       },
       exitsUnknown() {
-        return !this.$store.getters.songs.find(song => song.exitCurrent);
+        return !this.$store.state.exitSongIds.length;
       },
       upcomingSongs() {
         return _.sortBy(

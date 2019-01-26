@@ -10,7 +10,7 @@
             li(v-if='!listInProgress')
               nuxt-link(to='/reacties') Reageer en discussieer
             li(v-if='listInProgress')
-              nuxt-link(to='/lijst/2018') De Tijdloze 2018
+              nuxt-link(:to='`/lijst/${currentYear.yyyy}`') De Tijdloze {{currentYear.yyyy}}
               ul
                 li
                   nuxt-link(to='/lijst/opkomst') Nog op komst...
@@ -87,6 +87,9 @@
     computed: {
       listInProgress() {
         return this.$store.getters.listInProgress;
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       },
       years() {
         return this.$store.getters.years;
