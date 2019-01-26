@@ -12,7 +12,7 @@
             position(:year='previousYear' :song='song')
           td.current
             position-change(:year='currentYear' :song='song')
-              position(:year='currentYear' :song='song')
+            position(:year='currentYear' :song='song')
     div(v-else)
       | Niet in de Tijdloze van #[year-link(:year='currentYear')].
 </template>

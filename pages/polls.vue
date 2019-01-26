@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h2 Tijdloze 2018: polls
+    h2 Tijdloze {{currentYear.yyyy}}: polls
     div(v-for='poll in currentYearPolls' :key='poll.id')
       poll(:poll='poll')
     div(v-if='!currentYearPolls.length')
@@ -14,8 +14,11 @@
   export default {
     components: {Poll},
     computed: {
+      currentYear() {
+        return this.$store.getters.currentYear;
+      },
       currentYearPolls() {
-        return this.polls.filter(poll => poll.year === 2018 && !poll.isDeleted)
+        return this.polls.filter(poll => poll.year === this.currentYear.yyyy && !poll.isDeleted)
       }
     },
     async asyncData({ app }) {

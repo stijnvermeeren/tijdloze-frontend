@@ -3,7 +3,7 @@
     h2 Admin: polls
     div
       button(@click='refresh()', :disabled='refreshing') Opnieuw laden
-    h3 Maak een nieuwe poll
+    h3 Maak een nieuwe poll ({{currentYear.yyyy}})
     div
       div
         strong Vraag
@@ -40,6 +40,9 @@
       }
     },
     computed: {
+      currentYear() {
+        return this.$store.getters.currentYear;
+      },
       groupedPolls() {
         return [2018, 2017, 2016, 2015].map(year => {
           return {
@@ -62,7 +65,8 @@
         this.submitting = true;
         const data = {
           question: this.question,
-          answers: this.answers.map(answer => answer.text)
+          answers: this.answers.map(answer => answer.text),
+          year: this.currentYear.yyyy
         };
         await this.$axios.$post('poll', data);
         await this.refresh();

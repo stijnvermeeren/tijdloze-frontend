@@ -1,10 +1,10 @@
 <template lang="pug">
   div
-    h2 Exits markeren
+    h2 Exits markeren ({{currentYear.yyyy}})
     div
       search-box(
-        :placeholder='`Zoek nummer uit de Tijdloze van ${completedYear.yyyy}`'
-        :song-filter='songValid', :songs-year='completedYear'
+        :placeholder='`Zoek nummer uit de Tijdloze van ${previousYear.yyyy}`'
+        :song-filter='songValid', :songs-year='previousYear'
         :album-filter='album => false'
         :artist-filter='artist => false'
         @selectSearchResult='markExit($event.item)'
@@ -22,36 +22,46 @@
 </template>
 
 <script>
+  import Song from '~/store/Song'
   import SearchBox from '../../components/SearchBox'
+
   export default {
     name: 'exits',
     components: {SearchBox},
     computed: {
-      completedYear() {
-        return this.$store.getters.completedYear;
+      exitSongIds() {
+        return this.$store.state.exitSongIds;
       },
       exits() {
-        return this.$store.getters.list(this.completedYear).filter(song => song.exitCurrent);
+        return this.exitSongIds.map(id => {
+          return Song.query().with('artist').find(id)
+        });
+      },
+      previousYear() {
+        return this.currentYear.previous();
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       }
     },
     methods: {
       songValid(song) {
-        const inCompletedYear = song.position(this.completedYear);
-        const nextYear = this.completedYear.next();
-        const notYearInNextYear = nextYear ? !song.position(nextYear) : true;
-        const notYetMarked = nextYear ? !song.exitCurrent : true;
-        return inCompletedYear && notYearInNextYear && notYetMarked;
+        const inPreviousYear = song.position(this.previousYear);
+
+        const notYetInCurrentYear = this.currentYear ? !song.position(this.currentYear) : true;
+        const notYetMarked = !this.exitSongIds.includes(song.id);
+        return inPreviousYear && notYetInCurrentYear && notYetMarked;
       },
       async unmarkAll() {
-        await this.$axios.$delete('/list-exit');
+        await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}`);
         this.$store.dispatch('refreshCurrentList');
       },
       async unmarkExit(song) {
-        await this.$axios.$delete(`/list-exit/${song.id}`);
+        await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
         this.$store.dispatch('refreshCurrentList');
       },
       async markExit(song) {
-        await this.$axios.$post(`/list-exit/${song.id}`);
+        await this.$axios.$post(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
         this.$store.dispatch('refreshCurrentList');
       }
     },

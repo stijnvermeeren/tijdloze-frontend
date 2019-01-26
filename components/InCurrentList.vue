@@ -13,7 +13,7 @@
             position(:year='previousYear' :song='song')
           td.current
             position-change(:year='currentYear' :song='song')
-              position(:year='currentYear' :song='song')
+            position(:year='currentYear' :song='song')
           td.song
             song-link(:song='song')
     div(v-else)

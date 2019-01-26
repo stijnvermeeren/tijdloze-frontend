@@ -32,6 +32,7 @@ const createStore = () => {
       user: null,
       refreshInterval: null,
       yearsRaw: [],
+      exitSongIds: [],
       countries: [],
       languages: [],
       vocalsGenders: [],
@@ -128,6 +129,7 @@ const createStore = () => {
         state.languages = json.languages;
         state.vocalsGenders = json.vocalsGenders;
         state.yearsRaw = json.years;
+        state.exitSongIds = json.exitSongIds;
       },
       setAccessToken(state, accessToken) {
         state.accessToken = accessToken || null;
@@ -145,6 +147,9 @@ const createStore = () => {
       },
       setPollVotes(state, votes) {
         state.pollVotes = votes
+      },
+      setExitSongIds(state, exitSongIds) {
+        state.exitSongIds = exitSongIds
       },
       setCurrentYear(state, currentYear) {
         if (_.last(state.yearsRaw) !== currentYear) {
@@ -169,6 +174,7 @@ const createStore = () => {
         });
 
         commit('setCurrentYear', response.year)
+        commit('setExitSongIds', response.exitSongIds)
 
         Artist.insertOrUpdate({
           data: response.newArtists
@@ -183,9 +189,7 @@ const createStore = () => {
         Song.update({
           where: song => true,
           data: song => {
-            song.exitCurrent = response.exits.includes(song.id)
-
-            const entry = response.entries.find(entry => entry.songId == song.id)
+            const entry = response.entries.find(entry => entry.songId === song.id)
             if (entry) {
               song.positions[response.year % 100] = entry.position
             } else {

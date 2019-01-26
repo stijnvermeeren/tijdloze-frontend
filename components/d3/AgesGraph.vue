@@ -1,7 +1,7 @@
 <template lang="pug">
   .graph
     svg(
-      :viewbox='`0 0 ${fullWidth} ${fullHeight}`'
+      :viewBox='`0 0 ${fullWidth} ${fullHeight}`'
       xmlns='http://www.w3.org/2000/svg'
     )
       g(:transform='`translate(${margin.left},${margin.top})`')

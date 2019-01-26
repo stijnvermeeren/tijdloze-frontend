@@ -17,7 +17,6 @@ export default class Song extends Model {
       languageId: this.attr(null),
       leadVocals: this.attr(null),
       positions: this.attr(null),
-      exitCurrent: this.attr(null),
 
       artist: this.belongsTo(Artist, 'artistId'),
       album: this.belongsTo(Album, 'albumId')
@@ -35,7 +34,7 @@ export default class Song extends Model {
 
   notInList(year, extended) {
     if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
-      return this.exitCurrent;
+      return this.$store().state.exitSongIds.includes(this.id);
     } else {
       return !this.position(year, extended);
     }

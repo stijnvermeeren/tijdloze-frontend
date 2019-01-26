@@ -2,7 +2,7 @@
   .graph
     h4(v-if='$slots.default || title')
       slot {{title}}
-    svg(:viewbox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
+    svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
       g(:transform='`translate(${margin.left},${margin.top})`')
         tijdloze-axes(
           :x-scale='xScale'
