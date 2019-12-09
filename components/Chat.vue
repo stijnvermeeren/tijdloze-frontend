@@ -34,6 +34,9 @@
   import Vue from 'vue'
   import _ from 'lodash'
   import User from "./User";
+  import Sockette from 'sockette';
+
+  const config = require('~/config.json');
 
   export default {
     name: "Chat",
@@ -48,7 +51,6 @@
         lastId: 0,
         message: '',
         sending: false,
-        loadMessagesTimeout: undefined,
         loadOnlineTimeout: undefined,
         showAllOnline: false,
         changeName: false,
@@ -117,21 +119,11 @@
           };
         }
       },
-      async loadOnce() {
-        const messages  = await this.$axios.$get('/chat/message', {
-          params: { since: this.lastId },
-          progress: false
-        });
-        const newMessages = messages.filter(message => !this.messageIds.has(message.id));
-        this.messages = _.concat(this.messages, newMessages);
+      addMessage(message) {
+        this.messages.push(message);
 
         if (this.messages.length > 1000) {
           this.messages = this.messages.slice(500);
-        }
-
-        const lastMessage = _.last(this.messages);
-        if (lastMessage) {
-          this.lastId = lastMessage.id;
         }
 
         this.autoScroll();
@@ -145,10 +137,6 @@
             elem.scrollTop = elem.scrollHeight;
           });
         }
-      },
-      async load() {
-        this.loadOnce();
-        this.loadMessagesTimeout = setTimeout(this.load, 3000);
       },
       async loadOnlineOnce() {
         const online = await this.$axios.$get('/chat/online', {
@@ -200,25 +188,37 @@
       async send() {
         if (this.message.length && !this.sending) {
           this.sending = true;
-          const data = {
-            message: this.message
-          };
-          await this.$axios.$post('/chat/message', data);
-          await this.loadOnce();
+          this.ws.json({ message: this.message })
           this.message = '';
           this.sending = false;
         }
       }
     },
     async mounted() {
-      await this.load();
       await this.loadOnline();
-      this.initialLoad = false;
+    },
+    created() {
+      // TODO configured server URL
+      this.ws = new Sockette(`ws://localhost:9000/chat/ws`, {
+        timeout: 5e3,
+        maxAttempts: 10,
+        onopen: e => {
+          console.log('Connected!', e)
+          this.initialLoad = false
+        },
+        onmessage: e => {
+          this.addMessage(JSON.parse(e.data))
+        },
+        onreconnect: e => console.log('Reconnecting...', e),
+        onmaximum: e => console.log('Stop Attempting!', e),
+        onclose: e => console.log('Closed!', e),
+        onerror: e => console.log('Error:', e)
+      });
+
     },
     destroyed: function() {
-      if (this.loadMessagesTimeout) {
-        clearTimeout(this.loadMessagesTimeout);
-      }
+      this.ws.close()
+
       if (this.loadOnlineTimeout) {
         clearTimeout(this.loadOnlineTimeout);
       }

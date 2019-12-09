@@ -16,13 +16,14 @@
     "@nuxtjs/google-analytics": "^2.0.2",
     "@vuex-orm/core": "^0.26.3",
     "auth0-js": "^9.8.2",
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "cookie-universal-nuxt": "^2.0.11",
     "d3-scale": "^1.0.7",
     "d3-shape": "^1.2.2",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.11",
-    "nuxt": "^2.3.4"
+    "lodash": "^4.17.15",
+    "nuxt": "^2.10.2",
+    "sockette": "^2.0.6"
   },
   "devDependencies": {
     "eslint": "^5.9.0",
