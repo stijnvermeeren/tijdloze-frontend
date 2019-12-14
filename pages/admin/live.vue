@@ -126,13 +126,11 @@
       async undo() {
         this.processing = true;
         await this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.lastPosition}`)
-        this.$store.dispatch('refreshCurrentList');
         this.processing = false;
       },
       async startYear() {
         this.processing = true;
         await this.$axios.$post(`year/${this.nextYearYyyy}`)
-        this.$store.dispatch('refreshCurrentList');
         this.processing = false;
       },
       async add(songId) {
@@ -141,7 +139,6 @@
           songId
         }
         await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
-        this.$store.dispatch('refreshCurrentList');
         this.nextSongType = 'existing';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;

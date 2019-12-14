@@ -31,8 +31,9 @@ module.exports = {
   plugins: [
     '~/plugins/global.js',
     '~/plugins/axios',
-    '~/plugins/auth'
-  ],
+    '~/plugins/auth',
+    { src: '~/plugins/websocket', mode: 'client'}
+],
   modules: [
     ['@nuxtjs/axios'],
     ['cookie-universal-nuxt', {

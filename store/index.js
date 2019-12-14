@@ -157,47 +157,8 @@ const createStore = () => {
           state.yearsRaw.push(currentYear)
         }
       },
-      setRefreshInterval(state, interval) {
-        if (state.refreshInterval) {
-          clearInterval(state.refreshInterval)
-        }
-        state.refreshInterval = interval
-      }
     },
     actions: {
-      async refreshCurrentList({commit, dispatch}) {
-        const response = await this.$axios.$get('current-list', {
-          progress: false,
-          params: {
-            cacheBust: new Date().valueOf()
-          }
-        });
-
-        commit('setCurrentYear', response.year)
-        commit('setExitSongIds', response.exitSongIds)
-
-        Artist.insertOrUpdate({
-          data: response.newArtists
-        })
-        Album.insertOrUpdate({
-          data: response.newAlbums
-        })
-        Song.insertOrUpdate({
-          data: response.newSongs
-        })
-
-        Song.update({
-          where: song => true,
-          data: song => {
-            const entry = response.entries.find(entry => entry.songId === song.id)
-            if (entry) {
-              song.positions[response.year % 100] = entry.position
-            } else {
-              delete song.positions[response.year % 100]
-            }
-          }
-        })
-      },
       async nuxtServerInit({commit, dispatch}) {
         const response = await this.$axios.$get('core-data');
 
@@ -214,11 +175,6 @@ const createStore = () => {
         dispatch('entities/songs/create', {
           data: response.songs
         });
-      },
-      setRefreshInterval({commit, dispatch, getters}) {
-        const timeout = getters.lastPosition === 1 ? 5 * 60 * 1000 : 15 * 1000;
-        const interval = setInterval(() => dispatch('refreshCurrentList'), timeout);
-        commit('setRefreshInterval', interval);
       }
     }
   });

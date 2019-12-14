@@ -189,7 +189,7 @@
     created() {
       // TODO configured server URL
       // TODO auth with tickets
-      this.ws = new Sockette(`ws://localhost:9000/chat/ws?userId=${this.$store.state.user.id}`, {
+      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?userId=${this.$store.state.user.id}`, {
         timeout: 5e3,
         maxAttempts: 10,
         onopen: e => {

@@ -54,15 +54,12 @@
       },
       async unmarkAll() {
         await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}`);
-        this.$store.dispatch('refreshCurrentList');
       },
       async unmarkExit(song) {
         await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
-        this.$store.dispatch('refreshCurrentList');
       },
       async markExit(song) {
         await this.$axios.$post(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
-        this.$store.dispatch('refreshCurrentList');
       }
     },
     middleware: 'admin',
