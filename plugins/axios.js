@@ -8,7 +8,7 @@ export default function ({ $axios, store }) {
   }
 
   $axios.interceptors.request.use(function(config) {
-    const token = store.state.accessToken;
+    const token = store.state.auth.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }

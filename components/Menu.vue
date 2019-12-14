@@ -95,7 +95,7 @@
         return this.$store.getters.years;
       },
       isAdmin() {
-        return this.$store.getters.isAdmin;
+        return this.$store.getters['auth/isAdmin'];
       }
     },
     methods: {

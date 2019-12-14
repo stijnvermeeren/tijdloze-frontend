@@ -1,6 +1,5 @@
 import VuexORM from '@vuex-orm/core'
 import _ from 'lodash';
-import {secondsToExpiry} from '~/utils/jwt'
 
 import Album from './Album';
 import Artist from './Artist';
@@ -24,40 +23,14 @@ database.register(Album, albums);
 export const plugins = [ VuexORM.install(database) ]
 
 export const state = () => ({
-  accessToken: null,
-  user: null,
-  refreshInterval: null,
   yearsRaw: [],
   exitSongIds: [],
   countries: [],
   languages: [],
-  vocalsGenders: [],
-  pollVotes: []
+  vocalsGenders: []
 })
 
 export const getters = {
-  isAuthenticated(state) {
-    return !!state.user;
-  },
-  isAdmin(state, getters) {
-    return getters.isAuthenticated && state.user.isAdmin;
-  },
-  displayName(state) {
-    if (state.user) {
-      return state.user.displayName;
-    }
-  },
-  displayNameWithFallback(state) {
-    if (state.user) {
-      if (state.user.displayName) {
-        return state.user.displayName;
-      } else if (state.user.name) {
-        return state.user.name;
-      } else {
-        return state.user.email;
-      }
-    }
-  },
   songs(state, getters) {
     return _.sortBy(
       getters['entities/songs/query']().withAll().all(),
@@ -114,10 +87,6 @@ export const getters = {
   },
   completedYear(state, getters) {
     return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
-  },
-  pollVote: (state) => (pollId) => {
-    const vote = state.pollVotes.find(vote => vote.pollId === pollId);
-    return vote ? vote.answerId : undefined;
   }
 }
 
@@ -128,23 +97,6 @@ export const mutations = {
     state.vocalsGenders = json.vocalsGenders;
     state.yearsRaw = json.years;
     state.exitSongIds = json.exitSongIds;
-  },
-  setAccessToken(state, accessToken) {
-    state.accessToken = accessToken || null;
-
-    if (process.client && accessToken) {
-      if (secondsToExpiry(accessToken) > 2) {
-        setTimeout(() => {
-          this.$auth.checkSession();
-        }, 1000 * (secondsToExpiry(accessToken) - 2))
-      }
-    }
-  },
-  setUser(state, user) {
-    state.user = user || null
-  },
-  setPollVotes(state, votes) {
-    state.pollVotes = votes
   },
   setExitSongIds(state, exitSongIds) {
     state.exitSongIds = exitSongIds

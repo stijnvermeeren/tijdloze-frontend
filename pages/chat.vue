@@ -28,16 +28,16 @@
     components: { Chat },
     data() {
       return {
-        name: this.$store.getters.displayName,
+        name: this.$store.getters['auth/displayName'],
         submittingDisplayName: false
       }
     },
     computed: {
       isAuthenticated() {
-        return this.$store.getters.isAuthenticated;
+        return this.$store.getters['auth/isAuthenticated'];
       },
       displayName() {
-        return this.$store.getters.displayName;
+        return this.$store.getters['auth/displayName'];
       },
       invalidDisplayName() {
         return !this.name || this.name.length === 0;
@@ -52,7 +52,7 @@
         };
         this.$axios.$post(`user/display-name`, data).then(user => {
           this.submittingDisplayName = false;
-          this.$store.commit('setUser', user);
+          this.$store.commit('auth/setUser', user);
         });
       },
       login() {

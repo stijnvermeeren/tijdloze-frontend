@@ -46,8 +46,8 @@
   export default {
     data() {
       return {
-        name: this.$store.getters.isAuthenticated ? this.$store.getters.displayNameWithFallback : '',
-        email: this.$store.getters.isAuthenticated ? this.$store.state.user.email: '',
+        name: this.$store.getters['auth/isAuthenticated'] ? this.$store.getters['auth/displayNameWithFallback'] : '',
+        email: this.$store.getters['auth/isAuthenticated'] ? this.$store.state.auth.user.email: '',
         message: "",
         error: null,
         emailTouched: false,

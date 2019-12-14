@@ -11,10 +11,10 @@
     props: ['comment'],
     computed: {
       isAuthenticated() {
-        return this.$store.getters.isAuthenticated;
+        return this.$store.getters['auth/isAuthenticated'];
       },
       isMine() {
-        return this.isAuthenticated && this.$store.state.user.id === this.comment.userId;
+        return this.isAuthenticated && this.$store.state.auth.user.id === this.comment.userId;
       }
     }
   }

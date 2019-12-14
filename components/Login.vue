@@ -12,10 +12,10 @@
   export default {
     computed: {
       isAuthenticated() {
-        return this.$store.getters.isAuthenticated;
+        return this.$store.getters['auth/isAuthenticated'];
       },
       userName() {
-        return this.$store.getters.displayNameWithFallback;
+        return this.$store.getters['auth/displayNameWithFallback'];
       }
     },
     methods: {
@@ -23,7 +23,7 @@
         this.$auth.login(this.$route.path);
       },
       logout() {
-        this.$store.commit('setUser', null);
+        this.$store.commit('auth/setUser', null);
         this.$auth.logout();
       }
     }

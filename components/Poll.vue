@@ -61,10 +61,10 @@
         return this.isAdmin || !!this.myVote
       },
       myVote() {
-        return this.$store.getters.pollVote(this.poll.id)
+        return this.$store.getters['poll/vote'](this.poll.id)
       },
       isAuthenticated() {
-        return this.$store.getters.isAuthenticated;
+        return this.$store.getters['auth/isAuthenticated'];
       },
       voteCount() {
         return _.sumBy(this.livePoll.answers, answer => answer.voteCount);
@@ -77,7 +77,7 @@
           await this.$axios.$post(`poll/${this.poll.id}/${this.myVoteEdit}`);
 
           const result = await this.$axios.$get(`poll/my-votes`);
-          this.$store.commit('setPollVotes', result.votes);
+          this.$store.commit('poll/setVotes', result.votes);
 
           this.livePoll = await this.$axios.$get(`poll/${this.poll.id}`);
           this.voting = false;

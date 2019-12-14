@@ -20,11 +20,11 @@ export default ({ app, store }, inject) => {
 
   function unsetAccessToken() {
     app.$cookies.remove('access_token', { path: '/' });
-    store.commit('setAccessToken', null);
+    store.commit('auth/setAccessToken', null);
   }
 
   async function loginCallback(idToken, accessToken) {
-    store.commit('setAccessToken', accessToken);
+    store.commit('auth/setAccessToken', accessToken);
     app.$cookies.set(
       'access_token',
       accessToken,
@@ -41,12 +41,12 @@ export default ({ app, store }, inject) => {
       emailVerified: idTokenDecoded.email_verified
     };
     await app.$axios.$post('user', data).then(user => {
-      store.commit('setUser', user);
+      store.commit('auth/setUser', user);
     });
 
     // Don't await / do in the background
     app.$axios.$get('poll/my-votes').then(result => {
-      store.commit('setPollVotes', result.votes);
+      store.commit('poll/setVotes', result.votes);
     });
   }
 

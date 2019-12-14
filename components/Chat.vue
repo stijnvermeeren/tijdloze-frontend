@@ -53,7 +53,7 @@
         sending: false,
         showAllOnline: false,
         changeName: false,
-        displayNameEdit: this.$store.state.user.displayName,
+        displayNameEdit: this.$store.state.auth.user.displayName,
         savingDisplayName: false
       }
     },
@@ -68,7 +68,7 @@
         )
       },
       currentUser() {
-        return this.$store.state.user;
+        return this.$store.state.auth.user;
       }
     },
     watch: {
@@ -89,7 +89,7 @@
           displayName: this.displayNameEdit.trim()
         };
         const user = await this.$axios.$post(`user/display-name`, data);
-        this.$store.commit('setUser', user);
+        this.$store.commit('auth/setUser', user);
         // TODO replace this
         // await this.loadOnlineOnce();
         this.savingDisplayName = false;
@@ -189,7 +189,7 @@
     created() {
       // TODO configured server URL
       // TODO auth with tickets
-      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?userId=${this.$store.state.user.id}`, {
+      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?userId=${this.$store.state.auth.user.id}`, {
         timeout: 5e3,
         maxAttempts: 10,
         onopen: e => {

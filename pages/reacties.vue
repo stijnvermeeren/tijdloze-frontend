@@ -47,7 +47,7 @@
     components: {Comment, CommentsPager},
     data() {
       return {
-        name: this.$store.getters.displayNameWithFallback,
+        name: this.$store.getters['auth/displayNameWithFallback'],
         message: "",
         editDisplayName: false,
         submittingDisplayName: false,
@@ -59,10 +59,10 @@
         return this.$store.getters.listInProgress;
       },
       isAuthenticated() {
-        return this.$store.getters.isAuthenticated;
+        return this.$store.getters['auth/isAuthenticated'];
       },
       displayName() {
-        return this.$store.getters.displayName;
+        return this.$store.getters['auth/displayName'];
       },
       invalidDisplayName() {
         return this.name.length === 0;
@@ -88,7 +88,7 @@
 
             this.editDisplayName = false;
             this.submittingDisplayName = false;
-            this.$store.commit('setUser', user);
+            this.$store.commit('auth/setUser', user);
           });
         });
       },
