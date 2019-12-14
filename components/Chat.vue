@@ -51,7 +51,6 @@
         lastId: 0,
         message: '',
         sending: false,
-        loadOnlineTimeout: undefined,
         showAllOnline: false,
         changeName: false,
         displayNameEdit: this.$store.state.user.displayName,
@@ -91,7 +90,8 @@
         };
         const user = await this.$axios.$post(`user/display-name`, data);
         this.$store.commit('setUser', user);
-        await this.loadOnlineOnce();
+        // TODO replace this
+        // await this.loadOnlineOnce();
         this.savingDisplayName = false;
         this.changeName = false;
       },
@@ -138,11 +138,7 @@
           });
         }
       },
-      async loadOnlineOnce() {
-        const online = await this.$axios.$get('/chat/online', {
-          progress: false
-        });
-
+      loadOnline(online) {
         online.forEach(onlineUser => {
           if (this.displayNames[onlineUser.id] !== onlineUser.displayName) {
             if (this.displayNames[onlineUser.id]) {
@@ -181,10 +177,6 @@
 
         this.online = _.concat(currentUser, newOnline, stillOnline);
       },
-      async loadOnline() {
-        this.loadOnlineOnce();
-        this.loadOnlineTimeout = setTimeout(this.loadOnline, 15000);
-      },
       async send() {
         if (this.message.length && !this.sending) {
           this.sending = true;
@@ -193,9 +185,6 @@
           this.sending = false;
         }
       }
-    },
-    async mounted() {
-      await this.loadOnline();
     },
     created() {
       // TODO configured server URL
@@ -208,7 +197,12 @@
           this.initialLoad = false
         },
         onmessage: e => {
-          this.addMessage(JSON.parse(e.data))
+          const data = JSON.parse(e.data)
+          if (data.message) {
+            this.addMessage(data)
+          } else {
+            this.loadOnline(data)
+          }
         },
         onreconnect: e => console.log('Reconnecting...', e),
         onmaximum: e => console.log('Stop Attempting!', e),
@@ -219,10 +213,6 @@
     },
     destroyed: function() {
       this.ws.close()
-
-      if (this.loadOnlineTimeout) {
-        clearTimeout(this.loadOnlineTimeout);
-      }
     }
   }
 </script>
