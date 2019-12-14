@@ -29,7 +29,6 @@
     },
     computed: {
       analysePreview() {
-        console.log(this.analyse)
         return this.analyse.split(/\r?\n/);
       }
     },
