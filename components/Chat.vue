@@ -186,10 +186,9 @@
         }
       }
     },
-    created() {
-      // TODO configured server URL
-      // TODO auth with tickets
-      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?userId=${this.$store.state.auth.user.id}`, {
+    async created() {
+      const ticketResponse = await this.$axios.$get('chat/ticket')
+      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?ticket=${ticketResponse.ticket}`, {
         timeout: 5e3,
         maxAttempts: 10,
         onopen: e => {
