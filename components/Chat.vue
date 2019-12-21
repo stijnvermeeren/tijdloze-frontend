@@ -142,7 +142,7 @@
         online.forEach(onlineUser => {
           if (this.displayNames[onlineUser.id] !== onlineUser.displayName) {
             if (this.displayNames[onlineUser.id]) {
-              this.messages.push({
+              this.addMessage({
                 message: `"${this.displayNames[onlineUser.id]}" heeft nu als nieuwe naam "${onlineUser.displayName}".`
               })
             }
@@ -162,7 +162,7 @@
 
         if (previouslyOnlineIds.includes(this.currentUser.id) && newOnline.length > 0) {
           const names = newOnline.map(onlineUser => onlineUser.displayName).join(", ");
-          this.messages.push({
+          this.addMessage({
             message: `Nieuw in de chat: ${names}.`
           })
         }
