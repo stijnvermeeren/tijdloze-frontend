@@ -26,19 +26,23 @@
             make-links(:text='fullSongData.notes')
 
     lyrics(v-if='fullSongData.lyrics')
-      .spotify(v-if='fullSongData.spotifyId')
+      .spotify.withlyrics(v-if='fullSongData.spotifyId')
         div
           spotify(:spotify-id='fullSongData.spotifyId')
         div Beluister fragment via Spotify
       .lyrics {{ fullSongData.lyrics }}
 
-    div(v-if="!fullSongData.lyrics && (fullSongData.spotifyId || fullSongData.languageId === 'ins')")
-      h3 Lyrics
-      .spotify(v-if='fullSongData.spotifyId')
+    div(v-else-if="fullSongData.spotifyId")
+      h3 Beluister fragment via Spotify
+      .spotify(v-if='fullSongData.spotifyId' :class="{withLyrics: fullSongData.languageId === 'ins'}")
         div
           spotify(:spotify-id='fullSongData.spotifyId')
-        div Beluister fragment via Spotify
       div(v-if="fullSongData.languageId === 'ins'") (Instrumentaal nummer)
+      .clear
+
+    div(v-else-if="fullSongData.languageId === 'ins'")
+      h3 Lyrics
+      div (Instrumentaal nummer)
       .clear
 
     h3 In de Tijdloze
@@ -147,8 +151,10 @@
     div.spotify {
         margin-bottom: 20px;
 
-        @media (min-width: 1200px) {
+        &.withLyrics {
+          @media (min-width: 1200px) {
             float: right;
+          }
         }
 
         iframe {

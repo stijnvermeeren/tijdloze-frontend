@@ -8,6 +8,7 @@
         strong Positie {{lastPosition}} in {{currentYear.yyyy}}:
       div
         | {{ lastSong.artist.fullName }} - {{ lastSong.title }}
+        |
         button(@click='undo()', :disabled='processing') Ongedaan maken
 
     template(v-if='lastPosition === 1 && nextYearYyyy !== currentYear')
@@ -54,12 +55,12 @@
 
       .box(v-show="nextSongType === 'new'")
         spotify-search(@selectSpotifyTrack='selectSpotifyTrack($event)')
-          hr
-          new-song-wizard(
-            :preset='spotifyData'
-            :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
-            @newSong='add($event.id)'
-          )
+        hr
+        new-song-wizard(
+          :preset='spotifyData'
+          :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
+          @newSong='add($event.id)'
+        )
 </template>
 
 <script>

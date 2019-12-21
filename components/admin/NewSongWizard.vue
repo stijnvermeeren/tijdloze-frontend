@@ -162,7 +162,8 @@
           songDetails: {
             title: '',
             languageId: undefined,
-            leadVocals: undefined
+            leadVocals: undefined,
+            spotifyId: undefined
           },
           submitting: false
         };
@@ -188,6 +189,7 @@
           }
 
           data.songDetails.title = preset.songTitle;
+          data.songDetails.spotifyId = preset.spotifyId;
         }
 
         return data;
@@ -274,7 +276,8 @@
           albumId,
           title: this.songDetails.title,
           languageId: this.songDetails.languageId,
-          leadVocals: this.songDetails.leadVocals
+          leadVocals: this.songDetails.leadVocals,
+          spotifyId: this.songDetails.spotifyId
         }
         const song = await this.$axios.$post('/song', songData);
 

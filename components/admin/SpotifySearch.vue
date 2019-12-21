@@ -10,6 +10,21 @@
           tr(v-for='track in spotifyTracks' :key='track.spotifyId')
             td
               spotify(:spotify-id='track.spotifyId')
+            td.details
+              div
+                | Artist:
+                |
+                strong {{track.artist}}
+              div
+                | Titel:
+                |
+                strong {{track.title}}
+              div
+                | Album:
+                |
+                em {{track.album}}
+                |
+                |({{track.year}}).
             td
               button(@click='select(track)') Selecteren
       div
@@ -57,6 +72,10 @@
 
   table {
     width: auto;
-    margin: 10px auto 10px 0
+    margin: 10px auto 10px 0;
+
+    td.details {
+      font-size: 75%;
+    }
   }
 </style>

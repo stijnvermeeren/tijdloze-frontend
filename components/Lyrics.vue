@@ -1,13 +1,13 @@
 <template lang="pug">
   div(:class="['container', {open: isOpen, closed: !isOpen}]")
     div(ref='lyrics')
-      h3 Lyrics
-      .lyricsContainer
-        slot
-          .toggle(@click.prevent='toggle()')
-            div
-              a(v-if='!isOpen') Meer tonen
-              a(v-else) Minder tonen
+    h3 Lyrics
+    .lyricsContainer
+      slot
+      .toggle(@click.prevent='toggle()')
+        div
+          a(v-if='!isOpen') Meer tonen
+          a(v-else) Minder tonen
 </template>
 
 <script>
