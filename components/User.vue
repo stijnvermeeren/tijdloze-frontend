@@ -1,6 +1,6 @@
 <template lang="pug">
   span.container
-    span(@click.alt='showInfo = !showInfo' :class='{isAdmin: user.isAdmin}') {{user.displayName}}
+    span(@click.ctrl='showInfo = !showInfo' :class='{isAdmin: user.isAdmin}') {{user.displayName}}
     .info(v-if='showInfo')
       div Unieke ID: {{user.id}}
       div(v-if='user.isAdmin') Moderator
