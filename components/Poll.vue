@@ -20,6 +20,7 @@
     div(v-if='isAdmin')
       .isDeleted(v-if='isDeleted')
         | Poll is verborgen op de website.
+        |
         button(@click='restore()' :disabled='deleting') Opnieuw tonen
       div(v-else)
         button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
@@ -147,7 +148,6 @@
         width: 150px;
         z-index: 0;
         border: 1px solid gray;
-        padding: 0 3px;
         font-size: 12px;
 
         span.bar {
@@ -157,6 +157,10 @@
           bottom: 0;
           background-color: @headerBackgroundColor;
           z-index: -1;
+        }
+
+        span.count {
+          padding-left: 3px;
         }
       }
 

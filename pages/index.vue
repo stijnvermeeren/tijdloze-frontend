@@ -3,7 +3,7 @@
     h2 De Tijdloze Website
     .description
       template(v-if='listInProgress')
-        | De #[strong Tijdloze van 2018] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
+        | De #[strong Tijdloze van {{year.yyyy}}] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
     h3

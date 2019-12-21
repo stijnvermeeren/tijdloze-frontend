@@ -7,9 +7,11 @@
         button(@click='cancelDisplayName()') Terug
         | .
       span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
+      |
       | Er zijn {{online.length}} aanwezigen in de chat #[span(v-if='!showAllOnline') (#[a(@click='showAllOnline = true') toon iedereen])].
     .online(v-if='showAllOnline')
       | Online
+      |
       a(@click='showAllOnline = false') (lijst verbergen)
       | :
       div(v-for='onlineUser in onlineSorted' :class="['user', {isAdmin: onlineUser.isAdmin}]")
@@ -23,11 +25,13 @@
             | : {{message.message}}
           .systemMessage(v-else)
             | {{message.message}}
-        div(v-if='initialLoad')
-          | Chat wordt geladen...
+        div(v-if='error')
+          | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
+        div(v-else-if='!connected')
+          | Even geduld terwijl we je verbinden met de chat...
     .input
       input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
-      button(@click='send()' :disabled='sending || !message.length') Verzenden
+      button(@click='send()' :disabled='!message.length || !connected || error') Verzenden
 </template>
 
 <script>
@@ -46,11 +50,10 @@
         messages: [],
         online: [],
         displayNames: {},
-        initialLoad: true,
-        loading: false,
+        connected: false,
+        error: false,
         lastId: 0,
         message: '',
-        sending: false,
         showAllOnline: false,
         changeName: false,
         displayNameEdit: this.$store.state.auth.user.displayName,
@@ -58,9 +61,6 @@
       }
     },
     computed: {
-      messageIds() {
-        return new Set(this.messages.map(message => message.id))
-      },
       onlineSorted() {
         return _.sortBy(
           this.online,
@@ -178,37 +178,54 @@
         this.online = _.concat(currentUser, newOnline, stillOnline);
       },
       async send() {
-        if (this.message.length && !this.sending) {
-          this.sending = true;
+        if (this.message.length) {
           this.ws.json({ message: this.message })
           this.message = '';
-          this.sending = false;
         }
+      },
+      async reconnect() {
+        if (this.ws) {
+          this.ws.close()
+        }
+
+        this.$axios.$get('chat/ticket').then(ticketResponse => {
+          this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?ticket=${ticketResponse.ticket}`, {
+            timeout: 5e3,
+            maxAttempts: 1,
+            onopen: e => {
+              this.error = false
+              this.connected = true
+            },
+            onmessage: e => {
+              const data = JSON.parse(e.data)
+              if (data.message) {
+                this.addMessage(data)
+              } else {
+                this.loadOnline(data)
+              }
+            },
+            onreconnect: e => {
+              // properly reconnect with a new ticket
+              this.ws.close()
+              this.reconnect()
+            },
+            onmaximum: e => {},
+            onclose: e => {
+              this.connected = false
+            },
+            onerror: e => {
+              this.error = true
+            }
+          });
+        }).catch(error => {
+          console.log("Unable to obtain ticket for chat.")
+          this.error = true;
+          setTimeout(this.reconnect, 5000)
+        })
       }
     },
     async created() {
-      const ticketResponse = await this.$axios.$get('chat/ticket')
-      this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?ticket=${ticketResponse.ticket}`, {
-        timeout: 5e3,
-        maxAttempts: 10,
-        onopen: e => {
-          console.log('Connected!', e)
-          this.initialLoad = false
-        },
-        onmessage: e => {
-          const data = JSON.parse(e.data)
-          if (data.message) {
-            this.addMessage(data)
-          } else {
-            this.loadOnline(data)
-          }
-        },
-        onreconnect: e => console.log('Reconnecting...', e),
-        onmaximum: e => console.log('Stop Attempting!', e),
-        onclose: e => console.log('Closed!', e),
-        onerror: e => console.log('Error:', e)
-      });
-
+      this.reconnect()
     },
     destroyed: function() {
       this.ws.close()
@@ -270,10 +287,14 @@
       padding: 4px 8px;
 
       div.messagesContainer {
-        min-height: min-content;
         display: flex;
         flex-flow: column;
-        justify-content: flex-end;
+        /* justify-content: flex-end; DO NOT USE: breaks scrolling */
+
+        > :first-child {
+          margin-top: auto !important;
+          /* use !important to prevent breakage from child margin settings */
+        }
 
         span.userName {
           font-weight: bold;

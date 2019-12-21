@@ -5,19 +5,22 @@
       button(@click='refresh()', :disabled='refreshing') Opnieuw laden
     h3 Maak een nieuwe poll ({{currentYear.yyyy}})
     div
-      div
-        strong Vraag
+      h4 Vraag
       div
         input(v-model='question')
-      div
-        strong Antwoorden
+      h4 Antwoorden
+        |
         | -
+        |
         a(@click="answers.push({text: ''})") Nog een antwoord
         template(v-if='answers.length > 2')
+          |
           | -
+          |
           a(@click='answers.pop()') Laatste antwoord verwijderen
-      div(v-for='answer in answers')
-        input(v-model='answer.text')
+      ul(v-for='answer in answers')
+        li
+          input(v-model='answer.text')
       div
         button(@click='submit()', :disabled='!formValid') Opslaan
     template(v-for='{year, polls} in groupedPolls')
@@ -44,7 +47,7 @@
         return this.$store.getters.currentYear;
       },
       groupedPolls() {
-        return [2018, 2017, 2016, 2015].map(year => {
+        return [2019, 2018, 2017, 2016, 2015].map(year => {
           return {
             year: year,
             polls: this.polls.filter(poll => poll.year === year)

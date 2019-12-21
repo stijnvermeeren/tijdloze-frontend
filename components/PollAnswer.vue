@@ -6,6 +6,7 @@
   div(v-else)
     .answer
       | {{answerEdit}}
+      |
       button(v-if='isAdmin' @click='editing = true') Aanpassen
 </template>
 
