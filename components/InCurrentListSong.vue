@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    table(v-if='song.possiblyInList(currentYear)')
+    table(v-if='song.probablyInList(currentYear)')
       tbody
         tr
           th.previous

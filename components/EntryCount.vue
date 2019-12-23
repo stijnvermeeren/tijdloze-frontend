@@ -7,7 +7,7 @@
 </template>
 
 <script>
-  import {possiblyInListIntervals} from '~/utils/intervals'
+  import {probablyInListIntervals} from '~/utils/intervals'
   import _ from 'lodash'
 
   export default {
@@ -21,7 +21,7 @@
         return _.sumBy(this.songs, song => song.listCount(this.years))
       },
       inListSummary() {
-        const intervalSummaries = possiblyInListIntervals(this.songs, this.years).map(interval => {
+        const intervalSummaries = probablyInListIntervals(this.songs, this.years).map(interval => {
           const first = _.first(interval);
           const last = _.last(interval);
           if (last.isCurrent()) {

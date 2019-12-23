@@ -12,7 +12,7 @@
           th Origineel op album
           td
             tijdloze-album(:album='song.album')  ({{ song.album.releaseYear }})
-        tr(:class='{unimportant: !song.possiblyInList(currentYear)}')
+        tr(:class='{unimportant: !song.probablyInList(currentYear)}')
           th In de Tijdloze
           td
             in-current-list-song(:song='song')
@@ -72,7 +72,7 @@
   import Graph from '~/components/d3/Graph'
   import PageTitle from '../../components/PageTitle'
   import EntryCount from '../../components/EntryCount'
-  import {possiblyInListIntervals} from '~/utils/intervals'
+  import {probablyInListIntervals} from '~/utils/intervals'
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentListSong from '../../components/InCurrentListSong'
   import Spotify from '../../components/Spotify'
@@ -116,7 +116,7 @@
         return links;
       },
       intervals() {
-        return possiblyInListIntervals([this.song], this.years, true);
+        return probablyInListIntervals([this.song], this.years, true);
       }
     },
     async asyncData({ params, app }) {

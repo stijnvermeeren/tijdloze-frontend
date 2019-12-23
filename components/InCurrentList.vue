@@ -39,7 +39,7 @@
         return this.currentYear.previous();
       },
       filteredAndSorted() {
-        const filtered = this.songs.filter(song => song.possiblyInList(this.currentYear));
+        const filtered = this.songs.filter(song => song.probablyInList(this.currentYear));
         return _.sortBy(
           filtered,
           [song => this.sortPosition(song, this.currentYear, 1), song => this.sortPosition(song, this.previousYear, 101)]

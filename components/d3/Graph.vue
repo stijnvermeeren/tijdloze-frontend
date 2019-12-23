@@ -48,7 +48,7 @@
 <script>
   import BaseGraph from './BaseGraph';
   import BaseGraphAxes from './BaseGraphAxes';
-  import {possiblyInListIntervals} from '~/utils/intervals';
+  import {probablyInListIntervals} from '~/utils/intervals';
 
   export default {
     extends: BaseGraph,
@@ -68,7 +68,7 @@
       fullSongLine(song) {
         return this.songLine(
           song,
-          possiblyInListIntervals([song], this.years)
+          probablyInListIntervals([song], this.years)
         );
       }
     }

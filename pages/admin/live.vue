@@ -147,7 +147,7 @@
         this.processing = false;
       },
       possibleSong(song) {
-        return !song.position(this.currentYear) && song.possiblyInList(this.currentYear);
+        return !song.position(this.currentYear) && !song.isKnownExit();
       }
     },
     middleware: 'admin',

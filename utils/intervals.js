@@ -1,12 +1,12 @@
 import _ from 'lodash'
 
-export function possiblyInListIntervals(songs, years, extended) {
+export function probablyInListIntervals(songs, years, extended) {
   function noneInList(year) {
     return !songs.find(song => !song.notInList(year, extended));
   }
 
-  function possiblyInList(year) {
-    return songs.find(song => song.possiblyInList(year, extended));
+  function probablyInList(year) {
+    return songs.find(song => song.probablyInList(year, extended));
   }
 
   const intervals = [];
@@ -15,10 +15,10 @@ export function possiblyInListIntervals(songs, years, extended) {
   while (unprocessedYears.length) {
     unprocessedYears = _.dropWhile(unprocessedYears, noneInList);
 
-    const interval = _.takeWhile(unprocessedYears, possiblyInList);
+    const interval = _.takeWhile(unprocessedYears, probablyInList);
     if (interval.length) {
       intervals.push(interval);
-      unprocessedYears = _.dropWhile(unprocessedYears, possiblyInList);
+      unprocessedYears = _.dropWhile(unprocessedYears, probablyInList);
     }
   }
 

@@ -32,15 +32,25 @@ export default class Song extends Model {
     }
   }
 
+  isKnownExit() {
+    return this.$store().state.exitSongIds.includes(this.id)
+  }
+
+  /**
+   * When we can assume (barring re-entries) that a song is not in the list of the given year, so either
+   * - The year is not current and the song is not in the list
+   * - The year is current and the song is known as an exit
+   * - The year is current and the song was not in the previous list and is not (yet) in the current list
+   */
   notInList(year, extended) {
     if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
-      return this.$store().state.exitSongIds.includes(this.id);
+      return this.isKnownExit();
     } else {
       return !this.position(year, extended);
     }
   }
 
-  possiblyInList(year, extended) {
+  probablyInList(year, extended) {
     return !this.notInList(year, extended);
   }
 
