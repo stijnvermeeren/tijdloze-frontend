@@ -127,7 +127,7 @@
       };
     },
     async mounted() {
-      // refresh on client side in case of server-side caching
+      // refresh on client side to avoid a stale cache on the server-side
       this.comments = await this.$axios.$get(`comments/${this.page}`);
       this.commentCount = (await this.$axios.$get(`comments/count`)).commentCount;
     },

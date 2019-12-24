@@ -41,7 +41,7 @@
       div
         nuxt-link(to='chat') Ga naar de chatbox!
 
-    template(v-if="mode === 'comments' && !listInProgress")
+    template(v-if="showComments")
       h3
         | Reageer en discussieer
       .link
@@ -73,6 +73,9 @@
       },
       year() {
         return this.$store.getters.currentYear;
+      },
+      showComments() {
+        return this.mode === 'comments' && !this.listInProgress;
       }
     },
     async asyncData({ params, app, store }) {
@@ -98,9 +101,11 @@
       };
     },
     async mounted() {
-      // refresh on client side in case of server-side caching
-      const comments = await this.$axios.$get(`comments/1`);
-      this.comments = _.take(comments, 5);
+      if (this.showComments) {
+        // refresh on client side to avoid a stale cache on the server-side
+        const comments = await this.$axios.$get(`comments/1`);
+        this.comments = _.take(comments, 5);
+      }
     }
   }
 </script>
