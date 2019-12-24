@@ -26,7 +26,7 @@
             make-links(:text='fullSongData.notes')
 
     lyrics(v-if='fullSongData.lyrics')
-      .spotify.withlyrics(v-if='fullSongData.spotifyId')
+      .spotify.withLyrics(v-if='fullSongData.spotifyId')
         div
           spotify(:spotify-id='fullSongData.spotifyId')
         div Beluister fragment via Spotify
