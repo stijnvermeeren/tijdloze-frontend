@@ -11,7 +11,13 @@
         |
         button(@click='undo()', :disabled='processing') Ongedaan maken
 
-    template(v-if='lastPosition === 1 && nextYearYyyy !== currentYear')
+    template(v-if='!lastSong')
+      h3 Jaar {{currentYear.yyyy}} gestart
+      div
+        button(@click='deleteYear()')
+          | Jaar starten ongedaan maken
+
+    template(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy')
       h3 Volgend nummer
       div
         button(@click='startYear()')
@@ -132,6 +138,11 @@
       async startYear() {
         this.processing = true;
         await this.$axios.$post(`year/${this.nextYearYyyy}`)
+        this.processing = false;
+      },
+      async deleteYear() {
+        this.processing = true;
+        await this.$axios.$delete(`year/${this.currentYear.yyyy}`)
         this.processing = false;
       },
       async add(songId) {
