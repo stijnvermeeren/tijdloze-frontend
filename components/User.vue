@@ -1,7 +1,15 @@
 <template lang="pug">
   span.container
-    span(@click.ctrl='showInfo = !showInfo' :class='{isAdmin: user.isAdmin}') {{user.displayName}}
-    .info(v-if='showInfo')
+    span(
+      @click.ctrl='showInfo = !showInfo'
+      @click.alt='showInfo = !showInfo'
+      :class='{isAdmin: user.isAdmin}'
+      ref="label"
+    ) {{user.displayName}}
+    .info(
+      v-if='showInfo'
+      :style="{ top: contextPosition.top, left: contextPosition.left }"
+    )
       div Unieke ID: {{user.id}}
       div(v-if='user.isAdmin') Moderator
       div(v-if='currentUser.isAdmin && user.id !== currentUser.id && !user.isAdmin')
@@ -24,7 +32,11 @@
       return {
         showInfo: false,
         blocking: false,
-        isBlocked: !!this.user.isBlocked
+        isBlocked: !!this.user.isBlocked,
+        contextPosition: {
+          top: 0,
+          left: 0
+        }
       }
     },
     computed: {
@@ -50,6 +62,15 @@
         this.isBlocked = false;
         this.blocking = false;
       }
+    },
+    watch: {
+      showInfo() {
+        const boundingBox = this.$refs['label'].getBoundingClientRect()
+        this.contextPosition = {
+          top: boundingBox.bottom,
+          left: boundingBox.left + 20
+        }
+      }
     }
   }
 </script>
@@ -58,11 +79,9 @@
   @import "~assets/globalStyles.less";
 
   span.container {
-    position: relative;
 
     div.info {
       position: absolute;
-      top: 1em;
       background-color: @inputBackgroundColor;
       border: 1px solid gray;
       border-radius: 4px;

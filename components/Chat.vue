@@ -8,7 +8,12 @@
         | .
       span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
       |
-      | Er zijn {{online.length}} aanwezigen in de chat #[span(v-if='!showAllOnline') (#[a(@click='showAllOnline = true') toon iedereen])].
+      | Er zijn {{online.length}} aanwezigen in de chat
+      span(v-if='!showAllOnline')
+        |  (
+        a(@click='showAllOnline = true') toon iedereen
+        | )
+      | .
     .online(v-if='showAllOnline')
       | Online
       |
