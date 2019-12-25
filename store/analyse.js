@@ -327,5 +327,21 @@ export default [
     `Ondersteund door een grote mediacampagne is [Africa] van [*Toto] de hoogste nieuwkomer op plaats 37. Een grotere verrassing is het andere nieuwe nummer in de top 50: [Society] van [*Eddie Vedder]. Daarmee staat de zanger van [Pearl Jam] nu ook als solo-artiest in de Tijdloze.`,
     `[*Fleetwood Mac] staat voor het eerst met drie nummers in de Tijdloze, [*Arctic Monkeys] zelfs met vier nummers. Voor [*dEUS] gaat het in de omgekeerde richting: in vier jaar tijd hebben de Belgen vier Tijdloze nummers verloren, alleen [Instant Street] blijft nog in de lijst. De [*Rolling Stones] verliezen dit jaar in een klap twee nummers die al in elke Tijdloze stonden: [Sympathy for the Devil] en [Angie]. Met Angie is verdwijnt voor het eerst een ex-nummer één uit de lijst. Met [I Want You] verliest de Tijdloze dit jaar nog een derde nummer dat tot nu toe in elke editie stond. Ook voor [R.E.M.] en de [Smashing Pumpkins] is er een einde gekomen aan meer dan 20 jaar aanwezigheid in de Tijdloze.`
     ]
+  },
+  {
+    yyyy: 2018,
+    analyse: [
+      `[Black] van [Pearl Jam] staat voor het vierde jaar op rij op 1 in De Tijdloze. [Queen] staat met [Bohemian Rhapsody] op 2, dit nummer stond nooit hoger in de lijst. [Smells Like Teen Spirit] van [Nirvana] blijft staan op 3 en vervolledigt zo de top 3.
+[Pink Floyd] doet het goed in de top 10: [Shine on You Crazy Diamond] stijgt naar 8 en [Wish You Were Here] klimt naar plaats 4; beide nummers stonden nog nooit zo hoog in De Tijdloze.`,
+      `[Child in Time] van [Deep Purple] staat op 10, nooit eerder stond dit nummer zo laag. [Sultans of Swing] van [Dire Straits] staat dan weer op 9 en bereikt zo zijn hoogste positie sinds 1992.`,
+      `[The Chain] van [*Fleetwood Mac] springt van 81 naar 14 en is zo de sterkste stijger in de Tijdloze sinds [Hallelujah;Jeff Buckley] van [Jeff Buckley] in 2000.`,
+      `De oproep om meer vrouwen in de Tijdloze te stemmen, heeft gewerkt. Van de twaalf nieuwe nummers en re-entries werden er acht door een vrouw gezongen. Zoveel vrouwenstemmen als dit jaar stonden er nog nooit in de Tijdloze.`,
+      `[*Aretha Franklin] heeft met [Respect] op plek 25 de hoogste nieuwkomer in de Tijdloze sinds 1997. Ook een tweede nummer van haar, [I Say a Little Prayer], komt nieuw in de Tijdloze. Nog twee andere vrouwen komen nieuw binnen met nummers uit de jaren '60: Janis Joplin met haar band [*Big Brother and the Holding Company] ([Piece of My Heart]) en [*Nina Simone] ([Feeling Good]). Sinds 2000 stonden er niet meer zoveel nummers uit de jaren '60 in de Tijdloze.`,
+      `[Back to Black] van [*Amy Winehouse] op positie 30 is de hoogste re-entry ooit in de Tijdloze.`,
+      `Nog meer nieuwe vrouwen: na het overlijden van Dolores O'Riordan van [*Cranberries] dit jaar komt [Zombie] opnieuw binnen in de lijst. Met [Everywhere] (gezongen door Christine McVie) krijgt [*Fleetwood Mac] een vierde notering in de Tijdloze. En [Our Darkness] van [*Anne Clark] stond in de extra-lange lijst van 1999 reeds op positie 150, dit jaar staat het nummer voor het eerst echt in de top 100.`,
+      `[Under Pressure] van [*Queen] en [*David Bowie] komt nieuw binnen op 93, onder andere dankzij het succes van de nieuwe Queen-film. Op dit moment wordt dit enkel als een nummer van Queen geteld op deze website, want het is technisch nog niet mogelijk om eenzelfde nummer met twee verschillende artiesten te verbinden.`,
+      `2018 is geen goed jaar voor [*Radiohead]: [Street Spirit (Fade Out)] valt uit de lijst, ook hun overige drie noteringen krijgen klappen. [Creep] stond ooit op 3 maar staat nu op 41, de laagste notering sinds 1994.`,
+      `Twaalf platen staan niet meer in de Tijdloze in vergelijking met vorig jaar. Opvallende exit's zijn [Paranoid], [Under the Bridge] en [Street Spirit (Fade Out)], die respectievelijk 27, 26 en 22 jaar onafgebroken in de lijst stonden.`
+    ]
   }
 ]

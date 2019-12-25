@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h2 "Interessante feiten" 2018
+    h2 "Interessante feiten" {{currentYear.yyyy}}
     div
       button(@click='refresh()', :disabled='refreshing') Opnieuw laden
 
@@ -30,6 +30,9 @@
     computed: {
       analysePreview() {
         return this.analyse.split(/\r?\n/);
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       }
     },
     methods: {
@@ -38,26 +41,28 @@
         const data = {
           text: this.analyse
         };
-        await this.$axios.$post(`text/analyse2018`, data);
+        await this.$axios.$post(`text/analysis_${this.currentYear.yyyy}`, data);
         this.saving = false;
       },
       async refresh() {
         this.refreshing = true;
-        const response = await this.$axios.$get(`text/analyse2018`);
+        const response = await this.$axios.$get(`text/analysis_${this.currentYear.yyyy}`);
         this.analyse = response.value;
         this.refreshing = false;
       }
     },
-    async asyncData({ params, app }) {
-      const response = await app.$axios.$get(`text/analyse2018`);
+    async asyncData({ params, app, store }) {
+      const response = await app.$axios.$get(`text/analysis_${store.getters.currentYear.yyyy}`);
       return {
         analyse: response.value
       };
     },
     middleware: 'admin',
-    head: {
-      title: 'Admin: Analyse 2018'
-    }
+    head() {
+      return {
+        title: `Admin: interessante feiten ${this.currentYear.yyyy}`
+      }
+    },
   }
 </script>
 

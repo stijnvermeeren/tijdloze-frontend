@@ -74,11 +74,11 @@
             td.releaseYear
               | {{song.album.releaseYear}}
 
-    div(v-if='analyse')
+    div(v-if='analysis')
       h3 Interessante feiten
-      .analyse
+      .analysis
         ul
-          li(v-for='text in analyse')
+          li(v-for='text in analysis')
             tijdloze-links(:text='text')
 </template>
 
@@ -121,13 +121,13 @@
           return [];
         }
       },
-      analyse() {
+      analysis() {
         const item = analyse.find(item => item.yyyy === this.year.yyyy);
         if (item) {
           return item.analyse;
         } else {
-          if (this.year.yyyy === 2018) {
-            return this.analyse2018.split(/\r?\n/);
+          if (this.year.yyyy === this.$store.getters.currentYear.yyyy && this.analysisCurrentYear) {
+            return this.analysisCurrentYear.split(/\r?\n/);
           } else {
             return null;
           }
@@ -157,11 +157,11 @@
         );
       }
     },
-    async asyncData({ params, app }) {
-      if (params.yyyy === '2018') {
-        const analyse2018 = await app.$axios.$get('text/analyse2018');
+    async asyncData({ params, app, store }) {
+      if (params.yyyy === store.getters.currentYear.yyyy.toString()) {
+        const analysisCurrentYearResponse = await app.$axios.$get(`text/analysis_${params.yyyy}`);
         return {
-          analyse2018: analyse2018 ? analyse2018.value : ''
+          analysisCurrentYear: analysisCurrentYearResponse ? analysisCurrentYearResponse.value : ''
         }
       }
     },
@@ -177,7 +177,7 @@
 </script>
 
 <style lang="less" scoped>
-  div.analyse {
+  div.analysis {
     font-size: 14px;
   }
 
