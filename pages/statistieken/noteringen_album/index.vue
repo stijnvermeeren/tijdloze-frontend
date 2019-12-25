@@ -13,8 +13,10 @@
           td.r {{position}}
           td.l
             tijdloze-album(:album='entry.album')
-              | (
-              tijdloze-artist(:artist='entry.album.artist') )
+            |
+            | (
+            tijdloze-artist(:artist='entry.album.artist')
+            | )
           td {{entry.count}}
 </template>
 

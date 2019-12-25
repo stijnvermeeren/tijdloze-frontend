@@ -20,7 +20,7 @@
               tijdloze-position(:song='song' :year='year.previous()')
             td.r
               tijdloze-position-change(:song='song' :year='year')
-                tijdloze-position(:song='song' :year='year')
+              tijdloze-position(:song='song' :year='year')
             td.n(v-if='year.next()')
               tijdloze-position(:song='song' :year='year.next()')
             td.a

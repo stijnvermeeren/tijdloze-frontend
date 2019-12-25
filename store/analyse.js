@@ -331,8 +331,8 @@ export default [
   {
     yyyy: 2018,
     analyse: [
-      `[Black] van [Pearl Jam] staat voor het vierde jaar op rij op 1 in De Tijdloze. [Queen] staat met [Bohemian Rhapsody] op 2, dit nummer stond nooit hoger in de lijst. [Smells Like Teen Spirit] van [Nirvana] blijft staan op 3 en vervolledigt zo de top 3.
-[Pink Floyd] doet het goed in de top 10: [Shine on You Crazy Diamond] stijgt naar 8 en [Wish You Were Here] klimt naar plaats 4; beide nummers stonden nog nooit zo hoog in De Tijdloze.`,
+      `[Black] van [Pearl Jam] staat voor het vierde jaar op rij op 1 in De Tijdloze. [Queen] staat met [Bohemian Rhapsody] op 2, dit nummer stond nooit hoger in de lijst. [Smells Like Teen Spirit] van [Nirvana] blijft staan op 3 en vervolledigt zo de top 3.`,
+      `[Pink Floyd] doet het goed in de top 10: [Shine on You Crazy Diamond] stijgt naar 8 en [Wish You Were Here] klimt naar plaats 4; beide nummers stonden nog nooit zo hoog in De Tijdloze.`,
       `[Child in Time] van [Deep Purple] staat op 10, nooit eerder stond dit nummer zo laag. [Sultans of Swing] van [Dire Straits] staat dan weer op 9 en bereikt zo zijn hoogste positie sinds 1992.`,
       `[The Chain] van [*Fleetwood Mac] springt van 81 naar 14 en is zo de sterkste stijger in de Tijdloze sinds [Hallelujah;Jeff Buckley] van [Jeff Buckley] in 2000.`,
       `De oproep om meer vrouwen in de Tijdloze te stemmen, heeft gewerkt. Van de twaalf nieuwe nummers en re-entries werden er acht door een vrouw gezongen. Zoveel vrouwenstemmen als dit jaar stonden er nog nooit in de Tijdloze.`,
@@ -340,6 +340,7 @@ export default [
       `[Back to Black] van [*Amy Winehouse] op positie 30 is de hoogste re-entry ooit in de Tijdloze.`,
       `Nog meer nieuwe vrouwen: na het overlijden van Dolores O'Riordan van [*Cranberries] dit jaar komt [Zombie] opnieuw binnen in de lijst. Met [Everywhere] (gezongen door Christine McVie) krijgt [*Fleetwood Mac] een vierde notering in de Tijdloze. En [Our Darkness] van [*Anne Clark] stond in de extra-lange lijst van 1999 reeds op positie 150, dit jaar staat het nummer voor het eerst echt in de top 100.`,
       `[Under Pressure] van [*Queen] en [*David Bowie] komt nieuw binnen op 93, onder andere dankzij het succes van de nieuwe Queen-film. Op dit moment wordt dit enkel als een nummer van Queen geteld op deze website, want het is technisch nog niet mogelijk om eenzelfde nummer met twee verschillende artiesten te verbinden.`,
+      `[The Sound Of Silence;Disturbed] van [*Disturbed] komt nieuw binnen op 94. Dit is een cover van [The Sound of Silence;Simon & Garfunkel] van [Simon & Garfunkel] dat in de beginjaren van de Tijdloze ook reeds in de lijst stond.`,
       `2018 is geen goed jaar voor [*Radiohead]: [Street Spirit (Fade Out)] valt uit de lijst, ook hun overige drie noteringen krijgen klappen. [Creep] stond ooit op 3 maar staat nu op 41, de laagste notering sinds 1994.`,
       `Twaalf platen staan niet meer in de Tijdloze in vergelijking met vorig jaar. Opvallende exit's zijn [Paranoid], [Under the Bridge] en [Street Spirit (Fade Out)], die respectievelijk 27, 26 en 22 jaar onafgebroken in de lijst stonden.`
     ]

@@ -1,10 +1,10 @@
 <template lang="pug">
   div
     tijdloze-ages-graph
-      .legende
-        ul
-          li
-            | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
+    .legende
+      ul
+        li
+          | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
 </template>
 
 <script>

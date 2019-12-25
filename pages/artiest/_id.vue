@@ -7,7 +7,7 @@
         tr
           th Land
           td
-            tijdloze-country-icon(:country='country')  {{country.name}}
+            tijdloze-country-icon(:country='country' :include-name="true")
         tr
           th In de Tijdloze
           td

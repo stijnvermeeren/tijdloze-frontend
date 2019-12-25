@@ -1,11 +1,20 @@
 <template lang="pug">
   .pager
-    | Pagina {{page}} van {{pages}} -&ensp;
-    nuxt-link(v-if='page > 1' :to='`/reacties`') eerste
-    | &ensp;
-    nuxt-link(v-if='page > 1' :to='`/reacties?page=${page - 1}`') vorige
-    | &ensp;
-    nuxt-link(v-if='page < pages' :to='`/reacties?page=${page + 1}`') volgende
+    | Pagina {{page}} van {{pages}}
+    template(v-if='page > 1')
+      |
+      | -
+      |
+      nuxt-link( :to='`/reacties`') eerste
+      |
+      | -
+      |
+      nuxt-link(:to='`/reacties?page=${page - 1}`') vorige
+    template(v-if='page < pages')
+      |
+      | -
+      |
+      nuxt-link(:to='`/reacties?page=${page + 1}`') volgende
 </template>
 
 <script>

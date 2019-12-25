@@ -11,7 +11,9 @@
         tr
           th Origineel op album
           td
-            tijdloze-album(:album='song.album')  ({{ song.album.releaseYear }})
+            tijdloze-album(:album='song.album')
+            |
+            | ({{ song.album.releaseYear }})
         tr(:class='{unimportant: !song.probablyInList(currentYear)}')
           th In de Tijdloze
           td

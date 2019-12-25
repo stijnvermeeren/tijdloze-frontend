@@ -11,7 +11,7 @@
       p
         tijdloze-links(text='Verder is het opvallend dat de gemiddelde leeftijd van de top 20 van 1994 tot 2001 <em>lager</em> was dan het algemene gemiddelde. Dit was immers de tijd waarin nummers als [Smells Like Teen Spirit], [Alive], [Losing My Religion], [Zombie], [Disarm] en [Creep] al heel snel furore maakten in de Tijdloze. De gemiddelde leeftijd in de onderste helft van de Tijdloze is dan weer iets groter de tegenwoordig, door de vele net-niet-vergeten klassiekers die daar blijven hangen.')
       p
-        tijdloze-links(text='Het oudste nummer, absoluut bekeken, dat ooit in de Tijdloze stond, was [Jailhouse Rock] uit 1957. Dit nummer stond echter enkel in [1987] in de tijdloze, en was toen dus 30 jaar oud. Het oudste nummer van de Tijdloze van 2016, [Paint It Black], was maar liefst 50 jaar oud, een record voor de Tijdloze.')
+        tijdloze-links(text='Het oudste nummer, absoluut bekeken, dat ooit in de Tijdloze stond, was [Jailhouse Rock] uit 1957. Dit nummer stond echter enkel in [1987] in de Tijdloze, en was toen dus 30 jaar oud. Het oudste nummer van de Tijdloze van [2018], [Feeling Good] van [Nina Simone] uit 1965, was maar liefst 54 jaar oud, een record voor de Tijdloze.')
 
     tijdloze-tabs(:tabs="[\
       { to: '/statistieken/leeftijden', title: 'Statistieken' },\

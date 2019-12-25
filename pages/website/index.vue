@@ -7,7 +7,7 @@
     p De Tijdloze Website is volledig #[strong onafhankelijk van Studio Brussel] en de #[a(href='http://vrt.be') VRT]. De Tijdloze Website heeft niets te maken met de samenstelling of het uitzenden van de Tijdloze. De Tijdloze Website dankt wel Studio Brussel voor de hulp met het vervolledigen van de database van deze website.
 
     h3 Webmaster
-    p De Tijdloze Website wordt beheerd door [strong Stijn Vermeeren]. U kunt hem een berichtje sturen via het #[nuxt-link(to='/website/contact') contactformulier]. Suggesties of verbeteringen voor de website worden ten zeerste geapprecieerd. U kan ook eens een kijkje nemen op de #[a(href='http://www.stijnvermeeren.be' title='Persoonlijke website Stijn Vermeeren') persoonlijke website] van webmaster Stijn.
+    p De Tijdloze Website wordt beheerd door #[strong Stijn Vermeeren]. U kunt hem een berichtje sturen via het #[nuxt-link(to='/website/contact') contactformulier]. Suggesties of verbeteringen voor de website worden ten zeerste geapprecieerd. U kan ook eens een kijkje nemen op de #[a(href='http://www.stijnvermeeren.be' title='Persoonlijke website Stijn Vermeeren') persoonlijke website] van webmaster Stijn.
     p Sinds 2014 krijgt Stijn hulp van #[strong Wouter #[em "Link"] Verbeke] bij het onderhouden en updaten van de website tijdens de uitzending van de Tijdloze.
 
     h3 Technische details
