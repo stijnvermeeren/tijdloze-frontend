@@ -4,7 +4,7 @@
     #toelichting(style='margin-bottom: 1.5em;')
       p
         | Welke nummers zijn nog op komst in de Tijdloze van dit jaar? De nummers zijn geordend volgens de posities van vorig jaar.
-      p(v-if='exitsUnknown') Opgelet, de exits van dit jaar zijn nog niet bekend!
+      p(v-if='!exitsKnown') Opgelet, de exits van dit jaar zijn nog niet bekend!
     table.lijst.perVijf
       tbody
         tr
@@ -39,8 +39,8 @@
       year() {
         return this.$store.getters.currentYear;
       },
-      exitsUnknown() {
-        return !this.$store.state.exitSongIds.length;
+      exitsKnown() {
+        return this.$store.state.exitSongIds.length;
       },
       upcomingSongs() {
         return _.sortBy(

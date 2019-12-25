@@ -6,6 +6,10 @@
         | De #[strong Tijdloze van {{year.yyyy}}] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
+      template(v-else)
+        | De #[strong Tijdloze] wordt uitgezonden door #[a(href='https://stubru.be/') Studio Brussel] op oudejaardsdag van 10:00 tot 20:00.
+        br
+        | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
     h3
       | De Tijdloze van {{year.yyyy}}
     table.lijst
@@ -34,7 +38,12 @@
           td.releaseYear
             | {{song.album.releaseYear}}
     .link
-      nuxt-link(:to='`lijst/${year.yyyy}`') Bekijk de volledige lijst van {{year.yyyy}}
+      div
+        nuxt-link(:to='`lijst/${year.yyyy}`') De volledige lijst van {{year.yyyy}}
+      div
+        nuxt-link(v-if='listInProgress' to='lijst/opkomst') Nog op komst...
+      div
+        nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }') Uit de lijst verdwenen...
 
     template(v-if="mode === 'chat'")
       h3 Chatbox
@@ -70,6 +79,9 @@
       },
       top5() {
         return _.take(this.$store.getters.list(this.year), 5);
+      },
+      exitsKnown() {
+        return this.$store.state.exitSongIds.length;
       },
       year() {
         return this.$store.getters.currentYear;
@@ -119,6 +131,10 @@
 
   div.link {
     text-align: center;
+    div {
+      display: inline-block;
+      margin: 0 20px;
+    }
   }
 
   .releaseYear {

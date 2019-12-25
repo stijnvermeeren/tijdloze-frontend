@@ -25,6 +25,8 @@
               span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-artist(:artist='biggestDown.artist')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
               span(v-else) /
 
+    div(id="exits")
+
     div(v-if='exits.length')
       h3 Exits
       table.lijst.perVijf
