@@ -5,12 +5,14 @@
     p.fout(v-if='error') Probleem met het verzenden van je bericht! {{error}}
     div(v-if='success')
       p
-        Bedankt voor je mail. #[a(@click='reset()') Verzend een nieuw bericht].
+        | Bedankt voor je mail. #[a(@click='reset()') Verzend een nieuw bericht].
       h3 Verzonden bericht:
       h4 Van:
       p
         | {{name}}
-        span(v-if='email.trim()') ({{email}})
+        span(v-if='email.trim()')
+        |
+        | ({{email}})
       h4 Bericht:
       p.message {{message}}
     div(v-if='inProgress')
