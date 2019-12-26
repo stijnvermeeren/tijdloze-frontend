@@ -105,7 +105,7 @@
       },
       artistValid() {
         if (this.artistNew) {
-          return this.artistDetails.name && this.artistDetails.countryId;
+          return this.artistDetails.name;
         } else {
           return !! this.artistId;
         }
@@ -118,7 +118,7 @@
         }
       },
       songValid() {
-        return this.songDetails.title && this.songDetails.languageId && this.songDetails.leadVocals;
+        return this.songDetails.title;
       }
     },
     watch: {

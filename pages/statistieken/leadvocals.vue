@@ -52,14 +52,16 @@
         });
 
         this.$store.getters.songs.forEach(song => {
-          this.years.forEach(year => {
-            if (song.position(year)) {
-              dataPoints[song.leadVocals].push({
-                song: song,
-                year: year
-              });
-            }
-          });
+          if (song.leadVocals) {
+            this.years.forEach(year => {
+              if (song.position(year)) {
+                dataPoints[song.leadVocals].push({
+                  song: song,
+                  year: year
+                });
+              }
+            });
+          }
         });
 
         return result;

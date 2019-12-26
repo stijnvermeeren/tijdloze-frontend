@@ -59,7 +59,7 @@
         return this.$store.getters['entities/artists']().find(this.fullArtistData.id);
       },
       disabled() {
-        return this.processing || !this.fullArtistData.name || !this.fullArtistData.countryId
+        return this.processing || !this.fullArtistData.name
       }
     },
     methods: {

@@ -4,7 +4,7 @@
       h2 {{artist.fullName}}
     table.info
       tbody
-        tr
+        tr(v-if="country")
           th Land
           td
             tijdloze-country-icon(:country='country' :include-name="true")

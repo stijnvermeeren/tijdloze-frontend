@@ -82,7 +82,7 @@
       },
       disabled() {
         return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||
-          !this.fullSongData.albumId || !this.fullSongData.languageId || !this.fullSongData.leadVocals
+          !this.fullSongData.albumId
       }
     },
     watch: {

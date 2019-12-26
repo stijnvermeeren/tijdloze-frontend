@@ -2,6 +2,8 @@
   div
     div
       select(:value='value' @input='update()' ref='input')
+        option(value='')
+          | (Ander land)
         option(v-for='country in countries' :key='country.id' :value='country.id')
           | {{country.name}}
 </template>

@@ -59,14 +59,16 @@
         });
 
         this.$store.getters.songs.forEach(song => {
-          this.years.forEach(year => {
-            if (song.position(year)) {
-              dataPoints[song.languageId].push({
-                song: song,
-                year: year
-              });
-            }
-          });
+          if (song.languageId) {
+            this.years.forEach(year => {
+              if (song.position(year)) {
+                dataPoints[song.languageId].push({
+                  song: song,
+                  year: year
+                });
+              }
+            });
+          }
         });
 
         return result;

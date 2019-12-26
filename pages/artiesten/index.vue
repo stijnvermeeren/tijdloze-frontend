@@ -11,7 +11,7 @@
           td
             tijdloze-artist(:artist='artist')
           td
-            tijdloze-country-icon(:country='countries[artist.countryId]')
+            tijdloze-country-icon(v-if="artist.countryId" :country='countries[artist.countryId]')
           td.s.wrap
             ul(v-if='artist.songs.length')
               li(v-for='song in artist.songs')

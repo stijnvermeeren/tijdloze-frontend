@@ -2,6 +2,8 @@
   div
     div
       select(:value='value' @input='update()' ref='input')
+        option(value='')
+          | (Andere taal)
         option(v-for='language in languages' :key='language.id' :value='language.id')
           | {{language.name}}
 </template>

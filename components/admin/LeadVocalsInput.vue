@@ -2,6 +2,8 @@
   div
     div
       select(:value='value' ref='input' @input='update()')
+        option(value='')
+          | (Niet gedefinieerd)
         option(v-for='gender in vocalsGenders' :key='gender.id' :value='gender.id')
           | {{gender.name}}
 </template>
