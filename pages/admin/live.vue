@@ -7,7 +7,12 @@
       div
         strong Positie {{lastPosition}} in {{currentYear.yyyy}}:
       div
-        | {{ lastSong.artist.fullName }} - {{ lastSong.title }}
+        | {{ lastSong.artist.fullName }}
+        template(v-if='lastSong.secondArtist')
+          |
+          | en {{lastSong.secondArtist.fullName}}
+        |
+        | - {{ lastSong.title }}
         |
         button(@click='undo()', :disabled='processing') Ongedaan maken
 

@@ -24,7 +24,7 @@
             td.n(v-if='year.next()')
               tijdloze-position(:song='song' :year='year.next()')
             td.a
-              tijdloze-artist(:artist='song.artist')
+              tijdloze-song-artist(:song='song')
             td
               tijdloze-song(:song='song')
             td.releaseYear

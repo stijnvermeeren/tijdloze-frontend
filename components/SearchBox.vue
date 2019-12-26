@@ -8,10 +8,14 @@
           | {{result.item.fullName}}
         div(v-if="result.type === 'song'")
           | {{result.item.title}}
-          span.info(v-if='songsYear && result.item.position(songsYear)')
-            | (nummer van #[span.artiest {{result.item.artist.fullName}}]; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}})
-          span.info(v-else)
-            | (nummer van #[span.artiest {{result.item.artist.fullName}}])
+          span.info
+            | (nummer van #[span.artiest {{result.item.artist.fullName}}]
+            template(v-if='result.item.secondArtist')
+              |
+              | en #[span.artiest {{result.item.secondArtist.fullName}}]
+            template(v-if='songsYear && result.item.position(songsYear)')
+              | ; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}}
+            | )
         div(v-if="result.type === 'album'")
           | {{result.item.title}}
           span.info
@@ -67,7 +71,7 @@
         );
 
         const songs = this.search(
-          this.$store.getters['entities/songs/query']().with('artist').all().filter(this.songFilter),
+          this.$store.getters['entities/songs/query']().with('artist').with('secondArtist').all().filter(this.songFilter),
           song => `${song.title} ${song.artist.fullName}`,
           'song'
         );

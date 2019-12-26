@@ -2,6 +2,7 @@ import Vue from 'vue'
 import SongLink from '../components/SongLink.vue'
 import AlbumLink from '../components/AlbumLink.vue'
 import ArtistLink from '../components/ArtistLink.vue'
+import SongArtistLink from '../components/SongArtistLink.vue'
 import CountryIcon from '../components/CountryIcon.vue'
 import YearLink from '../components/YearLink.vue'
 import YearLinkShort from '../components/YearLinkShort.vue'
@@ -17,6 +18,7 @@ import PositionChange from '../components/PositionChange.vue'
 // Components
 Vue.component("tijdloze-album", AlbumLink);
 Vue.component("tijdloze-artist", ArtistLink);
+Vue.component("tijdloze-song-artist", SongArtistLink);
 Vue.component("tijdloze-country-icon", CountryIcon);
 Vue.component("tijdloze-song", SongLink);
 Vue.component("tijdloze-year", YearLink);

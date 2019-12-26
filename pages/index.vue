@@ -32,7 +32,7 @@
             tijdloze-position-change(:song='song' :year='year')
             tijdloze-position(:song='song' :year='year')
           td.a
-            tijdloze-artist(:artist='song.artist')
+            tijdloze-song-artist(:song='song')
           td
             tijdloze-song(:song='song')
           td.releaseYear

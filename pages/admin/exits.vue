@@ -15,7 +15,12 @@
       div
         ul
           li(v-for='song in exits', :key='song.id')
-            | {{song.artist.fullName}} - {{song.title}}
+            | {{song.artist.fullName}}
+            template(v-if='song.secondArtist')
+              |
+              | en {{song.secondArtist.fullName}}
+            |
+            | - {{song.title}}
             button(@click='unmarkExit(song)') Terugzetten
         div
           button(@click='unmarkAll()') Alle exits terugzetten
@@ -34,7 +39,7 @@
       },
       exits() {
         return this.exitSongIds.map(id => {
-          return Song.query().with('artist').find(id)
+          return Song.query().with('artist').with('secondArtist').find(id)
         });
       },
       previousYear() {

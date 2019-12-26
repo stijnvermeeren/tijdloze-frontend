@@ -25,7 +25,7 @@
             tijdloze-position-change(:song='song' :year='year.previous()')
             tijdloze-position(:song='song' :year='year.previous()')
           td.a
-            tijdloze-artist(:artist='song.artist')
+            tijdloze-song-artist(:song='song')
           td
             tijdloze-song(:song='song')
 

@@ -7,7 +7,7 @@
         tr.important
           th Nummer van
           td
-            tijdloze-artist(:artist='song.artist')
+            tijdloze-song-artist(:song='song')
         tr
           th Origineel op album
           td

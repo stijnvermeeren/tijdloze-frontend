@@ -72,7 +72,7 @@
           td.r
             | {{ position }}
           td.a
-            tijdloze-artist(:artist='entry.song.artist')
+            tijdloze-song-artist(:song='entry.song')
           td
             tijdloze-song(:song='entry.song')
           td {{ Math.round(entry.points * 10) / 10 }}

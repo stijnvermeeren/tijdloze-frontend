@@ -14,7 +14,7 @@
         td
           tijdloze-year(:year='entry.year')
         td.a
-          tijdloze-artist(:artist='entry.song.artist')
+          tijdloze-song-artist(:song='entry.song')
         td
           tijdloze-song(:song='entry.song')
         td {{entry.oldPosition - entry.newPosition}} posities

@@ -15,7 +15,7 @@
         td.i(v-if='topEntry(year)')
           | {{topEntry(year).oldPosition}} &rarr; {{topEntry(year).newPosition}}
         td.a(v-if='topEntry(year)')
-          tijdloze-artist(:artist='topEntry(year).song.artist')
+          tijdloze-song-artist(:song='topEntry(year).song')
         td(v-if='topEntry(year)')
           tijdloze-song(:song='topEntry(year).song')
         td.l(v-if='!topEntry(year)' colspan='4')

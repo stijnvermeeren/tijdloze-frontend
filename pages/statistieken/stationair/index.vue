@@ -15,7 +15,7 @@
               tr(v-for='entry in entriesPerYear(year)')
                 td {{entry.song.position(entry.year)}}
                 td.a
-                  tijdloze-artist(:artist='entry.song.artist')
+                  tijdloze-song-artist(:song='entry.song')
                 td
                   tijdloze-song(:song='entry.song')
           div(v-else) /

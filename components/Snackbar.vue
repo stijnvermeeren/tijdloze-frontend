@@ -3,7 +3,7 @@
     .header
       | Positie {{song.position(year)}} in de Tijdloze van #[tijdloze-year(:year='year')]
     .song
-      | #[tijdloze-artist(:artist='song.artist')] - #[tijdloze-song(:song='song')]
+      | #[tijdloze-song-artist(:song='song')] - #[tijdloze-song(:song='song')]
 </template>
 
 <script>

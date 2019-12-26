@@ -21,7 +21,7 @@
                 td.i
                   | {{entry.song.position(entry.years[0])}}
                 td.a
-                  tijdloze-artist(:artist='entry.song.artist')
+                  tijdloze-song-artist(:song='entry.song')
                 td
                   tijdloze-song(:song='entry.song')
 

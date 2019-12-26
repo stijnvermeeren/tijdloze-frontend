@@ -11,18 +11,28 @@
             th Hoogste nieuwkomer
             td
               span(v-if='highestNew')
-                | #[tijdloze-song(:song='highestNew')] - #[tijdloze-artist(:artist='highestNew.artist')] (#[tijdloze-position(:song='highestNew' :year='year')])
-                span(v-if='highestNew.isReEntry($store.getters.years, year)') (re-entry)
+                tijdloze-song(:song='highestNew')
+                |
+                | -
+                |
+                tijdloze-song-artist(:song='highestNew')
+                |
+                | (
+                tijdloze-position(:song='highestNew' :year='year')
+                | )
+                span(v-if='highestNew.isReEntry($store.getters.years, year)')
+                  |
+                  | (re-entry)
               span(v-else) /
           tr
             th Grootste stijger
             td
-              span(v-if='biggestUp') #[tijdloze-song(:song='biggestUp')] - #[tijdloze-artist(:artist='biggestUp.artist')] (#[tijdloze-position(:song='biggestUp' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestUp' :year='year')])
+              span(v-if='biggestUp') #[tijdloze-song(:song='biggestUp')] - #[tijdloze-song-artist(:song='biggestUp')] (#[tijdloze-position(:song='biggestUp' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestUp' :year='year')])
               span(v-else) /
           tr
             th Grootste daler
             td
-              span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-artist(:artist='biggestDown.artist')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
+              span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-song-artist(:song='biggestDown')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
               span(v-else) /
 
     div(id="exits")
@@ -44,7 +54,7 @@
             td.r
               tijdloze-position(:song='song' :year='year.previous()')
             td.a
-              tijdloze-artist(:artist='song.artist')
+              tijdloze-song-artist(:song='song')
             td
               tijdloze-song(:song='song')
             td.releaseYear
@@ -68,7 +78,7 @@
             td.r
               tijdloze-position(:song='song' :year='year')
             td.a
-              tijdloze-artist(:artist='song.artist')
+              tijdloze-song-artist(:song='song')
             td
               tijdloze-song(:song='song')
             td

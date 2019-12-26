@@ -10,7 +10,7 @@
           td.r
             | {{song.position(year)}}
           td
-            tijdloze-artist(:artist='song.artist')
+            tijdloze-song-artist(:song='song')
           td
             tijdloze-song(:song='song')
 </template>
