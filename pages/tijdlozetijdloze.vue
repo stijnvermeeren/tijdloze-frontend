@@ -185,12 +185,23 @@
         )
       },
       artistData() {
-        const data = _.values(_.groupBy(this.rawData, item => item.song.artistId)).map(items => {
+        const primaryScores = _.groupBy(this.rawData, item => item.song.artistId)
+        const secondaryScores = _.groupBy(
+          this.rawData.filter(item => item.song.secondArtistId),
+          item => item.song.secondArtistId
+        )
+
+        const data = this.$store.getters['entities/artists/query']().all().map(artist => {
+          const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
+          const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
+
+          const score = _.sum(primaryItems.concat(secondaryItems).map(item => item.points))
+
           return {
-            artist: _.first(items).song.artist,
-            points: _.sum(items.map(item => item.points))
+            artist: artist,
+            points: score
           }
-        });
+        }).filter(items => items.points > 0)
 
         return ranking(
           data.filter(item => item.points > 0),
