@@ -30,7 +30,7 @@
     div
       ul(v-if='album.songs')
         li(v-for='song in album.songs')
-          tijdloze-song(:song='song')
+          song-with-second-artist-link(:song='song')
 </template>
 
 <script>
@@ -38,9 +38,11 @@
   import Graph from '../../components/d3/Graph'
   import EntryCount from '../../components/EntryCount'
   import InCurrentList from '../../components/InCurrentList'
+  import SongWithSecondArtistLink from "../../components/SongWithSecondArtistLink";
 
   export default {
     components: {
+      SongWithSecondArtistLink,
       InCurrentList,
       EntryCount,
       Graph,
@@ -48,7 +50,11 @@
     },
     computed: {
       album() {
-        return this.$store.getters['entities/albums']().withAll().with('songs.album').find(this.fullAlbumData.id);
+        return this.$store.getters['entities/albums']()
+          .withAll()
+          .with('songs.album')
+          .with('songs.secondArtist')
+          .find(this.fullAlbumData.id);
       },
       currentYear() {
         return this.$store.getters.currentYear;

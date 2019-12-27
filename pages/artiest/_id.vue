@@ -37,7 +37,7 @@
           |  ({{album.releaseYear}})
           ul(v-if='album.songs')
             li(v-for='song in album.songs')
-              tijdloze-song(:song='song')
+              song-with-second-artist-link(:song='song')
 </template>
 
 <script>
@@ -47,9 +47,11 @@
   import EntryCount from '../../components/EntryCount'
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentList from '../../components/InCurrentList'
+  import SongWithSecondArtistLink from "../../components/SongWithSecondArtistLink";
 
   export default {
     components: {
+      SongWithSecondArtistLink,
       InCurrentList,
       MakeLinks,
       EntryCount,

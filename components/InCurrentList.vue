@@ -15,7 +15,7 @@
             position-change(:year='currentYear' :song='song')
             position(:year='currentYear' :song='song')
           td.song
-            song-link(:song='song')
+            song-with-second-artist-link(:song='song')
     div(v-else)
       | Geen nummers in de Tijdloze van #[year-link(:year='currentYear')].
 </template>
@@ -26,10 +26,11 @@
   import PositionChange from './PositionChange'
   import Position from './Position'
   import YearLink from './YearLink'
+  import SongWithSecondArtistLink from "./SongWithSecondArtistLink";
 
   export default {
     name: 'InCurrentList',
-    components: {YearLink, Position, PositionChange, SongLink},
+    components: {SongWithSecondArtistLink, YearLink, Position, PositionChange, SongLink},
     props: ['songs'],
     computed: {
       currentYear() {
