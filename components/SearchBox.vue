@@ -72,7 +72,13 @@
 
         const songs = this.search(
           this.$store.getters['entities/songs/query']().with('artist').with('secondArtist').all().filter(this.songFilter),
-          song => `${song.title} ${song.artist.fullName}`,
+          song => {
+            let matchData = `${song.title} ${song.artist.fullName}`;
+            if (song.secondArtist) {
+              matchData += ` ${song.secondArtist.fullName}`
+            }
+            return matchData
+          },
           'song'
         );
 
