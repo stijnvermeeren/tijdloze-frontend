@@ -11,7 +11,7 @@
         tr
           th In de Tijdloze
           td
-            in-current-list(:songs='artist.songs')
+            in-current-list(:songs='artist.allSongs' :artist='artist')
         tr.unimportant(v-if='links.length')
           th Externe links
           td
@@ -31,13 +31,13 @@
 
     h3 Tijdloze albums en nummers
     div
-      ul(v-if='artist.albums')
-        li(v-for='album in artist.albums')
+      ul(v-if='artist.allAlbums')
+        li(v-for='album in artist.allAlbums')
           tijdloze-album(:album='album')
           |  ({{album.releaseYear}})
           ul(v-if='album.songs')
             li(v-for='song in album.songs')
-              song-with-second-artist-link(:song='song')
+              song-with-second-artist-link(:song='song' :artist="artist")
 </template>
 
 <script>
@@ -60,7 +60,12 @@
     },
     computed: {
       artist() {
-        return this.$store.getters['entities/artists']().withAllRecursive(2).find(this.fullArtistData.id);
+        return this.$store.getters['entities/artists']()
+          .withAll()
+          .with('albums.songs')
+          .with('songs.album')
+          .with('secondarySongs.album.songs.artist')
+          .find(this.fullArtistData.id);
       },
       songs() {
         return _.sortBy(

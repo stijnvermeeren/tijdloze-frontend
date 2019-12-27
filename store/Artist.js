@@ -15,11 +15,20 @@ export default class Artist extends Model {
       countryId: this.attr(null),
 
       songs: this.hasMany(Song, 'artistId'),
+      secondarySongs: this.hasMany(Song, 'secondArtistId'),
       albums: this.hasMany(Album, 'artistId')
     };
   }
 
   get fullName() {
     return this.namePrefix ? `${this.namePrefix} ${this.name}` : this.name;
+  }
+
+  get allSongs() {
+    return this.songs.concat(this.secondarySongs);
+  }
+
+  get allAlbums() {
+    return this.albums.concat(this.secondarySongs.map(song => song.album));
   }
 }

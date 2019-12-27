@@ -1,11 +1,11 @@
 <template lang="pug">
   span
     song-link(:song="song")
-    template(v-if="song.secondArtist")
+    template(v-if="secondArtist")
       |
       | (met
       |
-      artist-link(:artist="song.secondArtist")
+      artist-link(:artist="secondArtist")
       | )
 </template>
 
@@ -15,7 +15,16 @@
 
   export default {
     components: {ArtistLink, SongLink},
-    props: ["song"]
+    props: ["song", "artist"],
+    computed: {
+      secondArtist() {
+        if (this.artist && this.song.secondArtistId && this.artist.id === this.song.secondArtistId) {
+          return this.song.artist
+        } else {
+          return this.song.secondArtist
+        }
+      }
+    }
   }
 </script>
 
