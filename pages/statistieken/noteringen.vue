@@ -17,7 +17,10 @@
         return this.$store.getters.years;
       },
       artists() {
-        return this.$store.getters['entities/artists']().with('songs').all();
+        return this.$store.getters['entities/artists']()
+          .with('songs')
+          .with('secondarySongs')
+          .all();
       }
     },
     head: {

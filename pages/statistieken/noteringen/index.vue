@@ -29,7 +29,7 @@
         const data = this.artists.map(artist => {
           return {
             artist: artist,
-            count: _.sum(artist.songs.map(song => song.listCount(this.years)))
+            count: _.sum(artist.allSongs.map(song => song.listCount(this.years)))
           };
         }).filter(({ count }) => count > 0);
         return ranking(

@@ -23,10 +23,10 @@
 
     h3 In de Tijdloze
     div
-      entry-count(:songs='artist.songs')
+      entry-count(:songs='artist.allSongs')
     graph(
-      v-if='artist.songs.find(song => song.listCount($store.getters.years) > 0)'
-      :songs='artist.songs'
+      v-if='artist.allSongs.find(song => song.listCount($store.getters.years) > 0)'
+      :songs='artist.allSongs'
     )
 
     h3 Tijdloze albums en nummers
@@ -64,6 +64,7 @@
           .withAll()
           .with('albums.songs')
           .with('songs.album')
+          .with('secondarySongs.artist')
           .with('secondarySongs.album.songs.artist')
           .find(this.fullArtistData.id);
       },

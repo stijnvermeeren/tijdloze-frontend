@@ -28,7 +28,7 @@
         const data = this.artists.map(artist => {
           return {
             artist: artist,
-            count: artist.songs.filter(song => {
+            count: artist.allSongs.filter(song => {
               return _.find(this.years, year => song.position(year))
             }).length
           };
