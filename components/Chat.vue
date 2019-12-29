@@ -213,13 +213,11 @@
               },
               onreconnect: e => {
                 // properly reconnect with a new ticket
-                console.log("onreconnect")
                 this.ws.close()
                 this.reconnect()
               },
               onmaximum: e => {},
               onclose: e => {
-                console.log("onclose")
                 this.connected = false
 
                 if (!this.closing) {
@@ -228,7 +226,6 @@
                 }
               },
               onerror: e => {
-                console.log("onerror")
                 this.error = true
               }
             });
