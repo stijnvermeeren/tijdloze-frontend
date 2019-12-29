@@ -57,6 +57,7 @@
         displayNames: {},
         connected: false,
         error: false,
+        closing: false,
         lastId: 0,
         message: '',
         showAllOnline: false,
@@ -194,34 +195,44 @@
         }
 
         this.$axios.$get('chat/ticket').then(ticketResponse => {
-          this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?ticket=${ticketResponse.ticket}`, {
-            timeout: 5e3,
-            maxAttempts: 1,
-            onopen: e => {
-              this.error = false
-              this.connected = true
-            },
-            onmessage: e => {
-              const data = JSON.parse(e.data)
-              if (data.message) {
-                this.addMessage(data)
-              } else {
-                this.loadOnline(data)
+          if (!this.closing) {
+            this.ws = new Sockette(`${config.WEBSOCKET_URI}chat/ws?ticket=${ticketResponse.ticket}`, {
+              timeout: 5e3,
+              maxAttempts: 1,
+              onopen: e => {
+                this.error = false
+                this.connected = true
+              },
+              onmessage: e => {
+                const data = JSON.parse(e.data)
+                if (data.message) {
+                  this.addMessage(data)
+                } else {
+                  this.loadOnline(data)
+                }
+              },
+              onreconnect: e => {
+                // properly reconnect with a new ticket
+                console.log("onreconnect")
+                this.ws.close()
+                this.reconnect()
+              },
+              onmaximum: e => {},
+              onclose: e => {
+                console.log("onclose")
+                this.connected = false
+
+                if (!this.closing) {
+                  // Unless we are leaving the page, try to reconnect after the websocket is closed
+                  this.reconnect()
+                }
+              },
+              onerror: e => {
+                console.log("onerror")
+                this.error = true
               }
-            },
-            onreconnect: e => {
-              // properly reconnect with a new ticket
-              this.ws.close()
-              this.reconnect()
-            },
-            onmaximum: e => {},
-            onclose: e => {
-              this.connected = false
-            },
-            onerror: e => {
-              this.error = true
-            }
-          });
+            });
+          }
         }).catch(error => {
           console.log("Unable to obtain ticket for chat.")
           this.error = true;
@@ -233,6 +244,7 @@
       this.reconnect()
     },
     destroyed: function() {
+      this.closing = true
       this.ws.close()
     }
   }
