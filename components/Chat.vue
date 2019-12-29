@@ -30,9 +30,9 @@
             | : {{message.message}}
           .systemMessage(v-else)
             | {{message.message}}
-        div(v-if='error')
+        div(v-if='error' class="systemMessage")
           | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
-        div(v-else-if='!connected')
+        div(v-else-if='!connected' class="systemMessage")
           | Even geduld terwijl we je verbinden met de chat...
     .input
       input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
@@ -296,13 +296,13 @@
     div.messages {
       display: flex;
       overflow: auto;
-
       flex: 1;
-      padding: 4px 8px;
+      padding: 4px 0;
 
       div.messagesContainer {
         display: flex;
         flex-flow: column;
+        width: 100%;
         /* justify-content: flex-end; DO NOT USE: breaks scrolling */
 
         > :first-child {
@@ -310,8 +310,14 @@
           /* use !important to prevent breakage from child margin settings */
         }
 
-        span.userName {
-          font-weight: bold;
+        div {
+          padding: 2px 10px 2px 20px;
+          text-indent: -10px;
+
+          span.userName {
+            font-weight: bold;
+          }
+
         }
 
         div.isAdmin {
@@ -325,6 +331,7 @@
         }
 
         div.systemMessage {
+          color: #777777;
           font-style: italic;
         }
       }
