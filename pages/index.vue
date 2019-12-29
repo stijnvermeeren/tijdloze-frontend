@@ -101,7 +101,7 @@
       let latestPoll = undefined;
       if (store.getters.listInProgress) {
         const poll = await app.$axios.$get('poll/latest');
-        if (poll.year === 2018) {
+        if (poll.year === store.getters.currentYear.yyyy) {
           latestPoll = poll;
         }
       }

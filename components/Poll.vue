@@ -16,7 +16,7 @@
         button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
       div(v-else)
         | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
-    .voteCount {{voteCount}} stemmen
+    .voteCount {{voteCount}} {{ voteCount === 1 ? 'stem' : 'stemmen' }}
     div(v-if='isAdmin')
       .isDeleted(v-if='isDeleted')
         | Poll is verborgen op de website.
