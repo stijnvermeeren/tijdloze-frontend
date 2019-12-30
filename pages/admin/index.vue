@@ -11,8 +11,6 @@
         nuxt-link(to='/admin/polls') Polls
       li
         nuxt-link(to='/admin/analysis') Interessante feiten
-      li
-        nuxt-link(to='/admin/chat') Chat / reacties mode
     h3 Database
     ul
       li
@@ -22,6 +20,12 @@
     ul
       li
         nuxt-link(to='admin/users') User admin
+    h3 Opties
+    ul
+      li
+        nuxt-link(to='/admin/chat') Chat / reacties mode
+      li
+        nuxt-link(to='/admin/intro') Homepage intro
 </template>
 
 <script>

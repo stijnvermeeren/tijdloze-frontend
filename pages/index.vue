@@ -2,11 +2,11 @@
   div
     h2 De Tijdloze Website
     .description
-      template(v-if='listInProgress')
+      template(v-if="introMode === 'during'")
         | De #[strong Tijdloze van {{year.yyyy}}] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
-      template(v-else)
+      template(v-if="introMode === 'pre'")
         | De #[strong Tijdloze] wordt uitgezonden door #[a(href='https://stubru.be/') Studio Brussel] op oudejaardsdag van 10:00 tot 20:00.
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
@@ -90,6 +90,7 @@
     },
     async asyncData({ params, app, store }) {
       const modeResponse = await app.$axios.$get(`text/mode`);
+      const introResponse = await app.$axios.$get(`text/intro`);
 
       let comments = [];
       if (modeResponse.value === 'comments') {
@@ -107,6 +108,7 @@
       return {
         poll: latestPoll,
         mode: modeResponse.value,
+        introMode: introResponse.value,
         comments: _.take(comments, 5)
       };
     },
