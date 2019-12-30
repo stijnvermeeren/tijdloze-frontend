@@ -3,7 +3,7 @@
     h2 Reageer op de Tijdloze
     comments-pager(:page='page' :pages='pages ')
     template(v-if='page === 1')
-      template(v-if='listInProgress')
+      template(v-if="mode !== 'comments'")
         .message
           | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
       template(v-else)
@@ -55,9 +55,6 @@
       }
     },
     computed: {
-      listInProgress() {
-        return this.$store.getters.listInProgress;
-      },
       isAuthenticated() {
         return this.$store.getters['auth/isAuthenticated'];
       },
@@ -119,9 +116,12 @@
       });
     },
     async asyncData({ route, app }) {
+      const modeResponse = await app.$axios.$get(`text/mode`);
+
       const page = +route.query.page || 1;
       return {
         page: page,
+        mode: modeResponse.value,
         comments: await app.$axios.$get(`comments/${page}`),
         commentCount: (await app.$axios.$get(`comments/count`)).commentCount,
       };

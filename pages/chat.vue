@@ -18,7 +18,7 @@
       div(v-else)
         | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
     template(v-else)
-      div Sorry, de chatbox is tijdelijk gesloten. Probeer later nog eens.
+      div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
 </template>
 
 <script>

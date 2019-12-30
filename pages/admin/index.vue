@@ -12,7 +12,7 @@
       li
         nuxt-link(to='/admin/analysis') Interessante feiten
       li
-        nuxt-link(to='/admin/chat') Chat activeren
+        nuxt-link(to='/admin/chat') Chat / reacties mode
     h3 Database
     ul
       li

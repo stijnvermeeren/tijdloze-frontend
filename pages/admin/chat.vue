@@ -1,16 +1,13 @@
 <template lang="pug">
   div
-    h2 Chat activeren
+    h2 Chat / reacties mode
     div
       button(@click='refresh()', :disabled='refreshing') Opnieuw laden
-    template(v-if="mode === 'chat'")
-      h3 Chat actief
-      div
-        button(@click="save('comments')", :disabled='saving') Chat deactiveren
-    template(v-else)
-      h3 Chat niet actief
-      div
-        button(@click="save('chat')", :disabled='saving') Chat activeren
+    select(v-model="mode")
+      option(value="chat") Chat
+      option(value="comments") Reacties
+      option(value="none") Geen interacties mogelijk
+    button(@click="save()", :disabled='saving') Opslaan
 </template>
 
 <script>
@@ -23,10 +20,10 @@
       }
     },
     methods: {
-      async save(mode) {
+      async save() {
         this.saving = true;
         const data = {
-          text: mode
+          text: this.mode
         };
         await this.$axios.$post(`text/mode`, data);
         await this.refresh();

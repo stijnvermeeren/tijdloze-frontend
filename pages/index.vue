@@ -12,7 +12,7 @@
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
     h3
       | De Tijdloze van {{year.yyyy}}
-    table.lijst
+    table.lijst(v-if="top5.length")
       tbody
         tr
           th.n(v-if='year.previous()')
@@ -37,9 +37,10 @@
             tijdloze-song(:song='song')
           td.releaseYear
             | {{song.album.releaseYear}}
+    p(v-else) Nog geen nummers in de Tijdloze van 2019.
     .link
       div
-        nuxt-link(:to='`lijst/${year.yyyy}`') De volledige lijst van {{year.yyyy}}
+        nuxt-link(v-if='top5.length' :to='`lijst/${year.yyyy}`') De volledige lijst van {{year.yyyy}}
       div
         nuxt-link(v-if='listInProgress' to='lijst/opkomst') Nog op komst...
       div
@@ -50,7 +51,7 @@
       div
         nuxt-link(to='chat') Ga naar de chatbox!
 
-    template(v-if="showComments")
+    template(v-if="mode === 'comments'")
       h3
         | Reageer en discussieer
       .link
@@ -85,16 +86,13 @@
       },
       year() {
         return this.$store.getters.currentYear;
-      },
-      showComments() {
-        return this.mode === 'comments' && !this.listInProgress;
       }
     },
     async asyncData({ params, app, store }) {
       const modeResponse = await app.$axios.$get(`text/mode`);
 
       let comments = [];
-      if (!store.getters.listInProgress && modeResponse.value === 'comments') {
+      if (modeResponse.value === 'comments') {
         comments = await app.$axios.$get(`comments/1`);
       }
 
@@ -113,7 +111,7 @@
       };
     },
     async mounted() {
-      if (this.showComments) {
+      if (this.mode === 'comments') {
         // refresh on client side to avoid a stale cache on the server-side
         const comments = await this.$axios.$get(`comments/1`);
         this.comments = _.take(comments, 5);
