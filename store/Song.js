@@ -39,7 +39,7 @@ export default class Song extends Model {
     }
   }
 
-  isKnownExit() {
+  markedAsExit() {
     return this.$store().state.exitSongIds.includes(this.id)
   }
 
@@ -51,7 +51,7 @@ export default class Song extends Model {
    */
   notInList(year, extended) {
     if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
-      return this.isKnownExit();
+      return this.markedAsExit() || (!extended && this.position(year, true) > 100);
     } else {
       return !this.position(year, extended);
     }

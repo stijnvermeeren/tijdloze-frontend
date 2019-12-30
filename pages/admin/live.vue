@@ -164,7 +164,7 @@
         this.processing = false;
       },
       possibleSong(song) {
-        return !song.position(this.currentYear) && !song.isKnownExit();
+        return !song.position(this.currentYear, true) && !song.markedAsExit();
       }
     },
     middleware: 'admin',
