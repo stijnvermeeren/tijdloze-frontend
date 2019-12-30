@@ -39,6 +39,7 @@
   import EntryCount from '../../components/EntryCount'
   import InCurrentList from '../../components/InCurrentList'
   import SongWithSecondArtistLink from "../../components/SongWithSecondArtistLink";
+  import { idFromSlug } from '~/utils/slug'
 
   export default {
     components: {
@@ -78,7 +79,7 @@
     },
     async asyncData({ params, app }) {
       return {
-        fullAlbumData: await app.$axios.$get(`album/${params.id}`)
+        fullAlbumData: await app.$axios.$get(`album/${idFromSlug(params.id)}`)
       };
     },
     head() {

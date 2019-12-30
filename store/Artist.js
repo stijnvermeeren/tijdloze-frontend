@@ -1,6 +1,7 @@
 import { Model } from '@vuex-orm/core'
 import Song from "./Song";
 import Album from "./Album";
+import { createSlug } from '~/utils/slug'
 
 export default class Artist extends Model {
   static get entity() {
@@ -18,6 +19,10 @@ export default class Artist extends Model {
       secondarySongs: this.hasMany(Song, 'secondArtistId'),
       albums: this.hasMany(Album, 'artistId')
     };
+  }
+
+  get slug() {
+    return createSlug(this.fullName)
   }
 
   get fullName() {

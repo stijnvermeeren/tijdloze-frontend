@@ -1,5 +1,5 @@
 <template lang="pug">
-  nuxt-link(:to='`/nummer/${song.id}`') {{song.title}}
+  nuxt-link(:to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
 </template>
 
 <script>

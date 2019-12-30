@@ -48,6 +48,7 @@
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentList from '../../components/InCurrentList'
   import SongWithSecondArtistLink from "../../components/SongWithSecondArtistLink";
+  import { idFromSlug } from '~/utils/slug'
 
   export default {
     components: {
@@ -100,7 +101,7 @@
     },
     async asyncData({ params, app }) {
       return {
-        fullArtistData: await app.$axios.$get(`artist/${params.id}`)
+        fullArtistData: await app.$axios.$get(`artist/${idFromSlug(params.id)}`)
       };
     },
     head() {

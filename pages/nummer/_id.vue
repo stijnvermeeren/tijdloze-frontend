@@ -78,6 +78,7 @@
   import MakeLinks from '../../components/MakeLinks'
   import InCurrentListSong from '../../components/InCurrentListSong'
   import Spotify from '../../components/Spotify'
+  import { idFromSlug } from '~/utils/slug'
 
   export default {
     components: {
@@ -123,7 +124,7 @@
     },
     async asyncData({ params, app }) {
       return {
-        fullSongData: await app.$axios.$get(`song/${params.id}`)
+        fullSongData: await app.$axios.$get(`song/${idFromSlug(params.id)}`)
       };
     },
     head() {

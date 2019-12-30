@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { createSlug } from '~/utils/slug'
 import { Model } from '@vuex-orm/core'
 import Artist from "./Artist";
 import Album from "./Album";
@@ -23,6 +24,10 @@ export default class Song extends Model {
       secondArtist: this.belongsTo(Artist, 'secondArtistId'),
       album: this.belongsTo(Album, 'albumId')
     };
+  }
+
+  get slug() {
+    return createSlug(this.title)
   }
 
   position(year, extended) {
