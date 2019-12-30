@@ -82,7 +82,10 @@
         return _.take(this.$store.getters.list(this.year, true), 5);
       },
       exitsKnown() {
-        return this.$store.state.exitSongIds.length;
+        // TODO create getter in store
+        return this.$store.getters.songs.filter(song => {
+          return song.position(this.year.previous()) && song.notInList(this.year);
+        }).length > 0
       },
       year() {
         return this.$store.getters.currentYear;

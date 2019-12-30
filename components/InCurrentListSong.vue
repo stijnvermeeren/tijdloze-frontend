@@ -14,7 +14,7 @@
             position-change(:year='currentYear' :song='song')
             position(:year='currentYear' :song='song')
     div(v-else)
-      | Niet in de Tijdloze van #[year-link(:year='currentYear')].
+      | Niet in de top 100 van #[year-link(:year='currentYear')].
 </template>
 
 <script>

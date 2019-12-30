@@ -17,7 +17,7 @@
           td.song
             song-with-second-artist-link(:song='song' :artist='artist')
     div(v-else)
-      | Geen nummers in de Tijdloze van #[year-link(:year='currentYear')].
+      | Geen nummers in de top 100 van #[year-link(:year='currentYear')].
 </template>
 
 <script>

@@ -106,9 +106,13 @@
       }
     },
     methods: {
+      normalize(input) {
+        return input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      },
       search(data, matchAttribute, type) {
+
         return data.filter(item => {
-          return matchAttribute(item).toLowerCase().indexOf(this.query.toLowerCase()) > -1
+          return this.normalize(matchAttribute(item)).indexOf(this.normalize(this.query)) > -1
         }).map(item => {
           let score = this.score(this.query, matchAttribute(item));
           if (this.songsYear && type === 'song') {
@@ -119,8 +123,8 @@
         });
       },
       score(query, match) {
-        query = query.toLowerCase();
-        match = match.toLowerCase();
+        query = this.normalize(query);
+        match = this.normalize(match);
         if (query === match) {
           return 3;
         } else if (match.startsWith(query)) {
