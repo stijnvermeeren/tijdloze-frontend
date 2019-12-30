@@ -25,7 +25,6 @@
     },
     watch: {
       'song.id'(oldId, newId) {
-        console.log(oldId, newId)
         if (oldId !== newId) {
           this.refreshSnackbar()
         }

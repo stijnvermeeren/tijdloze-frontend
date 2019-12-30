@@ -33,7 +33,7 @@ export default function ({ store }) {
           const entry = response.entries.find(entry => entry.songId === song.id)
           if (entry) {
             song.positions[response.year % 100] = entry.position
-          } else {
+          } else if (song.positions[response.year % 100] <= 100) {
             delete song.positions[response.year % 100]
           }
         }
