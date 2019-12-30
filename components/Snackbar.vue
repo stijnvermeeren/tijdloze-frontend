@@ -1,7 +1,7 @@
 <template lang="pug">
   #snackbar(v-if='song' :class='{isHidden: isHidden}')
     .header
-      | Positie {{song.position(year)}} in de Tijdloze van #[tijdloze-year(:year='year')]
+      | Positie {{song.position(year, true)}} in de Tijdloze van #[tijdloze-year(:year='year')]
     .song
       | #[tijdloze-song-artist(:song='song')] - #[tijdloze-song(:song='song')]
 </template>
@@ -24,11 +24,11 @@
       }
     },
     watch: {
-      'song.id'() {
-        this.refreshSnackbar()
-      },
-      'year.yyyy'() {
-        this.refreshSnackbar()
+      'song.id'(oldId, newId) {
+        console.log(oldId, newId)
+        if (oldId !== newId) {
+          this.refreshSnackbar()
+        }
       }
     },
     methods: {

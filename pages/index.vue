@@ -79,7 +79,7 @@
         return this.$store.getters.listInProgress;
       },
       top5() {
-        return _.take(this.$store.getters.list(this.year), 5);
+        return _.take(this.$store.getters.list(this.year, true), 5);
       },
       exitsKnown() {
         return this.$store.state.exitSongIds.length;

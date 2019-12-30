@@ -73,11 +73,11 @@ export const getters = {
     );
   },
   lastSong(state, getters) {
-    return _.first(getters.list(getters.currentYear));
+    return _.first(getters.list(getters.currentYear, true));
   },
   lastPosition(state, getters) {
     if (getters.lastSong) {
-      return getters.lastSong.position(getters.currentYear)
+      return getters.lastSong.position(getters.currentYear, true)
     } else {
       return undefined
     }

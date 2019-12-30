@@ -18,7 +18,7 @@
               tr
                 th Voornaam
                 td
-                  input(v-model='artistDetails.firstName' placeholder='The / Bob / ...')
+                  input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...')
               tr
                 th Naam
                 td
@@ -149,7 +149,7 @@
           artistType: 'new',
           artistId: undefined,
           artistDetails: {
-            firstName: '',
+            namePrefix: '',
             name: '',
             countryId: undefined
           },
@@ -174,7 +174,7 @@
             ? this.albumMatch(artist.id, preset.albumTitle, preset.albumYear)
             : undefined;
 
-          data.artistDetails.firstName = this.firstName(preset.artistName);
+          data.artistDetails.namePrefix = this.namePrefix(preset.artistName);
           data.artistDetails.name = this.name(preset.artistName);
           if (artist) {
             data.artistType = 'existing';
@@ -228,7 +228,7 @@
           return undefined;
         }
       },
-      firstName(fullName) {
+      namePrefix(fullName) {
         if (fullName && fullName.substr(0,4) === "The ") {
           return "The";
         } else {
@@ -248,7 +248,7 @@
         let artistId = undefined;
         if (this.artistNew) {
           const artistData = {
-            firstName: this.artistDetails.firstName,
+            namePrefix: this.artistDetails.namePrefix,
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }

@@ -109,6 +109,7 @@
         return (new Date()).getFullYear();
       },
       nextPosition() {
+        // TODO make flexible
         return this.lastPosition ? this.lastPosition - 1 : 100;
       },
       nextValid() {
