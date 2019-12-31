@@ -48,7 +48,9 @@
       upcomingSongs() {
         return _.sortBy(
           this.$store.getters.songs.filter(song => {
-            return song.position(this.year.previous()) && !song.notInList(this.year);
+            return song.position(this.year.previous()) && (
+              !song.position(this.year) && !song.notInList(this.year)
+            );
           }),
           song => -song.position(this.year.previous())
         );
