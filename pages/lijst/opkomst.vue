@@ -40,12 +40,15 @@
         return this.$store.getters.currentYear;
       },
       exitsKnown() {
-        return this.$store.state.exitSongIds.length;
+        // TODO create getter in store
+        return this.$store.getters.songs.filter(song => {
+          return song.position(this.year.previous()) && song.notInList(this.year);
+        }).length > 0
       },
       upcomingSongs() {
         return _.sortBy(
           this.$store.getters.songs.filter(song => {
-            return !song.exitCurrent && !song.position(this.year) && song.position(this.year.previous());
+            return song.position(this.year.previous()) && !song.notInList(this.year);
           }),
           song => -song.position(this.year.previous())
         );
