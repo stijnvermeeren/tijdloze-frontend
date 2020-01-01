@@ -10,20 +10,24 @@
           td
             tijdloze-artist(:artist='artist')
           td.s.wrap
-            ul(v-if='artist.songs.length')
-              li(v-for='song in artist.songs')
-                tijdloze-song(:song='song')
+            ul(v-if='artist.allSongs.length')
+              li(v-for='song in artist.allSongs')
+                song-with-second-artist-link(:song='song' :artist="artist")
 </template>
 
 <script>
+  import SongWithSecondArtistLink from '../../../components/SongWithSecondArtistLink'
+
   export default {
+    components: {SongWithSecondArtistLink},
     computed: {
       country() {
         return this.$store.getters.countriesById[this.$route.params.id];
       },
       artists() {
         return this.$store.getters['entities/artists']()
-          .with('songs')
+          .with('songs.secondArtist')
+          .with('secondarySongs.artist')
           .where(artist => artist.countryId === this.country.id)
           .all();
       }

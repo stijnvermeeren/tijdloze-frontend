@@ -64,6 +64,7 @@
         return this.$store.getters['entities/artists']()
           .withAll()
           .with('albums.songs')
+          .with('albums.songs.secondArtist')
           .with('songs.album')
           .with('secondarySongs.artist')
           .with('secondarySongs.album.songs.artist')
