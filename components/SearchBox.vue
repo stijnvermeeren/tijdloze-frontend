@@ -107,10 +107,13 @@
     },
     methods: {
       normalize(input) {
-        return input.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        return input
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/æ/g, "ae")
+          .replace(/[\u0300-\u036f]/g, "")
       },
       search(data, matchAttribute, type) {
-
         return data.filter(item => {
           return this.normalize(matchAttribute(item)).indexOf(this.normalize(this.query)) > -1
         }).map(item => {
