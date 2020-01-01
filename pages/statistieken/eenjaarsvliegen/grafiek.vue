@@ -23,10 +23,10 @@
     props: ['data'],
     computed: {
       finalPoints() {
-        return this.data.filter(point => !point.isFinal);
+        return this.data.filter(point => point.isFinal);
       },
       nonFinalPoints() {
-        return this.data.filter(point => point.isFinal);
+        return this.data.filter(point => !point.isFinal);
       }
     }
   }
