@@ -40,14 +40,13 @@
         return this.$store.getters.years;
       },
       countries() {
-        return _.sortBy(
-          this.$store.state.countries,
-          country => country.name
-        );
+        return this.graphData.map(data => data.country);
       },
       graphData() {
+        const allCountries = this.$store.state.countries;
         const dataPoints = {};
-        const result = this.countries.map(country => {
+
+        const result = allCountries.map(country => {
           dataPoints[country.id] = [];
           return {
             country: country,
@@ -68,7 +67,8 @@
           }
         });
 
-        return result;
+        // Only return countries with at least on top 100 entry.
+        return result.filter(data => data.dataPoints.length)
       },
       counts() {
         return this.graphData.map(({country, dataPoints}) => {

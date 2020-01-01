@@ -92,7 +92,10 @@ export const getters = {
 
 export const mutations = {
   updateCoreData(state, json) {
-    state.countries = json.countries;
+    state.countries = _.sortBy(
+      json.countries,
+      country => country.name
+    );
     state.languages = json.languages;
     state.vocalsGenders = json.vocalsGenders;
     state.yearsRaw = json.years;
