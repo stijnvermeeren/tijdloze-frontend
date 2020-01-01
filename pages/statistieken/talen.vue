@@ -43,14 +43,11 @@
         return this.$store.getters.years;
       },
       languages() {
-        return _.sortBy(
-          this.$store.state.languages,
-          language => language.name
-        );
+        return this.graphData.map(data => data.language)
       },
       graphData() {
         const dataPoints = {};
-        const result = this.languages.map(language => {
+        const result = this.$store.state.languages.map(language => {
           dataPoints[language.id] = [];
           return {
             language: language,
@@ -71,7 +68,8 @@
           }
         });
 
-        return result;
+        // Only return languages with at least on top 100 entry.
+        return result.filter(data => data.dataPoints.length)
       },
       counts() {
         return this.graphData.map(({language, dataPoints}) => {

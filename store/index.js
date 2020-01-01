@@ -96,7 +96,10 @@ export const mutations = {
       json.countries,
       country => country.name
     );
-    state.languages = json.languages;
+    state.languages = _.sortBy(
+      json.languages,
+      language => language.name
+    );
     state.vocalsGenders = json.vocalsGenders;
     state.yearsRaw = json.years;
     state.exitSongIds = json.exitSongIds;
