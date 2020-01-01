@@ -3,10 +3,11 @@ import _ from 'lodash'
 
 export function createSlug(text) {
   return text
-    .normalize("NFD")
-    .replace(/[^a-zA-Z0-9 ]/g, "")
-    .replace(/ /g, '-')
     .toLowerCase()
+    .normalize("NFD")
+    .replace(/æ/g, "ae")
+    .replace(/[^a-z0-9 ]/g, "")
+    .replace(/ /g, '-')
 }
 
 export function idFromSlug(slug) {

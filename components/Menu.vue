@@ -103,11 +103,11 @@
         let path = ''
 
         if (result.type === 'song') {
-          path = `/nummer/${result.item.id}`
+          path = `/nummer/${result.item.id}-${result.item.slug}`
         } else if (result.type === 'artist') {
-          path = `/artiest/${result.item.id}`
+          path = `/artiest/${result.item.id}-${result.item.slug}`
         } else if (result.type === 'album') {
-          path = `/album/${result.item.id}`
+          path = `/album/${result.item.id}-${result.item.slug}`
         }
         if (path) {
           this.isOpen = false;
