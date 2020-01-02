@@ -2,6 +2,7 @@ import Sockette from "sockette"
 import Artist from '~/orm/Artist'
 import Album from '~/orm/Album'
 import Song from '~/orm/Song'
+import _ from 'lodash'
 
 const config = require('~/config.json');
 
@@ -29,14 +30,15 @@ export default function ({ store }) {
       })
 
       const yearShort = response.year % 100
-      const responseEntryIds = new Set(response.entries.map(entry => entry.songId))
+      const responseEntries = _.keyBy(response.entries, entry => entry.songId)
 
       Song.update({
         where: song => {
-          return responseEntryIds.has(song.id)
+          const entry = responseEntries[song.id]
+          return entry && entry.position !== song.positions[yearShort]
         },
         data: song => {
-          const entry = response.entries.find(entry => entry.songId === song.id)
+          const entry = responseEntries[song.id]
           song.positions[yearShort] = entry.position
         }
       })
@@ -44,7 +46,7 @@ export default function ({ store }) {
       Song.update({
         where: song => {
           const inList = song.positions[yearShort] <= 100
-          const shouldNotBeInList = !responseEntryIds.has(song.id)
+          const shouldNotBeInList = !(song.id in responseEntries)
           return inList && shouldNotBeInList
         },
         data: song => {
