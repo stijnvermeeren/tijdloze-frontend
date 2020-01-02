@@ -8,7 +8,7 @@
           th.current
             year-link(:year='currentYear')
           th.song
-        tr(v-for='song in filteredAndSorted' :key='song.id')
+        tr(v-for='song in filteredAndSorted' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
           td.previous
             position(:year='previousYear' :song='song')
           td.current
@@ -40,16 +40,16 @@
         return this.currentYear.previous();
       },
       filteredAndSorted() {
-        const filtered = this.songs.filter(song => song.probablyInList(this.currentYear));
+        const filtered = this.songs.filter(song => song.probablyInList(this.currentYear, true));
         return _.sortBy(
           filtered,
-          [song => this.sortPosition(song, this.currentYear, 1), song => this.sortPosition(song, this.previousYear, 101)]
+          [song => this.sortPosition(song, this.currentYear, 1), song => this.sortPosition(song, this.previousYear, 501)]
         )
       }
     },
     methods: {
       sortPosition(song, year, defaultValue) {
-        const position = song.position(year);
+        const position = song.position(year, true);
         return position > 0 ? position : defaultValue;
       }
     }
@@ -60,26 +60,34 @@
   table {
     table-layout: fixed;
 
-    th {
-      font-weight: normal;
-    }
-
     td, th {
       &.previous {
+        font-weight: normal;
         font-size: 14px;
         text-align: center;
         width: 50px;
       }
 
-      &.current{
-        font-weight: bold;
+      &.current {
         text-align: center;
         width: 80px;
       }
 
       &.song {
         text-align: left;
+      }
+    }
+
+    tr.top100 > td {
+      &.current {
         font-weight: bold;
+        text-align: center;
+        width: 80px;
+      }
+
+      &.song {
+        font-weight: bold;
+        text-align: left;
       }
     }
   }
