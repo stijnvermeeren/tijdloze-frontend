@@ -27,7 +27,7 @@
 </template>
 
 <script>
-  import Song from '~/store/Song'
+  import Song from '~/orm/Song'
   import SearchBox from '../../components/SearchBox'
 
   export default {

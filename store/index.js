@@ -1,10 +1,10 @@
 import VuexORM from '@vuex-orm/core'
 import _ from 'lodash';
 
-import Album from './Album';
-import Artist from './Artist';
-import Song from './Song';
-import Year from './Year';
+import Album from '~/orm/Album';
+import Artist from '~/orm/Artist';
+import Song from '~/orm/Song';
+import Year from '~/orm/Year';
 
 function objectWithIdKeys(values) {
   const result = {};
