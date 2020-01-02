@@ -13,7 +13,6 @@ export default function ({ store }) {
     onopen: e => {
     },
     onmessage: e => {
-      console.time('someFunction');
       const response = JSON.parse(e.data)
 
       store.commit('setCurrentYear', response.year)
@@ -53,8 +52,6 @@ export default function ({ store }) {
           delete song.positions[yearShort]
         }
       })
-
-      console.timeEnd('someFunction');
     },
     onreconnect: e => {},
     onmaximum: e => {},
