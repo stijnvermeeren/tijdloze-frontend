@@ -2,6 +2,7 @@ import { Model } from '@vuex-orm/core'
 import Song from "./Song";
 import Album from "./Album";
 import { createSlug } from '~/utils/slug'
+import _ from 'lodash'
 
 export default class Artist extends Model {
   static get entity() {
@@ -29,11 +30,24 @@ export default class Artist extends Model {
     return this.namePrefix ? `${this.namePrefix} ${this.name}` : this.name;
   }
 
+  get songsSorted() {
+    return _.sortBy(
+      this.songs,
+      song => song.title
+    );
+  }
+
   get allSongs() {
-    return this.songs.concat(this.secondarySongs);
+    return _.sortBy(
+      this.songs.concat(this.secondarySongs),
+      song => song.title
+    );
   }
 
   get allAlbums() {
-    return this.albums.concat(this.secondarySongs.map(song => song.album));
+    return _.sortBy(
+      this.albums.concat(this.secondarySongs.map(song => song.album)),
+      [album => album.releaseYear, album => album.title]
+    );
   }
 }

@@ -2,6 +2,7 @@ import { Model } from '@vuex-orm/core'
 import Song from "./Song";
 import Artist from "./Artist";
 import { createSlug } from '~/utils/slug'
+import _ from 'lodash'
 
 export default class Album extends Model {
   static get entity() {
@@ -22,5 +23,12 @@ export default class Album extends Model {
 
   get slug() {
     return createSlug(this.title)
+  }
+
+  get songsSorted() {
+    return _.sortBy(
+      this.songs,
+      [song => song.title]
+    )
   }
 }

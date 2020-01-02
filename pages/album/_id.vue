@@ -24,12 +24,12 @@
     h3 In de Tijdloze
     div
       entry-count(:songs='album.songs')
-    graph(v-if='album.songs.find(song => song.listCount($store.getters.years) > 0)' :songs='album.songs')
+    graph(v-if='top100Songs.length' :songs='top100Songs')
 
     h3 Tijdloze nummers
     div
-      ul(v-if='album.songs')
-        li(v-for='song in album.songs')
+      ul(v-if='album.songsSorted')
+        li(v-for='song in album.songsSorted')
           song-with-second-artist-link(:song='song')
 </template>
 
@@ -59,6 +59,9 @@
       },
       currentYear() {
         return this.$store.getters.currentYear;
+      },
+      top100Songs() {
+        return this.album.songsSorted.filter(song => song.listCount(this.$store.getters.years) > 0)
       },
       links() {
         const links = [];

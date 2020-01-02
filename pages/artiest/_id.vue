@@ -25,8 +25,8 @@
     div
       entry-count(:songs='artist.allSongs')
     graph(
-      v-if='artist.allSongs.find(song => song.listCount($store.getters.years) > 0)'
-      :songs='artist.allSongs'
+      v-if='top100Songs.length'
+      :songs='top100Songs'
     )
 
     h3 Tijdloze albums en nummers
@@ -35,8 +35,8 @@
         li(v-for='album in artist.allAlbums')
           tijdloze-album(:album='album')
           |  ({{album.releaseYear}})
-          ul(v-if='album.songs')
-            li(v-for='song in album.songs')
+          ul(v-if='album.songsSorted.length')
+            li(v-for='song in album.songsSorted')
               song-with-second-artist-link(:song='song' :artist="artist")
 </template>
 
@@ -70,11 +70,8 @@
           .with('secondarySongs.album.songs.artist')
           .find(this.fullArtistData.id);
       },
-      songs() {
-        return _.sortBy(
-          this.artist.songs,
-          song => [song.album.releaseYear, song.title]
-        )
+      top100Songs() {
+        return this.artist.allSongs.filter(song => song.listCount(this.$store.getters.years) > 0)
       },
       country() {
         return this.$store.getters.countriesById[this.artist.countryId];
