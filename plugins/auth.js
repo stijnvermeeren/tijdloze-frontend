@@ -28,7 +28,12 @@ export default ({ app, store }, inject) => {
     app.$cookies.set(
       'access_token',
       accessToken,
-      { secure: config.SECURE_COOKIES, path: '/', maxAge: 3600 * 24 * 30 }
+      {
+        secure: config.SECURE_COOKIES,
+        path: '/',
+        maxAge: 3600 * 24 * 30,
+        sameSite: 'strict'
+      }
     );
 
     const idTokenDecoded = jwtDecode(idToken);

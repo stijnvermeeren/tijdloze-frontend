@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     '~/plugins/global.js',
     '~/plugins/axios',
-    '~/plugins/auth',
+    { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
 ],
   modules: [
