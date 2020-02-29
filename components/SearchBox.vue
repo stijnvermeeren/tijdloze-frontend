@@ -150,9 +150,11 @@
         return ((n % m) + m) % m;
       },
       go(index) {
-        const result = this.results[index];
-        this.$emit('selectSearchResult', result);
-        this.query = '';
+        if (this.index !== undefined) {
+          const result = this.results[index];
+          this.$emit('selectSearchResult', result);
+          this.query = '';
+        }
       },
       escapeKeyListener: function (evt) {
         if (evt.code === "Escape" && this.query) {
