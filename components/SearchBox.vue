@@ -150,7 +150,7 @@
         return ((n % m) + m) % m;
       },
       go(index) {
-        if (this.index !== undefined) {
+        if (index !== undefined) {
           const result = this.results[index];
           this.$emit('selectSearchResult', result);
           this.query = '';
