@@ -1,8 +1,8 @@
 <template lang="pug">
   span(v-if='position')
     span.equal(v-if='equal') =
-    span.down(v-if='down') &searr;
-    span.up(v-if='up') &nearr;
+    span.down(v-if='down') &searr;&#xFE0E;
+    span.up(v-if='up') &nearr;&#xFE0E;
 </template>
 
 <script>
