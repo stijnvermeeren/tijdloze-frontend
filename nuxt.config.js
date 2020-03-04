@@ -30,8 +30,9 @@ module.exports = {
   */
   loading: { color: '#3B8070' },
   plugins: [
-    '~/plugins/global.js',
+    '~/plugins/global',
     '~/plugins/axios',
+    '~/plugins/url',
     { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
   ],

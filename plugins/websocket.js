@@ -4,8 +4,8 @@ import Album from '~/orm/Album'
 import Song from '~/orm/Song'
 import _ from 'lodash'
 
-export default function ({ store }) {
-  new Sockette(`${process.env.WEBSOCKET_URI}ws/current-list`, {
+export default function ({ app, store }) {
+  new Sockette(app.$url.websocket("ws/current-list"), {
     timeout: 5e3,
     maxAttempts: 10,
     onopen: e => {

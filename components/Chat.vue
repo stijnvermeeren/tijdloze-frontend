@@ -194,7 +194,7 @@
 
         this.$axios.$get('chat/ticket').then(ticketResponse => {
           if (!this.closing) {
-            this.ws = new Sockette(`${process.env.WEBSOCKET_URI}ws/chat?ticket=${ticketResponse.ticket}`, {
+            this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.ticket}`), {
               timeout: 5e3,
               maxAttempts: 1,
               onopen: e => {
