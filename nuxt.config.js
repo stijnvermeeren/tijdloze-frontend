@@ -1,4 +1,5 @@
-const config = require('./config.json');
+
+require('dotenv').config()
 
 module.exports = {
   /*
@@ -33,7 +34,10 @@ module.exports = {
     '~/plugins/axios',
     { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
-],
+  ],
+  buildModules: [
+    '@nuxtjs/dotenv',
+  ],
   modules: [
     ['@nuxtjs/axios'],
     ['cookie-universal-nuxt', {
@@ -45,10 +49,10 @@ module.exports = {
   }
 };
 
-if (config.GOOGLE_ANALYTICS_ID) {
+if (process.env.GOOGLE_ANALYTICS_ID) {
   module.exports.modules.push(
     ['@nuxtjs/google-analytics', {
-      id: config.GOOGLE_ANALYTICS_ID
+      id: process.env.GOOGLE_ANALYTICS_ID
     }]
   );
 }

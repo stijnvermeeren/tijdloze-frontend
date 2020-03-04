@@ -45,8 +45,6 @@
   import User from "./User";
   import Sockette from 'sockette';
 
-  const config = require('~/config.json');
-
   export default {
     name: "Chat",
     components: {User},
@@ -196,7 +194,7 @@
 
         this.$axios.$get('chat/ticket').then(ticketResponse => {
           if (!this.closing) {
-            this.ws = new Sockette(`${config.WEBSOCKET_URI}ws/chat?ticket=${ticketResponse.ticket}`, {
+            this.ws = new Sockette(`${process.env.WEBSOCKET_URI}ws/chat?ticket=${ticketResponse.ticket}`, {
               timeout: 5e3,
               maxAttempts: 1,
               onopen: e => {

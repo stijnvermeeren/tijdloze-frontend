@@ -1,21 +1,19 @@
 import auth0 from 'auth0-js';
 import jwtDecode from 'jwt-decode';
 
-const config = require('~/config.json');
-
 export default ({ app, store }, inject) => {
   const SCOPE = 'openid profile email';
 
   const authParams = {
     responseType: 'token id_token',
-    redirectUri: config.AUTH0_CALLBACK_URI,
-    audience: config.AUTH0_AUDIENCE,
+    redirectUri: process.env.AUTH0_CALLBACK_URI,
+    audience: process.env.AUTH0_AUDIENCE,
     scope: SCOPE
   }
 
   const auth = new auth0.WebAuth({
-    clientID: config.AUTH0_CLIENT_ID,
-    domain: config.AUTH0_CLIENT_DOMAIN
+    clientID: process.env.AUTH0_CLIENT_ID,
+    domain: process.env.AUTH0_CLIENT_DOMAIN
   });
 
   function unsetAccessToken() {
@@ -29,7 +27,7 @@ export default ({ app, store }, inject) => {
       'access_token',
       accessToken,
       {
-        secure: config.SECURE_COOKIES,
+        secure: !! process.env.SECURE_COOKIES,
         path: '/',
         maxAge: 3600 * 24 * 30,
         sameSite: 'strict'

@@ -4,10 +4,8 @@ import Album from '~/orm/Album'
 import Song from '~/orm/Song'
 import _ from 'lodash'
 
-const config = require('~/config.json');
-
 export default function ({ store }) {
-  new Sockette(`${config.WEBSOCKET_URI}ws/current-list`, {
+  new Sockette(`${process.env.WEBSOCKET_URI}ws/current-list`, {
     timeout: 5e3,
     maxAttempts: 10,
     onopen: e => {
