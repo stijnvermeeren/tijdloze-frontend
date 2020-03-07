@@ -9,18 +9,27 @@
       |
       | -
       |
-      nuxt-link(:to='`/reacties?page=${page - 1}`') vorige
+      nuxt-link(:to='pagePath(page - 1)') vorige
     template(v-if='page < pages')
       |
       | -
       |
-      nuxt-link(:to='`/reacties?page=${page + 1}`') volgende
+      nuxt-link(:to='pagePath(page + 1)') volgende
 </template>
 
 <script>
   export default {
     props: ['page', 'pages'],
-    name: 'CommentsPager'
+    name: 'CommentsPager',
+    methods: {
+      pagePath(page) {
+        if (page > 1) {
+          return `/reacties/${page}`
+        } else {
+          return "/reacties"
+        }
+      }
+    }
   }
 </script>
 

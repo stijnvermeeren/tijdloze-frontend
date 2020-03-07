@@ -38,8 +38,8 @@
 </template>
 
 <script>
-  import CommentsPager from '../components/comments/CommentsPager'
-  import Comment from '../components/comments/Comment'
+  import CommentsPager from '~/components/comments/CommentsPager'
+  import Comment from '~/components/comments/Comment'
 
   const commentsPerPage = 20;
 
@@ -115,10 +115,10 @@
         next();
       });
     },
-    async asyncData({ route, app }) {
+    async asyncData({ route, app, params }) {
       const modeResponse = await app.$axios.$get(`text/mode`);
 
-      const page = +route.query.page || 1;
+      const page = +params.page || +route.query.page || 1;
       return {
         page: page,
         mode: modeResponse.value,
@@ -133,7 +133,8 @@
     },
     head: {
       title: 'Reacties'
-    }
+    },
+    scrollToTop: true
   }
 </script>
 
