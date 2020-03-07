@@ -18,7 +18,6 @@
 
 <script>
   import Menu from '../components/Menu'
-  import {secondsToExpiry} from '~/utils/jwt'
   import Snackbar from "../components/Snackbar";
 
   export default {
@@ -32,21 +31,7 @@
       }
     },
     mounted() {
-      if (!this.$store.isAuthenticated) {
-        const accessToken = this.$cookies.get('access_token');
-        if (accessToken) {
-          if (!this.$store.state.accessToken || secondsToExpiry(accessToken) < 0) {
-            this.$auth.checkSession(
-              error => {
-                this.$auth.unsetAccessToken()
-              },
-              authResult => {
-                this.$auth.loginCallback(authResult.idToken, authResult.accessToken)
-              }
-            )
-          }
-        }
-      }
+      this.$auth.loginSilently()
     }
   }
 </script>

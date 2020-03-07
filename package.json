@@ -11,14 +11,13 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "@auth0/auth0-spa-js": "^1.6.4",
     "@nuxtjs/axios": "^5.9.2",
     "@vuex-orm/core": "^0.34.1",
-    "auth0-js": "^9.12.2",
     "axios": "^0.18.1",
     "cookie-universal-nuxt": "^2.1.2",
     "d3-scale": "^1.0.7",
     "d3-shape": "^1.2.2",
-    "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "nuxt": "^2.11.0",
     "sockette": "^2.0.6",

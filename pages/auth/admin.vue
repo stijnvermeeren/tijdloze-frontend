@@ -22,14 +22,7 @@
       }
     },
     mounted () {
-      this.$auth.checkSession(
-        error => {
-          this.$auth.unsetAccessToken()
-        },
-        authResult => {
-          this.$auth.loginCallback(authResult.idToken, authResult.accessToken)
-        }
-      )
+      this.$auth.loginSilently()
     }
   }
 </script>

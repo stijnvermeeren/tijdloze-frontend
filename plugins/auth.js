@@ -1,47 +1,44 @@
-import auth0 from 'auth0-js';
-import jwtDecode from 'jwt-decode';
+import createAuth0Client from '@auth0/auth0-spa-js';
 
-export default ({ app, store }, inject) => {
+export default async ({ app, store }, inject) => {
   const SCOPE = 'openid profile email';
 
   const authParams = {
     responseType: 'token id_token',
-    redirectUri: process.env.AUTH0_CALLBACK_URI,
     audience: process.env.AUTH0_AUDIENCE,
     scope: SCOPE
   }
 
-  const auth = new auth0.WebAuth({
-    clientID: process.env.AUTH0_CLIENT_ID,
-    domain: process.env.AUTH0_CLIENT_DOMAIN
+  const auth = await createAuth0Client({
+    client_id: process.env.AUTH0_CLIENT_ID,
+    domain: process.env.AUTH0_CLIENT_DOMAIN,
+    redirect_uri: process.env.AUTH0_CALLBACK_URI
   });
 
   function unsetAccessToken() {
-    app.$cookies.remove('access_token', { path: '/' });
     store.commit('auth/setAccessToken', null);
   }
 
-  async function loginCallback(idToken, accessToken) {
-    store.commit('auth/setAccessToken', accessToken);
-    app.$cookies.set(
-      'access_token',
-      accessToken,
-      {
-        secure: !! process.env.SECURE_COOKIES,
-        path: '/',
-        maxAge: 3600 * 24 * 30,
-        sameSite: 'strict'
-      }
-    );
+  async function loginSilently() {
+    try {
+      const accessToken = await auth.getTokenSilently(authParams);
+      store.commit('auth/setAccessToken', accessToken);
 
-    const idTokenDecoded = jwtDecode(idToken);
+      const user = await auth.getUser(authParams);
+      await setUser(user);
+    } catch(err) {
+      // user not logged in, don't raise any error
+    }
+  }
+
+  async function setUser(user) {
     const data = {
-      name: idTokenDecoded.name,
-      firstName: idTokenDecoded.given_name,
-      lastName: idTokenDecoded.family_name,
-      nickname: idTokenDecoded.nickname,
-      email: idTokenDecoded.email,
-      emailVerified: idTokenDecoded.email_verified
+      name: user.name,
+      firstName: user.given_name,
+      lastName: user.family_name,
+      nickname: user.nickname,
+      email: user.email,
+      emailVerified: user.email_verified
     };
     await app.$axios.$post('user', data).then(user => {
       store.commit('auth/setUser', user);
@@ -57,36 +54,23 @@ export default ({ app, store }, inject) => {
     login(redirectPath) {
       sessionStorage.setItem("redirectPath", redirectPath);
       unsetAccessToken()
-      auth.authorize(authParams);
+      auth.loginWithRedirect(authParams);
     },
     logout() {
       unsetAccessToken()
       auth.logout({
-        returnTo: config.AUTH0_LOGOUT_URI
+        returnTo: process.env.AUTH0_LOGOUT_URI
       });
-    },
-    getQueryParams() {
-      const params = {}
-      window.location.href.replace(/([^(?|#)=&]+)(=([^&]*))?/g, ($0, $1, $2, $3) => {
-        params[$1] = $3
-      })
-      return params
     },
     unsetAccessToken() {
       unsetAccessToken()
     },
-    checkSession(onError, onSuccess) {
-      auth.checkSession(authParams, (error, authResult) => {
-        if (error) {
-          onError(error)
-        }
-        if (authResult) {
-          onSuccess(authResult)
-        }
-      })
+    async loginSilently() {
+      return await loginSilently();
     },
-    async loginCallback(idToken, accessToken) {
-      await loginCallback(idToken, accessToken)
+    async loginCallback() {
+      await auth.handleRedirectCallback();
+      return await loginSilently();
     }
   });
 }

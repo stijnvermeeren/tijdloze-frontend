@@ -1,6 +1,4 @@
 
-import {secondsToExpiry} from '~/utils/jwt'
-
 export const state = () => ({
   accessToken: null,
   user: null,
@@ -34,14 +32,6 @@ export const getters = {
 export const mutations = {
   setAccessToken(state, accessToken) {
     state.accessToken = accessToken || null;
-
-    if (process.client && accessToken) {
-      if (secondsToExpiry(accessToken) > 2) {
-        setTimeout(() => {
-          this.$auth.checkSession();
-        }, 1000 * (secondsToExpiry(accessToken) - 2))
-      }
-    }
   },
   setUser(state, user) {
     state.user = user || null

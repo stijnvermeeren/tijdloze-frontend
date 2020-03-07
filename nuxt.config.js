@@ -44,10 +44,7 @@ module.exports = {
     ['cookie-universal-nuxt', {
       parseJSON: false
     }]
-  ],
-  router: {
-    middleware: 'check-auth'
-  }
+  ]
 };
 
 if (process.env.GOOGLE_ANALYTICS_ID) {
