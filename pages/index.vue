@@ -10,6 +10,8 @@
         | De #[strong Tijdloze] wordt uitgezonden door #[a(href='https://stubru.be/') Studio Brussel] op oudejaardsdag van 10:00 tot 20:00.
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
+      template(v-if="introMode == 'none'")
+        De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
     h3
       | De Tijdloze van {{year.yyyy}}
     table.lijst(v-if="top5.length")
