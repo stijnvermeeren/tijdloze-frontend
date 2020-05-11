@@ -1,4 +1,4 @@
-import createAuth0Client from '@auth0/auth0-spa-js';
+import { Auth0Client } from '@auth0/auth0-spa-js';
 
 export default async ({ app, store }, inject) => {
   const SCOPE = 'openid profile email';
@@ -9,7 +9,7 @@ export default async ({ app, store }, inject) => {
     scope: SCOPE
   }
 
-  const auth = await createAuth0Client({
+  const auth = new Auth0Client({
     client_id: process.env.AUTH0_CLIENT_ID,
     domain: process.env.AUTH0_CLIENT_DOMAIN,
     redirect_uri: process.env.AUTH0_CALLBACK_URI
