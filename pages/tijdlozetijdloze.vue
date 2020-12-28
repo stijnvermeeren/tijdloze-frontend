@@ -34,10 +34,15 @@
               option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
                 | {{ year.yyyy }}
         tr
-          th
+          th Selectie:
           td
-            input.ch(type='checkbox' v-model='strict')
-            | Tel enkel nummers die in elke Tijdloze stonden
+            select(v-model='filter')
+              option(value="alle")
+                | Alle nummers
+              option(value="alle_jaren")
+                | Enkel nummers die in elke Tijdloze stonden
+              option(value="geen_exit")
+                | Enkel nummers die niet uit de lijst weggevallen zijn
         tr
           th Methode:
           td
@@ -115,12 +120,24 @@
   import _ from 'lodash';
   import ranking from '../store/ranking';
 
+  const FILTER_ANY = 'alle'
+  const FILTER_NO_EXIT = 'geen_exit'
+  const FILTER_ALL_YEARS = 'alle_jaren'
+
   export default {
     data() {
+      const isStrict = this.$route.query.strikt ? this.$route.query.strikt === "1" : false;
+      let filter = FILTER_ANY;
+      if (this.$route.query.filter === FILTER_NO_EXIT) {
+        filter = FILTER_NO_EXIT;
+      } else if (isStrict || this.$route.query.filter === FILTER_ALL_YEARS) {
+        filter = FILTER_ALL_YEARS;
+      }
+
       return {
         active: !!this.$route.query.type,
         type: this.$route.query.type ? this.$route.query.type : "nummers",
-        strict: this.$route.query.strikt ? this.$route.query.strikt === "1" : false,
+        filter: filter,
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
         endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
         method: this.$route.query.telling ? this.$route.query.telling : "1"
@@ -128,11 +145,18 @@
     },
     computed: {
       queryParams() {
+        let filter = FILTER_ANY;
+        if (this.filter === FILTER_NO_EXIT) {
+          filter = FILTER_NO_EXIT;
+        } else if (this.filter === FILTER_ALL_YEARS) {
+          filter = FILTER_ALL_YEARS;
+        }
+
         return {
           type: this.type,
           start: this.startYear.toString(),
           einde: this.endYear.toString(),
-          strikt: this.strict ? '1' : '0',
+          filter: filter,
           telling: this.method
         };
       },
@@ -141,9 +165,15 @@
       },
       selectedSongs() {
         const selectedYears = this.selectedYears;
-        if (this.strict) {
+        if (this.filter === FILTER_ALL_YEARS) {
           return this.$store.getters.songs.filter(song =>
             selectedYears.every(year => song.position(year))
+          );
+        } if (this.filter === FILTER_NO_EXIT) {
+          return this.$store.getters.songs.filter(song =>
+            selectedYears.slice(1).every(year =>
+              !song.position(year.previous()) || !!song.position(year)
+            )
           );
         } else {
           return this.$store.getters.songs;
@@ -235,9 +265,16 @@
       },
       query(newQuery) {
         if (newQuery.type) {
+          let filter = FILTER_ANY;
+          if (this.$route.query.filter === FILTER_NO_EXIT) {
+            filter = FILTER_NO_EXIT;
+          } else if (this.$route.query.filter === FILTER_ALL_YEARS) {
+            filter = FILTER_ALL_YEARS;
+          }
+
           this.active = true;
           this.type = newQuery.type ? newQuery.type : "nummers";
-          this.strict = newQuery.strikt ? newQuery.strikt === "1" : false;
+          this.filter = filter;
           this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
           this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
           this.method = newQuery.telling ? newQuery.telling : "1";
