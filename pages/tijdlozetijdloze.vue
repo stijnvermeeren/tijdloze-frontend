@@ -50,7 +50,7 @@
               input.ra(v-model='method' type='radio' value='1')
               |  Eenvoudige telling
             .noot
-              | Het nummer op de eerste plaats krijgt 100 punten, de tweede 99, de derde 98, en zo verder tot de honderste die nog 1 punt krijgt... #[em Formule: punten = 101 - positie].
+              | Het nummer op de eerste plaats krijgt 100 punten, de tweede 99, de derde 98, en zo verder tot de honderste die nog 1 punt krijgt... Dit telsysteem is ook gekend als de #[a(href='https://en.wikipedia.org/wiki/Borda_count') Borda count].
             div
               input.ra(v-model='method' type='radio' value='2')
               |  Realistische telling
