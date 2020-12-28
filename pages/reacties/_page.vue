@@ -34,7 +34,6 @@
         const page = this.$route.params.page || 1;
         this.$axios.$get(`comments/${page}`).then(comments => {
           this.comments = comments;
-
         });
       },
       onSubmitted() {
