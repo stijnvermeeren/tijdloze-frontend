@@ -56,9 +56,10 @@
     template(v-if="mode === 'comments'")
       h3
         | Reageer en discussieer
-      .link
-        nuxt-link(to='/reacties') Meer reacties / Schrijf zelf een reactie
+      comment-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
       comment(v-for='comment in comments' :key='comment.id' :comment='comment')
+      .link
+        nuxt-link(to='/reacties') Meer reacties
 
     template(v-if='listInProgress')
       template(v-if='poll')
@@ -72,10 +73,11 @@
 <script>
   import _ from 'lodash';
   import Comment from '../components/comments/Comment'
+  import CommentForm from '~/components/comments/CommentForm'
   import Poll from "../components/Poll";
 
   export default {
-    components: {Poll, Comment},
+    components: {Poll, Comment, CommentForm},
     computed: {
       listInProgress() {
         return this.$store.getters.listInProgress;
@@ -93,6 +95,12 @@
         return this.$store.getters.currentYear;
       }
     },
+    methods: {
+      async reloadComments() {
+        const comments = await this.$axios.$get(`comments/1`);
+        this.comments = _.take(comments, 5);
+      }
+    },
     async asyncData({ params, app, store }) {
       const modeResponse = await app.$axios.$get(`text/mode`);
       const introResponse = await app.$axios.$get(`text/intro`);
@@ -100,6 +108,7 @@
       let comments = [];
       if (modeResponse.value === 'comments') {
         comments = await app.$axios.$get(`comments/1`);
+        comments = _.take(comments, 5);
       }
 
       let latestPoll = undefined;
@@ -114,7 +123,7 @@
         poll: latestPoll,
         mode: modeResponse.value,
         introMode: introResponse.value,
-        comments: _.take(comments, 5)
+        comments: comments
       };
     },
     async mounted() {

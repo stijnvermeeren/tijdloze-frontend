@@ -1,7 +1,8 @@
 <template lang="pug">
   div(:class="['reactie', {'mine': isMine}]")
     .reacinfo
-      | {{ comment.name }} - {{ comment.created }}
+      span.name {{ comment.name }}
+      span.created {{ comment.created }}
     .bericht {{ comment.message }}
 </template>
 
@@ -24,25 +25,26 @@
   @import "~assets/globalStyles.less";
 
   div.reactie {
-    padding: 0.3em 4em;
-    margin: 1em 0;
+    padding: 0.3em 1em;
+    margin: 0.7em 3em;
+
+    border: 1px solid @inputBorderColor;
+    border-radius: 4px;
 
     &.mine {
-      div.reacinfo {
-        background-color: @headerBackgroundColor;
-      }
+      border-width: 3px;
     }
 
     div.reacinfo {
-      background-color: #ccc;
-      font-size: 90%;
-      padding: 0.1em 0.2em;
-      margin: 0.2em 0 0.4em 0;
-      font-weight: bold;
-      border-bottom: @blackLine;
+      margin-bottom: 0.2em;
 
-      span {
+      span.name {
         font-weight: bold;
+      }
+
+      span.created {
+        margin-left: 1em;
+        color: #888;
       }
     }
 
