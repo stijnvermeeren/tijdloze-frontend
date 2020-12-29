@@ -4,19 +4,27 @@
       .reacinfo
         span.name {{ comment.name }}
         span.created {{ comment.created }}
+        span.edit(v-if="isMine")
+          a(@click="editComment") Wijzigen
         span.delete(v-if="isMine")
-          a(@click="deleteComment") Bericht verwijderen
-      .bericht {{ comment.message }}
+          a(@click="deleteComment") Verwijderen
+      div.bericht(v-if="!editing") {{ message }}
+      comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
     div.deleted(v-else) Bericht verwijderd
 </template>
 
 <script>
+  import CommentEditForm from "./CommentEditForm";
+
   export default {
     name: 'Comment',
+    components: {CommentEditForm},
     props: ['comment'],
     data() {
       return {
         isDeleted: false,
+        message: this.comment.message,
+        editing: false
       }
     },
     computed: {
@@ -28,6 +36,13 @@
       }
     },
     methods: {
+      editComment() {
+        this.editing = true;
+      },
+      commentEdited(newMessage) {
+        this.message = newMessage;
+        this.editing = false;
+      },
       deleteComment() {
         if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
           this.$axios.$delete(`comment/${this.comment.id}`).then(response => {
@@ -65,7 +80,7 @@
         color: #888;
       }
 
-      span.delete {
+      span.edit, span.delete {
         margin-left: 1em;
         color: #888;
         font-size: 80%;
