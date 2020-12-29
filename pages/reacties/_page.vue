@@ -7,7 +7,7 @@
         .message
           | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
       template(v-else)
-        comment-form(@submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
+        comment-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
     div
       comment(v-for='comment in comments' :key='comment.id' :comment='comment')

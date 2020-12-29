@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.commentForm
+  div.commentForm(:class="{expanded: isExpanded}")
     div(v-if='isAuthenticated')
       .displayName(v-if='!displayName || editingDisplayName')
         div.changeDisplayName
@@ -11,15 +11,22 @@
           | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
       div(v-else)
         div
-          div.commentHeader
+          div.commentHeader(v-if="isExpanded")
             span.name {{ displayName }}
             span.changeName
               | (
               a(@click='editDisplayName') Gebruikersnaam aanpassen
               | )
           div
-            textarea(:disabled='submitting' cols='60' placeholder='Schrijf een nieuwe reactie...' rows='4' v-model='message')
-          div
+            textarea(
+              :disabled='submitting'
+              cols='60'
+              placeholder='Schrijf een nieuwe reactie...'
+              :rows='isExpanded ? 4 : 1'
+              v-model='message'
+              @click.once="onFocus($event)"
+            )
+          div(v-if="isExpanded")
             button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
               | Verzenden
     .message(v-if='!isAuthenticated')
@@ -28,8 +35,15 @@
 
 <script>
   export default {
+    props: {
+      "expanded": {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       return {
+        isExpanded: !!this.expanded,
         name: "",
         message: "",
         editingDisplayName: false,
@@ -52,6 +66,12 @@
       }
     },
     methods: {
+      onFocus(event) {
+        this.isExpanded = true;
+        this.$nextTick(() => {
+          event.target.focus()
+        });
+      },
       editDisplayName() {
         this.name = this.$store.getters['auth/displayNameWithFallback'];
         this.editingDisplayName = true;
@@ -93,10 +113,12 @@
 
   div.commentForm {
     padding: 0.3em 1em;
-    margin: 0.7em 3em;
+    margin: 1.7em 3em 0.7em 3em;
 
-    border: 3px solid @inputBorderColor;
-    border-radius: 4px;
+    &.expanded {
+      border: 3px solid @inputBorderColor;
+      border-radius: 4px;
+    }
 
     div.commentHeader {
       margin-bottom: 0.2em;
