@@ -127,11 +127,16 @@
           .toLowerCase()
           .normalize("NFD")
           .replace(/æ/g, "ae")
-          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[\u0300-\u036f]/g, "") // combining accents
+          .replace(/[^a-zA-Z0-9 ]/g, "")
       },
       search(data, matchAttribute, type) {
+        const fragments = this.normalize(this.query).split(" ");
         return data.filter(item => {
-          return this.normalize(matchAttribute(item)).indexOf(this.normalize(this.query)) > -1
+          return _.every(
+            fragments,
+            fragment => !fragment || this.normalize(matchAttribute(item)).indexOf(fragment) > -1
+          )
         }).map(item => {
           let score = this.score(this.query, matchAttribute(item));
           if (this.songsYear && type === 'song') {
