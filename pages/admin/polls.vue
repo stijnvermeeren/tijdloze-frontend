@@ -47,10 +47,11 @@
         return this.$store.getters.currentYear;
       },
       groupedPolls() {
-        return [2019, 2018, 2017, 2016, 2015].map(year => {
+        const pollYears = this.$store.getters.years.filter(year => year.yyyy >= 2015);
+        return pollYears.reverse().map(year => {
           return {
-            year: year,
-            polls: this.polls.filter(poll => poll.year === year)
+            year: year.yyyy,
+            polls: this.polls.filter(poll => poll.year === year.yyyy)
           }
         })
       },
