@@ -20,6 +20,8 @@
           | {{result.item.title}}
           span.info
             | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
+        div(v-if="result.type === 'alt'")
+          | {{result.item.title}}
       .more-suggestions(v-if='resultsCount > resultsLimit')
         | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
       .more-suggestions(v-if='resultsCount === 0')
@@ -31,6 +33,9 @@
 
   export default {
     props: {
+      altOption: {
+        type: String
+      },
       placeholder: {
         type: String,
         default: 'Zoek artiest, album of nummer...'
@@ -64,6 +69,16 @@
           return []
         }
 
+        let altOptions = []
+        if (this.altOption) {
+          altOptions = [{
+            type: 'alt',
+            item: {
+              title: this.altOption
+            }
+          }]
+        }
+
         const artists = this.search(
           this.$store.getters['entities/artists/query']().all().filter(this.artistFilter),
           artist => artist.fullName,
@@ -88,10 +103,11 @@
           'album'
         );
 
-        return _.sortBy(
+        const sortedResults = _.sortBy(
           _.concat(artists, songs, albums),
           result => -result.score
         );
+        return _.concat(altOptions, sortedResults)
       },
       visibleResults() {
         return _.take(this.results, this.resultsLimit);
@@ -152,6 +168,7 @@
       go(index) {
         if (index !== undefined) {
           const result = this.results[index];
+          result.query = this.query;
           this.$emit('selectSearchResult', result);
           this.query = '';
         }

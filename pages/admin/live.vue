@@ -32,29 +32,18 @@
       h3 Volgend nummer
       div
         strong Positie {{nextPosition}} in {{nextYearYyyy}}
-      div
-        input#nextType-existing(
-          type='radio'
-          value='existing'
-          v-model='nextSongType'
-        )
-        label(for='nextType-existing') Nummer dat reeds in de Tijdloze stond
-        input#nextType-new(
-          type='radio',
-          value='new',
-          v-model='nextSongType'
-        )
-        label(for='nextType-new') Nieuw nummer
+
+      search-box(
+        placeholder='Zoek nummer...'
+        altOption='Als nieuw nummer toevoegen'
+        :artist-filter='artist => false'
+        :album-filter='album => false'
+        :song-filter='possibleSong'
+        :songs-year='previousYear'
+        @selectSearchResult='selectSearchResult($event)'
+      )
 
       .box(v-show="nextSongType === 'existing'")
-        search-box(
-          placeholder='Zoek nummer...'
-          :artist-filter='artist => false'
-          :album-filter='album => false'
-          :song-filter='possibleSong'
-          :songs-year='previousYear'
-          @selectSearchResult='selectSearchResult($event)'
-        )
         div(v-if='nextSong')
           strong {{nextSong.artist.fullName}} - {{nextSong.title}}
           |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
@@ -65,7 +54,7 @@
             | Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
 
       .box(v-show="nextSongType === 'new'")
-        spotify-search(@selectSpotifyTrack='selectSpotifyTrack($event)')
+        spotify-search(:initialQuery='initialSpotifyQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
         hr
         new-song-wizard(
           :preset='spotifyData'
@@ -85,11 +74,12 @@
     components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
-        nextSongType: 'existing',
+        nextSongType: undefined,
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
-        spotifyData: undefined
+        spotifyData: undefined,
+        initialSpotifyQuery: ''
       }
     },
     computed: {
@@ -122,10 +112,16 @@
     },
     methods: {
       async selectSearchResult(result) {
-        this.nextSong = result.item;
-        this.nextSongFullData = undefined;
+        if (result.type === 'alt') {
+          this.nextSongType = 'new';
+          this.initialSpotifyQuery = result.query;
+        } else {
+          this.nextSongType = 'existing';
+          this.nextSong = result.item;
+          this.nextSongFullData = undefined;
 
-        this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
+          this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
+        }
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {
@@ -158,6 +154,7 @@
         }
         await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
         this.nextSongType = 'existing';
+        this.nextSongType = undefined;
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
         this.spotifyData = undefined;

@@ -37,11 +37,25 @@
   export default {
     name: 'SpotifySearch',
     components: {Spotify},
+    props: {
+      initialQuery: {
+        type: String,
+        default: ''
+      }
+    },
     data() {
       return {
-        query: '',
+        query: this.initialQuery,
         processing: false,
         spotifyTracks: []
+      }
+    },
+    watch: {
+      initialQuery(newQuery) {
+        if (newQuery) {
+          this.query = newQuery;
+          this.search();
+        }
       }
     },
     methods: {
