@@ -39,7 +39,7 @@
             tijdloze-song(:song='song')
           td.releaseYear
             | {{song.album.releaseYear}}
-    p(v-else) Nog geen nummers in de Tijdloze van 2019.
+    p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
     .link
       div
         nuxt-link(v-if='top5.length' :to='`lijst/${year.yyyy}`') De volledige lijst van {{year.yyyy}}

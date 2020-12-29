@@ -29,11 +29,13 @@
               tijdloze-song(:song='song')
             td.releaseYear
               | {{song.album.releaseYear}}
-      .collapseLink(v-if='collapsable' @click.prevent='toggle()')
-        div(v-if='collapsed')
-          a Toon de hele lijst
-        div(v-else)
-          a Minder tonen
+      .collapseLink(v-if='length > 10')
+        div(v-if='length > 10 && limit != 10' @click.prevent='limit = 10')
+          a Toon top 10
+        div(v-if='length > 100 && limit != 100' @click.prevent='limit = 100')
+          a Toon top 100
+        div(v-if='length > 10 && limit != length' @click.prevent='limit = length')
+          a Toon alle {{length}} nummers
     p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
@@ -48,29 +50,28 @@
       },
       songs: {
         type: Array
+      },
+      initialLimit: {
+        type: Number,
+        default: 10
       }
     },
     data() {
       return {
-        collapsed: true
+        limit: this.initialLimit
       }
     },
     computed: {
-      collapsable() {
-        return this.songs.length > 10
+      length() {
+        return this.songs.length
       },
       shownSongs() {
-        if (this.collapsable && this.collapsed) {
-          return _.take(this.songs, 10);
-        } else {
-          return this.songs;
-        }
+        return _.take(this.songs, this.limit);
       }
     },
-    methods: {
-      toggle() {
-        this.collapsed = !this.collapsed;
-        if (this.collapsed) {
+    watch: {
+      limit(newValue, oldValue) {
+        if (newValue < oldValue) {
           const element = this.$refs['list'];
           console.log(element)
           element.scrollIntoView({block: "start"});
