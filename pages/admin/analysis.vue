@@ -1,12 +1,14 @@
 <template lang="pug">
   div
     h2 "Interessante feiten" {{currentYear.yyyy}}
-    div
-      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
 
     h3 Aanpassen
     div
       textarea(v-model='analyse')
+    div(v-if="outOfDate")
+      | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
+      |
+      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
     div
       button(@click='save()', :disabled='saving') Opslaan
 
@@ -24,12 +26,20 @@
     data() {
       return {
         refreshing: false,
-        saving: false
+        saving: false,
+        interval: undefined
       }
     },
     computed: {
+      outOfDate() {
+        return this.lastLoadedAnalysis !== this.initialAnalysis;
+      },
       analysePreview() {
-        return this.analyse.split(/\r?\n/);
+        if (this.analyse) {
+          return this.analyse.split(/\r?\n/);
+        } else {
+          return "";
+        }
       },
       currentYear() {
         return this.$store.getters.currentYear;
@@ -48,12 +58,27 @@
         this.refreshing = true;
         const response = await this.$axios.$get(`text/analysis_${this.currentYear.yyyy}`);
         this.analyse = response.value;
+        this.initialAnalysis = response.value;
+        this.lastLoadedAnalysis = response.value;
         this.refreshing = false;
+      }
+    },
+    mounted() {
+      this.interval = setInterval(async () => {
+        const response = await this.$axios.$get(`text/analysis_${this.currentYear.yyyy}`);
+        this.lastLoadedAnalysis = response.value;
+      }, 10000);
+    },
+    beforeDestroy() {
+      if (this.interval) {
+        clearInterval(this.interval);
       }
     },
     async asyncData({ params, app, store }) {
       const response = await app.$axios.$get(`text/analysis_${store.getters.currentYear.yyyy}`);
       return {
+        initialAnalysis: response.value,
+        lastLoadedAnalysis: response.value,
         analyse: response.value
       };
     },
