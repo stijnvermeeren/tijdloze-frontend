@@ -40,6 +40,7 @@
         :album-filter='album => false'
         :song-filter='possibleSong'
         :songs-year='previousYear'
+        :initial-query='initialGlobalQuery'
         @selectSearchResult='selectSearchResult($event)'
       )
 
@@ -61,6 +62,12 @@
           :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
           @newSong='add($event.id)'
         )
+
+    template(v-if="false")
+      h3 Import
+      textarea(v-model="importText" rows="10")
+      div
+        button(@click="startImport") Import beginnen
 </template>
 
 <script>
@@ -79,7 +86,10 @@
         nextSongFullData: undefined,
         processing: false,
         spotifyData: undefined,
-        initialSpotifyQuery: ''
+        initialSpotifyQuery: '',
+        importText: '',
+        importSongs: [],
+        initialGlobalQuery: ''
       }
     },
     computed: {
@@ -100,7 +110,7 @@
       },
       nextPosition() {
         // TODO make flexible
-        return this.lastPosition ? this.lastPosition - 1 : 100;
+        return this.lastPosition ? this.lastPosition - 1 : 1066;
       },
       nextValid() {
         if (this.nextSongType === 'existing') {
@@ -111,6 +121,17 @@
       }
     },
     methods: {
+      startImport() {
+        this.importSongs = []
+        const fragments = this.importText.split("\n").reverse()
+        fragments.forEach(fragment => {
+          const cleanFragment = fragment.replace(/^[0-9 \.]*/g, "").trim()
+          if (cleanFragment) {
+            this.importSongs.push(cleanFragment)
+          }
+        })
+        this.initialGlobalQuery = this.importSongs.shift();
+      },
       async selectSearchResult(result) {
         if (result.type === 'alt') {
           this.nextSongType = 'new';
@@ -153,12 +174,17 @@
           songId
         }
         await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
-        this.nextSongType = 'existing';
         this.nextSongType = undefined;
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
         this.spotifyData = undefined;
         this.processing = false;
+
+        this.$store.dispatch('nuxtServerInit');
+
+        if (this.importSongs.length > 0) {
+          this.initialGlobalQuery = this.importSongs.shift();
+        }
       },
       possibleSong(song) {
         return !song.position(this.currentYear, true) && !song.markedAsExit();
@@ -176,5 +202,9 @@
     border: 1px solid grey;
     padding: 5px 10px;
     margin: 10px 0;
+  }
+
+  textarea {
+    width: 100%;
   }
 </style>

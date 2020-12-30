@@ -1,7 +1,7 @@
 <template lang="pug">
   #searchBox
     span.fa.fa-search
-    input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true')
+    input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
     #searchResults(v-if='query.length > 0')
       .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
         div(v-if="result.type === 'artist'")
@@ -54,11 +54,15 @@
       },
       songsYear: {
         type: Object
+      },
+      initialQuery: {
+        type: String,
+        default: ''
       }
     },
     data() {
       return {
-        query: "",
+        query: this.initialQuery,
         selectedIndex: undefined,
         resultsLimit: 10
       }
@@ -119,6 +123,10 @@
     watch: {
       query() {
         this.selectedIndex = undefined;
+      },
+      initialQuery(newValue) {
+        this.$refs.input.focus();
+        this.query = newValue;
       }
     },
     methods: {
@@ -187,7 +195,7 @@
         const searchBox = document.querySelector('#searchBox');
         const searchResults = document.querySelector('#searchResults');
         const target = e.target;
-        if (this.query && !searchBox.contains(target) && !searchResults.contains(target)) {
+        if (this.query && !searchBox.contains(target) && !searchResults.contains(target) && !this.initialQuery) {
           this.query = '';
         }
       }
