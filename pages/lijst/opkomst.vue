@@ -9,10 +9,10 @@
       tbody
         tr
           th.n
-            nuxt-link(:to='`lijst/${year.previous().previous().yyyy}`')
+            nuxt-link(:to='`/lijst/${year.previous().previous().yyyy}`')
               | {{year.previous().previous()._yy}}
           th.r
-            nuxt-link(:to='`lijst/${year.previous().yyyy}`')
+            nuxt-link(:to='`/lijst/${year.previous().yyyy}`')
               | {{year.previous()._yy}}
           th.a
             nuxt-link(to='/artiesten') Artiest
