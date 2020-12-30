@@ -26,6 +26,8 @@
         nuxt-link(to='/admin/chat') Chat / reacties mode
       li
         nuxt-link(to='/admin/intro') Homepage intro
+      li
+        button(@click="invalidateCache") Invalidate API caches
 </template>
 
 <script>
@@ -46,7 +48,9 @@
         if (path) {
           this.$router.push(path);
         }
-
+      },
+      async invalidateCache() {
+        await this.$axios.$get('/cache/invalidate');
       }
     },
     middleware: 'admin'
