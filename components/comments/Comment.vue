@@ -37,9 +37,7 @@
       },
       showUpdated() {
         function parseDate(dateString) {
-          const regexp = /[0-9]+/g;
-
-          const parts = [...dateString.matchAll(regexp)];
+          const parts = dateString.split(/[^0-9]+/g);
           return new Date(
               parseInt(parts[0]),
               parseInt(parts[1]) - 1,
