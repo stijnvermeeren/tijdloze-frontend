@@ -23,7 +23,10 @@ export default function ({ app, store }) {
         data: response.newAlbums
       })
       Song.insertOrUpdate({
-        data: response.newSongs
+        data: response.newSongs.filter(song => {
+          const existingSong = store.getters['entities/songs']().withAll().find(song.id);
+          return !existingSong;
+        })
       })
 
       const yearShort = response.year % 100
