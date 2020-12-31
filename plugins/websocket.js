@@ -16,6 +16,8 @@ export default function ({ app, store }) {
       store.commit('setCurrentYear', response.year)
       store.commit('setExitSongIds', response.exitSongIds)
 
+      const yearShort = response.year % 100
+
       Artist.insertOrUpdate({
         data: response.newArtists
       })
@@ -26,10 +28,11 @@ export default function ({ app, store }) {
         data: response.newSongs.filter(song => {
           const existingSong = store.getters['entities/songs']().withAll().find(song.id);
           return !existingSong;
+        }).map(song => {
+          delete song.positions[yearShort]
         })
       })
 
-      const yearShort = response.year % 100
       const responseEntries = _.keyBy(response.entries, entry => entry.songId)
 
       Song.update({
