@@ -215,13 +215,21 @@
       },
       albumMatch(artistId, albumName, releaseYear) {
         if (artistId && albumName && releaseYear) {
-          const query = albumName.toLowerCase();
+          const queryTokens = albumName.toLowerCase().split(" ");
 
+          /*
+           * An album matches if
+           * - The artist matches
+           * - The release year matches
+           * - The titles match (case-insensitive) where one title is allowed to have some extra words.
+           *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
+           *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
+           */
           return this.$store.getters['entities/albums/query']().all().find(album => {
-            const matchName = album.title.toLowerCase();
-            const minLength = Math.min(query.length, matchName.length);
+            const matchTokens = album.title.toLowerCase().split(" ");
+            const minLength = Math.min(queryTokens.length, matchTokens.length);
             return album.artistId === artistId &&
-              query.substr(0, minLength) === matchName.substr(0, minLength) &&
+              queryTokens.slice(0, minLength).join(" ") === matchTokens.slice(0, minLength).join(" ") &&
               album.releaseYear === releaseYear;
           })
         } else {
