@@ -213,18 +213,18 @@
           return undefined;
         }
       },
+      /*
+       * An album matches if
+       * - The artist matches
+       * - The release year matches
+       * - The titles match (case-insensitive) where one title is allowed to have some extra words.
+       *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
+       *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
+       */
       albumMatch(artistId, albumName, releaseYear) {
         if (artistId && albumName && releaseYear) {
           const queryTokens = albumName.toLowerCase().split(" ");
 
-          /*
-           * An album matches if
-           * - The artist matches
-           * - The release year matches
-           * - The titles match (case-insensitive) where one title is allowed to have some extra words.
-           *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
-           *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
-           */
           return this.$store.getters['entities/albums/query']().all().find(album => {
             const matchTokens = album.title.toLowerCase().split(" ");
             const minLength = Math.min(queryTokens.length, matchTokens.length);
