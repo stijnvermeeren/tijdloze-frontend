@@ -12,6 +12,10 @@
           td
             artist-select(v-model='fullSongData.artistId')
         tr
+          th Second artist
+          td
+            artist-select(v-model='fullSongData.secondArtistId' :required='false')
+        tr
           th Album
           td
             album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')

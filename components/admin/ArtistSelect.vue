@@ -8,9 +8,10 @@
         placeholder='Zoek artiest...'
         @selectSearchResult='selectArtist($event.item)'
       )
-        button(v-if='artist' @click='editing = false') Annuleren
+      button(v-if='artist' @click='editing = false') Annuleren
     div(v-else)
       button(@click='editing = true') Wijzigen
+      button(v-if="!required" @click='clear()') Verwijderen
 </template>
 
 <script>
@@ -21,6 +22,10 @@
     props: {
       value: {
         type: Number
+      },
+      required: {
+        type: Boolean,
+        default: true
       }
     },
     data() {
@@ -43,6 +48,10 @@
       }
     },
     methods: {
+      clear() {
+        this.value = undefined;
+        this.$emit('input', undefined);
+      },
       selectArtist(artist) {
         this.$emit('input', artist.id);
         this.editing = false;
