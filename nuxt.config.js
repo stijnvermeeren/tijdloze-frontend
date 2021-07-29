@@ -33,6 +33,7 @@ module.exports = {
     '~/plugins/global',
     '~/plugins/axios',
     '~/plugins/url',
+    '~/plugins/gtag',
     { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
   ],
@@ -46,11 +47,3 @@ module.exports = {
     }]
   ]
 };
-
-if (process.env.GOOGLE_ANALYTICS_ID) {
-  module.exports.modules.push(
-    ['@nuxtjs/google-analytics', {
-      id: process.env.GOOGLE_ANALYTICS_ID
-    }]
-  );
-}
