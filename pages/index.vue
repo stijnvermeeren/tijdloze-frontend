@@ -7,10 +7,10 @@
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
       template(v-if="introMode === 'pre'")
-        | De #[strong Tijdloze] wordt uitgezonden door #[a(href='https://stubru.be/') Studio Brussel] op oudejaardsdag van 10:00 tot 20:00.
+        | De Tijdloze Countdown loopt deze week op #[a(href='https://stubru.be/detijdloze') Studio Brussel].
         br
-        | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
-      template(v-if="introMode == 'none'")
+        | Op 31 december vanaf 10 uur kan je de #[strong Tijdloze 100] ook op deze website live volgen.
+      template(v-if="introMode === 'none'")
         | De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
     h3
       | De Tijdloze van {{year.yyyy}}

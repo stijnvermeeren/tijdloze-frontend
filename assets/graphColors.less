@@ -10,6 +10,7 @@
 @color8: rgb(153,153,153);
 
 .color(@color) {
+  color: @color;
   .coloredRect {
     fill: @color;
   }
@@ -20,9 +21,6 @@
   .coloredCircle {
     fill: @color;
     stroke: @color;
-  }
-  &.songLegend {
-    color: @color;
   }
 }
 
