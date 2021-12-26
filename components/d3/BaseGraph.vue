@@ -6,7 +6,7 @@
   export default {
     data() {
       return {
-        fullWidth: 750,
+        fullWidth: 760,
         fullHeight: 400,
         margin: {top: 40, right: 20, bottom: 10, left: 50}
       }

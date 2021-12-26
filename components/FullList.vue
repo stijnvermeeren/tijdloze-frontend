@@ -73,7 +73,6 @@
       limit(newValue, oldValue) {
         if (newValue < oldValue) {
           const element = this.$refs['list'];
-          console.log(element)
           element.scrollIntoView({block: "start"});
         }
       }

@@ -4,12 +4,13 @@
       path.domain(:d='`M0,0 H ${xScale.range()[1]}`')
       g.tick(
         v-for='year in years'
+        v-if='year.yyyy % 10 === 0 || (!!hoverYear && year.yyyy === hoverYear.yyyy)'
         :transform='`translate(${xScale(year._yy)},0)`'
-        style='opacity: 1;'
+        :class="{highlighted: !!hoverYear && year.yyyy === hoverYear.yyyy}"
       )
         line(y2='-6' x2='0')
         text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
-          | {{year._yy}}
+          | {{year.yyyy}}
 
     g.y.axis
       path.domain(:d='`M0,0 V ${yScale.range()[1]}`')
@@ -25,7 +26,7 @@
 
 <script>
   export default {
-    props: ['xScale', 'yScale', 'years'],
+    props: ['xScale', 'yScale', 'years', 'hoverYear'],
     data() {
       return {
         yTickValues: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
@@ -51,5 +52,12 @@
 
   .y.axis .tick line {
     stroke-dasharray: 1, 3;
+  }
+
+  .tick {
+    opacity: 1;
+    &.highlighted {
+      font-weight: bold;
+    }
   }
 </style>
