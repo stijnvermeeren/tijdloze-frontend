@@ -34,9 +34,11 @@
           | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
         div(v-else-if='!connected' class="systemMessage")
           | Even geduld terwijl we je verbinden met de chat...
+        div(v-else-if='uppercaseMessage' class="systemMessage")
+          | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
     .input
       input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
-      button(@click='send()' :disabled='!message.length || !connected || error') Verzenden
+      button(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
 </template>
 
 <script>
@@ -56,6 +58,7 @@
         connected: false,
         error: false,
         closing: false,
+        postDelay: 0,
         lastId: 0,
         message: '',
         showAllOnline: false,
@@ -65,6 +68,18 @@
       }
     },
     computed: {
+      sendDisabled() {
+        return !this.message.length || this.uppercaseMessage || !this.connected || this.error || this.postDelay > 0;
+      },
+      sendButtonMessage() {
+        const dots = ".".repeat(this.postDelay)
+        return `Verzenden${dots}`;
+      },
+      uppercaseMessage() {
+        const lowercase = this.message.replaceAll(/[^a-z]/g, "").length;
+        const uppercase = this.message.replaceAll(/[^A-Z]/g, "").length;
+        return uppercase > (lowercase + uppercase) / 3 + 2;
+      },
       onlineSorted() {
         return _.sortBy(
           this.online,
@@ -182,9 +197,23 @@
         this.online = _.concat(currentUser, newOnline, stillOnline);
       },
       async send() {
-        if (this.message.length) {
-          this.ws.json({ message: this.message })
+        if (!this.sendDisabled) {
+          this.ws.json({ message: this.message });
           this.message = '';
+
+          this.postDelay = 3;
+          setTimeout(()=>{
+            this.decreasePostDelay();
+          }, 500);
+        }
+      },
+      decreasePostDelay() {
+        console.log("Decrease")
+        if (this.postDelay > 0) {
+          this.postDelay--;
+          setTimeout(()=>{
+            this.decreasePostDelay();
+          }, 500);
         }
       },
       async reconnect() {
