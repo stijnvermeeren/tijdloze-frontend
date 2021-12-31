@@ -63,7 +63,7 @@
           @newSong='add($event.id)'
         )
 
-    template(v-if="false")
+    template
       h3 Import
       textarea(v-model="importText" rows="10")
       div
@@ -145,10 +145,10 @@
         fragments.forEach(fragment => {
           const positionMatch = fragment.match(/^[0-9]+/g);
           let overridePosition = undefined;
-          if (positionMatch.length) {
+          if (positionMatch && positionMatch.length) {
             overridePosition = parseInt(positionMatch[0]);
           }
-          const cleanFragment = fragment.replace(/^[0-9 \.]*/g, "").trim()
+          const cleanFragment = fragment.replace(/^[0-9]*[ \.]+/g, "").trim()
           if (cleanFragment) {
             this.importSongs.push({
               overridePosition: overridePosition,

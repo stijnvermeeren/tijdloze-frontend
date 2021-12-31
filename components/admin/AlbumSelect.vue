@@ -35,7 +35,7 @@
         if (artist) {
           return _.sortBy(
             artist.albums,
-            [album => album.year, album => album.title]
+            [album => album.releaseYear, album => album.title]
           )
         } else {
           return [];

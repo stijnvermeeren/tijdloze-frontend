@@ -28,45 +28,31 @@
                 td
                   country-input(v-model='artistDetails.countryId')
     div(v-if='artistValid')
-      h4 Album
+      div.heading Album
+      div.flex(v-for="album in candidateAlbums")
+        span
+          input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
+          label(:for="`album-${album.id}`") {{album.title}} ({{album.releaseYear}})
+      div.flex
+          input#album-new(type='radio' v-model='albumId' :value="undefined")
+          label(for="album-new") Nieuw album
+          div.flexGrow
+            div.hint Titel
+            input(v-model='albumDetails.title' placeholder="Titel")
+          div
+            div.hint Jaar
+            input(v-model.number='albumDetails.releaseYear' type='number')
+    div.flex(v-if='artistValid && albumValid')
+      div.heading Nummer
+      div.flexGrow
+        div.hint Titel
+        input(v-model='songDetails.title' placeholder="Titel")
       div
-        span
-          input#album-existing(type='radio' v-model='albumType' value='existing' :disabled="!artistId || artistType === 'new'")
-          label(for='album-existing') Bestaand album
-        span
-          input#album-new(type='radio' v-model='albumType' value='new')
-          label(for='album-new') Nieuw album
-      .box
-        div(v-if='!albumNew')
-          album-select(v-model='albumId' :artist-id='artistId')
-        div(v-if='albumNew')
-          table.info
-            tbody
-              tr
-                th Titel
-                td
-                  input(v-model='albumDetails.title')
-              tr
-                th Jaar
-                td
-                  input(v-model.number='albumDetails.releaseYear' type='number')
-    div(v-if='artistValid && albumValid')
-      h4 Nummer
-      .box
-        table.info
-          tbody
-            tr
-              th Titel
-              td
-                input(v-model='songDetails.title')
-            tr
-              th Taal
-              td
-                language-input(v-model='songDetails.languageId')
-            tr
-              th Lead vocals
-              td
-                lead-vocals-input(v-model='songDetails.leadVocals')
+        div.hint Taal
+        language-input(v-model='songDetails.languageId')
+      div
+        div.hint Lead vocals
+        lead-vocals-input(v-model='songDetails.leadVocals')
     div
       button(:disabled='!(artistValid && albumValid && songValid) || submitting' @click='submit()') {{buttonLabel}}
 </template>
@@ -77,6 +63,7 @@
   import AlbumSelect from './AlbumSelect'
   import LanguageInput from './LanguageInput'
   import LeadVocalsInput from './LeadVocalsInput'
+  import _ from "lodash";
 
   export default {
     name: 'NewSongWizard',
@@ -97,9 +84,6 @@
       artistNew() {
         return this.artistType === 'new';
       },
-      albumNew() {
-        return this.albumType === 'new';
-      },
       album() {
         return this.$store.getters['entities/albums']().find(this.albumId);
       },
@@ -111,14 +95,29 @@
         }
       },
       albumValid() {
-        if (this.albumNew) {
+        if (!this.albumId) {
           return this.albumDetails.title && this.albumDetails.releaseYear;
         } else {
-          return !! this.albumId;
+          return true;
         }
       },
       songValid() {
         return this.songDetails.title;
+      },
+      candidateAlbums() {
+        if (!this.artistId) {
+          return [];
+        }
+
+        const artist = this.$store.getters['entities/artists']().with('albums').find(this.artistId);
+        if (artist) {
+          return _.sortBy(
+              artist.albums,
+              [album => album.releaseYear, album => album.title]
+          )
+        } else {
+          return [];
+        }
       }
     },
     watch: {
@@ -134,12 +133,6 @@
     },
     methods: {
       checkAlbum() {
-        if (this.artistId && this.artistType === 'existing') {
-          this.albumType = 'existing';
-        } else {
-          this.albumType = 'new';
-        }
-
         if (this.albumId && this.album.artistId !== this.artistId) {
           this.albumId = undefined;
         }
@@ -153,7 +146,6 @@
             name: '',
             countryId: undefined
           },
-          albumType: 'new',
           albumId: undefined,
           albumDetails: {
             title: '',
@@ -184,7 +176,6 @@
           data.albumDetails.title = preset.albumTitle;
           data.albumDetails.releaseYear = preset.albumYear;
           if (album) {
-            data.albumType = 'existing';
             data.albumId = album.id;
           }
 
@@ -266,8 +257,8 @@
           artistId = this.artistId;
         }
 
-        let albumId = undefined;
-        if (this.albumNew) {
+        let albumId = this.albumId;
+        if (!albumId) {
           const albumData = {
             artistId,
             title: this.albumDetails.title,
@@ -275,8 +266,6 @@
           }
           const album = await this.$axios.$post('/album', albumData);
           albumId = album.id;
-        } else {
-          albumId = this.albumId;
         }
 
         const songData = {
@@ -297,10 +286,40 @@
   }
 </script>
 
-<style scoped>
+<style lang="less" scoped>
   div.box {
     border: 1px solid grey;
     padding: 5px 10px;
     margin: 10px 0;
+  }
+
+  .heading {
+    font-weight: bold;
+  }
+
+  .flex {
+    display: flex;
+    margin:  5px 0;
+
+    * {
+      box-sizing: border-box;
+    }
+
+    >div {
+      margin: 0 5px;
+
+      &.flexGrow {
+        flex-grow: 1;
+      }
+
+      div.hint {
+        font-size: 60%;
+        color: grey;
+      }
+
+      input {
+        width: 100%;
+      }
+    }
   }
 </style>
