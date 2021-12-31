@@ -3,7 +3,7 @@
     h2 De Tijdloze Website
     .description
       template(v-if="introMode === 'during'")
-        | De #[strong Tijdloze van {{year.yyyy}}] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
+        | De #[strong Tijdloze 100] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
       template(v-if="introMode === 'pre'")
@@ -13,14 +13,14 @@
       template(v-if="introMode === 'none'")
         | De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
     h3
-      | De Tijdloze van {{year.yyyy}}
+      | De Tijdloze van {{tableYear.yyyy}}
     table.lijst(v-if="top5.length")
       tbody
         tr
-          th.n(v-if='year.previous()')
-            nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
+          th.n(v-if='tableYear.previous()')
+            nuxt-link(:to='`/lijst/${tableYear.previous().yyyy}`') {{tableYear.previous()._yy}}
           th.r
-            nuxt-link(:to='`/lijst/${year.yyyy}`') {{year._yy}}
+            nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
           th.a
             nuxt-link(to='/artiesten') Artiest
           th
@@ -28,21 +28,21 @@
           th.releaseYear
             | Jaar
         tr(v-for='song in top5')
-          td.n(v-if='year.previous()')
-            tijdloze-position(:song='song' :year='year.previous()')
+          td.n(v-if='tableYear.previous()')
+            tijdloze-position(:song='song' :year='tableYear.previous()')
           td.r
-            tijdloze-position-change(:song='song' :year='year')
-            tijdloze-position(:song='song' :year='year')
+            tijdloze-position-change(:song='song' :year='tableYear')
+            tijdloze-position(:song='song' :year='tableYear')
           td.a
             tijdloze-song-artist(:song='song')
           td
             tijdloze-song(:song='song')
           td.releaseYear
             | {{song.album.releaseYear}}
-    p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
+    p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
       div
-        nuxt-link(v-if='top5.length' :to='`lijst/${year.yyyy}`') De volledige lijst van {{year.yyyy}}
+        nuxt-link(v-if='top5.length' :to='`lijst/${tableYear.yyyy}`') De volledige lijst van {{tableYear.yyyy}}
       div
         nuxt-link(v-if='listInProgress' to='lijst/opkomst') Nog op komst...
       div
@@ -83,7 +83,7 @@
         return this.$store.getters.listInProgress;
       },
       top5() {
-        return _.take(this.$store.getters.list(this.year, true), 5);
+        return _.take(this.$store.getters.list(this.tableYear, true), 5);
       },
       exitsKnown() {
         // TODO create getter in store
@@ -93,6 +93,13 @@
       },
       year() {
         return this.$store.getters.currentYear;
+      },
+      tableYear() {
+        if (this.$store.getters.list(this.year, true).length === 0 && this.year.previous()) {
+          return this.year.previous();
+        } else {
+          return this.year;
+        }
       }
     },
     methods: {
