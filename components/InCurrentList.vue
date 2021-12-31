@@ -43,11 +43,29 @@
         const filtered = this.songs.filter(song => song.probablyInList(this.currentYear, true));
         return _.sortBy(
           filtered,
-          [song => this.sortPosition(song, this.currentYear, 1), song => this.sortPosition(song, this.previousYear, 501)]
+          [
+            song => this.sortBlock(song),
+            song => song.position(this.currentYear, true),
+            song => song.position(this.previousYear, true)
+          ]
         )
       }
     },
     methods: {
+      sortBlock(song) {
+        const yearPosition = song.position(this.currentYear, true);
+        const previousYearPosition = song.position(this.previousYear, true)
+
+        if (!yearPosition && previousYearPosition && previousYearPosition <= 100) {
+          // songs that are probably still in the top 100
+          return 1;
+        } else if (yearPosition) {
+          // songs that are already in the list
+          return 2;
+        } else {
+          return 3;
+        }
+      },
       sortPosition(song, year, defaultValue) {
         const position = song.position(year, true);
         return position > 0 ? position : defaultValue;
