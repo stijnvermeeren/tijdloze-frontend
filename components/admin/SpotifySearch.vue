@@ -4,6 +4,10 @@
       input(v-model='query' @keypress.enter='search()' placeholder='Titel en/of artiest')
       button(@click='search()' :disabled='processing')
         | Zoeken op Spotify
+      |  (
+      a(:href="`https://www.google.com/search?q=${query}`" target="_blank")
+        | Zoeken op Google
+      | )
     div(v-if='spotifyTracks.length')
       table
         tbody

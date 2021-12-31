@@ -4,7 +4,7 @@
     h3 De Tijdloze Live
     ul
       li
-        nuxt-link(to='/admin/live') Nummers toevoeren
+        nuxt-link(to='/admin/live') Nummers toevoegen
       li
         nuxt-link(to='/admin/exits') Exits markeren
       li

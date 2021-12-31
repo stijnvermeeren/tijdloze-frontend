@@ -89,7 +89,8 @@
         initialSpotifyQuery: '',
         importText: '',
         importSongs: [],
-        initialGlobalQuery: ''
+        initialGlobalQuery: '',
+        overrideNextPosition: undefined
       }
     },
     computed: {
@@ -109,8 +110,11 @@
         return (new Date()).getFullYear();
       },
       nextPosition() {
-        // TODO make flexible
-        return this.lastPosition ? this.lastPosition - 1 : 1066;
+        if (this.overrideNextPosition) {
+          return this.overrideNextPosition;
+        } else {
+          return this.lastPosition ? this.lastPosition - 1 : 100;
+        }
       },
       nextValid() {
         if (this.nextSongType === 'existing') {
@@ -121,16 +125,38 @@
       }
     },
     methods: {
+      loadNextFromImport() {
+        let found = false;
+        let nextImport = this.importSongs.shift();
+        while (!found && nextImport) {
+          const {overridePosition, query} = nextImport;
+          if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
+            this.initialGlobalQuery = query;
+            this.overrideNextPosition = overridePosition;
+            found = true;
+          } else {
+            nextImport = this.importSongs.shift()
+          }
+        }
+      },
       startImport() {
         this.importSongs = []
-        const fragments = this.importText.split("\n").reverse()
+        const fragments = this.importText.split("\n")
         fragments.forEach(fragment => {
+          const positionMatch = fragment.match(/^[0-9]+/g);
+          let overridePosition = undefined;
+          if (positionMatch.length) {
+            overridePosition = parseInt(positionMatch[0]);
+          }
           const cleanFragment = fragment.replace(/^[0-9 \.]*/g, "").trim()
           if (cleanFragment) {
-            this.importSongs.push(cleanFragment)
+            this.importSongs.push({
+              overridePosition: overridePosition,
+              query: cleanFragment
+            })
           }
         })
-        this.initialGlobalQuery = this.importSongs.shift();
+        this.loadNextFromImport();
       },
       async selectSearchResult(result) {
         if (result.type === 'alt') {
@@ -146,9 +172,9 @@
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {
-          songTitle: track.title,
+          songTitle: this.clean(track.title),
           artistName: track.artist,
-          albumTitle: track.album,
+          albumTitle: this.clean(track.album),
           albumYear: track.year,
           spotifyId: track.spotifyId
         };
@@ -183,8 +209,22 @@
         this.$store.dispatch('nuxtServerInit');
 
         if (this.importSongs.length > 0) {
-          this.initialGlobalQuery = this.importSongs.shift();
+          this.loadNextFromImport();
         }
+      },
+      clean(input) {
+        console.log(input)
+        return input
+            .trim()
+            .replace(/\(with bonus tracks\)$/gi, "")
+            .replace(/\(expanded edition\)$/gi, "")
+            .replace(/\(deluxe\)$/gi, "")
+            .replace(/\((super )?deluxe( edition)?\)$/gi, "")
+            .replace(/[-–] .* version$/gi, "")
+            .replace(/[-–] [0-9 ]*remaster(ed)?[0-9 ]*$/gi, "")
+            .replace(/[-–] mono mix$/gi, "")
+            .replace(/\([0-9 ]*remaster(ed)?[0-9 ]*\)$/gi, "")
+            .trim()
       },
       possibleSong(song) {
         return !song.position(this.currentYear, true) && !song.markedAsExit();
