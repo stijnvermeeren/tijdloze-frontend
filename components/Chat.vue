@@ -284,11 +284,13 @@
     min-height: 300px;
     height: calc(100vh - 200px);
     border: 1px solid grey;
+    border-radius: 4px;
 
     div.header {
       background-color: @inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
+      border-radius: 4px 4px 0 0;
       text-align: left;
       font-size: 14px;
 
@@ -339,7 +341,8 @@
         }
 
         div {
-          padding: 2px 10px 2px 20px;
+          /* reduce right margin when `scrollbar-gutter: stable;` becomes supported be browsers */
+          padding: 2px 25px 2px 20px;
           text-indent: -10px;
 
           span.userName {
@@ -377,6 +380,9 @@
         flex: 1;
         background-color: @inputBackgroundColor;
         font-size: 16px;
+        border-radius: 4px;
+        border: 2px solid grey;
+        box-shadow: 0 0 1px 1px grey inset;
       }
 
       button {
@@ -386,7 +392,7 @@
       }
     }
 
-    div.belowInputMessage {
+    div.belowInputMessage div {
       font-size: 80%;
       color: #aa2222;
       margin: 5px 8px;
