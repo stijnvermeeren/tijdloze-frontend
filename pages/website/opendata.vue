@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     h2 Open data
-    p Alle statistieken op deze website baseren zich op en database van alle Tijdloze lijsten. Deze database kan in verschillende formaten worden gedownload.
+    p Alle statistieken op deze website baseren zich op een database van alle Tijdloze lijsten. Deze database kan in verschillende formaten worden gedownload.
 
     h3 MySQL (relationele datenbank)
     p Onderstaande MySQL-export bevat de structuur en de gegevens van vier tabellen:
