@@ -1,7 +1,8 @@
 
+import { defineNuxtConfig } from '@nuxt/bridge'
 require('dotenv').config()
 
-module.exports = {
+export default defineNuxtConfig({
   /*
   ** Headers of the page
   */
@@ -46,4 +47,4 @@ module.exports = {
       parseJSON: false
     }]
   ]
-};
+})
