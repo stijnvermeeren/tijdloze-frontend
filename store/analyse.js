@@ -344,5 +344,35 @@ export default [
       `2018 is geen goed jaar voor [*Radiohead]: [Street Spirit (Fade Out)] valt uit de lijst, ook hun overige drie noteringen krijgen klappen. [Creep] stond ooit op 3 maar staat nu op 41, de laagste notering sinds 1994.`,
       `Twaalf platen staan niet meer in de Tijdloze in vergelijking met vorig jaar. Opvallende exit's zijn [Paranoid], [Under the Bridge] en [Street Spirit (Fade Out)], die respectievelijk 27, 26 en 22 jaar onafgebroken in de lijst stonden.`
     ]
+  },
+  {
+    yyyy: 2019,
+    analyse: [
+      `De top twee blijft ongewijzigd: [*Black] van [Pearl Jam] staat voor het vijfde jaar op rij op de eerste plaats. [*Bohemian Rhapsody] van [Queen] blijft staan op positie 2. [*Mia] van [Gorky] stijgt opnieuw van 5 naar 3 en wisselt van plaats met [*Smells Like Teen Spirit] van [Nirvana], dat sinds 1994 niet meer zo laag stond.`,
+      `[The Chain], [Piano Man], [Africa] en [Society] staan nog niet zo lang in de Tijdloze, maar stijgen al naar de bovenste regionen van de lijst. [*The Chain] van [Fleetwood Mac] komt zelfs overtuigend in de top 10 binnen op plaats 6.`,
+      `Ook enkele nieuwe nummers uit de Tijdloze van 2018 stijgen meteen stevig door: [Red Eyes] van [The War On Drugs] stijgt 34 plaatsen (van 97 naar 63), [Everywhere] van [Fleetwood Mac] stijgt 37 plaatsen (van 95 naar 58) en [The Sound of Silence;Disturbed] van [Disturbed] stijgt 57 plaatsen (van 94 naar 37, de sterkste stijger van de top 100).`,
+      `[*Stairway To Heaven] van [Led Zeppelin] daalt van 7 naar 8 en bereikt hiermee zijn laagste positie ooit, terwijl het zes jaar geleden nog op 1 stond. Opvallend: het is het enige nummer dat in alle edities van de Tijdloze in de top 10 stond.`,
+      `Enkele vaste waarden uit de bovenste helft van de lijst dalen opvallend hard. [Everlong], goed voor in totaal vijf noteringen in de top 10 sinds 2011, zakt naar 27. [Nothing Else Matters] van [Metallica] daalt tien plaatsen naar plek 22, waar het ook stond in 2014. Het is van 1996 geleden dat de plaat nog lager stond. [Child In Time] van [Deep Purple] zakt dan weer vier plaatsen, waardoor het voor de eerste keer ooit uit de top 10 valt. Dit nummer stond nog nooit zo laag.`,
+      `Het is in het algemeen een mindere editie voor [Metallica]: al hun vier platen dalen. [One; Metallica] blijft de hoogste notering, maar staat op de rand van de top 10. Het was van 1996 geleden dat dit nummer zo laag stond.`,
+      `[Respect] van [*Aretha Franklin] kwam in 2018 binnen op 25, maar tuimelt in 2019 uit de Tijdloze en wordt zo de op één na hoogste exit ooit. Het nummer is ook de hoogste nieuwkomer ooit die het jaar erna meteen weer uit de top 100 wegvalt. Ook onder andere [Hallelujah; Jeff Buckley] van [*Jeff Buckley] (van 2001 tot en met 2010 een vaste waarde in de top 10) en [*Whole Lotta Love] van [Led Zeppelin] (al 29 jaar op rij in de Tijdloze) halen de top 100 niet meer.`,
+      `[*Back to Black] van [Amy Winehouse] zakt 24 plaatsen (van 30 naar 54) en is zo de sterkste daler van De Tijdloze 2019. Nog nooit eindige de sterkste daler zo hoog in de Tijdloze 100; het is slechts de tweede keer dat de sterkste daler niet bij de laagste 40 nummers staat.`,
+      `Nadat er in 2018 een succesvolle oproep was gedaan om meer <strong>vrouwen</strong> in de Tijdloze te stemmen, lijken de vrouwen in 2019 wat terug te vallen. Naast Aretha Franklink dalen ook de nummers van Janis Joplin (met haar [Big Brother and the Holding Company]), [Anne Clark] en [Nina Simone]. Opvallend is dan weer dat [PJ Harvey] voor het eerst in De Tijdloze staat: ze komt nieuw binnen op 99 met [Down by the Water]. [Sinéad O'Connor] is de enige solo vrouw die wel stijgt: ze staat met [Troy] op 34, haar hoogste positie sinds 2003.`,
+      `Er zijn zeven re-entries en één gloednieuwe plaat in deze editie van De Tijdloze. [My Hero], [Born to Run], [Under the Bridge] en [One;U2] staan na een snipperjaar opnieuw in de lijst, [Suds & Soda] is er na twee edities van afwezigheid ook weer bij en [Riders on the Storm] staat weer in De Tijdloze nadat de plaat in 2015 uit de lijst was gevallen. Nog straffer is de re-entry van [*The Ship Song] van [Nick Cave], deze stond voor het laatst in de Tijdloze in 2007 en komt opnieuw binnen op 86. [*Down by the Water] is de enige echte nieuwkomer op 99.`,
+      `Voor het eerst maakt Studio Brussel de hele top 500 bekend. Bij de posities 101-500 zijn 131 songs die al ooit in de Tijdloze stonden (inclusief de top 150 van 1999) en 269 volledig nieuwe nummers.`,
+    ]
+  },
+  {
+    yyyy: 2020,
+    analyse: [
+      `[*Black] van [Pearl Jam] staat voor het zesde jaar op rij op de eerste plaats. [*The Chain] van [Fleetwood Mac] staat na vier jaar in de Tijdloze reeds op een spectaculaire tweede plaats. Dat gaat ten koste van [Bohemian Rhapsody], [Mia] en [Wish You Were Here], die elk een plaatsje dalen.`,
+      `[*Society] van [Eddie Vedder] blijft stijgen en stormt de top 10 binnen op plaats 6. [*Sultans of Swing] van [Dire Straits] staat op plaats 7, de beste notering van dit nummer in 33 jaar Tijdloze.`,
+      `Minder goed gaat het met [*Smells Like Teen Spirit] van [Nirvana] op plaats 8, de laagste notering sinds 1993. [*Stairway to Heaven] van [Led Zeppelin] staat voor het eerst in de geschiedenis van de Tijdloze niet in de top 10. Ook [One;Metallica] van [Metallica] valt weg uit de top 10. [*Child In Time] viel vorig jaar voor de eerste keer ooit uit de top 10, en haalt nu de top 20 al niet meer.`,
+      `Twee opvallende stijgers in de top 20: [*505] stijgt 17 plaatsen (van 36 naar 19), en [*Mr. Brightside] stijgt 15 plaatsen (van 29 naar 14).`,
+      `[Thinking of a Place] van [*The War on Drugs] is de hoogste nieuwkomer op plaats 45. Het nummer is in 2020 net drie jaar oud, dat is tegenwoordig de minimumleeftijd voor nummers in de Tijdloze.`,
+      `De sterkste stijger ([Papillon] van [Editors]) gaat slechts 28 plaatsen vooruit. De sterkste daler ([The Pretender] van [Foo Fighters]) verliest maar 21 plaatsen. Nog nooit waren de verschuivingen in de top 100 zo klein.`,
+      `Met [Sonne] van [*Rammstein] staat voor het eerst sinds 1999 een Duitse band (en voor het eerst ooit een Duitstalig nummer) in de Tijdloze 100. Een andere nieuwe band in de top 100 is [Journey] met [Don't Stop Believin']. [Arctic Monkeys] (met [R U Mine?]) en [System of a Down] (met [Toxicity]) krijgen een nieuw nummer in de lijst en [Jeff Buckley] komt opnieuw binnen met [Hallelujah;Jeff Buckley].`,
+      `Zes nummers staan niet meer in de top 100 in vergelijking met 2019. [Enter Sandman] van [Metallica] (vorig jaar nog op 65) stond 14 jaar onafgebroken in De Tijdloze. [Born Slippy] van [Underworld] haalt na 21 jaar De Tijdloze niet meer. Ook [Under Pressure], [The Number of the Beast], [Riders on the Storm] en [Down by the Water] vallen weg uit de top 100.`,
+      `In de dagen voor de top 100 heeft Studio Brussel een countdown-lijst met in totaal 1066 nummers uitgezonden.`
+    ]
   }
 ]
