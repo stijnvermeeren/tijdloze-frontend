@@ -30,15 +30,16 @@
             | : {{message.message}}
           .systemMessage(v-else)
             | {{message.message}}
-        div(v-if='error' class="systemMessage")
-          | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
-        div(v-else-if='!connected' class="systemMessage")
-          | Even geduld terwijl we je verbinden met de chat...
-        div(v-else-if='uppercaseMessage' class="systemMessage")
-          | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
     .input
       input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
       button(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
+    .belowInputMessage
+      div(v-if='error')
+        | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
+      div(v-else-if='!connected')
+        | Even geduld terwijl we je verbinden met de chat...
+      div(v-else-if='uppercaseMessage')
+        | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
 </template>
 
 <script>
@@ -358,6 +359,7 @@
         }
 
         div.systemMessage {
+          font-size: 70%;
           color: #777777;
           font-style: italic;
         }
@@ -382,6 +384,12 @@
         margin: 2px 5px;
         font-size: 16px;
       }
+    }
+
+    div.belowInputMessage {
+      font-size: 80%;
+      color: #aa2222;
+      margin: 5px 8px;
     }
   }
 </style>
