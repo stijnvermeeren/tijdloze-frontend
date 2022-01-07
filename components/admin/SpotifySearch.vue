@@ -8,6 +8,8 @@
       a(:href="`https://www.google.com/search?q=${query}`" target="_blank")
         | Zoeken op Google
       | )
+    div(v-if='noResults')
+      | Geen resultaten van Spotify. Controlleer de query.
     div(v-if='spotifyTracks.length')
       table
         tbody
@@ -51,7 +53,8 @@
       return {
         query: this.initialQuery,
         processing: false,
-        spotifyTracks: []
+        spotifyTracks: [],
+        noResults: false
       }
     },
     watch: {
@@ -71,7 +74,10 @@
         this.spotifyTracks = [];
         this.processing = true;
         this.$axios.$get('/spotify/find', {params: {query: this.query, limit: 3}}).then(result => {
-          this.spotifyTracks = result
+          this.spotifyTracks = result;
+          if (!this.spotifyTracks.length) {
+            this.noResults = true;
+          }
           this.processing = false;
         })
       },

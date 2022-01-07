@@ -33,9 +33,9 @@
       div
         strong Positie {{nextPosition}} in {{nextYearYyyy}}
 
+      h4 Bestaand nummer
       search-box(
         placeholder='Zoek nummer...'
-        altOption='Als nieuw nummer toevoegen'
         :artist-filter='artist => false'
         :album-filter='album => false'
         :song-filter='possibleSong'
@@ -54,7 +54,9 @@
           button(@click='add(nextSong.id)', :disabled='!nextValid')
             | Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
 
-      .box(v-show="nextSongType === 'new'")
+
+      h4 Nieuw nummer
+      .box
         spotify-search(:initialQuery='initialSpotifyQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
         hr
         new-song-wizard(
@@ -132,6 +134,7 @@
           const {overridePosition, query} = nextImport;
           if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
             this.initialGlobalQuery = query;
+            this.initialSpotifyQuery = query;
             this.overrideNextPosition = overridePosition;
             found = true;
           } else {
@@ -159,16 +162,10 @@
         this.loadNextFromImport();
       },
       async selectSearchResult(result) {
-        if (result.type === 'alt') {
-          this.nextSongType = 'new';
-          this.initialSpotifyQuery = result.query;
-        } else {
-          this.nextSongType = 'existing';
-          this.nextSong = result.item;
-          this.nextSongFullData = undefined;
-
-          this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
-        }
+        this.nextSongType = 'existing';
+        this.nextSong = result.item;
+        this.nextSongFullData = undefined;
+        this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {

@@ -1,47 +1,37 @@
 <template lang="pug">
   div
-    h4 Artiest
     div
-      div
-        span
-          input#artist-existing(type='radio' v-model='artistType' value='existing')
-          label(for='artist-existing') Bestaande artiest
-        span
-          input#artist-new(type='radio' v-model='artistType' value='new')
-          label(for='artist-new') Nieuwe artiest
-      .box
-        div(v-if='!artistNew')
-          artist-select(v-model='artistId')
-        div(v-if='artistNew')
-          table.info
-            tbody
-              tr
-                th Voornaam
-                td
-                  input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...')
-              tr
-                th Naam
-                td
-                  input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...')
-              tr
-                th Land
-                td
-                  country-input(v-model='artistDetails.countryId')
+      div.heading Artiest
+      div.flex
+        input#artist-existing(type='radio' v-model='artistType' value='existing')
+        label(for='artist-existing') Bestaande artiest
+        artist-select(v-model='artistId')
+      div.flex
+        input#artist-new(type='radio' v-model='artistType' value="new")
+        label(for="artist-new") Nieuwe artiest
+        div
+          div.hint Voornaam
+          input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...')
+        div.flexGrow
+          div.hint Naam
+          input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...')
+        div
+          div.hint Land
+          country-input(v-model='artistDetails.countryId')
     div(v-if='artistValid')
       div.heading Album
       div.flex(v-for="album in candidateAlbums")
-        span
-          input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
-          label(:for="`album-${album.id}`") {{album.title}} ({{album.releaseYear}})
+        input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
+        label(:for="`album-${album.id}`") {{album.title}} ({{album.releaseYear}})
       div.flex
-          input#album-new(type='radio' v-model='albumId' :value="undefined")
-          label(for="album-new") Nieuw album
-          div.flexGrow
-            div.hint Titel
-            input(v-model='albumDetails.title' placeholder="Titel")
-          div
-            div.hint Jaar
-            input(v-model.number='albumDetails.releaseYear' type='number')
+        input#album-new(type='radio' v-model='albumId' :value="undefined")
+        label(for="album-new") Nieuw album
+        div.flexGrow
+          div.hint Titel
+          input(v-model='albumDetails.title' placeholder="Titel")
+        div
+          div.hint Jaar
+          input(v-model.number='albumDetails.releaseYear' type='number')
     div.flex(v-if='artistValid && albumValid')
       div.heading Nummer
       div.flexGrow
