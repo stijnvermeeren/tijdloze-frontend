@@ -112,7 +112,14 @@
         return this.$store.getters.list(this.year);
       },
       songsExtended() {
-        return this.$store.getters.list(this.year, true);
+        const extendedSongs = this.$store.getters.list(this.year, true);
+        const extendedPositions = extendedSongs.map(song => song.position(this.year, true))
+        if (Math.max(...extendedPositions) - Math.min(...extendedPositions) === extendedSongs.length - 1) {
+          // don't show extended list if there are gaps
+          return extendedSongs;
+        } else {
+          return this.songs;
+        }
       },
       newSongs() {
         if (this.year.previous()) {
