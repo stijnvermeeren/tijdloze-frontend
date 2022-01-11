@@ -14,7 +14,7 @@ export default function ({ app, store }) {
       const response = JSON.parse(e.data)
 
       if (response.currentYear) {
-        store.commit('setCurrentYear', response.year)
+        store.commit('setCurrentYear', response.currentYear)
       }
 
       if (response.exitSongIds) {
