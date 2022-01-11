@@ -13,49 +13,53 @@ export default function ({ app, store }) {
     onmessage: e => {
       const response = JSON.parse(e.data)
 
-      store.commit('setCurrentYear', response.year)
-      store.commit('setExitSongIds', response.exitSongIds)
+      if (response.currentYear) {
+        store.commit('setCurrentYear', response.year)
+      }
 
-      const yearShort = response.year % 100
+      if (response.exitSongIds) {
+        store.commit('setExitSongIds', response.exitSongIds)
+      }
 
-      Artist.insertOrUpdate({
-        data: response.newArtists
-      })
-      Album.insertOrUpdate({
-        data: response.newAlbums
-      })
-      Song.insertOrUpdate({
-        data: response.newSongs.filter(song => {
-          const existingSong = store.getters['entities/songs']().withAll().find(song.id);
-          return !existingSong;
-        }).map(song => {
-          delete song.positions[yearShort]
+      if (response.year && response.position) {
+        const yearShort = response.year % 100
+
+        if (response.songId) {
+          Song.update({
+            where: response.songId,
+            data: song => {
+              song.positions[yearShort] = response.position
+            }
+          })
+        } else {
+          Song.update({
+            where: song => {
+              return song.positions[yearShort] === response.position
+            },
+            data: song => {
+              delete song.positions[yearShort]
+            }
+          })
+        }
+      }
+
+      if (response.artist) {
+        Artist.insertOrUpdate({
+          data: response.artist
         })
-      })
+      }
 
-      const responseEntries = _.keyBy(response.entries, entry => entry.songId)
+      if (response.album) {
+        Album.insertOrUpdate({
+          data: response.album
+        })
+      }
 
-      Song.update({
-        where: song => {
-          const entry = responseEntries[song.id]
-          return entry && entry.position !== song.positions[yearShort]
-        },
-        data: song => {
-          const entry = responseEntries[song.id]
-          song.positions[yearShort] = entry.position
-        }
-      })
-
-      Song.update({
-        where: song => {
-          const inList = song.positions[yearShort] <= 100
-          const shouldNotBeInList = !(song.id in responseEntries)
-          return inList && shouldNotBeInList
-        },
-        data: song => {
-          delete song.positions[yearShort]
-        }
-      })
+      if (response.song) {
+        Song.insertOrUpdate({
+          data: response.song
+        })
+      }
     },
     onreconnect: e => {},
     onmaximum: e => {},

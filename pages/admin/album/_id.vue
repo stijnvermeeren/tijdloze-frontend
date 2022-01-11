@@ -65,7 +65,6 @@
         this.processing = true;
         this.$axios.$put(`album/${this.fullAlbumData.id}`, this.fullAlbumData).then(result => {
           this.fullAlbumData = result;
-          this.$store.dispatch("nuxtServerInit");
           this.processing = false;
         })
       }

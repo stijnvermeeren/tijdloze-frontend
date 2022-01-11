@@ -99,7 +99,6 @@
         this.processing = true;
         this.$axios.$put(`song/${this.fullSongData.id}`, this.fullSongData).then(result => {
           this.fullSongData = result;
-          this.$store.dispatch("nuxtServerInit");
           this.processing = false;
         })
       }

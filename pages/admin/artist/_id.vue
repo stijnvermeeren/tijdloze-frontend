@@ -67,7 +67,6 @@
         this.processing = true;
         this.$axios.$put(`artist/${this.fullArtistData.id}`, this.fullArtistData).then(result => {
           this.fullArtistData = result;
-          this.$store.dispatch("nuxtServerInit");
           this.processing = false;
         })
       }

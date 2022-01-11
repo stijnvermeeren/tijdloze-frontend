@@ -203,8 +203,6 @@
         this.spotifyData = undefined;
         this.processing = false;
 
-        this.$store.dispatch('nuxtServerInit');
-
         if (this.importSongs.length > 0) {
           this.loadNextFromImport();
         }
