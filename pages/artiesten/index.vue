@@ -21,13 +21,14 @@
 <script>
   import _ from 'lodash'
   import SongWithSecondArtistLink from '../../components/SongWithSecondArtistLink'
+  import Artist from "@/orm/Artist";
 
   export default {
     components: {SongWithSecondArtistLink},
     computed: {
       artists() {
         return _.sortBy(
-          this.$store.getters['entities/artists/query']()
+          Artist.query()
             .with('songs.secondArtist')
             .with('secondarySongs.artist')
             .all(),

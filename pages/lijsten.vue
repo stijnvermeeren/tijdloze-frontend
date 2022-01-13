@@ -8,7 +8,7 @@
             tijdloze-year(:year='year')
         tr(v-for='song in topFive(year)' :key='song.id')
           td.r
-            | {{song.position(year)}}
+            | {{song.position(year, true)}}
           td
             tijdloze-song-artist(:song='song')
           td

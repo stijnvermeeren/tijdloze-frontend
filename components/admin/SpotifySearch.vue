@@ -6,7 +6,7 @@
         | Zoeken op Spotify
       |  (
       a(:href="`https://www.google.com/search?q=${query}`" target="_blank")
-        | Zoeken op Google
+        | Zoek meer info op Google
       | )
     div(v-if='noResults')
       | Geen resultaten van Spotify. Controlleer de query.

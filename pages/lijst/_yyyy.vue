@@ -4,7 +4,7 @@
     full-list(:songs='songsExtended' :year='year')
 
     div(v-if='year.previous()')
-      h3 {{songs.length &gt;= 100 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
+      h3 {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
       table.list-summary
         tbody
           tr
@@ -131,8 +131,8 @@
       exits() {
         if (this.year.previous()) {
           return _.sortBy(
-            this.$store.getters.songs.filter(song => {
-              return song.position(this.year.previous()) && song.notInList(this.year);
+            this.$store.getters.list(this.year.previous()).filter(song => {
+              return song.notInList(this.year);
             }),
             song => song.position(this.year.previous())
           );

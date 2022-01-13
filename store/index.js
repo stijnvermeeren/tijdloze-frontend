@@ -5,6 +5,7 @@ import Album from '~/orm/Album';
 import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
 import Year from '~/orm/Year';
+import List from '~/orm/List';
 
 function objectWithIdKeys(values) {
   const result = {};
@@ -16,9 +17,11 @@ const database = new VuexORM.Database();
 const songs = {};
 const artists = {};
 const albums = {};
+const lists = {};
 database.register(Song, songs);
 database.register(Artist, artists);
 database.register(Album, albums);
+database.register(List, lists);
 
 export const plugins = [ VuexORM.install(database) ]
 
@@ -67,10 +70,16 @@ export const getters = {
   languagesById: state => objectWithIdKeys(state.languages),
   vocalsGendersById: state => objectWithIdKeys(state.vocalsGenders),
   list: (state, getters) => (year, extended) => {
-    return _.sortBy(
-      getters.songs.filter(song => song.position(year, extended)),
-      song => song.position(year, extended)
-    );
+    const list = List.query().with(['songs', 'songs.album', 'songs.artist']).find(year.yyyy)
+    if (list) {
+      if (extended) {
+        return list.songs
+      } else {
+        return _.takeWhile(list.songs, song => song.position(year, true) <= 100)
+      }
+    } else {
+      return []
+    }
   },
   lastSong(state, getters) {
     return _.first(getters.list(getters.currentYear, true));
@@ -131,6 +140,10 @@ export const actions = {
 
     dispatch('entities/songs/create', {
       data: response.songs
+    });
+
+    dispatch('entities/lists/create', {
+      data: response.lists
     });
   }
 }

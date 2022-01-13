@@ -63,6 +63,9 @@
   import LeadVocalsInput from '../../../components/admin/LeadVocalsInput'
   import ArtistSelect from '../../../components/admin/ArtistSelect'
   import AlbumSelect from '../../../components/admin/AlbumSelect'
+  import Song from "@/orm/Song";
+  import Artist from "@/orm/Artist";
+  import Album from "@/orm/Album";
 
   export default {
     components: {AlbumSelect, ArtistSelect, LeadVocalsInput, LanguageInput, Spotify, WikiUrlInput},
@@ -76,13 +79,13 @@
         return this.fullSongData.artistId;
       },
       song() {
-        return this.$store.getters['entities/songs']().find(this.fullSongData.id);
+        return Song.find(this.fullSongData.id);
       },
       album() {
-        return this.$store.getters['entities/albums']().find(this.fullSongData.albumId);
+        return Album.find(this.fullSongData.albumId);
       },
       artist() {
-        return this.$store.getters['entities/artists']().find(this.fullSongData.artistId);
+        return Artist.find(this.fullSongData.artistId);
       },
       disabled() {
         return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||

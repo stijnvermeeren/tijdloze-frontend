@@ -119,6 +119,7 @@
 <script>
   import _ from 'lodash';
   import ranking from '../store/ranking';
+  import Artist from "@/orm/Artist";
 
   const FILTER_ANY = 'alle'
   const FILTER_NO_EXIT = 'geen_exit'
@@ -221,7 +222,7 @@
           item => item.song.secondArtistId
         )
 
-        const data = this.$store.getters['entities/artists/query']().all().map(artist => {
+        const data = Artist.all().map(artist => {
           const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
           const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
 

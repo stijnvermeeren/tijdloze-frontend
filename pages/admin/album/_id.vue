@@ -41,6 +41,8 @@
   import WikiUrlInput from '../../../components/admin/WikiUrlInput'
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import ArtistSelect from '../../../components/admin/ArtistSelect'
+  import Artist from "@/orm/Artist";
+  import Album from "@/orm/Album";
 
   export default {
     components: {ArtistSelect, AllMusicUrlInput, WikiUrlInput},
@@ -51,10 +53,10 @@
     },
     computed: {
       album() {
-        return this.$store.getters['entities/albums']().find(this.fullAlbumData.id);
+        return Album.find(this.fullAlbumData.id);
       },
       artist() {
-        return this.$store.getters['entities/artists']().find(this.fullAlbumData.artistId);
+        return Artist.find(this.fullAlbumData.artistId);
       },
       disabled() {
         return this.processing || !this.fullAlbumData.title || !this.fullAlbumData.artistId || !this.fullAlbumData.releaseYear

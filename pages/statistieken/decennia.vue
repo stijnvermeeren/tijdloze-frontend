@@ -34,7 +34,7 @@
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
-  import _ from 'lodash';
+  import Album from "@/orm/Album";
 
   export default {
     components: {
@@ -48,7 +48,7 @@
         return this.$store.getters.currentYear;
       },
       decades() {
-        const startYear = this.$store.getters['entities/albums/query']().min('releaseYear');
+        const startYear = Album.query().min('releaseYear');
         const endYear = this.currentYear.yyyy;
         const decades = [];
         for (let decadeYear = this.decadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {

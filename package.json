@@ -13,7 +13,7 @@
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.16.1",
     "@nuxtjs/axios": "^5.13.1",
-    "@vuex-orm/core": "^0.34.1",
+    "@vuex-orm/core": "^0.36.4",
     "axios": "^0.21.1",
     "babel-runtime": "^6.26.0",
     "cookie-universal-nuxt": "^2.1.3",

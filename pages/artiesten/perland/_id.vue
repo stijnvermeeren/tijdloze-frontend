@@ -17,6 +17,7 @@
 
 <script>
   import SongWithSecondArtistLink from '../../../components/SongWithSecondArtistLink'
+  import Artist from "@/orm/Artist";
 
   export default {
     components: {SongWithSecondArtistLink},
@@ -25,7 +26,7 @@
         return this.$store.getters.countriesById[this.$route.params.id];
       },
       artists() {
-        return this.$store.getters['entities/artists']()
+        return Artist.query()
           .with('songs.secondArtist')
           .with('secondarySongs.artist')
           .where(artist => artist.countryId === this.country.id)

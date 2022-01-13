@@ -28,6 +28,9 @@
 
 <script>
   import _ from 'lodash';
+  import Artist from "@/orm/Artist";
+  import Song from "@/orm/Song";
+  import Album from "@/orm/Album";
 
   export default {
     props: {
@@ -69,13 +72,13 @@
         }
 
         const artists = this.search(
-          this.$store.getters['entities/artists/query']().all().filter(this.artistFilter),
+          Artist.all().filter(this.artistFilter),
           artist => artist.fullName,
           'artist'
         );
 
         const songs = this.search(
-          this.$store.getters['entities/songs/query']().with('artist').with('secondArtist').all().filter(this.songFilter),
+          Song.query().with('artist').with('secondArtist').all().filter(this.songFilter),
           song => {
             let matchData = `${song.title} ${song.artist.fullName}`;
             if (song.secondArtist) {
@@ -87,7 +90,7 @@
         );
 
         const albums = this.search(
-          this.$store.getters['entities/albums/query']().with('artist').all().filter(this.albumFilter),
+          Album.query().with('artist').all().filter(this.albumFilter),
           album => `${album.title} ${album.artist.fullName}`,
           'album'
         );

@@ -11,13 +11,15 @@
 </template>
 
 <script>
+  import Album from "@/orm/Album";
+
   export default {
     computed: {
       years() {
         return this.$store.getters.years;
       },
       albums() {
-        return this.$store.getters['entities/albums']().withAll().all();
+        return Album.query().withAll().all();
       }
     },
     head: {

@@ -208,7 +208,6 @@
         }
       },
       clean(input) {
-        console.log(input)
         return input
             .trim()
             .replace(/\(with bonus tracks\)$/gi, "")

@@ -40,6 +40,7 @@
   import InCurrentList from '../../components/InCurrentList'
   import SongWithSecondArtistLink from "../../components/SongWithSecondArtistLink";
   import { idFromSlug } from '~/utils/slug'
+  import Album from "@/orm/Album";
 
   export default {
     components: {
@@ -51,7 +52,7 @@
     },
     computed: {
       album() {
-        return this.$store.getters['entities/albums']()
+        return Album.query()
           .withAll()
           .with('songs.album')
           .with('songs.secondArtist')

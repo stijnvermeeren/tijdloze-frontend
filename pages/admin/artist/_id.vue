@@ -46,6 +46,7 @@
   import CountryInput from '../../../components/admin/CountryInput'
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import OfficialUrlInput from '../../../components/admin/OfficialUrlInput'
+  import Artist from "@/orm/Artist";
 
   export default {
     components: {OfficialUrlInput, AllMusicUrlInput, CountryInput, WikiUrlInput},
@@ -56,7 +57,7 @@
     },
     computed: {
       artist() {
-        return this.$store.getters['entities/artists']().find(this.fullArtistData.id);
+        return Artist.find(this.fullArtistData.id);
       },
       disabled() {
         return this.processing || !this.fullArtistData.name

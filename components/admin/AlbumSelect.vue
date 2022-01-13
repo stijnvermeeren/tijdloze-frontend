@@ -12,6 +12,8 @@
 
 <script>
   import _ from 'lodash'
+  import Artist from "@/orm/Artist";
+  import Album from "@/orm/Album";
 
   export default {
     name: 'AlbumSelect',
@@ -31,7 +33,7 @@
     },
     computed: {
       candidateAlbums() {
-        const artist = this.$store.getters['entities/artists']().with('albums').find(this.artistId);
+        const artist = Artist.query().with('albums').find(this.artistId);
         if (artist) {
           return _.sortBy(
             artist.albums,
@@ -42,7 +44,7 @@
         }
       },
       album() {
-        return this.$store.getters['entities/albums']().find(this.value);
+        return Album.find(this.value);
       }
     },
     watch: {

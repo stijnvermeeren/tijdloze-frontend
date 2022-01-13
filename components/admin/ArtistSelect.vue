@@ -16,6 +16,7 @@
 
 <script>
   import SearchBox from '../SearchBox'
+  import Artist from "@/orm/Artist";
   export default {
     name: 'ArtistSelect',
     components: {SearchBox},
@@ -36,7 +37,7 @@
     computed: {
       artist() {
         if (this.value) {
-          return this.$store.getters['entities/artists']().find(this.value);
+          return Artist.find(this.value);
         } else {
           return undefined;
         }

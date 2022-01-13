@@ -11,13 +11,15 @@
 </template>
 
 <script>
+  import Artist from "@/orm/Artist";
+
   export default {
     computed: {
       years() {
         return this.$store.getters.years;
       },
       artists() {
-        return this.$store.getters['entities/artists']()
+        return Artist.query()
           .with('songs')
           .with('secondarySongs')
           .all();

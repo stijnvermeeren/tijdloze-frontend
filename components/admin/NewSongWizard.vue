@@ -54,6 +54,8 @@
   import LanguageInput from './LanguageInput'
   import LeadVocalsInput from './LeadVocalsInput'
   import _ from "lodash";
+  import Album from "@/orm/Album";
+  import Artist from "@/orm/Artist";
 
   export default {
     name: 'NewSongWizard',
@@ -75,7 +77,7 @@
         return this.artistType === 'new';
       },
       album() {
-        return this.$store.getters['entities/albums']().find(this.albumId);
+        return Album.find(this.albumId);
       },
       artistValid() {
         if (this.artistNew) {
@@ -99,7 +101,7 @@
           return [];
         }
 
-        const artist = this.$store.getters['entities/artists']().with('albums').find(this.artistId);
+        const artist = Artist.query().with('albums').find(this.artistId);
         if (artist) {
           return _.sortBy(
               artist.albums,
@@ -186,7 +188,7 @@
         if (artistName) {
           const query = this.preProcessArtistName(artistName);
 
-          return this.$store.getters['entities/artists/query']().all().find(artist => {
+          return Artist.all().find(artist => {
             const matchName = this.preProcessArtistName(artist.fullName);
             return query === matchName;
           })
@@ -206,7 +208,7 @@
         if (artistId && albumName && releaseYear) {
           const queryTokens = albumName.toLowerCase().split(" ");
 
-          return this.$store.getters['entities/albums/query']().all().find(album => {
+          return Album.all().find(album => {
             const matchTokens = album.title.toLowerCase().split(" ");
             const minLength = Math.min(queryTokens.length, matchTokens.length);
             return album.artistId === artistId &&

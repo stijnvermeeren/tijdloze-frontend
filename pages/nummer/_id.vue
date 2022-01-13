@@ -79,6 +79,7 @@
   import InCurrentListSong from '../../components/InCurrentListSong'
   import Spotify from '../../components/Spotify'
   import { idFromSlug } from '~/utils/slug'
+  import Song from "@/orm/Song";
 
   export default {
     components: {
@@ -92,7 +93,7 @@
     },
     computed: {
       song() {
-        return this.$store.getters['entities/songs']().withAll().find(this.fullSongData.id);
+        return Song.query().withAll().find(this.fullSongData.id);
       },
       language() {
         return this.$store.getters.languagesById[this.fullSongData.languageId];

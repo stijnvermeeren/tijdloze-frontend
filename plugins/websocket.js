@@ -2,6 +2,7 @@ import Sockette from "sockette"
 import Artist from '~/orm/Artist'
 import Album from '~/orm/Album'
 import Song from '~/orm/Song'
+import List from '~/orm/List'
 import _ from 'lodash'
 
 export default function ({ app, store }) {
@@ -31,7 +32,29 @@ export default function ({ app, store }) {
               song.positions[yearShort] = response.position
             }
           })
+
+          List.update({
+            where: response.year,
+            data: list => {
+              const partition = _.partition(
+                list.songIds.filter(songId => songId !== response.songId),
+                songId => Song.find(songId).positions[yearShort] < response.position
+              )
+              list.songIds = [
+                ...partition[0],
+                response.songId,
+                ...partition[1]
+              ];
+            }
+          })
         } else {
+          List.update({
+            where: response.year,
+            data: list => {
+              list.songIds = list.songIds.filter(songId => Song.find(songId).positions[yearShort] !== response.position)
+            }
+          })
+
           Song.update({
             where: song => {
               return song.positions[yearShort] === response.position
