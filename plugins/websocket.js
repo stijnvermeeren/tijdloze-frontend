@@ -51,7 +51,9 @@ export default function ({ app, store }) {
           List.update({
             where: response.year,
             data: list => {
-              list.songIds = list.songIds.filter(songId => Song.find(songId).positions[yearShort] !== response.position)
+              list.songIds = list.songIds.filter(songId => {
+                return Song.find(songId).positions[yearShort] !== response.position
+              })
             }
           })
 

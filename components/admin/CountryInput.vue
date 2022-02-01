@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     div
-      select(:value='value' @input='update()' ref='input')
+      select(:value='value' @input='update()' ref='input' :disabled="disabled")
         option(value='')
           | (Ander land)
         option(v-for='country in countries' :key='country.id' :value='country.id')
@@ -11,7 +11,15 @@
 <script>
   export default {
     name: 'CountryInput',
-    props: ['value'],
+    props: {
+      value: {
+        type: String
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      }
+    },
     computed: {
       countries() {
         return this.$store.state.countries;

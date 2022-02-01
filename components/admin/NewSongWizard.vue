@@ -2,38 +2,42 @@
   div
     div
       div.heading Artiest
-      div.flex
+      label.flex(for='artist-existing')
         input#artist-existing(type='radio' v-model='artistType' value='existing')
-        label(for='artist-existing') Bestaande artiest
-        artist-select(v-model='artistId')
-      div.flex
+        div.flex
+          div Bestaande artiest
+          artist-select(v-model='artistId' :disabled="artistType === 'new'")
+      label.flex(for="artist-new")
         input#artist-new(type='radio' v-model='artistType' value="new")
-        label(for="artist-new") Nieuwe artiest
-        div
-          div.hint Voornaam
-          input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...')
-        div.flexGrow
-          div.hint Naam
-          input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...')
-        div
-          div.hint Land
-          country-input(v-model='artistDetails.countryId')
+        div.flex
+          div Nieuwe artiest
+          div
+            div.hint Voornaam
+            input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...' :disabled="artistType === 'existing'")
+          div.flexGrow
+            div.hint Naam
+            input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...' :disabled="artistType === 'existing'")
+          div
+            div.hint Land
+            country-input(v-model='artistDetails.countryId' :disabled="artistType === 'existing'")
     div(v-if='artistValid')
       div.heading Album
-      div.flex(v-for="album in candidateAlbums")
+      label.flex(v-for="album in candidateAlbums" :for="`album-${album.id}`")
         input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
-        label(:for="`album-${album.id}`") {{album.title}} ({{album.releaseYear}})
-      div.flex
+        div.flex
+          div {{album.title}} ({{album.releaseYear}})
+      label.flex(for="album-new")
         input#album-new(type='radio' v-model='albumId' :value="undefined")
-        label(for="album-new") Nieuw album
-        div.flexGrow
-          div.hint Titel
-          input(v-model='albumDetails.title' placeholder="Titel")
-        div
-          div.hint Jaar
-          input(v-model.number='albumDetails.releaseYear' type='number')
+        div.flex.flexGrow
+          div Nieuw album
+          div.flexGrow
+            div.hint Titel
+            input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId")
+          div
+            div.hint Jaar
+            input(v-model.number='albumDetails.releaseYear' type='number' :disabled="!!albumId")
+    div.heading Nummer
     div.flex(v-if='artistValid && albumValid')
-      div.heading Nummer
       div.flexGrow
         div.hint Titel
         input(v-model='songDetails.title' placeholder="Titel")
@@ -43,6 +47,10 @@
       div
         div.hint Lead vocals
         lead-vocals-input(v-model='songDetails.leadVocals')
+    div.otherArtistSongs(v-if="otherArtistSongs.length")
+      | Opgelet! Reeds gekende nummers van deze artist:
+      span(v-for="song in otherArtistSongs")
+        | {{song.title}}
     div
       button(:disabled='!(artistValid && albumValid && songValid) || submitting' @click='submit()') {{buttonLabel}}
 </template>
@@ -75,6 +83,17 @@
     computed: {
       artistNew() {
         return this.artistType === 'new';
+      },
+      otherArtistSongs() {
+        if (this.artistNew || !this.artistId) {
+          return []
+        }
+        const artist = Artist.query().withAll().find(this.artistId)
+        if (!artist) {
+          return []
+        }
+
+        return artist.songs
       },
       album() {
         return Album.find(this.albumId);
@@ -286,7 +305,12 @@
   }
 
   .heading {
+    margin-top: 15px;
     font-weight: bold;
+  }
+
+  input[type="radio"]:not(:checked) + * {
+    color: #aaaaaa;
   }
 
   .flex {
@@ -312,6 +336,16 @@
       input {
         width: 100%;
       }
+    }
+  }
+
+  .otherArtistSongs {
+    font-size: 60%;
+    font-style: italic;
+    margin-left: 5px;
+
+    span {
+      margin: 0 5px;
     }
   }
 </style>

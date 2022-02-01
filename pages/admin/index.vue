@@ -6,6 +6,8 @@
       li
         nuxt-link(to='/admin/live') Nummers toevoegen
       li
+        nuxt-link(to='/admin/lijst') Volledige lijst van dit jaar
+      li
         nuxt-link(to='/admin/exits') Exits markeren
       li
         nuxt-link(to='/admin/polls') Polls

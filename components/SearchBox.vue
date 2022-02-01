@@ -13,8 +13,8 @@
             template(v-if='result.item.secondArtist')
               |
               | en #[span.artiest {{result.item.secondArtist.fullName}}]
-            template(v-if='songsYear && result.item.position(songsYear)')
-              | ; positie {{result.item.position(songsYear)}} in {{songsYear.yyyy}}
+            template(v-if='songsYear && result.item.position(songsYear, true)')
+              | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
             | )
         div(v-if="result.type === 'album'")
           | {{result.item.title}}
@@ -115,6 +115,7 @@
       initialQuery(newValue) {
         this.$refs.input.focus();
         this.query = newValue;
+        this.$emit('initialResultCount', this.resultsCount);
       }
     },
     methods: {

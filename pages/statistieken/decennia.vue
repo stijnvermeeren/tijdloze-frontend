@@ -28,7 +28,7 @@
               | {{count}}
             td.r
               | {{total}}
-    .graph(v-for='{decade, dataPoints} in graphData')
+    .graph(v-for='{decade, dataPoints} in graphData' v-if="dataPoints.length")
       tijdloze-distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 

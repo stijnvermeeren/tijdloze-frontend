@@ -73,7 +73,10 @@
       search() {
         this.spotifyTracks = [];
         this.processing = true;
-        this.$axios.$get('/spotify/find', {params: {query: this.query, limit: 3}}).then(result => {
+
+        const cleanQuery = this.query.replace(/[^\p{L}0-9 ]/u, "")
+
+        this.$axios.$get('/spotify/find', {params: {query: cleanQuery, limit: 3}}).then(result => {
           this.spotifyTracks = result;
           if (!this.spotifyTracks.length) {
             this.noResults = true;
@@ -83,7 +86,7 @@
       },
       select(track) {
         this.$emit('selectSpotifyTrack', track);
-        this.cancel();
+        this.spotifyTracks = [];
       }
     }
   }

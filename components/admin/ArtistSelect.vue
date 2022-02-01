@@ -7,11 +7,12 @@
         :album-filter='album => false'
         placeholder='Zoek artiest...'
         @selectSearchResult='selectArtist($event.item)'
+        :disabled="disabled"
       )
-      button(v-if='artist' @click='editing = false') Annuleren
+      button(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
     div(v-else)
-      button(@click='editing = true') Wijzigen
-      button(v-if="!required" @click='clear()') Verwijderen
+      button(@click='editing = true' :disabled="disabled") Wijzigen
+      button(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
 </template>
 
 <script>
@@ -27,6 +28,10 @@
       required: {
         type: Boolean,
         default: true
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
