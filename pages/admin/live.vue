@@ -241,7 +241,7 @@
             .trim()
       },
       possibleSong(song) {
-        return !song.position(this.currentYear, true) && !song.markedAsExit();
+        return !song.position(this.currentYear, true) && (this.nextPosition > 100 || !song.markedAsExit());
       }
     },
     middleware: 'admin',
