@@ -3,8 +3,7 @@
     h2 Op komst in de Tijdloze van {{year.yyyy}}?
     #toelichting(style='margin-bottom: 1.5em;')
       p
-        | Welke nummers zijn nog op komst in de Tijdloze van dit jaar? De nummers zijn geordend volgens de posities van vorig jaar.
-      p(v-if='!exitsKnown') Opgelet, de exits van dit jaar zijn nog niet bekend!
+        | De nummers die we dit jaar nog niet gehoord hebben, gesorteerd volgens hun positie in de lijst van vorig jaar.
     table.lijst.perVijf
       tbody
         tr
@@ -39,17 +38,11 @@
       year() {
         return this.$store.getters.currentYear;
       },
-      exitsKnown() {
-        // TODO create getter in store
-        return this.$store.getters.songs.filter(song => {
-          return song.position(this.year.previous()) && song.notInList(this.year);
-        }).length > 0
-      },
       upcomingSongs() {
         return _.sortBy(
           this.$store.getters.songs.filter(song => {
             return song.position(this.year.previous()) && (
-              !song.position(this.year) && !song.notInList(this.year)
+              !song.position(this.year) && song.probablyInList(this.year)
             );
           }),
           song => -song.position(this.year.previous())

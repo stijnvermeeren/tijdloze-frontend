@@ -33,9 +33,9 @@ export default class Song extends Model {
   position(year, extended) {
     const position = this.positions[year.yy];
     if (extended) {
-      return position > 0 ? position : null;
+      return position > 0 ? position : undefined;
     } else {
-      return position > 0 && position <= 100 ? position : null;
+      return position > 0 && position <= 100 ? position : undefined;
     }
   }
 
@@ -43,22 +43,31 @@ export default class Song extends Model {
     return this.$store().state.exitSongIds.includes(this.id)
   }
 
-  /**
-   * When we can assume (barring re-entries) that a song is not in the list of the given year, so either
-   * - The year is not current and the song is not in the list
-   * - The year is current and the song is known as an exit
-   * - The year is current and the song was not in the previous list and is not (yet) in the current list
-   */
   notInList(year, extended) {
-    if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
-      return this.markedAsExit() || (!extended && this.position(year, true) > 100);
-    } else {
-      return !this.position(year, extended);
-    }
+    return !this.probablyInList(year, extended);
   }
 
+  /**
+   * When we can assume (barring re-entries) that a song is in the list of the given year, if either
+   * - The song already has a position on the list
+   * - The year is current and the song was listed in the previous year and either
+   *   - we're looking at the extended list and the current list is not complete
+   *   - we're looking at the top 100 and the song is not yet marked as an exit and does not have a position > 100
+   */
   probablyInList(year, extended) {
-    return !this.notInList(year, extended);
+    if (this.position(year, extended)) {
+      return true;
+    }
+
+    if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
+      if (extended) {
+        return this.$store().getters.lastPosition > 1;
+      } else {
+        return !(this.markedAsExit() || this.position(year, true) > 100)
+      }
+    }
+
+    return false;
   }
 
   stationaryIntervals(years) {
