@@ -1,94 +1,66 @@
 <template lang="pug">
   div
-    div(v-if='songs.length')
-      table.lijst(ref='list')
-        tbody
-          tr
-            th.n(v-if='year.previous()')
-              nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
-            th.r {{year._yy}}
-            th.n(v-if='year.next()')
-              nuxt-link(:to='`/lijst/${year.next().yyyy}`') {{year.next()._yy}}
-            th.a
-              nuxt-link(to='/artiesten') Artiest
-            th
-              nuxt-link(to='/nummers') Titel
-            th.releaseYear
-              | Jaar
-          tr(v-for='song in shownSongs' :key='song.id' :class='{lineAfter: song.position(year, true) % 5 === 0}')
-            td.n(v-if='year.previous()')
-              tijdloze-position(:song='song' :year='year.previous()')
-            td.r
-              tijdloze-position-change(:song='song' :year='year')
-              tijdloze-position(:song='song' :year='year')
-            td.n(v-if='year.next()')
-              tijdloze-position(:song='song' :year='year.next()')
-            td.a
-              tijdloze-song-artist(:song='song')
-            td
-              tijdloze-song(:song='song')
-            td.releaseYear
-              | {{song.album.releaseYear}}
-      .collapseLink(v-if='length > 10')
-        div(v-if='length > 10 && limit != 10' @click.prevent='limit = 10')
-          a Toon top 10
-        div(v-if='length > 100 && limit != 100' @click.prevent='limit = 100')
-          a Toon top 100
-        div(v-if='length > 10 && limit != length' @click.prevent='limit = length')
-          a Toon alle {{length}} nummers
+    div(v-if='songs.length > 0')
+      div.entry.header
+        div.n(v-if='year.previous()')
+          nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
+        div.r {{year.yyyy}}
+        div.n(v-if='year.next()')
+          nuxt-link(:to='`/lijst/${year.next().yyyy}`') {{year.next()._yy}}
+        div.a
+          nuxt-link(to='/artiesten') Artiest
+        div.s
+          nuxt-link(to='/nummers') Titel
+        div.releaseYear
+          | Jaar
+      div.content(v-if='songs.length > 20')
+        div.wrapper
+          RecycleScroller.scroller(:items="songs" :item-size="24" key-field="id" :buffer="40")
+            template(v-slot="{ item }")
+              full-list-entry(:song="item" :year="year")
+      div(v-else)
+        full-list-entry(v-for="song in songs" :song="song" :year="year")
+
     p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script>
-  import _ from 'lodash'
+  import FullListEntry from "./FullListEntry";
 
   export default {
     name: 'FullList',
+    components: {
+      FullListEntry
+    },
     props: {
       year: {
         type: Object
       },
       songs: {
         type: Array
-      },
-      initialLimit: {
-        type: Number,
-        default: 10
-      }
-    },
-    data() {
-      return {
-        limit: this.initialLimit
-      }
-    },
-    computed: {
-      length() {
-        return this.songs.length
-      },
-      shownSongs() {
-        return _.take(this.songs, this.limit);
-      }
-    },
-    watch: {
-      limit(newValue, oldValue) {
-        if (newValue < oldValue) {
-          const element = this.$refs['list'];
-          element.scrollIntoView({block: "start"});
-        }
       }
     }
   }
 </script>
 
-<style lang="less" scoped>
-  div.collapseLink {
-    text-align: center;
-    font-weight: bold;
-  }
+<style lang="less">
+  div.content {
+    flex: 100% 1 1;
+    position: relative;
+    height: 512px;
 
-  .releaseYear {
-    @media (max-width: 660px) {
-      display: none;
+    .wrapper {
+      overflow: hidden;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      .scroller {
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 </style>

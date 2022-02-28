@@ -43,7 +43,7 @@
         tbody
           tr
             th.r
-              | {{year.previous()._yy}}
+              | {{year.previous().yyyy}}
             th.a
               nuxt-link(to='/artiesten') Artiest
             th
@@ -66,7 +66,7 @@
         tbody
           tr
             th.r
-              | {{year._yy}}
+              | {{year.yyyy}}
             th.a
               nuxt-link(to='/artiesten') Artiest
             th

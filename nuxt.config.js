@@ -34,8 +34,12 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/url',
     '~/plugins/gtag',
+    '~/plugins/vue-virtual-scroller',
     { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
+  ],
+  css: [
+    { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
   buildModules: [
     '@nuxtjs/dotenv',
