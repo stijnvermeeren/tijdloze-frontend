@@ -18,7 +18,7 @@ export default class Song extends Model {
       albumId: this.attr(null),
       languageId: this.attr(null),
       leadVocals: this.attr(null),
-      positions: this.attr(null),
+      positions: this.attr({}),
 
       artist: this.belongsTo(Artist, 'artistId'),
       secondArtist: this.belongsTo(Artist, 'secondArtistId'),
