@@ -130,7 +130,7 @@
           .replace(/[^a-zA-Z0-9 ]/g, "")
       },
       search(data, matchAttribute, type) {
-        const fragments = this.normalize(this.query).split(" ");
+        const fragments = this.query.split(/[ .,&\-]+/).map(fragment => this.normalize(fragment));
         return data.filter(item => {
           return _.every(
             fragments,
