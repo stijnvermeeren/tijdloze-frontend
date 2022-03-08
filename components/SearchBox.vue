@@ -130,7 +130,11 @@
           .replace(/[^a-zA-Z0-9 ]/g, "")
       },
       search(data, matchAttribute, type) {
-        const fragments = this.query.split(/[ .,&\-]+/).map(fragment => this.normalize(fragment));
+        const ignoredWords = new Set(["and", "en"]);
+        const fragments = this.query
+            .split(/[ .,&\-]+/)
+            .map(this.normalize)
+            .filter(fragment => !ignoredWords.has(fragment));
         return data.filter(item => {
           return _.every(
             fragments,
