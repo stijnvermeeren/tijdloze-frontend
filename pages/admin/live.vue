@@ -31,7 +31,7 @@
     div(v-show='!lastSong || nextPosition > 0')
       h3 Volgend nummer
       div
-        strong Positie {{nextPosition}} in {{nextYearYyyy}}
+        strong Positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="!nextSongNew")
         h4
@@ -57,7 +57,7 @@
             spotify(:spotify-id='nextSongFullData.spotifyId')
           div
             button(@click='add(nextSong.id)', :disabled='!nextValid')
-              | Toevoegen op positie {{nextPosition}} in {{nextYearYyyy}}
+              | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongNew")
         h4
@@ -69,7 +69,7 @@
           hr
           new-song-wizard(
             :preset='spotifyData'
-            :button-label='`Toevoegen op positie ${nextPosition} in ${nextYearYyyy}`'
+            :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
             @newSong='add($event.id)'
           )
 

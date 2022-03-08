@@ -19,7 +19,7 @@
             template(v-slot="{ item }")
               full-list-entry(:song="item" :year="year")
       div(v-else)
-        full-list-entry(v-for="song in songs" :song="song" :year="year")
+        full-list-entry(v-for="song in songs" :key="song.id" :song="song" :year="year")
 
     p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
