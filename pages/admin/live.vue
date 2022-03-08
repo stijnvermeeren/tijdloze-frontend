@@ -235,9 +235,9 @@
             .replace(/\(deluxe\)$/gi, "")
             .replace(/\((super )?deluxe( edition)?\)$/gi, "")
             .replace(/[-–] .* version$/gi, "")
-            .replace(/[-–] [0-9 ]*remaster(ed)?[0-9 ]*$/gi, "")
+            .replace(/[-–] [0-9 ]*remaster(ed)?( version)?[0-9 ]*$/gi, "")
             .replace(/[-–] mono mix$/gi, "")
-            .replace(/\([0-9 ]*remaster(ed)?[0-9 ]*\)$/gi, "")
+            .replace(/\([0-9 ]*remaster(ed)?( version)?[0-9 ]*\)$/gi, "")
             .trim()
       },
       possibleSong(song) {
