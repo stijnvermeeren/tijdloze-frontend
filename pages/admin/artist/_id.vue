@@ -20,7 +20,7 @@
           td
             textarea.notes(v-model='fullArtistData.notes')
         tr
-          th Offici&euml;le website
+          th Officiële website
           td
             official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
         tr
