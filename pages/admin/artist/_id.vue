@@ -22,19 +22,19 @@
         tr
           th Offici&euml;le website
           td
-            official-url-input(v-model='fullArtistData.urlOfficial' :query='`${artist.fullName} official`')
+            official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
         tr
           th Wikipedia Nederlands
           td
-            wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='artist.fullName')
+            wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
         tr
           th Wikipedia Engels
           td
-            wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='artist.fullName')
+            wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
         tr
           th AllMusic
           td
-            all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='artist.fullName')
+            all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
         tr
           th
           td
@@ -46,7 +46,6 @@
   import CountryInput from '../../../components/admin/CountryInput'
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import OfficialUrlInput from '../../../components/admin/OfficialUrlInput'
-  import Artist from "@/orm/Artist";
 
   export default {
     components: {OfficialUrlInput, AllMusicUrlInput, CountryInput, WikiUrlInput},
@@ -56,11 +55,15 @@
       }
     },
     computed: {
-      artist() {
-        return Artist.find(this.fullArtistData.id);
-      },
       disabled() {
         return this.processing || !this.fullArtistData.name
+      },
+      fullName() {
+        if (this.fullArtistData.namePrefix) {
+          return `${this.fullArtistData.namePrefix} ${this.fullArtistData.name}`
+        } else {
+          return this.fullArtistData.name;
+        }
       }
     },
     methods: {
@@ -80,7 +83,7 @@
     middleware: 'admin',
     head() {
       return {
-        title: `Admin: Artist: ${this.artist.fullName}`
+        title: `Admin: Artist: ${this.fullName}`
       }
     }
   }
