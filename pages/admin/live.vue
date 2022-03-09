@@ -230,14 +230,7 @@
       clean(input) {
         return input
             .trim()
-            .replace(/\(with bonus tracks\)$/gi, "")
-            .replace(/\(expanded edition\)$/gi, "")
-            .replace(/\(deluxe\)$/gi, "")
-            .replace(/\((super )?deluxe( edition)?\)$/gi, "")
-            .replace(/[-–] .* version$/gi, "")
-            .replace(/[-–] [0-9 ]*remaster(ed)?( version)?[0-9 ]*$/gi, "")
-            .replace(/[-–] mono mix$/gi, "")
-            .replace(/\([0-9 ]*remaster(ed)?( version)?[0-9 ]*\)$/gi, "")
+            .replace(/[-–(].*(bonus|edition|expanded|version|remaster|mix).*[)]?$/gi, "")
             .trim()
       },
       possibleSong(song) {

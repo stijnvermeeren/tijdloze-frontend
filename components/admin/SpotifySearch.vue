@@ -8,33 +8,34 @@
       a(:href="`https://www.google.com/search?q=${query}`" target="_blank")
         | Zoek meer info op Google
       | )
-    div(v-if='!spotifyTracks.length')
-      | Geen resultaten van Spotify. Controlleer de query.
-    div(v-else)
-      table
-        tbody
-          tr(v-for='track in spotifyTracks' :key='track.spotifyId')
-            td
-              spotify(:spotify-id='track.spotifyId')
-            td.details
-              div
-                | Artist:
-                |
-                strong {{track.artist}}
-              div
-                | Titel:
-                |
-                strong {{track.title}}
-              div
-                | Album:
-                |
-                em {{track.album}}
-                |
-                |({{track.year}}).
-            td
-              button(@click='select(track)') Selecteren
-      div
-        button(@click='cancel()') Zoeken annuleren
+    template(v-if="showingResults")
+      div(v-if='!spotifyTracks.length')
+        | Geen resultaten van Spotify. Controlleer de query.
+      div(v-else)
+        table
+          tbody
+            tr(v-for='track in spotifyTracks' :key='track.spotifyId')
+              td
+                spotify(:spotify-id='track.spotifyId')
+              td.details
+                div
+                  | Artist:
+                  |
+                  strong {{track.artist}}
+                div
+                  | Titel:
+                  |
+                  strong {{track.title}}
+                div
+                  | Album:
+                  |
+                  em {{track.album}}
+                  |
+                  |({{track.year}}).
+              td
+                button(@click='select(track)') Selecteren
+        div
+          button(@click='cancel()') Zoeken annuleren
 </template>
 
 <script>
@@ -53,6 +54,7 @@
       return {
         query: this.initialQuery,
         processing: false,
+        showingResults: false,
         spotifyTracks: []
       }
     },
@@ -68,6 +70,7 @@
       cancel() {
         this.query = '';
         this.spotifyTracks = [];
+        this.showingResults = false;
       },
       search() {
         this.spotifyTracks = [];
@@ -78,11 +81,13 @@
         this.$axios.$get('/spotify/find', {params: {query: cleanQuery, limit: 3}}).then(result => {
           this.spotifyTracks = result;
           this.processing = false;
+          this.showingResults = true;
         })
       },
       select(track) {
         this.$emit('selectSpotifyTrack', track);
         this.spotifyTracks = [];
+        this.showingResults = false;
       }
     }
   }
