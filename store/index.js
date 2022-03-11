@@ -7,12 +7,6 @@ import Song from '~/orm/Song';
 import Year from '~/orm/Year';
 import List from '~/orm/List';
 
-function objectWithIdKeys(values) {
-  const result = {};
-  values.forEach(value => result[value.id] = value);
-  return result;
-}
-
 const database = new VuexORM.Database();
 const songs = {};
 const artists = {};
@@ -27,10 +21,7 @@ export const plugins = [ VuexORM.install(database) ]
 
 export const state = () => ({
   yearsRaw: [],
-  exitSongIds: [],
-  countries: [],
-  languages: [],
-  vocalsGenders: []
+  exitSongIds: []
 })
 
 export const getters = {
@@ -66,9 +57,9 @@ export const getters = {
       return getters.songs.find(song => song.position(year) === 1);
     });
   },
-  countriesById: state => objectWithIdKeys(state.countries),
-  languagesById: state => objectWithIdKeys(state.languages),
-  vocalsGendersById: state => objectWithIdKeys(state.vocalsGenders),
+  usedCountryIds (state, getters) {
+    return new Set(Artist.all().map(artist => artist.countryId));
+  },
   list: (state, getters) => (year, extended) => {
     const list = List.query().with(['songs', 'songs.album', 'songs.artist']).find(year.yyyy)
     if (list) {
@@ -101,15 +92,6 @@ export const getters = {
 
 export const mutations = {
   updateCoreData(state, json) {
-    state.countries = _.sortBy(
-      json.countries,
-      country => country.name
-    );
-    state.languages = _.sortBy(
-      json.languages,
-      language => language.name
-    );
-    state.vocalsGenders = json.vocalsGenders;
     state.yearsRaw = json.years;
     state.exitSongIds = json.exitSongIds;
   },

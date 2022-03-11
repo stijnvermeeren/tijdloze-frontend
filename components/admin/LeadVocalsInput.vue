@@ -4,17 +4,19 @@
       select(:value='value' ref='input' @input='update()')
         option(value='')
           | (Lead vocals niet gedefinieerd)
-        option(v-for='gender in vocalsGenders' :key='gender.id' :value='gender.id')
-          | {{gender.name}}
+        option(v-for='[genderId, genderName] in Object.entries(vocalsGenders)' :key='genderId' :value='genderId')
+          | {{genderName}}
 </template>
 
 <script>
+  import vocalsGenders from '~/utils/leadVocals'
+
   export default {
     name: 'LeadVocalsInput',
     props: ['value'],
     computed: {
       vocalsGenders() {
-        return this.$store.state.vocalsGenders;
+        return vocalsGenders;
       }
     },
     methods: {

@@ -4,10 +4,10 @@
       h2 {{artist.fullName}}
     table.info
       tbody
-        tr(v-if="country")
+        tr(v-if="artist.countryId")
           th Land
           td
-            tijdloze-country-icon(:country='country' :include-name="true")
+            tijdloze-country-icon(:country-id='artist.countryId' :include-name="true")
         tr
           th In de Tijdloze
           td
@@ -73,9 +73,6 @@
       },
       top100Songs() {
         return this.artist.allSongs.filter(song => song.listCount(this.$store.getters.years) > 0)
-      },
-      country() {
-        return this.$store.getters.countriesById[this.artist.countryId];
       },
       currentYear() {
         return this.$store.getters.currentYear;

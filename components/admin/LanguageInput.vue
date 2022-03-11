@@ -4,17 +4,19 @@
       select(:value='value' @input='update()' ref='input')
         option(value='')
           | (Andere taal)
-        option(v-for='language in languages' :key='language.id' :value='language.id')
-          | {{language.name}}
+        option(v-for='[languageId, languageName] in Object.entries(languages)' :key='languageId' :value='languageId')
+          | {{languageName}}
 </template>
 
 <script>
+  import languages from '~/utils/language'
+
   export default {
     name: 'LanguageInput',
     props: ['value'],
     computed: {
       languages() {
-        return this.$store.state.languages;
+        return languages;
       }
     },
     methods: {

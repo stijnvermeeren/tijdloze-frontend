@@ -15,20 +15,20 @@
             th.r Lead vocals
             th(v-for='year in years') {{year._yy}}
             th.r Tot.
-          tr(v-for='{vocalsGender, total, perYear} in counts')
+          tr(v-for='{vocalsGenderId, total, perYear} in counts')
             td.r
-              | {{vocalsGender.name}}
+              | {{vocalsGenders[vocalsGenderId]}}
             td(v-for='{count} in perYear')
               | {{count}}
             td.r
               | {{total}}
-    .graph(v-for='{vocalsGender, dataPoints} in graphData')
-      tijdloze-distribution-graph(:points='dataPoints' :title='vocalsGender.name')
+    .graph(v-for='{vocalsGenderId, dataPoints} in graphData')
+      tijdloze-distribution-graph(:points='dataPoints' :title='vocalsGenders[vocalsGenderId]')
 </template>
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
-  import _ from 'lodash';
+  import vocalsGenders from '~/utils/leadVocals'
 
   export default {
     components: {
@@ -39,15 +39,15 @@
         return this.$store.getters.years;
       },
       vocalsGenders() {
-        return this.$store.state.vocalsGenders;
+        return vocalsGenders;
       },
       graphData() {
         const dataPoints = {};
-        const result = this.vocalsGenders.map(vocalsGender => {
-          dataPoints[vocalsGender.id] = [];
+        const result = Object.keys(vocalsGenders).map(vocalsGenderId => {
+          dataPoints[vocalsGenderId] = [];
           return {
-            vocalsGender: vocalsGender,
-            dataPoints: dataPoints[vocalsGender.id]
+            vocalsGenderId: vocalsGenderId,
+            dataPoints: dataPoints[vocalsGenderId]
           };
         });
 
@@ -67,9 +67,9 @@
         return result;
       },
       counts() {
-        return this.graphData.map(({vocalsGender, dataPoints}) => {
+        return this.graphData.map(({vocalsGenderId, dataPoints}) => {
           return {
-            vocalsGender: vocalsGender,
+            vocalsGenderId: vocalsGenderId,
             total: dataPoints.length,
             perYear: this.years.map(year => {
               return {

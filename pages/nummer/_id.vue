@@ -80,6 +80,7 @@
   import Spotify from '../../components/Spotify'
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
+  import countries from '~/utils/country'
 
   export default {
     components: {
@@ -94,9 +95,6 @@
     computed: {
       song() {
         return Song.query().withAll().find(this.fullSongData.id);
-      },
-      language() {
-        return this.$store.getters.languagesById[this.fullSongData.languageId];
       },
       years() {
         return this.$store.getters.years;

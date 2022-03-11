@@ -1,11 +1,24 @@
 <template lang="pug">
-  nuxt-link(:to='`/artiesten/perland/${country.id}`')
-    img(:src='`/images/flag/${country.id}.png`' :alt='country.name')
-    span(v-if='includeName')  {{country.name}}
+  nuxt-link(v-if="countryName" :to='`/artiesten/perland/${countryId}`')
+    img(
+      :src='`https://flagcdn.com/20x15/${countryId}.png`'
+      :srcset='`https://flagcdn.com/40x30/${countryId}.png 2x, https://flagcdn.com/60x45/${countryId}.png 3x`'
+      :alt='countryName'
+      width="20"
+      height="15"
+    )
+    span(v-if='includeName')  {{countryName}}
 </template>
 
 <script>
+  import countries from '~/utils/country'
+
   export default {
-    props: ["country", "includeName"]
+    props: ["countryId", "includeName"],
+    computed: {
+      countryName() {
+        return countries[this.countryId]
+      }
+    }
   }
 </script>

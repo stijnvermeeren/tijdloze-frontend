@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    h2 Artiesten: {{this.country.name}}
+    h2 Artiesten: {{countryName}}
     table.lijst.perVijf
       tbody
         tr
@@ -18,24 +18,25 @@
 <script>
   import SongWithSecondArtistLink from '../../../components/SongWithSecondArtistLink'
   import Artist from "@/orm/Artist";
+  import countries from '~/utils/country'
 
   export default {
     components: {SongWithSecondArtistLink},
     computed: {
-      country() {
-        return this.$store.getters.countriesById[this.$route.params.id];
+      countryName() {
+        return countries[this.$route.params.id] || "Onbekend land";
       },
       artists() {
         return Artist.query()
           .with('songs.secondArtist')
           .with('secondarySongs.artist')
-          .where(artist => artist.countryId === this.country.id)
+          .where(artist => artist.countryId === this.$route.params.id)
           .all();
       }
     },
     head() {
       return {
-        title: `Artiesten: ${this.country.name}`
+        title: `Artiesten: ${this.countryName}`
       }
     }
   }

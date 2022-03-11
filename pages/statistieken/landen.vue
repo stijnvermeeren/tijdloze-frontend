@@ -15,21 +15,22 @@
             th.r Land
             th(v-for='year in years') {{year._yy}}
             th.r Tot.
-          tr(v-for='{country, total, perYear} in counts')
+          tr(v-for='{countryId, total, perYear} in counts')
             td.r
-              tijdloze-country-icon(:country='country' :include-name='true')
+              tijdloze-country-icon(:country-id='countryId' :include-name='true')
             td(v-for='{count} in perYear')
               | {{count}}
             td.r
               | {{total}}
-    .graph(v-for='{country, dataPoints} in graphData')
+    .graph(v-for='{countryId, dataPoints} in graphData')
       tijdloze-distribution-graph(:points='dataPoints')
-        tijdloze-country-icon(:country='country' :include-name='true')
+        tijdloze-country-icon(:country-id='countryId' :include-name='true')
 </template>
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
   import _ from 'lodash';
+  import countries from '~/utils/country'
 
   export default {
     components: {
@@ -43,14 +44,17 @@
         return this.graphData.map(data => data.country);
       },
       graphData() {
-        const allCountries = this.$store.state.countries;
+        const usedCountryIds = _.sortBy(
+            [...this.$store.getters.usedCountryIds],
+            countryId => countries[countryId]
+        )
         const dataPoints = {};
 
-        const result = allCountries.map(country => {
-          dataPoints[country.id] = [];
+        const result = usedCountryIds.map(countryId => {
+          dataPoints[countryId] = [];
           return {
-            country: country,
-            dataPoints: dataPoints[country.id]
+            countryId: countryId,
+            dataPoints: dataPoints[countryId]
           };
         });
 
@@ -71,9 +75,9 @@
         return result.filter(data => data.dataPoints.length)
       },
       counts() {
-        return this.graphData.map(({country, dataPoints}) => {
+        return this.graphData.map(({countryId, countryName, dataPoints}) => {
           return {
-            country: country,
+            countryId: countryId,
             total: dataPoints.length,
             perYear: this.years.map(year => {
               return {

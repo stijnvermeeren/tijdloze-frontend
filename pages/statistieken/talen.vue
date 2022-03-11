@@ -18,21 +18,21 @@
             th.r Land
             th(v-for='year in years') {{year._yy}}
             th.r Tot.
-          tr(v-for='{language, total, perYear} in counts')
+          tr(v-for='{languageId, total, perYear} in counts')
             td.r
-              | {{language.name}}
+              | {{languages[languageId]}}
             td(v-for='{count} in perYear')
               | {{count}}
             td.r
               | {{total}}
 
-    .graph(v-for='{language, dataPoints} in graphData')
-      tijdloze-distribution-graph(:points='dataPoints' :title='language.name')
+    .graph(v-for='{languageId, dataPoints} in graphData')
+      tijdloze-distribution-graph(:points='dataPoints' :title='languages[languageId]')
 </template>
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
-  import _ from 'lodash';
+  import languages from '~/utils/language'
 
   export default {
     components: {
@@ -43,15 +43,15 @@
         return this.$store.getters.years;
       },
       languages() {
-        return this.graphData.map(data => data.language)
+        return languages;
       },
       graphData() {
         const dataPoints = {};
-        const result = this.$store.state.languages.map(language => {
-          dataPoints[language.id] = [];
+        const result = Object.keys(languages).map(languageId => {
+          dataPoints[languageId] = [];
           return {
-            language: language,
-            dataPoints: dataPoints[language.id]
+            languageId: languageId,
+            dataPoints: dataPoints[languageId]
           };
         });
 
@@ -72,9 +72,9 @@
         return result.filter(data => data.dataPoints.length)
       },
       counts() {
-        return this.graphData.map(({language, dataPoints}) => {
+        return this.graphData.map(({languageId, dataPoints}) => {
           return {
-            language: language,
+            languageId: languageId,
             total: dataPoints.length,
             perYear: this.years.map(year => {
               return {

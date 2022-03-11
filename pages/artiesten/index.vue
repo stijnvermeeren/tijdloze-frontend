@@ -11,7 +11,7 @@
           td
             tijdloze-artist(:artist='artist')
           td
-            tijdloze-country-icon(v-if="artist.countryId" :country='countries[artist.countryId]')
+            tijdloze-country-icon(v-if="artist.countryId" :country-id='artist.countryId')
           td.s.wrap
             ul(v-if='artist.allSongs.length')
               li(v-for='song in artist.allSongs')
@@ -34,9 +34,6 @@
             .all(),
           artist => [artist.name.toLowerCase(), artist.namePrefix ? artist.namePrefix.toLowerCase() : '']
         )
-      },
-      countries() {
-        return this.$store.getters.countriesById;
       }
     },
     head: {
