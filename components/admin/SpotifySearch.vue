@@ -5,7 +5,7 @@
       button(@click='search()' :disabled='processing')
         | Zoeken op Spotify
       |  (
-      a(:href="`https://www.google.com/search?q=${query}`" target="_blank")
+      a(:href="`https://www.google.com/search?q=${encodeURIComponent(query)}`" target="_blank")
         | Zoek meer info op Google
       | )
     template(v-if="showingResults")
