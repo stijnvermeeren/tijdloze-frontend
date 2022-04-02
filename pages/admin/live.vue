@@ -230,7 +230,7 @@
       clean(input) {
         return input
             .trim()
-            .replace(/[-–(].*(bonus|edition|expanded|version|remaster|mix).*[)]?$/gi, "")
+            .replace(/[-–(].*(bonus|edition|expanded|version|remaster|mix|deluxe).*[)]?$/gi, "")
             .trim()
       },
       possibleSong(song) {
