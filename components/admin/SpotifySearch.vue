@@ -14,7 +14,11 @@
       div(v-else)
         table
           tbody
-            tr(v-for='track in spotifyTracks' :key='track.spotifyId')
+            tr(
+              v-for='track in spotifyTracks'
+              v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
+              :key='track.spotifyId'
+            )
               td
                 spotify(:spotify-id='track.spotifyId')
               td.details
@@ -33,9 +37,7 @@
                   |
                   |({{track.year}}).
               td
-                button(@click='select(track)') Selecteren
-        div
-          button(@click='cancel()') Zoeken annuleren
+                button(@click='select(track)' v-if="!selectedTrackId") Selecteren
 </template>
 
 <script>
@@ -55,6 +57,7 @@
         query: this.initialQuery,
         processing: false,
         showingResults: false,
+        selectedTrackId: undefined,
         spotifyTracks: []
       }
     },
@@ -67,13 +70,10 @@
       }
     },
     methods: {
-      cancel() {
-        this.query = '';
-        this.spotifyTracks = [];
-        this.showingResults = false;
-      },
       search() {
         this.spotifyTracks = [];
+        this.selectedTrackId = undefined;
+        this.showingResults = false;
         this.processing = true;
 
         const cleanQuery = this.query.replace(/[^\p{L}0-9 ]/u, "")
@@ -86,8 +86,7 @@
       },
       select(track) {
         this.$emit('selectSpotifyTrack', track);
-        this.spotifyTracks = [];
-        this.showingResults = false;
+        this.selectedTrackId = track.spotifyId;
       }
     }
   }
