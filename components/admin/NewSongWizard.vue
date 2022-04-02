@@ -245,15 +245,15 @@
         }
       },
       namePrefix(fullName) {
-        if (fullName && fullName.substr(0,4) === "The ") {
+        if (fullName && fullName.substring(0,4) === "The ") {
           return "The";
         } else {
           return "";
         }
       },
       name(fullName) {
-        if (fullName && fullName.substr(0,4) === "The ") {
-          return fullName.substr(4);
+        if (fullName && fullName.substring(0,4) === "The ") {
+          return fullName.substring(4);
         } else {
           return fullName;
         }
