@@ -36,7 +36,7 @@
           tijdloze-album(:album='album')
           |  ({{album.releaseYear}})
           ul(v-if='album.songsSorted.length')
-            li(v-for='song in album.songsSorted')
+            li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
               song-with-second-artist-link(:song='song' :artist="artist")
 </template>
 

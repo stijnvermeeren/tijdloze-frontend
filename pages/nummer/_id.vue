@@ -80,7 +80,6 @@
   import Spotify from '../../components/Spotify'
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
-  import countries from '~/utils/country'
 
   export default {
     components: {
