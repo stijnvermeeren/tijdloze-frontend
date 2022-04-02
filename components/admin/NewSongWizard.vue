@@ -64,6 +64,7 @@
   import _ from "lodash";
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
+  import {normalize} from "@/utils/string";
 
   export default {
     name: 'NewSongWizard',
@@ -197,9 +198,9 @@
         return data;
       },
       preProcessArtistName(artistName) {
-        let query = artistName.toLowerCase()
-        if (query.substr(0,4) === 'the') {
-          query = artistName.substr(4);
+        let query = normalize(artistName.toLowerCase());
+        if (query.substring(0,4) === 'the') {
+          query = artistName.substring(4);
         }
         return query;
       },

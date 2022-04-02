@@ -31,6 +31,7 @@
   import Artist from "@/orm/Artist";
   import Song from "@/orm/Song";
   import Album from "@/orm/Album";
+  import {normalize} from "@/utils/string";
 
   export default {
     props: {
@@ -119,26 +120,16 @@
       }
     },
     methods: {
-      normalize(input) {
-        return input
-          .toLowerCase()
-          .normalize("NFD")
-          .replace(/æ/g, "ae")
-          .replace(/ing\b/g, "in") // match e.g. "loving" with "lovin"
-          .replace(/\bo\b/g, "of") // match "o" with "of"
-          .replace(/[\u0300-\u036f]/g, "") // combining accents
-          .replace(/[^a-zA-Z0-9 ]/g, "")
-      },
       search(data, matchAttribute, type) {
         const ignoredWords = new Set(["feat", "and", "en"]);
         const fragments = this.query
             .split(/[ .,&\-]+/)
-            .map(this.normalize)
+            .map(normalize)
             .filter(fragment => !ignoredWords.has(fragment));
         return data.filter(item => {
           return _.every(
             fragments,
-            fragment => !fragment || this.normalize(matchAttribute(item)).indexOf(fragment) > -1
+            fragment => !fragment || normalize(matchAttribute(item)).indexOf(fragment) > -1
           )
         }).map(item => {
           let score = this.score(this.query, matchAttribute(item));
@@ -150,8 +141,8 @@
         });
       },
       score(query, match) {
-        query = this.normalize(query);
-        match = this.normalize(match);
+        query = normalize(query);
+        match = normalize(match);
         if (query === match) {
           return 3;
         } else if (match.startsWith(query)) {
