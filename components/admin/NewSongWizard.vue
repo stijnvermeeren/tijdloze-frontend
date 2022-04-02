@@ -219,16 +219,22 @@
        * An album matches if
        * - The artist matches
        * - The release year matches
-       * - The titles match (case-insensitive) where one title is allowed to have some extra words.
+       * - The titles match (case-insensitive) where one title is allowed to have some extra words. Punctuation is
+       *   ignored.
        *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
+       *        "Sign 'O' the Times" matches with "Sign "O" the Times"
        *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
        */
       albumMatch(artistId, albumName, releaseYear) {
+        function tokenize(title) {
+          return [...title.toLowerCase().matchAll(/\w+/g)];
+        }
+
         if (artistId && albumName && releaseYear) {
-          const queryTokens = albumName.toLowerCase().split(" ");
+          const queryTokens = tokenize(albumName);
 
           return Album.all().find(album => {
-            const matchTokens = album.title.toLowerCase().split(" ");
+            const matchTokens = tokenize(album.title);
             const minLength = Math.min(queryTokens.length, matchTokens.length);
             return album.artistId === artistId &&
               queryTokens.slice(0, minLength).join(" ") === matchTokens.slice(0, minLength).join(" ") &&
