@@ -67,34 +67,33 @@
       }
     },
     computed: {
+      queryFragments() {
+        const ignoredWords = new Set(["feat", "and", "en"]);
+        return this.query
+            .split(/[ .,&\-]+/)
+            .map(normalize)
+            .filter(fragment => !ignoredWords.has(fragment));
+      },
+      allArtists() {
+        return Artist.all().filter(this.artistFilter);
+      },
+      allSongs() {
+        const start = new Date().getTime()
+        const x = Song.query().with('artist').with('secondArtist').all().filter(this.songFilter);
+        console.log(new Date().getTime() - start)
+        return x
+      },
+      allAlbums() {
+        return Album.query().with('artist').all().filter(this.albumFilter);
+      },
       results() {
         if (!this.query) {
           return []
         }
 
-        const artists = this.search(
-          Artist.all().filter(this.artistFilter),
-          artist => artist.fullName,
-          'artist'
-        );
-
-        const songs = this.search(
-          Song.query().with('artist').with('secondArtist').all().filter(this.songFilter),
-          song => {
-            let matchData = `${song.title} ${song.artist.fullName}`;
-            if (song.secondArtist) {
-              matchData += ` ${song.secondArtist.fullName}`
-            }
-            return matchData
-          },
-          'song'
-        );
-
-        const albums = this.search(
-          Album.query().with('artist').all().filter(this.albumFilter),
-          album => `${album.title} ${album.artist.fullName}`,
-          'album'
-        );
+        const artists = this.search(this.allArtists, this.artistMatchAttribute, 'artist');
+        const songs = this.search(this.allSongs, this.songMatchAttribute, 'song');
+        const albums = this.search(this.allAlbums, this.albumMatchAttribute, 'album');
 
         const sortedResults = _.sortBy(
           _.concat(artists, songs, albums),
@@ -120,15 +119,23 @@
       }
     },
     methods: {
+      artistMatchAttribute(artist) {
+        return artist.fullName;
+      },
+      songMatchAttribute(song) {
+        let matchData = `${song.title} ${song.artist.fullName}`;
+        if (song.secondArtist) {
+          matchData += ` ${song.secondArtist.fullName}`
+        }
+        return matchData;
+      },
+      albumMatchAttribute(album) {
+        return `${album.title} ${album.artist.fullName}`;
+      },
       search(data, matchAttribute, type) {
-        const ignoredWords = new Set(["feat", "and", "en"]);
-        const fragments = this.query
-            .split(/[ .,&\-]+/)
-            .map(normalize)
-            .filter(fragment => !ignoredWords.has(fragment));
         return data.filter(item => {
           return _.every(
-            fragments,
+            this.queryFragments,
             fragment => !fragment || normalize(matchAttribute(item)).indexOf(fragment) > -1
           )
         }).map(item => {
