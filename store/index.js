@@ -31,6 +31,15 @@ export const getters = {
       song => [song.title, song.album.releaseYear]
     );
   },
+  songsForLinks(state, getters) {
+    return _.groupBy(Song.all(), song => song.title.toLowerCase())
+  },
+  artistsFullNameForLinks(state, getters) {
+    return _.groupBy(Artist.all(), artist => artist.fullName.toLowerCase())
+  },
+  artistsNameForLinks(state, getters) {
+    return _.groupBy(Artist.all(), artist => artist.name.toLowerCase())
+  },
   decades(state, getters) {
     function getDecadeYear(yyyy) {
       return yyyy - yyyy % 10;

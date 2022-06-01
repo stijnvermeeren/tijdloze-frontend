@@ -14,12 +14,6 @@
   export default {
     props: ["to"],
     computed: {
-      artists() {
-        return Artist.all();
-      },
-      songs() {
-        return Song.all();
-      },
       years() {
         return this.$store.getters.years;
       },
@@ -54,45 +48,42 @@
         return this.years.find(year => year._yy === input);
       },
       findArtist(input) {
-        const fullNameMatches = this.artists.filter(artist => artist.fullName.toLowerCase() === input.toLowerCase());
-        if (fullNameMatches.length === 1) {
+        const fullNameMatches = this.$store.getters.artistsFullNameForLinks[input.toLowerCase()];
+        if (fullNameMatches && fullNameMatches.length === 1) {
           return fullNameMatches[0];
-        } else if (fullNameMatches.length > 1) {
+        } else if (fullNameMatches && fullNameMatches.length > 1) {
           return null;
         }
 
-        const lastNameMatches = this.artists.filter(artist => artist.name.toLowerCase() === input.toLowerCase());
-        if (lastNameMatches.length === 1) {
+        const lastNameMatches = this.$store.getters.artistsNameForLinks[input.toLowerCase()];
+        if (lastNameMatches && lastNameMatches.length === 1) {
           return lastNameMatches[0];
         }
 
         return null;
       },
       findSong(input) {
-        const split = this.to.split(";");
-
-        if (split.length === 1) {
-          const titleMatches = this.songs.filter(song => song.title.toLowerCase() === input.toLowerCase());
-          if (titleMatches.length === 1) {
-            return titleMatches[0];
-          }
+        const titleMatches = this.$store.getters.songsForLinks[input.toLowerCase()];
+        if (titleMatches && titleMatches.length === 1) {
+          return titleMatches[0];
         }
 
+        // fallback behaviour for inputs of the form "One;U2"
+        const split = input.split(";");
         if (split.length === 2) {
           const title = split[0].trim();
           const artistName = split[1].trim();
 
-          const fullNameMatches = this.songs.filter(song => {
-            if (song.title.toLowerCase() === title.toLowerCase()) {
+          const titleMatches = this.$store.getters.songsForLinks[title.toLowerCase()];
+          if (titleMatches) {
+            const combinedMatches = titleMatches.filter(song => {
               const foundArtist = this.findArtist(artistName);
               return foundArtist && foundArtist.id === song.artistId;
-            } else {
-              return false;
-            }
-          });
+            });
 
-          if (fullNameMatches.length === 1) {
-            return fullNameMatches[0];
+            if (combinedMatches.length === 1) {
+              return combinedMatches[0];
+            }
           }
         }
 
