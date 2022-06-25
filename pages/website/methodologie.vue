@@ -39,7 +39,7 @@
       | Meestal is de taal van een nummer duidelijk gedefinieerd, maar toch zijn er een aantal interessante randgevallen waar de taal toch niet zo eenduidig is, bijvoorbeeld:
     ul
       li
-        tijdloze-links(text="[Je veux de l'amour] van [Raymond van het Groenewoud] heeft een Franstalige titel, maar bijna de hele tekst is in het Nederlands, dus het nummer wordt hier als Nederlandstalig geteld. Een gelijkaardig argument kan ook voor [Sexy Boy] van [Air] gemaakt worden (Franstalig in plaats van Engelstalig).")
+        tijdloze-links(text="[Je veux de l'amour] van [Raymond van het Groenewoud] heeft een Franstalige titel, maar bijna de hele tekst is in het Nederlands, dus het nummer wordt hier als Nederlandstalig geteld. Een gelijkaardig argument kan ook voor [Sexy Boy] van [Air] gemaakt worden (Franstalig, niet Engelstalig) en voor [Jeanny] van [Falco] (Duitstalig, niet Engelstalig) gemaakt worden.")
       li
         tijdloze-links(text="[Putain Putain] van [T.C. Matic] wordt als Franstalig geteld, hoewel er ook stukken Engelse en Vlaamse tekst in het nummer zitten. Gelijkaardige gevallen vinden onder andere we bij [Denis] van [Blondie] (strofe in het Frans in een hoofdzakelijk Engelstalig nummer), [The Robots] van [Kraftwerk] (fragmenten in het Russisch in een hoofdzakelijk Engelstalig nummer) en [Spanish Stroll] van [Mink DeVille] (strofe in het Spaans in een hoofdzakelijk Engelstalig nummer).")
       li
