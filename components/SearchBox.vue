@@ -254,7 +254,7 @@
       position: absolute;
       top: 100%;
       left: 0;
-      z-index: 1001;
+      z-index: 1;
       right: auto;
 
       font-size: 80%;
