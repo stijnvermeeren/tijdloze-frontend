@@ -69,10 +69,18 @@
     computed: {
       queryFragments() {
         const ignoredWords = new Set(["feat", "and", "en"]);
-        return this.query
+        const ignoredWordsAtEnd = new Set(["live"]); // don't always ignore "live", otherwise we can't find the band "Live"
+
+        const tokens = this.query
             .split(/[ .,&\-]+/)
             .map(normalize)
             .filter(fragment => !ignoredWords.has(fragment));
+
+        if (tokens.length > 1 && ignoredWordsAtEnd.has(tokens.at(-1))) {
+          return tokens.slice(0, -1);
+        } else {
+          return tokens;
+        }
       },
       allArtists() {
         return Artist.all().filter(this.artistFilter);
