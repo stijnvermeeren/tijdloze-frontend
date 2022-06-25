@@ -44,11 +44,13 @@
                 li
                   nuxt-link(to='/website/geschiedenis') Geschiedenis
                 li
-                  nuxt-link(to='/website/privacy') Privacybeleid
+                  nuxt-link(to='/website/methodologie') Methodologie
                 li
                   nuxt-link(to='/website/opendata') Open data
                 li
                   nuxt-link(to='/website/opensource') Open source
+                li
+                  nuxt-link(to='/website/privacy') Privacybeleid
                 li
                   nuxt-link(to='/website/contact') Contact
             li(v-if='isAdmin')
