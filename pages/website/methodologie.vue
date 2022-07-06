@@ -17,9 +17,10 @@
 
     h3 Album en jaartal
     p Elk nummer is in de databank verbonden met het album waarop het nummer oorspronkelijk is verschenen. Het jaartal dat bij een nummer wordt getoond, en dat wordt gebruikt om de #[em leeftijd] van nummers in de Tijdloze te berekenen, is steeds het jaar waarop dit album voor het eerst is uitgebracht. Er zijn vrij veel nummers die niet in hetzelfde kalenderjaar op single zijn verschenen, maar bijvoorbeeld al een jaar eerder of pas een jaar later. Hier wordt in de databank van deze website geen rekening mee gehouden. Enkel bij liedjes die als alleenstaand nummer werden uitgebracht (of die pas verschillende jaren later toch nog deel zijn geworden van een album) wordt de single zelf (met het bijhorende release-jaar) als album voor het nummer opgeslagen. Greatest hits-albums of soundtracks van films worden enkel in de database opgenomen als er ook nummers op staan die nooit eerder op een ander album verschenen zijn.
-
     p
       tijdloze-links(text="Het gebeurt ook dat b-kantjes van singles in de Tijdloze terechtkomen, bijvoorbeeld [The Masterplan] van [Oasis], een b-kantje van [Wonderwall]. In dit geval is The Masterplan in de database met de single Wonderwall verbonden, terwijl het nummer Wonderwall zelf echter met het album <em>(What's The Story) Morning Glory?</em> verbonden is.")
+    p
+      tijdloze-links(text="Van sommige albums bestaan er verschillende uitgaves die niet steeds dezelfde nummers bevatten. Het nummer [Fools Gold] van [The Stone Roses] staat bijvoorbeeld niet op de oorspronkelijke Britse uitgave van het debuutalbum van de band, maar wel op sommige internationale uitgaves. Op deze website kiezen we er normaal gezien voor om zulke nummers toch als deel van het album te beschouwen, en niet als alleenstaande single, ook al staat het nummer niet op elke versie van het album.")
 
     h3 Landen
     p
