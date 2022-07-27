@@ -8,7 +8,7 @@
       return {
         fullWidth: 760,
         fullHeight: 400,
-        margin: {top: 40, right: 20, bottom: 10, left: 50}
+        margin: {top: 40, right: 50, bottom: 10, left: 20}
       }
     },
     computed: {
@@ -25,7 +25,7 @@
         return scaleBand()
           .rangeRound([10, this.width + 10])
           .paddingInner(0.1)
-          .paddingOuter(0.5)
+          .paddingOuter(0.2)
           .domain(this.years.map(year => year._yy));
       },
       yScale() {

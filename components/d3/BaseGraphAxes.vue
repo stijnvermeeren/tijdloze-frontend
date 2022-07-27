@@ -1,26 +1,34 @@
 <template lang="pug">
   g
     g.x.axis
-      path.domain(:d='`M0,0 H ${xScale.range()[1]}`')
+      path.domain(:d='`M0,0 H ${rightX}`')
       g.tick(
         v-for='year in years'
-        v-if='year.yyyy % 10 === 0 || (!!hoverYear && year.yyyy === hoverYear.yyyy)'
+        v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
         :transform='`translate(${xScale(year._yy)},0)`'
-        :class="{highlighted: !!hoverYear && year.yyyy === hoverYear.yyyy}"
+        :class="{nextToHighlighted: isNextToHoverYear(year)}"
       )
         line(y2='-6' x2='0')
         text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
           | {{year.yyyy}}
+      g.tick(
+        v-if="!!hoverYear"
+        :transform='`translate(${xScale(hoverYear._yy)},0)`'
+        class="highlighted"
+      )
+        line(y2='-6' x2='0')
+        text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
+          | {{hoverYear.yyyy}}
 
     g.y.axis
-      path.domain(:d='`M0,0 V ${yScale.range()[1]}`')
+      path.domain(:d='`M${rightX},0 V ${yScale.range()[1]}`')
       g.tick(
         v-for='position in yTickValues'
-        :transform='`translate(0,${yScale(position)})`'
+        :transform='`translate(${rightX},${yScale(position)})`'
         style='opacity: 1;'
       )
-        line(:x2='xScale.range()[1]' y2='0')
-        text(dy='.32em' x='-3' y='0' style='text-anchor: end;')
+        line(:x2='-rightX' y2='0')
+        text(dy='.32em' x='3' y='0' style='text-anchor: start;')
           | {{position}}
 </template>
 
@@ -31,16 +39,41 @@
       return {
         yTickValues: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
       }
+    },
+    computed: {
+      rightX() {
+        return this.xScale.range()[1];
+      }
+    },
+    methods: {
+      isHoverYear(year) {
+        return !!this.hoverYear && year.yyyy === this.hoverYear.yyyy;
+      },
+      isNextToHoverYear(year) {
+        return !!this.hoverYear && (
+            (!!year.previous() && year.previous().yyyy === this.hoverYear.yyyy) ||
+            (!!year.next() && year.next().yyyy === this.hoverYear.yyyy)
+        );
+      }
     }
   }
 </script>
 
 <style lang="less" scoped>
-  @axisColor: #777777;
+  @axisColor: #777;
+  @lightAxisColor: #ddd;
 
   .axis {
-    text {
+    .tick {
       fill: @axisColor;
+
+      &.highlighted {
+        font-weight: bold;
+      }
+
+      &.nextToHighlighted {
+        fill: @lightAxisColor;
+      }
     }
 
     path, line {
@@ -51,13 +84,6 @@
   }
 
   .y.axis .tick line {
-    stroke-dasharray: 1, 3;
-  }
-
-  .tick {
-    opacity: 1;
-    &.highlighted {
-      font-weight: bold;
-    }
+    stroke: @lightAxisColor;
   }
 </style>

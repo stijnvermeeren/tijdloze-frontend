@@ -59,7 +59,7 @@
         if (this.hoverYear) {
           return this.xScale(this.hoverYear._yy);
         } else {
-          return 0;
+          return this.xScale.range()[1];
         }
       },
       tooltipStyle() {
