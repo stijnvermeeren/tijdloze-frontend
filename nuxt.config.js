@@ -21,7 +21,7 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', href: '/images/favicon.png?v=3' },
-      { rel: 'start', href: 'http://tijdloze.stijnshome.be/' },
+      { rel: 'start', href: 'https://tijdloze.rocks/' },
       { rel: 'stylesheet', type: 'text/css', href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css'}
     ]
   },
