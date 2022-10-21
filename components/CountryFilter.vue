@@ -1,16 +1,9 @@
 <template lang="pug">
-  div
-    select(:value='value' @input='update()' ref='input' :disabled="disabled")
-      option(value='')
-        | (Ander land)
-      option(disabled=true)
-        | -- Reeds gebruikte landen --
-      option(v-for='countryId in usedCountryIds' :key='`used_${countryId}`' :value='countryId')
-        | {{countries[countryId]}}
-      option(disabled=true)
-       | -- Alle landen --
-      option(v-for='countryId in sortedCountryIds' :key='`all_${countryId}`' :value='countryId')
-        | {{countries[countryId]}}
+  select(:value='value' @input='update()' ref='input' :disabled="disabled")
+    option(value='')
+      | Alle landen
+    option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId')
+      | {{countries[countryId]}}
 </template>
 
 <script>
@@ -21,7 +14,8 @@
     name: 'CountryInput',
     props: {
       value: {
-        type: String
+        type: String,
+        default: ''
       },
       disabled: {
         type: Boolean,
@@ -47,10 +41,3 @@
     }
   }
 </script>
-
-<style scoped>
-  select {
-    box-sizing: border-box;
-    width: 100%;
-  }
-</style>
