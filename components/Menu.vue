@@ -1,63 +1,63 @@
 <template lang="pug">
   div
     #sideNav(:class='{closed: !isOpen}' @click.stop='menuClick($event)')
+      tijdloze-search-box(@selectSearchResult='selectSearchResult($event)')
+
       nav
-        #menu
-          tijdloze-search-box(@selectSearchResult='selectSearchResult($event)')
-          ul
-            li
-              nuxt-link(to='/') Home
-            li(v-if='!listInProgress')
-              nuxt-link(to='/reacties') Reageer en discussieer
-            li(v-if='listInProgress')
-              nuxt-link(:to='`/lijst/${currentYear.yyyy}`') De Tijdloze {{currentYear.yyyy}}
-              ul
-                li
-                  nuxt-link(to='/lijst/opkomst') Nog op komst...
-                li
-                  nuxt-link(to='/chat') Chatbox
-                li
-                  nuxt-link(to='/polls') Polls
-            li
-              nuxt-link(to='/lijsten') De Tijdloze van...
-              ul.lists
-                template(v-for='(year, index) in years')
-                  li(v-if='years.length - index < 3 || allLists' :key='year.yyyy')
-                    nuxt-link(:to="'/lijst/' + year.yyyy") {{year.yyyy}}
-                li(v-if='!allLists')
-                  a(@click.stop='allLists = true') Meer tonen
-                li(v-else)
-                  a(@click.stop='allLists = false') Minder tonen
-            li
-              nuxt-link(to='/database') Volledige database
-            li
-              nuxt-link(to='/statistieken') Statistieken
-            li
-              nuxt-link(to='/website') Over deze website
-              ul
-                li
-                  nuxt-link(to='/website/geschiedenis') Geschiedenis
-                li
-                  nuxt-link(to='/website/methodologie') Methodologie
-                li
-                  nuxt-link(to='/website/opendata') Open data
-                li
-                  nuxt-link(to='/website/opensource') Open source
-                li
-                  nuxt-link(to='/website/privacy') Privacybeleid
-                li
-                  nuxt-link(to='/website/contact') Contact
-            li(v-if='isAdmin')
-              nuxt-link(to='/admin') Admin
-              ul
-                li
-                  nuxt-link(to='/admin/live') Nummers toevoeren
-                li
-                  nuxt-link(to='/admin/exits') Exits markeren
-                li
-                  nuxt-link(to='/admin/polls') Polls
-                li
-                  nuxt-link(to='/admin/analysis') Interessante feiten
+        el-menu(
+          router
+          :default-openeds="openeds"
+          :default-active="route"
+          background-color="inherit"
+          text-color="#003388"
+        )
+          el-menu-item(index="/") Home
+          el-menu-item(v-if='!listInProgress' index="/reacties") Reageer en discussieer
+          el-submenu(v-if='listInProgress' index="inprogress")
+            template(slot="title") De Tijdloze {{currentYear.yyyy}}
+            el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
+            el-menu-item(index="/lijst/opkomst") Nog op komst...
+            el-menu-item(index="/chat") Chatbox
+            el-menu-item(index="/polls") Polls
+          el-submenu(index="/lijst")
+            template(slot="title") De Tijdloze van...
+            el-menu-item(v-for='year in years' :index='`/lijst/${year.yyyy}`' :key='year.yyyy') {{year.yyyy}}
+          el-menu-item(index="/database") Volledige database
+          el-submenu(index="/statistieken")
+            template(slot="title") Statistieken
+            el-menu-item-group(title="Verschuivingen")
+              el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
+              el-menu-item(index="/statistieken/reentries") Re-entries
+              el-menu-item(index="/statistieken/exits") Exits
+              el-menu-item(index="/statistieken/eenjaarsvliegen") Eenjaarsvliegen
+              el-menu-item(index="/statistieken/stijgers") Stijgers
+              el-menu-item(index="/statistieken/dalers") Dalers
+              el-menu-item(index="/statistieken/stationair") Stationaire nummers
+            el-menu-item-group(title="Andere statistieken")
+              el-menu-item(index="/statistieken/noteringen") Noteringen
+              el-menu-item(index="/statistieken/noteringen_album") Noteringen (Albums)
+              el-menu-item(index="/statistieken/landen") Landen
+              el-menu-item(index="/statistieken/talen") Talen
+              el-menu-item(index="/statistieken/leadvocals") Lead vocals
+              el-menu-item(index="/statistieken/decennia") Decennia
+              el-menu-item(index="/statistieken/leeftijden") Leeftijden
+          el-submenu(index="/website")
+            template(slot="title") Deze website
+            el-menu-item(index="/website") Algemene info
+            el-menu-item(index="/website/geschiedenis") Geschiedenis
+            el-menu-item(index="/website/methodologie") Methodologie
+            el-menu-item(index="/website/opendata") Open data
+            el-menu-item(index="/website/opensource") Open source
+            el-menu-item(index="/website/privacy") Privacybeleid
+            el-menu-item(index="/website/contact") Contact
+          el-submenu(v-if='isAdmin' index="/admin")
+            template(slot="title") Admin
+            el-menu-item(index="/admin") Overzicht
+            el-menu-item(index="/admin/live") Nummers toevoeren
+            el-menu-item(index="/admin/exits") Exits markeren
+            el-menu-item(index="/admin/polls") Polls
+            el-menu-item(index="/admin/analysis") Interessante feiten
+
       tijdloze-login
       span.cross-button(@click='isOpen = false')
         span.cross(style='transform: rotate(45deg)')
@@ -78,7 +78,6 @@
     },
     data() {
       return {
-        allLists: false,
         isOpen: false
       };
     },
@@ -90,10 +89,17 @@
         return this.$store.getters.currentYear;
       },
       years() {
-        return this.$store.getters.years;
+        return [...this.$store.getters.years].reverse();
       },
       isAdmin() {
         return this.$store.getters['auth/isAdmin'];
+      },
+      route() {
+        return this.$route.path;
+      },
+      openeds() {
+        const mainPath = this.$route.path.split('/').slice(0, 2).join('/');
+        return ['inprogress', mainPath];
       }
     },
     methods: {
@@ -148,7 +154,6 @@
 <style lang="scss" scoped>
   @use "../assets/styleConfig";
 
-
   #sideNav {
     box-sizing: border-box;
     height: 100%;
@@ -164,7 +169,6 @@
     transition: 0.3s;
 
     font-size: 115%;
-    text-align: right;
 
     @media (min-width: 1200px) {
       height: 100%;
@@ -177,35 +181,6 @@
 
       &.closed {
         left: -300px;
-      }
-    }
-  }
-
-  #menu {
-    ul {
-      @include styleConfig.noBullets;
-      margin: 0 0 2em;
-
-      li {
-        padding: 0.5em 0;
-        font-weight: bold;
-
-        ul {
-          margin: 0.2em 0 0 0;
-          font-size: 90%;
-
-          li {
-            margin: 0.2em 0 0.2em 1em;
-            padding: 0;
-            font-weight: normal;
-          }
-
-          &.lists {
-            li {
-              display: inline-block;
-            }
-          }
-        }
       }
     }
   }
@@ -262,5 +237,30 @@
   }
   .bm-overlay {
     background: rgba(0, 0, 0, 0.3);
+  }
+
+
+  #sideNav {
+    .el-menu {
+      border: none;
+    }
+
+    .el-menu--inline .el-menu-item {
+      font-size: 14px;
+      font-weight: normal;
+      height: 28px;
+      line-height: 28px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  #sideNav {
+    .el-menu-item, .el-submenu__title {
+      font-size: 16px;
+      font-weight: bold;
+      height: 40px;
+      line-height: 40px;
+    }
   }
 </style>

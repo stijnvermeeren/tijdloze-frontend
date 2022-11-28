@@ -1,58 +1,47 @@
 <template lang="pug">
   div
     h2 Volledige database
-    el-alert(title="Database downloaden" :closable="false" show-icon)
+    el-alert.alert(title="Database downloaden" :closable="false" show-icon)
       | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
-    p
-      | Vergelijk:
+    div
+      | Filter:
       |
-      el-radio-group(v-model="type" size="small")
-        el-radio-button(label='nummers') Nummers
-        el-radio-button(label='artiesten') Artiesten
-        el-radio-button(label='albums') Albums
-    p
-      div
-        | Filter:
-        |
-        country-filter(v-model='countryFilter')
-        language-filter(v-model='languageFilter')
-        lead-vocals-filter(v-model='leadVocalsFilter')
-      div
-        el-select(v-model="filter" size="small")
-          el-option(value="alle" label="In minstens een")
-          el-option(value="alle_jaren" label="In elke")
-          el-option(value="geen_exit" label="Niet weggevallen uit de")
-        |
-        el-select(v-model="cutoff" size="small")
-          el-option(value="top100" label="top 100")
-          el-option(value="full" label="volledige lijst")
-        |
-        | van
-        |
-        el-select.selectYear(v-model='startYear' size="small")
-          el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-        |
-        | tot en met
-        |
-        el-select.selectYear(v-model='endYear' size="small")
-          el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-    p
-      | Sorteren:
+      country-filter(v-model='countryFilter')
+      language-filter(v-model='languageFilter')
+      lead-vocals-filter(v-model='leadVocalsFilter')
+    div
+      el-select(v-model="filter" size="small")
+        el-option(value="alle" label="In minstens een")
+        el-option(value="alle_jaren" label="In elke")
+        el-option(value="geen_exit" label="Niet weggevallen uit de")
       |
-      el-select(v-model="scoreMethod" size="small")
-        el-option(value="entry_count" label="Aantal noteringen")
-        el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
+      el-select(v-model="cutoff" size="small")
+        el-option(value="top100" label="top 100")
+        el-option(value="full" label="volledige lijst")
+      |
+      | van
+      |
+      el-select.selectYear(v-model='startYear' size="small")
+        el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+      |
+      | tot en met
+      |
+      el-select.selectYear(v-model='endYear' size="small")
+        el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
 
     table.lijst.perVijf
       tbody
         tr
           th.r
-          th(:class="{'a': type !== 'artiesten', 'l': type === 'artiesten'}")
-            | Artiest
-          th(v-if="type === 'nummers'")
-            | Nummer
-          th(v-if="type === 'albums'") Album
-          th Score
+          th(:colspan="type === 'artiesten' ? 1 : 2")
+            el-radio-group(v-model="type" size="small")
+              el-radio-button(label='nummers') Nummers
+              el-radio-button(label='artiesten') Artiesten
+              el-radio-button(label='albums') Albums
+          th
+            el-select(v-model="scoreMethod" size="small")
+              el-option(value="entry_count" label="Aantal noteringen")
+              el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
         tr(v-for='{entry, position} in data' :key='entry.key')
           td.r
             | {{ position }}
@@ -75,7 +64,6 @@
   import CountryFilter from "@/components/CountryFilter";
   import LanguageFilter from "@/components/LanguageFilter";
   import LeadVocalsFilter from "@/components/LeadVocalsFilter";
-  import _page from "./reacties/_page";
 
   const FILTER_ANY = 'alle'
   const FILTER_NO_EXIT = 'geen_exit'
@@ -103,7 +91,7 @@
   }
 
   export default {
-    components: {_page, CountryFilter, LanguageFilter, LeadVocalsFilter },
+    components: {CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
       return {
         type: this.$route.query.type ? this.$route.query.type : "nummers",
@@ -234,7 +222,7 @@
     watch: {
       queryParams(newQueryParams) {
         this.$router.replace({
-          query: newQueryParams
+          query: Object.fromEntries(Object.entries(newQueryParams).filter(([_, value]) => value))
         });
       },
       query(newQuery) {
@@ -309,5 +297,9 @@
 
   table.lijst {
       margin-top: 2em;
+  }
+
+  .alert {
+    margin-bottom: 15px;
   }
 </style>

@@ -2,10 +2,9 @@
   #login
     div(v-if='isAuthenticated')
       div Aangemeld als {{userName}}
-      div
-        a(@click='logout()') Afmelden
+      el-button(round @click='logout()') Afmelden
     div(v-else)
-      a(@click='login()') Aanmelden
+      el-button(round @click='login()') Aanmelden
 </template>
 
 <script>
@@ -32,6 +31,8 @@
 
 <style lang="scss" scoped>
   #login {
-    font-size: 80%;
+    margin-top: 30px;
+    text-align: center;
+    font-size: 14px;
   }
 </style>
