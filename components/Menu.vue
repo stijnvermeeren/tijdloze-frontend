@@ -29,15 +29,9 @@
                 li(v-else)
                   a(@click.stop='allLists = false') Minder tonen
             li
-              nuxt-link(to='/artiesten') Alle artiesten
-              ul
-                li
-                  nuxt-link(to='/nummers') Alle nummers
+              nuxt-link(to='/database') Volledige database
             li
               nuxt-link(to='/statistieken') Statistieken
-              ul
-                li
-                  nuxt-link(to='/tijdlozetijdloze') De Tijdloze Tijdloze
             li
               nuxt-link(to='/website') Over deze website
               ul

@@ -13,8 +13,7 @@
               tbody
                 tr
                   th Not.
-                  th.l
-                    nuxt-link(to='/artiesten') Artiesten
+                  th.l Artiesten
         tr(v-for='{year, counts} in data')
           td.r
             year-link(:year='year')

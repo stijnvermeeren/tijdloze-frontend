@@ -2,10 +2,18 @@
   div
     h2 Contact
 
-    p.fout(v-if='error') Probleem met het verzenden van je bericht! {{error}}
+    el-alert(title="Radio-uitzending en samenstelling van de Tijdloze" :closable="false" show-icon)
+      div De makers van deze website zijn #[strong niet betrokken] bij de radio-uitzending of de samenstelling van de Tijdloze.
+      div Feedback daarover kan je direct aan #[a(href='https://stubru.be') StuBru] en de #[a(href='https://vrtklantendienst.force.com/s/contactus') VRT] sturen.
+
+    p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van de Tijdloze Website, contacteren.
+    p Alle suggesties, verbeteringen of andere berichten omtrent deze website zijn van harte welkom!
+
+    el-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!" :closable="false" show-icon)
+      | {{error}}
     div(v-if='success')
-      p
-        | Bedankt voor je mail. #[a(@click='reset()') Verzend een nieuw bericht].
+      el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
+        a(@click='reset()') Verzend een nieuw bericht
       h3 Verzonden bericht:
       h4 Van:
       p
@@ -19,7 +27,6 @@
       | Bericht wordt verzonden...
 
     div(v-if='!success && !inProgress')
-      p Alle suggesties, verbeteringen of andere berichten zijn van harte welkom!
       table
         tbody
           tr
@@ -31,8 +38,13 @@
             td
               div
                 input.formtext(@blur='emailTouched = true' name='email' v-model='email')
-              .fout(v-if='emailTouched && email.trim() && !validateEmail(email.trim())')
-                | Ongeldig e-mailadres. Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
+              el-alert(
+                v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
+                type="warning"
+                title="Ongeldig e-mailadres."
+                :closable="false"
+              )
+                | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
           tr
             th Bericht:
             td
@@ -104,14 +116,6 @@
 </script>
 
 <style lang="scss" scoped>
-    .fout {
-        color: #CC0000;
-    }
-    .goed {
-        color: #007700;
-        font-weight: bold;
-    }
-
     p.message {
         white-space: pre-line;
     }

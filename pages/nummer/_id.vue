@@ -28,10 +28,9 @@
             make-links(:text='fullSongData.notes')
 
     lyrics(v-if='fullSongData.lyrics')
-      .spotify.withLyrics(v-if='fullSongData.spotifyId')
+      .spotify(v-if='fullSongData.spotifyId')
         div
           spotify(:spotify-id='fullSongData.spotifyId')
-        div Beluister fragment via Spotify
       .lyrics {{ fullSongData.lyrics }}
 
     div(v-else-if="fullSongData.spotifyId")
@@ -151,12 +150,6 @@
 
     div.spotify {
         margin-bottom: 20px;
-
-        &.withLyrics {
-          @media (min-width: 1200px) {
-            float: right;
-          }
-        }
 
         iframe {
             border: 1px solid grey;

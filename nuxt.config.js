@@ -43,8 +43,13 @@ module.exports = {
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
   buildModules: [
-    '@nuxtjs/dotenv',
+    '@nuxtjs/dotenv'
   ],
+  build: {
+    transpile: [ // see https://github.com/nuxt/nuxt.js/issues/9223
+      'd3-scale'
+    ]
+  },
   modules: [
     ['@nuxtjs/axios'],
     ['cookie-universal-nuxt', {

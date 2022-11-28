@@ -13,10 +13,8 @@
           th.r
             nuxt-link(:to='`/lijst/${year.previous().yyyy}`')
               | {{year.previous()._yy}}
-          th.a
-            nuxt-link(to='/artiesten') Artiest
-          th
-            nuxt-link(to='/nummers') Nummer
+          th.a Artiest
+          th Nummer
         tr(v-for='song in upcomingSongs')
           td.n
             tijdloze-position(:song='song' :year='year.previous().previous()')

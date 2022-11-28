@@ -7,10 +7,8 @@
         div.r {{year.yyyy}}
         div.n(v-if='year.next()')
           nuxt-link(:to='`/lijst/${year.next().yyyy}`') {{year.next()._yy}}
-        div.a
-          nuxt-link(to='/artiesten') Artiest
-        div.s
-          nuxt-link(to='/nummers') Titel
+        div.a Artiest
+        div.s Titel
         div.releaseYear
           | Jaar
       div.content(v-if='songs.length > 20')

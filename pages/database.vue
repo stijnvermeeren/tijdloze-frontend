@@ -1,63 +1,56 @@
 <template lang="pug">
   div
-    h2 Explore
-    table
-      tbody
-        tr
-          th Vergelijk:
-          td
-            el-radio-group(v-model="type" size="small")
-              el-radio-button(label='nummers') Nummers
-              el-radio-button(label='artiesten') Artiesten
-              el-radio-button(label='albums') Albums
-        tr
-          th Filter:
-          td
-            div
-              country-filter(v-model='countryFilter')
-              language-filter(v-model='languageFilter')
-              lead-vocals-filter(v-model='leadVocalsFilter')
-            div
-              | In
-              |
-              el-select(v-model="filter" size="small")
-                el-option(value="alle" label="minstens een")
-                el-option(value="alle_jaren" label="elke")
-                el-option(value="geen_exit" label="niet weggevallen uit de")
-              |
-              el-select(v-model="cutoff" size="small")
-                el-option(value="top100" label="top 100")
-                el-option(value="full" label="volledige lijst")
-              |
-              | top 100 van
-              |
-              el-select.selectYear(v-model='startYear' size="small")
-                el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-              |
-              | tot en met
-              |
-              el-select.selectYear(v-model='endYear' size="small")
-                el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-        tr
-          th Sorteren:
-          td
-            div
-              input.ra(v-model='method' type='radio' value='1')
-              |  Borda count
-            div
-              input.ra(v-model='method' type='radio' value='2')
-              |  Realistische telling
+    h2 Volledige database
+    el-alert(title="Database downloaden" :closable="false" show-icon)
+      | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
+    p
+      | Vergelijk:
+      |
+      el-radio-group(v-model="type" size="small")
+        el-radio-button(label='nummers') Nummers
+        el-radio-button(label='artiesten') Artiesten
+        el-radio-button(label='albums') Albums
+    p
+      div
+        | Filter:
+        |
+        country-filter(v-model='countryFilter')
+        language-filter(v-model='languageFilter')
+        lead-vocals-filter(v-model='leadVocalsFilter')
+      div
+        el-select(v-model="filter" size="small")
+          el-option(value="alle" label="In minstens een")
+          el-option(value="alle_jaren" label="In elke")
+          el-option(value="geen_exit" label="Niet weggevallen uit de")
+        |
+        el-select(v-model="cutoff" size="small")
+          el-option(value="top100" label="top 100")
+          el-option(value="full" label="volledige lijst")
+        |
+        | van
+        |
+        el-select.selectYear(v-model='startYear' size="small")
+          el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+        |
+        | tot en met
+        |
+        el-select.selectYear(v-model='endYear' size="small")
+          el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+    p
+      | Sorteren:
+      |
+      el-select(v-model="scoreMethod" size="small")
+        el-option(value="entry_count" label="Aantal noteringen")
+        el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
 
     table.lijst.perVijf
       tbody
         tr
           th.r
-          th.a
-            nuxt-link(to='/artiesten')
-              | Artiest
+          th(:class="{'a': type !== 'artiesten', 'l': type === 'artiesten'}")
+            | Artiest
           th(v-if="type === 'nummers'")
-            nuxt-link(to='/nummers')
-              | Nummer
+            | Nummer
           th(v-if="type === 'albums'") Album
           th Score
         tr(v-for='{entry, position} in data' :key='entry.key')
@@ -65,7 +58,7 @@
             | {{ position }}
           td.a(v-if="type === 'nummers'")
             tijdloze-song-artist(:song='entry.song')
-          td.a(v-else)
+          td(v-else :class="{'a': type === 'albums', 'l': type === 'artiesten'}")
             tijdloze-artist(:artist='entry.artist')
           td(v-if="type === 'nummers'")
             tijdloze-song(:song='entry.song')
@@ -82,26 +75,43 @@
   import CountryFilter from "@/components/CountryFilter";
   import LanguageFilter from "@/components/LanguageFilter";
   import LeadVocalsFilter from "@/components/LeadVocalsFilter";
+  import _page from "./reacties/_page";
 
   const FILTER_ANY = 'alle'
   const FILTER_NO_EXIT = 'geen_exit'
   const FILTER_ALL_YEARS = 'alle_jaren'
   const validFilters = new Set([FILTER_ANY, FILTER_NO_EXIT, FILTER_ALL_YEARS])
 
+  function parseFilter(value) {
+    return validFilters.has(value) ? value : FILTER_ANY
+  }
+
   const CUTOFF_TOP100 = 'top100'
   const CUTOFF_FULL = 'full'
   const validCutoffs = new Set([CUTOFF_TOP100, CUTOFF_FULL])
 
+  function parseCutoff(value) {
+    return validCutoffs.has(value) ? value : CUTOFF_TOP100
+  }
+
+  const SCORE_ENTRY_COUNT = 'entry_count'
+  const SCORE_BORDA = 'borda'
+  const validScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
+
+  function parseScoreMethod(value) {
+    return validScoreMethods.has(value) ? value : SCORE_ENTRY_COUNT
+  }
+
   export default {
-    components: { CountryFilter, LanguageFilter, LeadVocalsFilter },
+    components: {_page, CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
       return {
         type: this.$route.query.type ? this.$route.query.type : "nummers",
-        filter: this.parseFilter(this.$route.query.filter),
-        cutoff: this.parseCutoff(this.$route.query.cutoff),
+        filter: parseFilter(this.$route.query.filter),
+        cutoff: parseCutoff(this.$route.query.cutoff),
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
         endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
-        method: this.$route.query.telling ? this.$route.query.telling : "1",
+        scoreMethod: parseScoreMethod(this.$route.query.score),
         countryFilter: this.$route.query.land || "",
         languageFilter: this.$route.query.taal || "",
         leadVocalsFilter: this.$route.query.leadVocals || ""
@@ -113,9 +123,9 @@
           type: this.type,
           start: this.startYear.toString(),
           einde: this.endYear.toString(),
-          filter: this.parseFilter(this.filter),
-          cutoff: this.parseCutoff(this.cutoff),
-          telling: this.method,
+          filter: parseFilter(this.filter),
+          cutoff: parseCutoff(this.cutoff),
+          score: parseScoreMethod(this.scoreMethod),
           land: this.countryFilter,
           taal: this.languageFilter,
           leadVocals: this.leadVocalsFilter
@@ -123,6 +133,9 @@
       },
       query() {
         return this.$route.query;
+      },
+      extended() {
+        return this.cutoff === CUTOFF_FULL;
       },
       selectedSongs() {
         return this.filterSong(this.filterArtist(this.filterYears(this.$store.getters.songs)));
@@ -134,10 +147,12 @@
         return this.completedYears.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
       },
       scoreFn() {
-        if (this.method === '1') {
-          return position => 101 - position;
+        if (this.scoreMethod === SCORE_BORDA) {
+          return position => {
+            return (position > 100) ? 0 : 101 - position;
+          }
         } else {
-          return position => 400 / (position + 5);
+          return position => 1;
         }
       },
       rawData() {
@@ -150,7 +165,7 @@
             artist: song.artist,
             points: _.sum(
               selectedYears
-                .map(year => song.position(year))
+                .map(year => song.position(year,  this.extended))
                 .filter(position => position)
                 .map(scoreFn)
             )
@@ -158,7 +173,7 @@
         });
       },
       data() {
-        if (this.type === 'artisten') {
+        if (this.type === 'artiesten') {
           return this.artistData;
         } else if (this.type === 'albums') {
           return this.albumData;
@@ -225,11 +240,11 @@
       query(newQuery) {
         if (newQuery.type) {
           this.type = newQuery.type ? newQuery.type : "nummers";
-          this.filter = this.parseFilter(newQuery.filter);
-          this.cutoff = this.parseCutoff(newQuery.cutoff);
+          this.filter = parseFilter(newQuery.filter);
+          this.cutoff = parseCutoff(newQuery.cutoff);
           this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
           this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
-          this.method = newQuery.telling ? newQuery.telling : "1";
+          this.scoreMethod = parseScoreMethod(newQuery.score);
           this.countryFilter = newQuery.land ? newQuery.land : "";
           this.languageFilter = newQuery.taal ? newQuery.taal : "";
           this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
@@ -237,22 +252,16 @@
       }
     },
     methods: {
-      parseFilter(value) {
-        return validFilters.has(value) ? value : FILTER_ANY
-      },
-      parseCutoff(value) {
-        return validCutoffs.has(value) ? value : CUTOFF_TOP100
-      },
       filterYears(songs) {
         const selectedYears = this.selectedYears;
         if (this.filter === FILTER_ALL_YEARS) {
           return songs.filter(song =>
-              selectedYears.every(year => song.position(year))
+              selectedYears.every(year => song.position(year, this.extended))
           );
         } if (this.filter === FILTER_NO_EXIT) {
           return songs.filter(song =>
               selectedYears.slice(1).every(year =>
-                  !song.position(year.previous()) || !!song.position(year)
+                  !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
               )
           );
         } else {
@@ -285,8 +294,8 @@
 </script>
 
 <style lang="scss" scoped>
-  select {
-    width: auto;
+  .selectYear {
+    width: 100px;
   }
 
   div.noot {

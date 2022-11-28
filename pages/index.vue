@@ -21,10 +21,8 @@
             nuxt-link(:to='`/lijst/${tableYear.previous().yyyy}`') {{tableYear.previous()._yy}}
           th.r
             nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
-          th.a
-            nuxt-link(to='/artiesten') Artiest
-          th
-            nuxt-link(to='/nummers') Titel
+          th.a Artiest
+          th Titel
           th.releaseYear
             | Jaar
         tr(v-for='song in top5')

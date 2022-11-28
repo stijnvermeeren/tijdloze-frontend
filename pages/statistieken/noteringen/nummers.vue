@@ -7,8 +7,7 @@
       tbody
         tr
           th.r
-          th.l
-            nuxt-link(to='/artiesten') Artiest
+          th.l Artiest
           th Aantal nummers
         tr(v-for='{position, entry} in ranking')
           td.r {{position}}

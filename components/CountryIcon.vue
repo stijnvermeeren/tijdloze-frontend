@@ -1,5 +1,5 @@
 <template lang="pug">
-  nuxt-link(v-if="countryName" :to='`/artiesten/perland/${countryId}`')
+  nuxt-link(v-if="countryName" :to='`/database?type=artiesten&land=${countryId}`')
     img(
       :src='`https://flagcdn.com/20x15/${countryId}.png`'
       :srcset='`https://flagcdn.com/40x30/${countryId}.png 2x, https://flagcdn.com/60x45/${countryId}.png 3x`'

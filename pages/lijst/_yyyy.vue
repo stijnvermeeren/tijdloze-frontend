@@ -44,10 +44,8 @@
           tr
             th.r
               | {{year.previous().yyyy}}
-            th.a
-              nuxt-link(to='/artiesten') Artiest
-            th
-              nuxt-link(to='/nummers') Titel
+            th.a Artiest
+            th Titel
             th.releaseYear
               | Jaar
           tr(v-for='song in exits')
@@ -67,10 +65,8 @@
           tr
             th.r
               | {{year.yyyy}}
-            th.a
-              nuxt-link(to='/artiesten') Artiest
-            th
-              nuxt-link(to='/nummers') Titel
+            th.a Artiest
+            th Titel
             th
             th.releaseYear
               | Jaar

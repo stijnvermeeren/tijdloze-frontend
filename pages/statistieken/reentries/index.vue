@@ -9,10 +9,8 @@
             tbody
               tr
                 th Pos.
-                th.a
-                  nuxt-link(to='/artiesten') Artiest
-                th
-                  nuxt-link(to='/nummers') Nummer
+                th.a Artiest
+                th Nummer
                 th Afwezigheid
       tr(v-for='year in listYears')
         td.r

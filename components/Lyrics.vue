@@ -48,7 +48,7 @@
     &.closed {
       div.lyricsContainer {
         overflow: hidden;
-        max-height: 200px;
+        max-height: 240px;
 
         @media (min-width: 1200px) {
           max-height: 150px;
