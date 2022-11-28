@@ -95,7 +95,7 @@
         return this.$store.getters['auth/isAdmin'];
       },
       route() {
-        return this.$route.path;
+        return this.$route.path.split('/').slice(0, 3).join('/');
       },
       openeds() {
         const mainPath = this.$route.path.split('/').slice(0, 2).join('/');
