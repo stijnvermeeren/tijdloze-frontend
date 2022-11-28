@@ -32,19 +32,19 @@
   }
 </script>
 
-<style lang="less" scoped>
-  .movement(@color) {
+<style lang="scss" scoped>
+  @mixin movement($color) {
     padding-right: 0.6em;
-    color: @color;
+    color: $color;
   }
 
   span.up {
-    .movement(#007700);
+    @include movement(#007700);
   }
   span.down {
-    .movement(#aa0000);
+    @include movement(#aa0000);
   }
   span.equal {
-    .movement(#444444);
+    @include movement(#444444);
   }
 </style>

@@ -30,9 +30,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../assets/styleConfig.less";
-
+<style lang="scss" scoped>
   #login {
     font-size: 80%;
   }

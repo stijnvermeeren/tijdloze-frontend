@@ -46,8 +46,8 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
   div#snackbar {
     position: fixed;
@@ -56,7 +56,7 @@
 
     border-radius: 5px;
     padding: 8px 16px;
-    background-color: @inputBackgroundColor;
+    background-color: styleConfig.$inputBackgroundColor;
     text-align: center;
 
     transition: transform 2.0s;

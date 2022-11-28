@@ -53,7 +53,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   .flex {
     display: flex;
     margin:  5px 0;

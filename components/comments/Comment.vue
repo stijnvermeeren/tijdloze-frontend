@@ -71,14 +71,14 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../../assets/styleConfig";
 
   div.reactie {
     padding: 0.3em 1em;
     margin: 0.7em 3em;
 
-    border: 1px solid @inputBorderColor;
+    border: 1px solid styleConfig.$inputBorderColor;
     border-radius: 4px;
 
     &.mine {

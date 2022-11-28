@@ -298,7 +298,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     div.noot {
         font-size: 85%;
         margin-left: 2em;

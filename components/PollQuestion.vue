@@ -44,7 +44,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.question {
     font-weight: bold;
   }

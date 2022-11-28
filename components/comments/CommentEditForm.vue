@@ -37,9 +37,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
-
+<style lang="scss" scoped>
   textarea {
     width: 100%;
     font-size: 100%;

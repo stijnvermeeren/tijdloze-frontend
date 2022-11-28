@@ -75,14 +75,14 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
   span.container {
 
     div.info {
       position: absolute;
-      background-color: @inputBackgroundColor;
+      background-color: styleConfig.$inputBackgroundColor;
       border: 1px solid gray;
       border-radius: 4px;
       padding: 1px 4px;

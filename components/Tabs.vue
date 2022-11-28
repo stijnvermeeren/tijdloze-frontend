@@ -14,8 +14,8 @@
   }
 </script>
 
-<style lang="less">
-  @import '../assets/styleConfig.less';
+<style lang="scss">
+  @use '../assets/styleConfig';
 
   div.tabs {
     div.tabtitels {
@@ -26,15 +26,15 @@
         vertical-align: top;
         display: inline;
         font-size: 14px;
-        border: @blackLine;
-        border-radius: @borderRadius @borderRadius 0 0;
+        border: styleConfig.$blackLine;
+        border-radius: styleConfig.$borderRadius styleConfig.$borderRadius 0 0;
         padding: 2px 10px;
         margin: 0 7px;
-        background-color: @headerBackgroundColor;
+        background-color: styleConfig.$headerBackgroundColor;
       }
       h3.selected {
-        border-bottom: 2px @backgroundColor solid;
-        background-color: @backgroundColor;
+        border-bottom: 2px styleConfig.$backgroundColor solid;
+        background-color: styleConfig.$backgroundColor;
         a {
           color: black;
         }
@@ -42,7 +42,7 @@
     }
     div.tab {
       padding: 17px 20px 17px 20px;
-      .border;
+      @include styleConfig.border;
     }
   }
 </style>

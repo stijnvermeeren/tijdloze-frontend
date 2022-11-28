@@ -59,9 +59,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-    @import "~assets/globalStyles.less";
-
+<style lang="scss" scoped>
     div.displayName {
       padding: 0.3em 4em;
       margin: 1em 0;

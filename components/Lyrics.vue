@@ -30,9 +30,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../assets/globalStyles.less";
-
+<style lang="scss" scoped>
   div.container {
     div.lyricsContainer {
       position: relative;

@@ -35,6 +35,7 @@ module.exports = {
     '~/plugins/url',
     '~/plugins/gtag',
     '~/plugins/vue-virtual-scroller',
+    '~/plugins/element-ui',
     { src: '~/plugins/auth', mode: 'client'},
     { src: '~/plugins/websocket', mode: 'client'}
   ],

@@ -13,7 +13,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.icon {
     img {
       vertical-align: bottom;

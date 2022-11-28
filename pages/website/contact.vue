@@ -103,9 +103,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-    @import "../../assets/styleConfig";
-
+<style lang="scss" scoped>
     .fout {
         color: #CC0000;
     }
@@ -134,7 +132,6 @@
     textarea {
         box-sizing: border-box;
         width: 100%;
-        padding: 2px 5px;
         height: 90px;
         padding: 5px;
     }

@@ -151,10 +151,10 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../../assets/graphColors.less";
+<style lang="scss" scoped>
+  @use "../../assets/graphColors";
 
-  @hoverColor: #AAAAAA;
+  $hoverColor: #AAAAAA;
 
   div.graph {
     text-align: center;
@@ -191,7 +191,7 @@
 
       line {
         fill: none;
-        stroke: @hoverColor;
+        stroke: $hoverColor;
         shape-rendering: crispEdges;
       }
     }

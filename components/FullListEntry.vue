@@ -29,7 +29,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="scss">
   div.entry {
     display: flex;
     height: 24px;

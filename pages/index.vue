@@ -143,9 +143,7 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../assets/globalStyles.less";
-
+<style lang="scss" scoped>
   div.description {
     text-align: center;
   }

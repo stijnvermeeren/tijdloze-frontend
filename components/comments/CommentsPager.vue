@@ -33,7 +33,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.pager {
     text-align: right;
   }

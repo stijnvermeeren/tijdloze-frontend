@@ -43,7 +43,7 @@
   }
 </script>
 
-<style lang="less">
+<style lang="scss">
   div.content {
     flex: 100% 1 1;
     position: relative;

@@ -1,9 +1,6 @@
 <template lang="pug">
-  select(:value='value' @input='update()' ref='input' :disabled="disabled")
-    option(value='')
-      | Alle landen
-    option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId')
-      | {{countries[countryId]}}
+  el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
+    el-option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId' :label="countries[countryId]")
 </template>
 
 <script>
@@ -34,9 +31,8 @@
       }
     },
     methods: {
-      update() {
-        const newValue = this.$refs['input'].value;
-        this.$emit('input', newValue);
+      input(value) {
+        this.$emit('input', value);
       }
     }
   }

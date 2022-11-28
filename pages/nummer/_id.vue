@@ -133,7 +133,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
     div.allPositions {
         margin: 1em 3em;
         text-align: center;

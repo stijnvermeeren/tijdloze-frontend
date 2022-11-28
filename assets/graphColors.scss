@@ -1,0 +1,61 @@
+
+$color0: rgb(228,26,28);
+$color1: rgb(55,126,184);
+$color2: rgb(77,175,74);
+$color3: rgb(152,78,163);
+$color4: rgb(255,127,0);
+$color5: rgb(155,155,51);
+$color6: rgb(166,86,40);
+$color7: rgb(247,129,191);
+$color8: rgb(153,153,153);
+
+@mixin color($color) {
+  color: $color;
+  .coloredRect {
+    fill: $color;
+  }
+  .coloredPath {
+    fill: none;
+    stroke: $color;
+  }
+  .coloredCircle {
+    fill: $color;
+    stroke: $color;
+  }
+}
+
+.color {
+  &-0 {
+    @include color($color0)
+  }
+  &-1 {
+    @include color($color1)
+  }
+  &-2 {
+    @include color($color2)
+  }
+  &-3 {
+    @include color($color3)
+  }
+  &-4 {
+    @include color($color4)
+  }
+  &-5 {
+    @include color($color5)
+  }
+  &-6 {
+    @include color($color6)
+  }
+  &-7 {
+    @include color($color7)
+  }
+  &-8 {
+    @include color($color8)
+  }
+  &-9 {
+    @include color($color8)
+  }
+  &-10 {
+    @include color($color8)
+  }
+}

@@ -37,7 +37,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   table {
     table-layout: fixed;
     width: auto;

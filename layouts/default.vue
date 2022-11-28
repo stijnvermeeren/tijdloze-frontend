@@ -20,6 +20,8 @@
   import Menu from '../components/Menu'
   import Snackbar from "../components/Snackbar";
 
+  import 'element-ui/lib/theme-chalk/index.css';
+
   export default {
     components: {
       Snackbar,
@@ -36,8 +38,9 @@
   }
 </script>
 
-<style lang="less">
-  @import "../assets/globalStyles.less";
+<style lang="scss">
+  @use "../assets/globalStyles";
+  @use "../assets/styleConfig";
 
   #container {
     position: relative;
@@ -56,7 +59,7 @@
 
       @media (min-width: 1200px) {
         #left {
-          background-color: @menuBackgroundColor;
+          background-color: styleConfig.$menuBackgroundColor;
           flex-grow: 1;
         }
         #maincontainer {
@@ -83,7 +86,7 @@
   }
 
   #header {
-    background-color: @headerBackgroundColor;
+    background-color: styleConfig.$headerBackgroundColor;
 
     #logo {
       display: block;

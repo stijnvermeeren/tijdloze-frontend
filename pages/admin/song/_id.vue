@@ -120,7 +120,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   textarea.lyrics {
     height: 200px;
   }

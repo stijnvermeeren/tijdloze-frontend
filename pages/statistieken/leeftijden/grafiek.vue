@@ -18,12 +18,12 @@
 </script>
 
 
-<style lang="less" scoped>
-  @import "../../../assets/styleConfig";
+<style lang="scss" scoped>
+  @use "../../../assets/styleConfig";
 
   div.legende {
     ul {
-      .noBullets;
+      @include styleConfig.noBullets;
       max-width: 40em;
       margin: 0 auto;
       li {
@@ -32,7 +32,7 @@
       img {
         margin-right: 2em;
         vertical-align: bottom;
-        .border;
+        @include styleConfig.border;
       }
     }
   }

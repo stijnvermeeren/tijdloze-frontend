@@ -1,4 +1,6 @@
 
+@use "styleConfig";
+
 table {
   margin: 0 auto;
   padding: 0;
@@ -66,7 +68,7 @@ table.lijst {
   td.s {
     font-size: 85%;
     ul {
-      .noBullets;
+      @include styleConfig.noBullets;
       li {
         padding: 0 0 0 15px;
         display: inline;
@@ -89,7 +91,7 @@ table.lijst {
 
   &.home {
     tr:first-child th {
-      background-color: @headerBackgroundColor;
+      background-color: styleConfig.$headerBackgroundColor;
       font-size: 120%;
       padding: 0.3em 0;
       border-bottom: none;

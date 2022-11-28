@@ -59,31 +59,31 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @axisColor: #777;
-  @lightAxisColor: #ddd;
+<style lang="scss" scoped>
+  $axisColor: #777;
+  $lightAxisColor: #ddd;
 
   .axis {
     .tick {
-      fill: @axisColor;
+      fill: $axisColor;
 
       &.highlighted {
         font-weight: bold;
       }
 
       &.nextToHighlighted {
-        fill: @lightAxisColor;
+        fill: $lightAxisColor;
       }
     }
 
     path, line {
       fill: none;
-      stroke: @axisColor;
+      stroke: $axisColor;
       shape-rendering: crispEdges;
     }
   }
 
   .y.axis .tick line {
-    stroke: @lightAxisColor;
+    stroke: $lightAxisColor;
   }
 </style>

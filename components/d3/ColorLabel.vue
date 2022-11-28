@@ -9,8 +9,8 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../../assets/graphColors.less";
+<style lang="scss" scoped>
+  @use "../../assets/graphColors";
 
   svg.colorLabel {
     width: 30px;

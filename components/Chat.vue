@@ -275,8 +275,8 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
   div.chat {
     display: flex;
@@ -287,7 +287,7 @@
     border-radius: 4px;
 
     div.header {
-      background-color: @inputBackgroundColor;
+      background-color: styleConfig.$inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       border-radius: 4px 4px 0 0;
@@ -300,7 +300,7 @@
     }
 
     div.online {
-      background-color: @inputBackgroundColor;
+      background-color: styleConfig.$inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       text-align: left;
@@ -358,7 +358,7 @@
         }
 
         div.myMessage {
-          background-color: @inputBackgroundColor;
+          background-color: styleConfig.$inputBackgroundColor;
         }
 
         div.systemMessage {
@@ -378,7 +378,7 @@
         margin: 4px 5px;
         padding: 3px 8px;
         flex: 1;
-        background-color: @inputBackgroundColor;
+        background-color: styleConfig.$inputBackgroundColor;
         font-size: 16px;
         border-radius: 4px;
         border: 2px solid grey;

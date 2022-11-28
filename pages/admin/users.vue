@@ -118,7 +118,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.displayName {
     font-weight: bold;
   }

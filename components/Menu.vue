@@ -151,8 +151,8 @@
 </script>
 
 
-<style lang="less" scoped>
-  @import "../assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
 
   #sideNav {
@@ -163,8 +163,8 @@
     z-index: 1000;
     top: 0;
     left: 0;
-    background-color: @menuBackgroundColor;
-    border-right: 2px solid @headerBackgroundColor;
+    background-color: styleConfig.$menuBackgroundColor;
+    border-right: 2px solid styleConfig.$headerBackgroundColor;
     overflow-x: hidden;
     padding: 1em 2em;
     transition: 0.3s;
@@ -178,7 +178,6 @@
       position: relative;
     }
 
-
     @media (max-width: 1199px) {
       padding-top: 50px;
 
@@ -190,7 +189,7 @@
 
   #menu {
     ul {
-      .noBullets;
+      @include styleConfig.noBullets;
       margin: 0 0 2em;
 
       li {

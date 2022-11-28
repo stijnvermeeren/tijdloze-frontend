@@ -6,42 +6,38 @@
         tr
           th Vergelijk:
           td
-            select(v-model='type')
-              option(value='nummers')
-                | Nummers
-              option(value='artiesten')
-                | Artiesten
-              option(value='albums')
-                | Albums
-        tr
-          th In...
-          td
-            select(v-model='filter')
-              option(value="alle")
-                | minstens een
-              option(value="alle_jaren")
-                | elke
-              option(value="geen_exit")
-                | niet weggevallen uit de
-            |
-            | top 100 van
-            |
-            select.selectYear(v-model='startYear')
-              option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-                | {{ year.yyyy }}
-            |
-            | tot en met
-            |
-            select.selectYear(v-model='endYear')
-              option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
-                | {{ year.yyyy }}
+            el-radio-group(v-model="type" size="small")
+              el-radio-button(label='nummers') Nummers
+              el-radio-button(label='artiesten') Artiesten
+              el-radio-button(label='albums') Albums
         tr
           th Filter:
           td
             div
-              | Nationaliteit van artiest:
-              |
               country-filter(v-model='countryFilter')
+              language-filter(v-model='languageFilter')
+              lead-vocals-filter(v-model='leadVocalsFilter')
+            div
+              | In
+              |
+              el-select(v-model="filter" size="small")
+                el-option(value="alle" label="minstens een")
+                el-option(value="alle_jaren" label="elke")
+                el-option(value="geen_exit" label="niet weggevallen uit de")
+              |
+              el-select(v-model="cutoff" size="small")
+                el-option(value="top100" label="top 100")
+                el-option(value="full" label="volledige lijst")
+              |
+              | top 100 van
+              |
+              el-select.selectYear(v-model='startYear' size="small")
+                el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+              |
+              | tot en met
+              |
+              el-select.selectYear(v-model='endYear' size="small")
+                el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
         tr
           th Sorteren:
           td
@@ -51,120 +47,85 @@
             div
               input.ra(v-model='method' type='radio' value='2')
               |  Realistische telling
-        tr(v-if='!active')
-          th
-          td
-            button(@click='submit()' type='submit')
-              | Bereken Tijdloze Tijdloze
 
-    table.lijst.perVijf(v-if="active && type === 'nummers'")
+    table.lijst.perVijf
       tbody
         tr
           th.r
           th.a
             nuxt-link(to='/artiesten')
               | Artiest
-          th
+          th(v-if="type === 'nummers'")
             nuxt-link(to='/nummers')
               | Nummer
+          th(v-if="type === 'albums'") Album
           th Score
-        tr(v-for='{entry, position} in songData' :key='entry.song.id')
+        tr(v-for='{entry, position} in data' :key='entry.key')
           td.r
             | {{ position }}
-          td.a
+          td.a(v-if="type === 'nummers'")
             tijdloze-song-artist(:song='entry.song')
-          td
+          td.a(v-else)
+            tijdloze-artist(:artist='entry.artist')
+          td(v-if="type === 'nummers'")
             tijdloze-song(:song='entry.song')
-          td {{ Math.round(entry.points * 10) / 10 }}
-
-    table.lijst.perVijf(v-if="active && type === 'artiesten'")
-      tbody
-        tr
-          th.r
-          th.l
-            nuxt-link(to='/artiesten')
-              | Artiest
-          th Score
-        tr(v-for='{entry, position} in artistData' :key='entry.artist.id')
-          td.r
-            | {{ position }}
-          td.l
-            tijdloze-artist(:artist='entry.artist')
-          td {{ Math.round(entry.points * 10) / 10 }}
-
-    table.lijst.perVijf(v-if="active && type === 'albums'")
-      tbody
-        tr
-          th.r
-          th.a
-            nuxt-link(to='/artiesten')
-              | Artiest
-          th Album
-          th Score
-        tr(v-for='{entry, position} in albumData' :key='entry.album.id')
-          td.r
-            | {{ position }}
-          td.a
-            tijdloze-artist(:artist='entry.artist')
-          td
+          td(v-if="type === 'albums'")
             tijdloze-album(:album='entry.album')
           td {{ Math.round(entry.points * 10) / 10 }}
 </template>
 
 <script>
-  import _ from 'lodash';
+  import _ from 'lodash'
+
   import ranking from '../store/ranking';
   import Artist from "@/orm/Artist";
   import CountryFilter from "@/components/CountryFilter";
+  import LanguageFilter from "@/components/LanguageFilter";
+  import LeadVocalsFilter from "@/components/LeadVocalsFilter";
 
   const FILTER_ANY = 'alle'
   const FILTER_NO_EXIT = 'geen_exit'
   const FILTER_ALL_YEARS = 'alle_jaren'
+  const validFilters = new Set([FILTER_ANY, FILTER_NO_EXIT, FILTER_ALL_YEARS])
+
+  const CUTOFF_TOP100 = 'top100'
+  const CUTOFF_FULL = 'full'
+  const validCutoffs = new Set([CUTOFF_TOP100, CUTOFF_FULL])
 
   export default {
-    components: { CountryFilter },
+    components: { CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
-      const isStrict = this.$route.query.strikt ? this.$route.query.strikt === "1" : false;
-      let filter = FILTER_ANY;
-      if (this.$route.query.filter === FILTER_NO_EXIT) {
-        filter = FILTER_NO_EXIT;
-      } else if (isStrict || this.$route.query.filter === FILTER_ALL_YEARS) {
-        filter = FILTER_ALL_YEARS;
-      }
-
       return {
-        active: !!this.$route.query.type,
         type: this.$route.query.type ? this.$route.query.type : "nummers",
-        filter: filter,
+        filter: this.parseFilter(this.$route.query.filter),
+        cutoff: this.parseCutoff(this.$route.query.cutoff),
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
         endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
         method: this.$route.query.telling ? this.$route.query.telling : "1",
-        countryFilter: this.$route.query.land || ""
+        countryFilter: this.$route.query.land || "",
+        languageFilter: this.$route.query.taal || "",
+        leadVocalsFilter: this.$route.query.leadVocals || ""
       }
     },
     computed: {
       queryParams() {
-        let filter = FILTER_ANY;
-        if (this.filter === FILTER_NO_EXIT) {
-          filter = FILTER_NO_EXIT;
-        } else if (this.filter === FILTER_ALL_YEARS) {
-          filter = FILTER_ALL_YEARS;
-        }
-
         return {
           type: this.type,
           start: this.startYear.toString(),
           einde: this.endYear.toString(),
-          filter: filter,
+          filter: this.parseFilter(this.filter),
+          cutoff: this.parseCutoff(this.cutoff),
           telling: this.method,
-          land: this.countryFilter
+          land: this.countryFilter,
+          taal: this.languageFilter,
+          leadVocals: this.leadVocalsFilter
         };
       },
       query() {
         return this.$route.query;
       },
       selectedSongs() {
-        return this.filterArtist(this.filterYears(this.$store.getters.songs));
+        return this.filterSong(this.filterArtist(this.filterYears(this.$store.getters.songs)));
       },
       completedYears() {
         return this.$store.getters.completedYears;
@@ -185,6 +146,8 @@
         return this.selectedSongs.map(song => {
           return {
             song: song,
+            key: song.id,
+            artist: song.artist,
             points: _.sum(
               selectedYears
                 .map(year => song.position(year))
@@ -193,6 +156,15 @@
             )
           }
         });
+      },
+      data() {
+        if (this.type === 'artisten') {
+          return this.artistData;
+        } else if (this.type === 'albums') {
+          return this.albumData;
+        } else {
+          return this.songData;
+        }
       },
       songData() {
         return ranking(
@@ -216,6 +188,7 @@
 
           return {
             artist: artist,
+            key: artist.id,
             points: score
           }
         }).filter(items => items.points > 0)
@@ -231,6 +204,7 @@
           return {
             album: _.first(items).song.album,
             artist: _.first(items).song.artist,
+            key: _.first(items).song.album.id,
             points: _.sum(items.map(item => item.points))
           }
         });
@@ -244,34 +218,31 @@
     },
     watch: {
       queryParams(newQueryParams) {
-        if (this.active) {
-          this.$router.replace({
-            query: newQueryParams
-          });
-        }
+        this.$router.replace({
+          query: newQueryParams
+        });
       },
       query(newQuery) {
         if (newQuery.type) {
-          let filter = FILTER_ANY;
-          if (this.$route.query.filter === FILTER_NO_EXIT) {
-            filter = FILTER_NO_EXIT;
-          } else if (this.$route.query.filter === FILTER_ALL_YEARS) {
-            filter = FILTER_ALL_YEARS;
-          }
-
-          this.active = true;
           this.type = newQuery.type ? newQuery.type : "nummers";
-          this.filter = filter;
+          this.filter = this.parseFilter(newQuery.filter);
+          this.cutoff = this.parseCutoff(newQuery.cutoff);
           this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
           this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
           this.method = newQuery.telling ? newQuery.telling : "1";
           this.countryFilter = newQuery.land ? newQuery.land : "";
-        } else {
-          this.active = false;
+          this.languageFilter = newQuery.taal ? newQuery.taal : "";
+          this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
         }
       }
     },
     methods: {
+      parseFilter(value) {
+        return validFilters.has(value) ? value : FILTER_ANY
+      },
+      parseCutoff(value) {
+        return validCutoffs.has(value) ? value : CUTOFF_TOP100
+      },
       filterYears(songs) {
         const selectedYears = this.selectedYears;
         if (this.filter === FILTER_ALL_YEARS) {
@@ -295,12 +266,17 @@
           return songs;
         }
       },
-      submit() {
-        this.active = true;
-        this.$router.push({
-          query: this.queryParams
-        });
-      },
+      filterSong(songs) {
+        let result = songs;
+        if (this.languageFilter) {
+          result = result.filter(song => song.languageId === this.languageFilter);
+        }
+        if (this.leadVocalsFilter) {
+          result = result.filter(song => song.leadVocals === this.leadVocalsFilter);
+        }
+
+        return result;
+      }
     },
     head: {
       title: 'De Tijdloze Tijdloze'
@@ -308,7 +284,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   select {
     width: auto;
   }

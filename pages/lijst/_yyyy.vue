@@ -195,7 +195,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.analysis {
     font-size: 14px;
   }

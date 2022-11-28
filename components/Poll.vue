@@ -113,15 +113,14 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
   div.poll {
     margin: 10px 0;
     padding: 5px 10px;
     border: 1px solid grey;
-    background-color: @inputBackgroundColor;
-
+    background-color: styleConfig.$inputBackgroundColor;
 
     div.answer {
       display: flex;
@@ -155,7 +154,7 @@
           left: 0;
           top: 0;
           bottom: 0;
-          background-color: @headerBackgroundColor;
+          background-color: styleConfig.$headerBackgroundColor;
           z-index: -1;
         }
 

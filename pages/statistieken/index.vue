@@ -46,8 +46,8 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../../assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../../assets/styleConfig";
 
   .statistiekenmenu {
     h4 {
@@ -55,7 +55,7 @@
       margin-bottom: 0.7em;
     }
     ul {
-      .noBullets;
+      @include styleConfig.noBullets;
       li {
         font-size: 130%;
         margin-bottom: 0.5em;

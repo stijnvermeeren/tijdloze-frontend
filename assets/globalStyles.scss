@@ -1,7 +1,6 @@
 
-@import "styleConfig";
-@import "tableStyles";
-
+@use "styleConfig";
+@use "tableStyles";
 
 html {
   touch-action: manipulation;
@@ -12,7 +11,7 @@ html {
 
 body {
   margin: 0;
-  background-color: @backgroundColor;
+  background-color: styleConfig.$backgroundColor;
   font-family: Arial, sans-serif;
   letter-spacing: 0.027em;
   line-height: 1.27em;
@@ -32,9 +31,9 @@ img {
 a {
   cursor: pointer;
   text-decoration: none;
-  color: @linkColor;
+  color: styleConfig.$linkColor;
   &:hover {
-    color: @hoverLinkColor;
+    color: styleConfig.$hoverLinkColor;
   }
 
   &.nuxt-link-exact-active {
@@ -51,9 +50,9 @@ h2 {
   margin: 15px 0 20px 0;
 }
 h3 {
-  border-top: 3px solid @headerBackgroundColor;
-  border-bottom: 1px solid @headerBackgroundColor;
-  background-color: @inputBackgroundColor;
+  border-top: 3px solid styleConfig.$headerBackgroundColor;
+  border-bottom: 1px solid styleConfig.$headerBackgroundColor;
+  background-color: styleConfig.$inputBackgroundColor;
   font-size: 24px;
   margin: 20px 0 15px 0;
   padding: 5px 5px 5px 10px;
@@ -70,7 +69,7 @@ p {
 
 
 ul.info {
-  .noBullets;
+  @include styleConfig.noBullets;
   margin: 5px 30px 35px 0;
   img {
     padding-right: 20px;

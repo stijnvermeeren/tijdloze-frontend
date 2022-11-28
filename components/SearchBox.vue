@@ -216,8 +216,8 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "../assets/styleConfig.less";
+<style lang="scss" scoped>
+  @use "../assets/styleConfig";
 
   #searchBox {
     position: relative;
@@ -236,7 +236,7 @@
       height: 28px;
       text-indent: 32px;
 
-      background: @inputBackgroundColor;
+      background: styleConfig.$inputBackgroundColor;
       border: 1px solid #aaa;
       border-radius: 5px;
       box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
@@ -248,7 +248,7 @@
     #searchResults {
       width: 100%;
       border: 1px solid #999;
-      background: @inputBackgroundColor;
+      background: styleConfig.$inputBackgroundColor;
       overflow: auto;
 
       position: absolute;
@@ -281,7 +281,7 @@
           }
 
           &.selected {
-            background: @headerBackgroundColor;
+            background: styleConfig.$headerBackgroundColor;
           }
         }
 

@@ -304,7 +304,7 @@
   }
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
   div.box {
     border: 1px solid grey;
     padding: 5px 10px;

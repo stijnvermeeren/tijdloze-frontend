@@ -108,15 +108,15 @@
   }
 </script>
 
-<style lang="less" scoped>
-  @import "~assets/globalStyles.less";
+<style lang="scss" scoped>
+  @use "../../assets/styleConfig";
 
   div.commentForm {
     padding: 0.3em 1em;
     margin: 1.7em 3em 0.7em 3em;
 
     &.expanded {
-      border: 3px solid @inputBorderColor;
+      border: 3px solid styleConfig.$inputBorderColor;
       border-radius: 4px;
     }
 
