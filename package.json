@@ -30,7 +30,6 @@
     "vue-virtual-scroller": "^1.0.10"
   },
   "devDependencies": {
-    "@nuxtjs/dotenv": "^1.4.1",
     "babel-plugin-component": "^1.1.1",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",

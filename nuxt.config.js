@@ -1,6 +1,4 @@
 
-require('dotenv').config()
-
 module.exports = {
   /*
   ** Headers of the page
@@ -42,9 +40,6 @@ module.exports = {
   css: [
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
-  buildModules: [
-    '@nuxtjs/dotenv'
-  ],
   build: {
     transpile: [ // see https://github.com/nuxt/nuxt.js/issues/9223
       'd3-scale'
@@ -55,5 +50,15 @@ module.exports = {
     ['cookie-universal-nuxt', {
       parseJSON: false
     }]
-  ]
+  ],
+  publicRuntimeConfig: {
+    API_URI_CLIENT: process.env.API_URI_CLIENT || "http://localhost:9000/",
+    API_URI_SERVER: process.env.API_URI_SERVER || "http://localhost:9000/",
+    AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || "bDIm5fEwDBV0IBv5tRb48IPwLhFeysSB",
+    AUTH0_CLIENT_DOMAIN: process.env.AUTH0_CLIENT_DOMAIN || "stijnvermeeren-tijdloze-dev.eu.auth0.com",
+    AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || "dev.tijdloze.stijnshome.be",
+    AUTH0_CALLBACK_URI: process.env.AUTH0_CALLBACK_URI || "http://localhost:3000/auth/callback",
+    AUTH0_LOGOUT_URI: process.env.AUTH0_LOGOUT_URI || "http://localhost:3000/",
+    GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID
+  }
 };

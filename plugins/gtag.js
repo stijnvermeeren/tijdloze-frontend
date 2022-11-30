@@ -1,10 +1,10 @@
 import Vue from "vue";
 import VueGtag from "vue-gtag";
 
-export default ({ app }) => {
-  if (process.env.GOOGLE_ANALYTICS_ID) {
+export default ({ app, $config }) => {
+  if ($config.GOOGLE_ANALYTICS_ID) {
     Vue.use(VueGtag, {
-      config: {id: process.env.GOOGLE_ANALYTICS_ID},
+      config: {id: $config.GOOGLE_ANALYTICS_ID},
     }, app.router);
   }
 }

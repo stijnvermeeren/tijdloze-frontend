@@ -26,9 +26,17 @@ If you don't want to use the Docker images, it is also possible to build and run
 
 ### Configuration
 
-Copy the file `.env.example` to `.env` and adjust the variables accordingly.
+The following environment variables can be defined (e.g. in a `.env` file) to configure the application:
+- `API_URI_CLIENT`
+- `API_URI_SERVER`
+- `AUTH0_CLIENT_ID`
+- `AUTH0_CLIENT_DOMAIN`
+- `AUTH0_AUDIENCE`
+- `AUTH0_CALLBACK_URI`
+- `AUTH0_LOGOUT_URI`
+- `GOOGLE_ANALYTICS_ID`
 
-The defaults in `.env.example` should work out-of-the-box when running the API using default Docker Compose file.
+The defaults from [`nuxt.config.js`](./nuxt.config.js) should work out-of-the-box when running the API using default Docker Compose file.
 
 #### Available settings and defaults
 

@@ -1,18 +1,18 @@
 import { Auth0Client } from '@auth0/auth0-spa-js';
 
-export default async ({ app, store }, inject) => {
+export default async ({ app, store, $config }, inject) => {
   const SCOPE = 'openid profile email';
 
   const authParams = {
     responseType: 'token id_token',
-    audience: process.env.AUTH0_AUDIENCE,
+    audience: $config.AUTH0_AUDIENCE,
     scope: SCOPE
   }
 
   const auth = new Auth0Client({
-    client_id: process.env.AUTH0_CLIENT_ID,
-    domain: process.env.AUTH0_CLIENT_DOMAIN,
-    redirect_uri: process.env.AUTH0_CALLBACK_URI
+    client_id: $config.AUTH0_CLIENT_ID,
+    domain: $config.AUTH0_CLIENT_DOMAIN,
+    redirect_uri: $config.AUTH0_CALLBACK_URI
   });
 
   function unsetAccessToken() {
@@ -59,7 +59,7 @@ export default async ({ app, store }, inject) => {
     logout() {
       unsetAccessToken()
       auth.logout({
-        returnTo: process.env.AUTH0_LOGOUT_URI
+        returnTo: $config.AUTH0_LOGOUT_URI
       });
     },
     unsetAccessToken() {
