@@ -34,7 +34,10 @@
   import _ from 'lodash'
 
   export default {
-    props: ['data', 'years'],
+    props: {
+      data: Array,
+      years: Array
+    },
     computed: {
       listYears() {
         return _.reverse(_.drop(_.dropRight(this.years, 1), 1));

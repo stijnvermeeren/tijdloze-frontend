@@ -9,6 +9,8 @@
     components: {
       TijdlozeDistributionGraph: DistributionGraph
     },
-    props: ['data']
+    props: {
+      data: Array
+    },
   }
 </script>

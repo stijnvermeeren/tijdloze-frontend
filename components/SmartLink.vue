@@ -8,11 +8,10 @@
 </template>
 
 <script>
-  import Song from "@/orm/Song";
-  import Artist from "@/orm/Artist";
-
   export default {
-    props: ["to"],
+    props: {
+      to: String
+    },
     computed: {
       years() {
         return this.$store.getters.years;

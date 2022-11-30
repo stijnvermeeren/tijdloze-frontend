@@ -22,7 +22,10 @@
   import ranking from '../../../store/ranking';
 
   export default {
-    props: ['data', 'years'],
+    props: {
+      data: Array,
+      years: Array
+    },
     computed: {
       ranking() {
         return ranking(

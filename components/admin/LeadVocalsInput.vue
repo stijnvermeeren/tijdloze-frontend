@@ -13,7 +13,9 @@
 
   export default {
     name: 'LeadVocalsInput',
-    props: ['value'],
+    props: {
+      value: String
+    },
     computed: {
       vocalsGenders() {
         return vocalsGenders;

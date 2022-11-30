@@ -3,8 +3,12 @@
 </template>
 
 <script>
+  import Song from "../orm/Song";
+
   export default {
-    props: ["song"]
+    props: {
+      song: Song
+    }
   }
 </script>
 

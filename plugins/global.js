@@ -5,7 +5,6 @@ import ArtistLink from '../components/ArtistLink.vue'
 import SongArtistLink from '../components/SongArtistLink.vue'
 import CountryIcon from '../components/CountryIcon.vue'
 import YearLink from '../components/YearLink.vue'
-import YearLinkShort from '../components/YearLinkShort.vue'
 
 import MakeLinks from '../components/MakeLinks.vue'
 import SmartLink from '../components/SmartLink.vue'
@@ -22,7 +21,6 @@ Vue.component("tijdloze-song-artist", SongArtistLink);
 Vue.component("tijdloze-country-icon", CountryIcon);
 Vue.component("tijdloze-song", SongLink);
 Vue.component("tijdloze-year", YearLink);
-Vue.component("tijdloze-year-short", YearLinkShort);
 
 Vue.component("tijdloze-link", SmartLink);
 Vue.component("tijdloze-links", MakeLinks);
@@ -38,7 +36,6 @@ Vue.component("TijdlozeArtist", ArtistLink);
 Vue.component("TijdlozeCountryIcon", CountryIcon);
 Vue.component("TijdlozeSong", SongLink);
 Vue.component("TijdlozeYear", YearLink);
-Vue.component("TijdlozeYearShort", YearLinkShort);
 
 Vue.component("TijdlozeLink", SmartLink);
 Vue.component("TijdlozeLinks", MakeLinks);

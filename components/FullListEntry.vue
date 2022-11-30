@@ -16,14 +16,17 @@
 </template>
 
 <script>
+  import Song from "../orm/Song";
+  import Year from "../orm/Year";
+
   export default {
     name: 'FullList',
     props: {
       song: {
-        type: Object
+        type: Song
       },
       year: {
-        type: Object
+        type: Year
       }
     }
   }

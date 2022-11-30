@@ -27,7 +27,9 @@
 <script>
   export default {
     name: "User",
-    props: ['user'],
+    props: {
+      user: Object
+    },
     data() {
       return {
         showInfo: false,

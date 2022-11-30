@@ -25,7 +25,10 @@
   import _ from 'lodash'
 
   export default {
-    props: ['albums', 'years'],
+    props: {
+      albums: Array,
+      years: Array
+    },
     computed: {
       ranking() {
         const data = this.albums.map(album => {

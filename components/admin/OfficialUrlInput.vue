@@ -11,7 +11,10 @@
 <script>
   export default {
     name: 'OfficialUrlInput',
-    props: ['value', 'query'],
+    props: {
+      value: String,
+      query: String
+    },
     computed: {
       searchUrl() {
         const query = encodeURIComponent(this.query)

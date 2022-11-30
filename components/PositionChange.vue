@@ -6,8 +6,14 @@
 </template>
 
 <script>
+  import Song from "../orm/Song";
+  import Year from "../orm/Year";
+
   export default {
-    props: ["song", "year"],
+    props: {
+      song: Song,
+      year: Year
+    },
     computed: {
       position() {
         return this.song.position(this.year, true);

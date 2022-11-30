@@ -9,7 +9,9 @@
   import _ from 'lodash';
 
   export default {
-    props: ["text"],
+    props: {
+      text: String
+    },
     computed: {
       fragments() {
         let unprocessedText = this.text;

@@ -11,7 +11,11 @@
 <script>
   export default {
     name: 'WikiUrlInput',
-    props: ['value', 'lang', 'query'],
+    props: {
+      value: String,
+      lang: String,
+      query: String
+    },
     computed: {
       searchUrl() {
         const query = encodeURIComponent(this.query)

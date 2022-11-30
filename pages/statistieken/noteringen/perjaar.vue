@@ -37,7 +37,10 @@
 
   export default {
     components: {YearLink},
-    props: ['artists', 'years'],
+    props: {
+      artists: Array,
+      years: Array
+    },
     computed: {
       data() {
         const MAX = 6;

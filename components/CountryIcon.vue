@@ -14,7 +14,10 @@
   import countries from '~/utils/country'
 
   export default {
-    props: ["countryId", "includeName"],
+    props: {
+      countryId: String,
+      includeName: Boolean
+    },
     computed: {
       countryName() {
         return countries[this.countryId]

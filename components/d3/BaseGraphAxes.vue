@@ -33,8 +33,15 @@
 </template>
 
 <script>
+  import Year from "../../orm/Year";
+
   export default {
-    props: ['xScale', 'yScale', 'years', 'hoverYear'],
+    props: {
+      xScale: Object,
+      yScale: Object,
+      years: Array,
+      hoverYear: Year
+    },
     data() {
       return {
         yTickValues: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]

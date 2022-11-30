@@ -3,8 +3,12 @@
 </template>
 
 <script>
+  import Album from "../orm/Album";
+
   export default {
-    props: ["album"]
+    props: {
+      album: Album
+    }
   }
 </script>
 

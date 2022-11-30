@@ -45,7 +45,9 @@
     components: {
       TijdlozeAxes: BaseGraphAxes
     },
-    props: ['songs'],
+    props: {
+      songs: Array
+    },
     data() {
       return {
         hoverYear: undefined,

@@ -12,7 +12,9 @@
 
   export default {
     name: 'LanguageInput',
-    props: ['value'],
+    props: {
+      value: String
+    },
     computed: {
       languages() {
         return languages;

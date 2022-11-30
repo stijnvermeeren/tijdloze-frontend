@@ -69,7 +69,13 @@
     components: {
       TijdlozeAxes: BaseGraphAxes
     },
-    props: ['songs', 'noLabel'],
+    props: {
+      songs: Array,
+      noLabel: {
+        type: Boolean,
+        default: false
+      }
+    },
     data() {
       return {
         hoverIndex: undefined,

@@ -12,7 +12,9 @@
 
   export default {
     name: 'EntryCount',
-    props: ['songs'],
+    props: {
+      songs: Array
+    },
     computed: {
       years() {
         return this.$store.getters.years;

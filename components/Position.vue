@@ -6,7 +6,13 @@
 </template>
 
 <script>
+  import Song from "../orm/Song";
+  import Year from "../orm/Year";
+
   export default {
-    props: ["song", "year"]
+    props: {
+      song: Song,
+      year: Year
+    }
   }
 </script>

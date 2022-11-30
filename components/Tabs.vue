@@ -10,7 +10,9 @@
 
 <script>
   export default {
-    props: ["tabs"]
+    props: {
+      tabs: Array
+    }
   }
 </script>
 

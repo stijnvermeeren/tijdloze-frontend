@@ -19,7 +19,10 @@
 
 <script>
   export default {
-    props: ['page', 'pages'],
+    props: {
+      page: Number,
+      pages: Number
+    },
     name: 'CommentsPager',
     methods: {
       pagePath(page) {

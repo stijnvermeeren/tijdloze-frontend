@@ -13,7 +13,12 @@
 <script>
   export default {
     name: "PollAnswer",
-    props: ['answer', 'pollId', 'pollAnswerId', 'isAdmin'],
+    props: {
+      answer: String,
+      pollId: Number,
+      pollAnswerId: Number,
+      isAdmin: Boolean
+    },
     data() {
       return {
         answerEdit: this.answer,

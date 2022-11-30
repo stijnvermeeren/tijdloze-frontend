@@ -9,7 +9,10 @@
 
 <script>
   export default {
-    props: ['commentId', 'message'],
+    props: {
+      commentId: Number,
+      message: String
+    },
     data() {
       return {
         editMessage: this.message,

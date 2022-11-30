@@ -20,7 +20,9 @@
       TijdlozeDistributionGraph: DistributionGraph,
       TijdlozeColorLabel: ColorLabel
     },
-    props: ['data'],
+    props: {
+      data: Array
+    },
     computed: {
       finalPoints() {
         return this.data.filter(point => point.isFinal);

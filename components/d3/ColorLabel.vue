@@ -5,7 +5,9 @@
 
 <script>
   export default {
-    props: ['index']
+    props: {
+      index: Number
+    }
   }
 </script>
 

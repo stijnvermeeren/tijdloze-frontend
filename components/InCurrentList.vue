@@ -27,11 +27,15 @@
   import Position from './Position'
   import YearLink from './YearLink'
   import SongWithSecondArtistLink from "./SongWithSecondArtistLink";
+  import Artist from "../orm/Artist";
 
   export default {
     name: 'InCurrentList',
     components: {SongWithSecondArtistLink, YearLink, Position, PositionChange, SongLink},
-    props: ['songs', 'artist'],
+    props: {
+      songs: Array,
+      artist: Artist
+    },
     computed: {
       currentYear() {
         return this.$store.getters.currentYear;

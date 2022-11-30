@@ -24,6 +24,7 @@
 
 <script>
   import FullListEntry from "./FullListEntry";
+  import Year from "../orm/Year";
 
   export default {
     name: 'FullList',
@@ -32,7 +33,7 @@
     },
     props: {
       year: {
-        type: Object
+        type: Year
       },
       songs: {
         type: Array

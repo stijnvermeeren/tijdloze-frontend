@@ -3,8 +3,13 @@
 </template>
 
 <script>
+  import Artist from "../orm/Artist";
+
   export default {
-    props: ["artist", "text"],
+    props: {
+      artist: Artist,
+      text: String
+    },
     computed: {
       content() {
         return this.text ? this.text : this.artist.fullName;

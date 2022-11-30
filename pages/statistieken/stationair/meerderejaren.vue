@@ -32,7 +32,9 @@
   import _ from 'lodash';
 
   export default {
-    props: ['years'],
+    props: {
+      years: Array
+    },
     computed: {
       songs() {
         return this.$store.getters.songs;

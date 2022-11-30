@@ -19,7 +19,9 @@
   export default {
     name: 'Comment',
     components: {CommentEditForm},
-    props: ['comment'],
+    props: {
+      comment: Object
+    },
     data() {
       return {
         isDeleted: false,

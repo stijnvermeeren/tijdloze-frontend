@@ -13,7 +13,9 @@
 <script>
   export default {
     name: 'Spotify',
-    props: ['spotifyId']
+    props: {
+      spotifyId: String
+    }
   }
 </script>
 

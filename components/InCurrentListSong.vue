@@ -21,11 +21,14 @@
   import PositionChange from './PositionChange'
   import Position from './Position'
   import YearLink from './YearLink'
+  import Song from "../orm/Song";
 
   export default {
     name: 'InCurrentListSong',
     components: {YearLink, Position, PositionChange},
-    props: ['song'],
+    props: {
+      song: Song
+    },
     computed: {
       currentYear() {
         return this.$store.getters.currentYear;
