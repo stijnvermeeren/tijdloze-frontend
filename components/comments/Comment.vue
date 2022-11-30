@@ -1,17 +1,16 @@
 <template lang="pug">
-  div(:class="['reactie', {'mine': isMine}]")
-    template(v-if="!isDeleted")
-      .reacinfo
-        span.name {{ comment.name }}
-        span.created {{ comment.created }}
-        span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
-        span.edit(v-if="isMine")
-          a(@click="editComment") Wijzigen
-        span.delete(v-if="isMine")
-          a(@click="deleteComment") Verwijderen
+  el-card(v-if="!isDeleted" :class="['comment', {'mine': isMine}]")
+    div.reacinfo(slot="header")
+      span.name {{ comment.name }}
+      span.created {{ comment.created }}
+      span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
+      span.edit(v-if="isMine")
+        a(@click="editComment") Wijzigen
+      span.delete(v-if="isMine")
+        a(@click="deleteComment") Verwijderen
+    div
       div.bericht(v-if="!editing") {{ message }}
       comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
-    div.deleted(v-else) Bericht verwijderd
 </template>
 
 <script>
@@ -71,12 +70,25 @@
   }
 </script>
 
+<style lang="scss">
+  .comment {
+    .el-card__header {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+
+    .el-card__body {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
+</style>
+
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
-  div.reactie {
-    padding: 0.3em 1em;
-    margin: 0.7em 3em;
+  div.comment {
+    margin: 1em 3em;
 
     border: 1px solid styleConfig.$inputBorderColor;
     border-radius: 4px;
