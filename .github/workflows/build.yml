@@ -36,6 +36,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd tijdloze-frontend
+            touch test
             git fetch origin master
             npm ci
             cp -r .nuxt/dist/client/* /srv/tijdloze-static
