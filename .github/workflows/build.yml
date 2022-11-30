@@ -29,14 +29,15 @@ jobs:
       - name: Deploy with rsync
         run: rsync -avz --delete-after .nuxt/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/tijdloze-frontend/.nuxt/
       - name: npm ci on server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd tijdloze-frontend
-            touch test
             git fetch origin master
             npm ci
             cp -r .nuxt/dist/client/* /srv/tijdloze-static
