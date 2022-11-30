@@ -5,14 +5,14 @@ export default async ({ app, store, $config }, inject) => {
 
   const authParams = {
     responseType: 'token id_token',
-    audience: $config.AUTH0_AUDIENCE,
+    audience: $config.auth0Audience,
     scope: SCOPE
   }
 
   const auth = new Auth0Client({
-    client_id: $config.AUTH0_CLIENT_ID,
-    domain: $config.AUTH0_CLIENT_DOMAIN,
-    redirect_uri: $config.AUTH0_CALLBACK_URI
+    client_id: $config.auth0ClientId,
+    domain: $config.auth0ClientDomain,
+    redirect_uri: $config.auth0CallbackUri
   });
 
   function unsetAccessToken() {
@@ -59,7 +59,7 @@ export default async ({ app, store, $config }, inject) => {
     logout() {
       unsetAccessToken()
       auth.logout({
-        returnTo: $config.AUTH0_LOGOUT_URI
+        returnTo: $config.auth0LogoutUri
       });
     },
     unsetAccessToken() {

@@ -1,9 +1,9 @@
 
 export default function ({ $config, $axios, store }) {
   if (process.server) {
-    $axios.defaults.baseURL = $config.API_URI_SERVER;
+    $axios.defaults.baseURL = $config.apiUriServer;
   } else {
-    $axios.defaults.baseURL = $config.API_URI_CLIENT;
+    $axios.defaults.baseURL = $config.apiUriClient;
   }
 
   $axios.interceptors.request.use(function(config) {

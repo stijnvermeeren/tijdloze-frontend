@@ -2,9 +2,9 @@ import Vue from "vue";
 import VueGtag from "vue-gtag";
 
 export default ({ app, $config }) => {
-  if ($config.GOOGLE_ANALYTICS_ID) {
+  if ($config.googleAnalyticsId) {
     Vue.use(VueGtag, {
-      config: {id: $config.GOOGLE_ANALYTICS_ID},
+      config: {id: $config.googleAnalyticsId},
     }, app.router);
   }
 }

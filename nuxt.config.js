@@ -52,13 +52,13 @@ module.exports = {
     }]
   ],
   publicRuntimeConfig: {
-    API_URI_CLIENT: process.env.API_URI_CLIENT || "http://localhost:9000/",
-    API_URI_SERVER: process.env.API_URI_SERVER || "http://localhost:9000/",
-    AUTH0_CLIENT_ID: process.env.AUTH0_CLIENT_ID || "bDIm5fEwDBV0IBv5tRb48IPwLhFeysSB",
-    AUTH0_CLIENT_DOMAIN: process.env.AUTH0_CLIENT_DOMAIN || "stijnvermeeren-tijdloze-dev.eu.auth0.com",
-    AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE || "dev.tijdloze.stijnshome.be",
-    AUTH0_CALLBACK_URI: process.env.AUTH0_CALLBACK_URI || "http://localhost:3000/auth/callback",
-    AUTH0_LOGOUT_URI: process.env.AUTH0_LOGOUT_URI || "http://localhost:3000/",
-    GOOGLE_ANALYTICS_ID: process.env.GOOGLE_ANALYTICS_ID
+    apiUriClient: process.env.API_URI_CLIENT || "http://localhost:9000/",
+    apiUriServer: process.env.API_URI_SERVER || "http://localhost:9000/",
+    auth0ClientId: process.env.AUTH0_CLIENT_ID || "bDIm5fEwDBV0IBv5tRb48IPwLhFeysSB",
+    auth0ClientDomain: process.env.AUTH0_CLIENT_DOMAIN || "stijnvermeeren-tijdloze-dev.eu.auth0.com",
+    auth0Audience: process.env.AUTH0_AUDIENCE || "dev.tijdloze.stijnshome.be",
+    auth0CallbackUri: process.env.AUTH0_CALLBACK_URI || "http://localhost:3000/auth/callback",
+    auth0LogoutUri: process.env.AUTH0_LOGOUT_URI || "http://localhost:3000/",
+    googleAnalyticsId: process.env.GOOGLE_ANALYTICS_ID
   }
 };

@@ -39,6 +39,5 @@ jobs:
             cd tijdloze-frontend
             git pull
             npm ci
-            npm run build
             cp -r .nuxt/dist/client/* /srv/tijdloze-static
             pm2 restart tijdloze-frontend
