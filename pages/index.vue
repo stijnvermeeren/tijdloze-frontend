@@ -39,17 +39,14 @@
             | {{song.album.releaseYear}}
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
-      div
-        nuxt-link(v-if='top5.length' :to='`lijst/${tableYear.yyyy}`') De volledige lijst van {{tableYear.yyyy}}
-      div
-        nuxt-link(v-if='listInProgress' to='lijst/opkomst') Nog op komst...
-      div
-        nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }') Uit de lijst verdwenen...
+      nuxt-link(v-if='top5.length' tag="el-button" :to='`lijst/${tableYear.yyyy}`') De volledige lijst van {{tableYear.yyyy}}
+      nuxt-link(v-if='listInProgress' tag="el-button" to='lijst/opkomst') Nog op komst...
+      nuxt-link(v-if='listInProgress && exitsKnown' tag="el-button" :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }') Uit de lijst verdwenen...
 
     template(v-if="mode === 'chat'")
       h3 Chatbox
       div
-        nuxt-link(to='chat') Ga naar de chatbox!
+        el-button(@click="$router.push('/chat')") Ga naar de chatbox!
 
     template(v-if="mode === 'comments'")
       h3

@@ -38,7 +38,7 @@ jobs:
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd tijdloze-frontend
-            git fetch origin master
+            git pull
             npm ci
             cp -r .nuxt/dist/client/* /srv/tijdloze-static
             pm2 restart tijdloze-frontend
