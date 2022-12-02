@@ -37,8 +37,8 @@
 
   export default {
     props: {
-      xScale: Object,
-      yScale: Object,
+      xScale: Function,
+      yScale: Function,
       years: Array,
       hoverYear: Year
     },

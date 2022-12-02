@@ -57,7 +57,8 @@
       comment-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
       comment(v-for='comment in comments' :key='comment.id' :comment='comment')
       .link
-        nuxt-link(to='/reacties') Meer reacties
+        nuxt-link(to='/reacties' custom v-slot="{ navigate }")
+          el-button(@click="navigate") Meer reacties
 
     template(v-if='listInProgress')
       template(v-if='poll')
@@ -65,7 +66,8 @@
         div
           poll(:poll='poll')
         div
-          nuxt-link(to='polls') Alle polls
+          nuxt-link(to='/polls' custom v-slot="{ navigate }")
+            el-button(@click="navigate") Alle polls
 </template>
 
 <script>

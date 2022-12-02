@@ -42,6 +42,8 @@
             el-select(v-model="scoreMethod" size="small")
               el-option(value="entry_count" label="Aantal noteringen")
               el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
+              el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
+              el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
         tr(v-for='{entry, position} in data' :key='entry.key')
           td.r
             | {{ position }}
@@ -65,6 +67,15 @@
   import LanguageFilter from "@/components/LanguageFilter";
   import LeadVocalsFilter from "@/components/LeadVocalsFilter";
 
+  const TYPE_SONGS = 'nummers'
+  const TYPE_ALBUMS = 'albums'
+  const TYPE_ARTISTS = 'artiesten'
+  const validTypes = new Set([TYPE_SONGS, TYPE_ALBUMS, TYPE_ARTISTS])
+
+  function parseType(value) {
+    return validTypes.has(value) ? value : TYPE_SONGS
+  }
+
   const FILTER_ANY = 'alle'
   const FILTER_NO_EXIT = 'geen_exit'
   const FILTER_ALL_YEARS = 'alle_jaren'
@@ -84,22 +95,34 @@
 
   const SCORE_ENTRY_COUNT = 'entry_count'
   const SCORE_BORDA = 'borda'
-  const validScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
+  const SCORE_YEAR_ASC = 'year_asc'
+  const SCORE_YEAR_DESC = 'year_desc'
+  const validScoreMethods = {}
+  validScoreMethods[TYPE_SONGS] = [SCORE_ENTRY_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
+  validScoreMethods[TYPE_ALBUMS] = [SCORE_ENTRY_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
+  validScoreMethods[TYPE_ARTISTS] = [SCORE_ENTRY_COUNT, SCORE_BORDA];
+  const summableScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
 
-  function parseScoreMethod(value) {
-    return validScoreMethods.has(value) ? value : SCORE_ENTRY_COUNT
+  function parseScoreMethod(value, type) {
+    const validScoreMethodsForType = validScoreMethods[type]
+    if  (validScoreMethodsForType) {
+      return new Set(validScoreMethodsForType).has(value) ? value : _.first(validScoreMethodsForType)
+    } else {
+      return SCORE_ENTRY_COUNT
+    }
   }
 
   export default {
     components: {CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
+      const type = parseType(this.$route.query.type)
       return {
-        type: this.$route.query.type ? this.$route.query.type : "nummers",
+        type,
         filter: parseFilter(this.$route.query.filter),
         cutoff: parseCutoff(this.$route.query.cutoff),
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
         endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
-        scoreMethod: parseScoreMethod(this.$route.query.score),
+        scoreMethod: parseScoreMethod(this.$route.query.score, type),
         countryFilter: this.$route.query.land || "",
         languageFilter: this.$route.query.taal || "",
         leadVocalsFilter: this.$route.query.leadVocals || ""
@@ -107,17 +130,20 @@
     },
     computed: {
       queryParams() {
-        return {
+        const allParams = {
           type: this.type,
           start: this.startYear.toString(),
           einde: this.endYear.toString(),
-          filter: parseFilter(this.filter),
-          cutoff: parseCutoff(this.cutoff),
-          score: parseScoreMethod(this.scoreMethod),
+          filter: this.filter,
+          cutoff: this.cutoff,
+          score: this.scoreMethod,
           land: this.countryFilter,
           taal: this.languageFilter,
           leadVocals: this.leadVocalsFilter
         };
+
+        // Don't include undefined/empty params in the URL
+        return Object.fromEntries(Object.entries(allParams).filter(([_, value]) => value))
       },
       query() {
         return this.$route.query;
@@ -134,7 +160,27 @@
       selectedYears() {
         return this.completedYears.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
       },
-      scoreFn() {
+      sortAscending() {
+        return this.scoreMethod === SCORE_YEAR_ASC
+      },
+      songScoreFn() {
+        if (summableScoreMethods.has(this.scoreMethod)) {
+          const selectedYears = this.selectedYears
+          const entryScoreFn = this.entryScoreFn
+          const extended = this.extended
+          return song => _.sum(
+            selectedYears
+              .map(year => song.position(year, extended))
+              .filter(position => position)
+              .map(entryScoreFn)
+          )
+        } else if (this.scoreMethod === SCORE_YEAR_DESC || this.scoreMethod === SCORE_YEAR_ASC) {
+          return song => song.album.releaseYear
+        } else {
+          return song => 1
+        }
+      },
+      entryScoreFn() {
         if (this.scoreMethod === SCORE_BORDA) {
           return position => {
             return (position > 100) ? 0 : 101 - position;
@@ -144,26 +190,20 @@
         }
       },
       rawData() {
-        const selectedYears = this.selectedYears;
-        const scoreFn = this.scoreFn;
+        const songScoreFn = this.songScoreFn;
         return this.selectedSongs.map(song => {
           return {
             song: song,
             key: song.id,
             artist: song.artist,
-            points: _.sum(
-              selectedYears
-                .map(year => song.position(year,  this.extended))
-                .filter(position => position)
-                .map(scoreFn)
-            )
+            points: songScoreFn(song)
           }
         });
       },
       data() {
-        if (this.type === 'artiesten') {
+        if (this.type === TYPE_ARTISTS) {
           return this.artistData;
-        } else if (this.type === 'albums') {
+        } else if (this.type === TYPE_ALBUMS) {
           return this.albumData;
         } else {
           return this.songData;
@@ -172,7 +212,7 @@
       songData() {
         return ranking(
           this.rawData.filter(item => item.points > 0),
-          item => -item.points,
+          this.sortAscending ? (item => item.points) : (item => -item.points),
           item => item.song.title,
         )
       },
@@ -198,45 +238,46 @@
 
         return ranking(
           data.filter(item => item.points > 0),
-          item => -item.points,
+          this.sortAscending ? (item => item.points) : (item => -item.points),
           item => item.artist.name,
         )
       },
       albumData() {
         const data = _.values(_.groupBy(this.rawData, item => item.song.albumId)).map(items => {
+          const aggregateFunction = summableScoreMethods.has(this.scoreMethod) ? _.sum : _.head;
           return {
             album: _.first(items).song.album,
             artist: _.first(items).song.artist,
             key: _.first(items).song.album.id,
-            points: _.sum(items.map(item => item.points))
+            points: aggregateFunction(items.map(item => item.points))
           }
         });
 
         return ranking(
           data.filter(item => item.points > 0),
-          item => -item.points,
+          this.sortAscending ? (item => item.points) : (item => -item.points),
           item => item.album.title,
         )
       }
     },
     watch: {
-      queryParams(newQueryParams) {
-        this.$router.replace({
-          query: Object.fromEntries(Object.entries(newQueryParams).filter(([_, value]) => value))
-        });
+      queryParams(newQueryParams, oldQueryParams) {
+        if (JSON.stringify(newQueryParams) !== JSON.stringify(oldQueryParams)) {
+          this.$router.replace({
+            query: newQueryParams
+          });
+        }
       },
       query(newQuery) {
-        if (newQuery.type) {
-          this.type = newQuery.type ? newQuery.type : "nummers";
-          this.filter = parseFilter(newQuery.filter);
-          this.cutoff = parseCutoff(newQuery.cutoff);
-          this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
-          this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
-          this.scoreMethod = parseScoreMethod(newQuery.score);
-          this.countryFilter = newQuery.land ? newQuery.land : "";
-          this.languageFilter = newQuery.taal ? newQuery.taal : "";
-          this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
-        }
+        this.type = parseType(newQuery.type);
+        this.filter = parseFilter(newQuery.filter);
+        this.cutoff = parseCutoff(newQuery.cutoff);
+        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
+        this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
+        this.scoreMethod = parseScoreMethod(newQuery.score, this.type);
+        this.countryFilter = newQuery.land ? newQuery.land : "";
+        this.languageFilter = newQuery.taal ? newQuery.taal : "";
+        this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
       }
     },
     methods: {
@@ -244,16 +285,18 @@
         const selectedYears = this.selectedYears;
         if (this.filter === FILTER_ALL_YEARS) {
           return songs.filter(song =>
-              selectedYears.every(year => song.position(year, this.extended))
+            selectedYears.every(year => song.position(year, this.extended))
           );
         } if (this.filter === FILTER_NO_EXIT) {
           return songs.filter(song =>
-              selectedYears.slice(1).every(year =>
-                  !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
-              )
+            selectedYears.slice(1).every(year =>
+              !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
+            )
           );
         } else {
-          return songs;
+          return songs.filter(song =>
+            selectedYears.some(year => song.position(year, this.extended))
+          );
         }
       },
       filterArtist(songs) {
