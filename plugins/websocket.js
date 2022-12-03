@@ -16,6 +16,15 @@ export default function ({ app, store }) {
 
       if (response.currentYear) {
         store.commit('setCurrentYear', response.currentYear)
+
+        if (!List.query().find(response.currentYear)) {
+          List.insert({
+            data: {
+              year: response.currentYear,
+              songIds: []
+            }
+          })
+        }
       }
 
       if (response.exitSongIds) {

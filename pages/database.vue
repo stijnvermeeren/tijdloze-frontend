@@ -28,6 +28,28 @@
       country-filter(v-model='countryFilter')
       language-filter(v-model='languageFilter')
       lead-vocals-filter(v-model='leadVocalsFilter')
+    div
+      | Jaar van release van
+      |
+      el-input-number(
+        v-model='minReleaseYear'
+        :min="lowestReleaseYear"
+        :max="highestReleaseYear"
+        size="small"
+        controls-position="right"
+        @focus="setDefaultMinReleaseYear"
+      )
+      |
+      | tot en met
+      |
+      el-input-number(
+        v-model='maxReleaseYear'
+        :min="lowestReleaseYear"
+        :max="highestReleaseYear"
+        size="small"
+        controls-position="right"
+        @focus="setDefaultMaxReleaseYear"
+      )
 
     div.list
       client-only(placeholder="Loading...")
@@ -72,6 +94,7 @@
   import CountryFilter from "@/components/CountryFilter";
   import LanguageFilter from "@/components/LanguageFilter";
   import LeadVocalsFilter from "@/components/LeadVocalsFilter";
+  import Album from "../orm/Album";
 
   const TYPE_SONGS = 'nummers'
   const TYPE_ALBUMS = 'albums'
@@ -131,13 +154,21 @@
         cutoff: parseCutoff(this.$route.query.cutoff),
         startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
         endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
+        minReleaseYear: undefined,
+        maxReleaseYear: undefined,
         scoreMethod: parseScoreMethod(this.$route.query.score, type),
-        countryFilter: this.$route.query.land || "",
-        languageFilter: this.$route.query.taal || "",
-        leadVocalsFilter: this.$route.query.leadVocals || ""
+        countryFilter: this.$route.query.land,
+        languageFilter: this.$route.query.taal,
+        leadVocalsFilter: this.$route.query.leadVocals
       }
     },
     computed: {
+      lowestReleaseYear() {
+        return _.min(Album.all().map(album => album.releaseYear))
+      },
+      highestReleaseYear() {
+        return _.max(Album.all().map(album => album.releaseYear))
+      },
       queryParams() {
         const allParams = {
           type: this.type,
@@ -148,7 +179,9 @@
           score: this.scoreMethod,
           land: this.countryFilter,
           taal: this.languageFilter,
-          leadVocals: this.leadVocalsFilter
+          leadVocals: this.leadVocalsFilter,
+          minReleaseYear: this.minReleaseYear,
+          maxReleaseYear: this.maxReleaseYear
         };
 
         // Don't include undefined/empty params in the URL
@@ -161,7 +194,7 @@
         return this.cutoff === CUTOFF_FULL;
       },
       selectedSongs() {
-        return this.filterSong(this.filterArtist(this.filterYears(this.$store.getters.songs)));
+        return this.applyFilters(this.$store.getters.songs);
       },
       completedYears() {
         return this.$store.getters.completedYears;
@@ -289,54 +322,68 @@
         this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
         this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
         this.scoreMethod = parseScoreMethod(newQuery.score, this.type);
-        this.countryFilter = newQuery.land ? newQuery.land : "";
-        this.languageFilter = newQuery.taal ? newQuery.taal : "";
-        this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
+        this.countryFilter = newQuery.land;
+        this.languageFilter = newQuery.taal;
+        this.leadVocalsFilter = newQuery.leadVocals;
+        this.minReleaseYear = parseInt(newQuery.minReleaseYear);
+        this.maxReleaseYear = parseInt(newQuery.maxReleaseYear);
       }
     },
     mounted() {
       this.isMounted = true
     },
     methods: {
-      filterYears(songs) {
+      setDefaultMinReleaseYear() {
+        if (!this.minReleaseYear) {
+          this.minReleaseYear = this.lowestReleaseYear
+        }
+      },
+      setDefaultMaxReleaseYear() {
+        if (!this.maxReleaseYear) {
+          this.maxReleaseYear = this.highestReleaseYear
+        }
+      },
+      applyFilters(songs) {
         const selectedYears = this.selectedYears;
-        if (this.filter === FILTER_ALL_YEARS) {
-          return songs.filter(song =>
-            selectedYears.every(year => song.position(year, this.extended))
-          );
-        } if (this.filter === FILTER_NO_EXIT) {
-          return songs.filter(song =>
-            selectedYears.slice(1).every(year =>
-              !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
-            )
-          );
-        } else {
-          return songs.filter(song =>
-            selectedYears.some(year => song.position(year, this.extended))
-          );
-        }
-      },
-      filterArtist(songs) {
-        if (this.countryFilter) {
-          return songs.filter(song => song.artist.countryId === this.countryFilter);
-        } else {
-          return songs;
-        }
-      },
-      filterSong(songs) {
         let result = songs;
+
+        if (this.filter === FILTER_ALL_YEARS) {
+          result = result.filter(song =>
+              selectedYears.every(year => song.position(year, this.extended))
+          );
+        } else if (this.filter === FILTER_NO_EXIT) {
+          result = result.filter(song =>
+              selectedYears.slice(1).every(year =>
+                  !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
+              )
+          );
+        } else if (this.filter === FILTER_ANY) {
+          result = result.filter(song =>
+              selectedYears.some(year => song.position(year, this.extended))
+          );
+        }
+
+        if (this.countryFilter) {
+          result = result.filter(song => song.artist.countryId === this.countryFilter);
+        }
         if (this.languageFilter) {
           result = result.filter(song => song.languageId === this.languageFilter);
         }
         if (this.leadVocalsFilter) {
           result = result.filter(song => song.leadVocals === this.leadVocalsFilter);
         }
+        if (this.minReleaseYear) {
+          result = result.filter(song => song.album.releaseYear >= this.minReleaseYear);
+        }
+        if (this.maxReleaseYear) {
+          result = result.filter(song => song.album.releaseYear <= this.maxReleaseYear);
+        }
 
         return result;
       }
     },
     head: {
-      title: 'De Tijdloze Tijdloze'
+      title: 'Volledige database'
     }
   }
 </script>
@@ -351,6 +398,7 @@
 
       div {
         flex-basis: 0;
+        align-items: center;
       }
 
       &.header {

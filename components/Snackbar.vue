@@ -1,7 +1,7 @@
 <template lang="pug">
   #snackbar(v-if='song' :class='{isHidden: isHidden}')
     .header
-      | Positie {{song.position(year, true)}} in de Tijdloze van #[tijdloze-year(:year='year')]
+      | Positie {{position}} in de Tijdloze van #[tijdloze-year(:year='year')]
     .song
       | #[tijdloze-song-artist(:song='song')] - #[tijdloze-song(:song='song')]
 </template>
@@ -21,11 +21,16 @@
       },
       year() {
         return this.$store.getters.currentYear;
+      },
+      position() {
+        if (this.song) {
+          return this.song.position(this.year, true);
+        }
       }
     },
     watch: {
-      'song.id'(oldId, newId) {
-        if (oldId !== newId) {
+      song(oldSong, newSong) {
+        if (newSong && (!oldSong || oldSong.id !== newSong.id) && this.position <= 100) {
           this.refreshSnackbar()
         }
       }
