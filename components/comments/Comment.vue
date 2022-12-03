@@ -1,13 +1,15 @@
 <template lang="pug">
-  el-card(v-if="!isDeleted" :class="['comment', {'mine': isMine}]")
+  el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
     div.reacinfo(slot="header")
       span.name {{ comment.name }}
       span.created {{ comment.created }}
       span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
       span.edit(v-if="isMine")
         a(@click="editComment") Wijzigen
-      span.delete(v-if="isMine")
+      span.delete(v-if="!isDeleted && (isMine || isAdmin)")
         a(@click="deleteComment") Verwijderen
+      span.delete(v-if="isDeleted && isAdmin")
+        a(@click="restoreComment") Terugzetten
     div
       div.bericht(v-if="!editing") {{ message }}
       comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
@@ -24,7 +26,7 @@
     },
     data() {
       return {
-        isDeleted: false,
+        isDeleted: !!this.comment.deleted,
         message: this.comment.message,
         editing: false
       }
@@ -32,6 +34,9 @@
     computed: {
       isAuthenticated() {
         return this.$store.getters['auth/isAuthenticated'];
+      },
+      isAdmin() {
+        return this.$store.getters['auth/isAdmin'];
       },
       isMine() {
         return this.isAuthenticated && this.$store.state.auth.user.id === this.comment.userId;
@@ -65,6 +70,15 @@
         if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
           this.$axios.$delete(`comment/${this.comment.id}`).then(response => {
             this.isDeleted = true;
+            this.$emit("deleted")
+          });
+        }
+      },
+      restoreComment() {
+        if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
+          this.$axios.$post(`comment/${this.comment.id}`).then(response => {
+            this.isDeleted = false;
+            this.$emit("restored")
           });
         }
       }

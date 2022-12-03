@@ -66,8 +66,7 @@
       submit() {
         this.processing = true;
         this.$axios.$put(`album/${this.fullAlbumData.id}`, this.fullAlbumData).then(result => {
-          this.fullAlbumData = result;
-          this.processing = false;
+          this.$router.push(`/album/${this.fullAlbumData.id}`);
         })
       }
     },

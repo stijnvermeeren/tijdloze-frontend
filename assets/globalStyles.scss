@@ -171,10 +171,14 @@ table.info {
   }
 }
 
-.header {
+.flexTitle {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.header {
+  @extend .flexTitle;
 
   .title {
     font-size: 24px;

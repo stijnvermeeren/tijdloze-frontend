@@ -10,9 +10,9 @@
       div(v-if="outOfDate")
         | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
         |
-        el-button(@click='refresh()', :disabled='refreshing') Opnieuw laden
+        el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
       div
-        el-button(@click='save()', :disabled='saving') Opslaan
+        el-button(@click='save()' :disabled='saving') Opslaan
 
     el-card
       div.header(slot="header")

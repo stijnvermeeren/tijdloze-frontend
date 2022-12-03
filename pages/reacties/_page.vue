@@ -1,6 +1,10 @@
 <template lang="pug">
   div
-    h2 Reageer op de Tijdloze
+    div.flexTitle
+      h2 Reageer op de Tijdloze
+      div(v-if="$store.getters['auth/isAdmin']")
+        nuxt-link(to="/admin/comments")
+          el-button(type="warning" round size="small") Admin: verwijderde reacties terugzetten
     comments-pager(:page='page' :pages='pages ')
     template(v-if='page === 1')
       template(v-if="!commentsOn")
@@ -10,7 +14,7 @@
         comment-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
     div
-      comment(v-for='comment in comments' :key='comment.id' :comment='comment')
+      comment(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
 
     comments-pager(:page='page' :pages='pages ')
 </template>
@@ -30,6 +34,10 @@
       }
     },
     methods: {
+      async reload() {
+        this.comments = await this.$axios.$get(`comments/${this.page}`);
+        this.commentCount = (await this.$axios.$get(`comments/count`)).commentCount;
+      },
       onDisplayNameChanged() {
         const page = this.$route.params.page || 1;
         this.$axios.$get(`comments/${page}`).then(comments => {
@@ -63,8 +71,7 @@
     },
     async mounted() {
       // refresh on client side to avoid a stale cache on the server-side
-      this.comments = await this.$axios.$get(`comments/${this.page}`);
-      this.commentCount = (await this.$axios.$get(`comments/count`)).commentCount;
+      this.reload()
     },
     head: {
       title: 'Reacties'

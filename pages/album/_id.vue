@@ -1,7 +1,11 @@
 <template lang="pug">
   div
-    page-title(icon='album' icon-alt='Album')
-      h2 {{album.title}}
+    div.flexTitle
+      page-title(icon='album' icon-alt='Album')
+        h2 {{album.title}}
+      div(v-if="$store.getters['auth/isAdmin']")
+        nuxt-link(:to="`/admin/album/${album.id}`")
+          el-button(type="warning" round size="small") Admin: album aanpassen
     table.info
       tbody
         tr.important

@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.pageTitleContainer
     .icon
       img.icon(:src='`/images/icon/${icon}.png`' :alt='iconAlt')
     .pageTitle
@@ -18,14 +18,11 @@
 
 <style lang="scss" scoped>
   div.icon {
-    img {
-      vertical-align: bottom;
-      margin-right: 10px;
-    }
-
-    float: left;
+    display: inline-block;
+    vertical-align: baseline;
+    margin-right: 20px;
   }
   div.pageTitle {
-    margin: 0 0 20px 50px;
+    display: inline-block;
   }
 </style>

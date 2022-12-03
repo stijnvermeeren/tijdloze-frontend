@@ -70,8 +70,7 @@
       submit() {
         this.processing = true;
         this.$axios.$put(`artist/${this.fullArtistData.id}`, this.fullArtistData).then(result => {
-          this.fullArtistData = result;
-          this.processing = false;
+          this.$router.push(`/artiest/${this.fullArtistData.id}`);
         })
       }
     },

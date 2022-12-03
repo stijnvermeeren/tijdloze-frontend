@@ -52,11 +52,15 @@
             el-menu-item(index="/website/contact") Contact
           el-submenu(v-if='isAdmin' index="/admin")
             template(slot="title") Admin
-            el-menu-item(index="/admin") Overzicht
-            el-menu-item(index="/admin/live") Nummers toevoeren
+            el-menu-item(index="/admin/live") Nummers toevoegen
+            el-menu-item(index="/admin/lijst") Nummers verwijderen
             el-menu-item(index="/admin/exits") Exits markeren
             el-menu-item(index="/admin/polls") Polls
             el-menu-item(index="/admin/analysis") Interessante feiten
+            el-menu-item(index="/admin/artist") Nieuwe artiest
+            el-menu-item(index="/admin/users") Gebruikers
+            el-menu-item(index="/admin/comments") Verwijderde reacties
+            el-menu-item(index="/admin/settings") Instellingen
 
       tijdloze-login
       span.cross-button(@click='isOpen = false')

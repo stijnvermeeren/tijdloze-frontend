@@ -1,7 +1,11 @@
 <template lang="pug">
   .container
-    page-title(icon='song' icon-alt='Nummer')
-      h2 {{song.title}}
+    div.flexTitle
+      page-title(icon='song' icon-alt='Nummer')
+        h2 {{song.title}}
+      div(v-if="$store.getters['auth/isAdmin']")
+        nuxt-link(:to="`/admin/song/${song.id}`")
+          el-button(type="warning" round size="small") Admin: nummer aanpassen
     table.info
       tbody
         tr.important

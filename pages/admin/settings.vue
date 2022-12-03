@@ -1,28 +1,6 @@
 <template lang="pug">
   div
-    h2 Admin
-    h3 De Tijdloze Live
-    ul
-      li
-        nuxt-link(to='/admin/live') Nummers toevoegen
-      li
-        nuxt-link(to='/admin/lijst') Volledige lijst van dit jaar
-      li
-        nuxt-link(to='/admin/exits') Exits markeren
-      li
-        nuxt-link(to='/admin/polls') Polls
-      li
-        nuxt-link(to='/admin/analysis') Interessante feiten
-    h3 Database
-    ul
-      li
-        | Aanpassen:
-        search-box(@selectSearchResult='selectSearchResult($event)')
-    h3 Gebruikers
-    ul
-      li
-        nuxt-link(to='admin/users') User admin
-    h3 Opties
+    h2 Instellingen
     ul
       li
         el-switch(v-model="commentsOn" :active-value="'on'" :inactive-value="'off'")
@@ -33,7 +11,7 @@
         |
         | Chatbox open
       li
-        button(@click="invalidateCache") Invalidate API caches
+        el-button(@click="invalidateCache" size="small") Invalidate API caches
 </template>
 
 <script>
@@ -81,7 +59,10 @@
         commentsOn: commentsOnResponse.value
       };
     },
-    middleware: 'admin'
+    middleware: 'admin',
+    head: {
+      title: 'Admin: Instellingen'
+    }
   }
 </script>
 

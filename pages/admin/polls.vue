@@ -1,8 +1,8 @@
 <template lang="pug">
   div
-    h2 Admin: polls
-    div
-      el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
+    div.flexTitle
+      h2 Admin: polls
+      el-button(@click='refresh()' :disabled='refreshing' size="small" round) Opnieuw laden
     el-card
       div.header(slot="header")
         div.title Maak een nieuwe poll ({{currentYear.yyyy}})
@@ -12,15 +12,15 @@
           input(v-model='question')
         h4 Antwoorden
           |
-          el-button(@click="answers.push({text: ''})" small) Nog een antwoord
-          el-button(v-if='answers.length > 2' @click='answers.pop()' small) Laatste antwoord verwijderen
+          el-button(@click="answers.push({text: ''})" size="mini") Nog een antwoord
+          el-button(v-if='answers.length > 2' @click='answers.pop()' size="mini") Laatste antwoord verwijderen
         ul(v-for='answer in answers')
           li
             input(v-model='answer.text')
         div
           el-button(@click='submit()' :disabled='!formValid' type="primary") Opslaan
 
-    el-card(v-for='{year, polls} in groupedPolls')
+    el-card(v-for='{year, polls} in groupedPolls' :key="year")
       div.header(slot="header")
         div.title {{year}}
       div(v-for='poll in polls', :key='poll.id')

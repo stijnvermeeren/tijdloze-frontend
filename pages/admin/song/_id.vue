@@ -101,8 +101,7 @@
       submit() {
         this.processing = true;
         this.$axios.$put(`song/${this.fullSongData.id}`, this.fullSongData).then(result => {
-          this.fullSongData = result;
-          this.processing = false;
+          this.$router.push(`/nummer/${this.fullSongData.id}`);
         })
       }
     },

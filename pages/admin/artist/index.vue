@@ -39,8 +39,7 @@
       submit() {
         this.processing = true;
         this.$axios.$post(`artist`, this.fullArtistData).then(result => {
-          this.$router.replace(`/admin/artist/${result.id}`);
-          this.processing = false;
+          this.$router.push(`/artiest/${result.id}`);
         })
       }
     },

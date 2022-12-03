@@ -1,7 +1,11 @@
 <template lang="pug">
   div
-    page-title(icon='artist' icon-alt='Artiest')
-      h2 {{artist.fullName}}
+    div.flexTitle
+      page-title(icon='artist' icon-alt='Artiest')
+        h2 {{artist.fullName}}
+      div(v-if="$store.getters['auth/isAdmin']")
+        nuxt-link(:to="`/admin/artist/${artist.id}`")
+          el-button(type="warning" round size="small") Admin: artist aanpassen
     table.info
       tbody
         tr(v-if="artist.countryId")
