@@ -63,7 +63,11 @@ export const getters = {
   ), */
   completedYears (state, getters) {
     return getters.years.filter(year => {
-      return getters.songs.find(song => song.position(year) === 1);
+      const list = List.query().with('songs').find(year.yyyy)
+      if (list) {
+        const firstSong = _.first(list.songs)
+        return firstSong && firstSong.position(year) === 1;
+      }
     });
   },
   usedCountryIds (state, getters) {

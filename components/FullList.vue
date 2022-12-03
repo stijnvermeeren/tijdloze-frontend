@@ -1,6 +1,6 @@
 <template lang="pug">
   div
-    div(v-if='songs.length > 0')
+    div.fullList(v-if='songs.length > 0')
       div.entry.header
         div.n(v-if='year.previous()')
           nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
@@ -46,7 +46,7 @@
   div.content {
     flex: 100% 1 1;
     position: relative;
-    height: 512px;
+    height: 400px;
 
     .wrapper {
       overflow: hidden;

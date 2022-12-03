@@ -10,12 +10,14 @@ export default function ranking(data, rankBy, secondaryRankBy, limit) {
     if (lastEntry && _.isEqual(rankBy(entry), rankBy(lastEntry))) {
       results.push({
         position: '=',
+        key: entry.key,
         entry
       })
     } else {
       const position = index + 1;
       results.push({
         position,
+        key: entry.key,
         entry
       });
       lastEntry = entry;

@@ -33,7 +33,7 @@
 </script>
 
 <style lang="scss">
-  div.entry {
+  div.fullList div.entry {
     display: flex;
     height: 24px;
 

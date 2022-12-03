@@ -29,33 +29,38 @@
       el-select.selectYear(v-model='endYear' size="small")
         el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
 
-    table.lijst.perVijf
-      tbody
-        tr
-          th.r
-          th(:colspan="type === 'artiesten' ? 1 : 2")
+    div.list
+      client-only(placeholder="Loading...")
+        div.entry.header
+          div.r
+          div.c
             el-radio-group(v-model="type" size="small")
               el-radio-button(label='nummers') Nummers
               el-radio-button(label='artiesten') Artiesten
               el-radio-button(label='albums') Albums
-          th
+          div.p
             el-select(v-model="scoreMethod" size="small")
               el-option(value="entry_count" label="Aantal noteringen")
               el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
               el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
               el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
-        tr(v-for='{entry, position} in data' :key='entry.key')
-          td.r
-            | {{ position }}
-          td.a(v-if="type === 'nummers'")
-            tijdloze-song-artist(:song='entry.song')
-          td(v-else :class="{'a': type === 'albums', 'l': type === 'artiesten'}")
-            tijdloze-artist(:artist='entry.artist')
-          td(v-if="type === 'nummers'")
-            tijdloze-song(:song='entry.song')
-          td(v-if="type === 'albums'")
-            tijdloze-album(:album='entry.album')
-          td {{ Math.round(entry.points * 10) / 10 }}
+        div.content
+          div.wrapper
+            RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
+              template(v-slot="{ item, index }")
+                div.entry(:class="{lineBelow: index % 5 === 4}")
+                  div.r
+                    | {{ item.position }}
+                  div.c
+                    div.a(v-if="type === 'nummers'")
+                      tijdloze-song-artist(:song='item.entry.song')
+                    div(v-else :class="{'a': type === 'albums', 'l': type === 'artiesten'}")
+                      tijdloze-artist(:artist='item.entry.artist')
+                    div(v-if="type === 'nummers'")
+                      tijdloze-song(:song='item.entry.song')
+                    div(v-if="type === 'albums'")
+                      tijdloze-album(:album='item.entry.album')
+                  div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
 <script>
@@ -117,6 +122,7 @@
     data() {
       const type = parseType(this.$route.query.type)
       return {
+        isMounted: false,
         type,
         filter: parseFilter(this.$route.query.filter),
         cutoff: parseCutoff(this.$route.query.cutoff),
@@ -201,12 +207,17 @@
         });
       },
       data() {
-        if (this.type === TYPE_ARTISTS) {
-          return this.artistData;
-        } else if (this.type === TYPE_ALBUMS) {
-          return this.albumData;
+        if (this.isMounted) {
+          if (this.type === TYPE_ARTISTS) {
+            return this.artistData;
+          } else if (this.type === TYPE_ALBUMS) {
+            return this.albumData;
+          } else {
+            return this.songData;
+          }
         } else {
-          return this.songData;
+          // default values for computations on server-side, to prevent high load on server
+          return []
         }
       },
       songData() {
@@ -280,6 +291,9 @@
         this.leadVocalsFilter = newQuery.leadVocals ? newQuery.leadVocals : "";
       }
     },
+    mounted() {
+      this.isMounted = true
+    },
     methods: {
       filterYears(songs) {
         const selectedYears = this.selectedYears;
@@ -325,21 +339,105 @@
 </script>
 
 <style lang="scss" scoped>
+  .list {
+    margin: 20px 0;
+
+    div.entry {
+      display: flex;
+      justify-content: space-between;
+
+      div {
+        flex-basis: 0;
+      }
+
+      &.header {
+        font-weight: bold;
+        overflow: auto;
+        border-bottom: solid black 1px;
+        scrollbar-gutter: stable;
+
+        .p {
+          text-align: right;
+        }
+        .c {
+          flex-basis: -150px;
+        }
+        .p {
+          flex-basis: 150px;
+        }
+      }
+
+      .r {
+        text-align: center;
+        font-weight: bold;
+        flex-grow: 1;
+      }
+      .c {
+        flex-grow: 10;
+        display: flex;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+
+        div {
+          margin: 0 10px;
+          flex-grow: 1;
+
+          &.a {
+            flex-grow: 0.8;
+          }
+        }
+      }
+      .p {
+        text-align: center;
+        flex-grow: 2;
+      }
+    }
+
+    div.content {
+      flex: 100% 1 1;
+      position: relative;
+      height: 400px;
+
+      .wrapper {
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .scroller {
+          width: 100%;
+          height: 100%;
+
+          div.entry {
+            height: 24px;
+
+            &.lineBelow {
+              border-bottom: 1px #888888 dotted;
+            }
+          }
+        }
+      }
+    }
+  }
+
   .selectYear {
     width: 100px;
   }
 
   div.noot {
-      font-size: 85%;
-      margin-left: 2em;
+    font-size: 85%;
+    margin-left: 2em;
   }
 
   div#toelichting {
-      margin-bottom: 2em;
+    margin-bottom: 2em;
   }
 
   table.lijst {
-      margin-top: 2em;
+    margin-top: 2em;
   }
 
   .alert {
