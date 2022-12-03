@@ -4,12 +4,6 @@
     el-alert.alert(title="Database downloaden" :closable="false" show-icon)
       | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
     div
-      | Filter:
-      |
-      country-filter(v-model='countryFilter')
-      language-filter(v-model='languageFilter')
-      lead-vocals-filter(v-model='leadVocalsFilter')
-    div
       el-select(v-model="filter" size="small")
         el-option(value="alle" label="In minstens een")
         el-option(value="alle_jaren" label="In elke")
@@ -28,6 +22,12 @@
       |
       el-select.selectYear(v-model='endYear' size="small")
         el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+    div
+      | Filter:
+      |
+      country-filter(v-model='countryFilter')
+      language-filter(v-model='languageFilter')
+      lead-vocals-filter(v-model='leadVocalsFilter')
 
     div.list
       client-only(placeholder="Loading...")
@@ -41,6 +41,7 @@
           div.p
             el-select(v-model="scoreMethod" size="small")
               el-option(value="entry_count" label="Aantal noteringen")
+              el-option(v-if="type !== 'nummers'" value="song_count" label="Aantal verschillende nummers")
               el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
               el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
               el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
@@ -54,7 +55,7 @@
                   div.c
                     div.a(v-if="type === 'nummers'")
                       tijdloze-song-artist(:song='item.entry.song')
-                    div(v-else :class="{'a': type === 'albums', 'l': type === 'artiesten'}")
+                    div.a(v-else)
                       tijdloze-artist(:artist='item.entry.artist')
                     div(v-if="type === 'nummers'")
                       tijdloze-song(:song='item.entry.song')
@@ -99,14 +100,16 @@
   }
 
   const SCORE_ENTRY_COUNT = 'entry_count'
+  const SCORE_SONG_COUNT = 'song_count'
   const SCORE_BORDA = 'borda'
   const SCORE_YEAR_ASC = 'year_asc'
   const SCORE_YEAR_DESC = 'year_desc'
   const validScoreMethods = {}
   validScoreMethods[TYPE_SONGS] = [SCORE_ENTRY_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
-  validScoreMethods[TYPE_ALBUMS] = [SCORE_ENTRY_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
-  validScoreMethods[TYPE_ARTISTS] = [SCORE_ENTRY_COUNT, SCORE_BORDA];
-  const summableScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
+  validScoreMethods[TYPE_ALBUMS] = [SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
+  validScoreMethods[TYPE_ARTISTS] = [SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA];
+  const sumEntriesScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
+  const sumSongsScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA])
 
   function parseScoreMethod(value, type) {
     const validScoreMethodsForType = validScoreMethods[type]
@@ -170,7 +173,7 @@
         return this.scoreMethod === SCORE_YEAR_ASC
       },
       songScoreFn() {
-        if (summableScoreMethods.has(this.scoreMethod)) {
+        if (sumEntriesScoreMethods.has(this.scoreMethod)) {
           const selectedYears = this.selectedYears
           const entryScoreFn = this.entryScoreFn
           const extended = this.extended
@@ -255,7 +258,7 @@
       },
       albumData() {
         const data = _.values(_.groupBy(this.rawData, item => item.song.albumId)).map(items => {
-          const aggregateFunction = summableScoreMethods.has(this.scoreMethod) ? _.sum : _.head;
+          const aggregateFunction = sumSongsScoreMethods.has(this.scoreMethod) ? _.sum : _.head;
           return {
             album: _.first(items).song.album,
             artist: _.first(items).song.artist,
