@@ -60,9 +60,9 @@
       }
     },
     async asyncData({ app }) {
-      const modeResponse = await app.$axios.$get(`text/mode`);
+      const modeResponse = await app.$axios.$get(`text/chatOn`);
       return {
-        chatEnabled: modeResponse.value === 'chat'
+        chatEnabled: modeResponse.value === 'on'
       }
     },
     head: {

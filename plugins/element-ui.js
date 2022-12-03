@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Alert, Button, Card, Collapse, CollapseItem, InputNumber, Menu, MenuItem, MenuItemGroup, Option, RadioButton, RadioGroup, Select, Submenu } from 'element-ui'
+import { Alert, Button, Card, Collapse, CollapseItem, InputNumber, Menu, MenuItem, MenuItemGroup, Option, RadioButton, RadioGroup, Select, Submenu, Switch } from 'element-ui'
 import nl from 'element-ui/lib/locale/lang/nl'
 import locale from 'element-ui/lib/locale'
 
@@ -19,4 +19,5 @@ export default () => {
     Vue.use(RadioGroup);
     Vue.use(Select);
     Vue.use(Submenu);
+    Vue.use(Switch);
 }

@@ -25,9 +25,13 @@
     h3 Opties
     ul
       li
-        nuxt-link(to='/admin/chat') Chat / reacties mode
+        el-switch(v-model="commentsOn" :active-value="'on'" :inactive-value="'off'")
+        |
+        | Reacties open
       li
-        nuxt-link(to='/admin/intro') Homepage intro
+        el-switch(v-model="chatOn" :active-value="'on'" :inactive-value="'off'")
+        |
+        | Chatbox open
       li
         button(@click="invalidateCache") Invalidate API caches
 </template>
@@ -36,6 +40,20 @@
   import SearchBox from '../../components/SearchBox'
   export default {
     components: {SearchBox},
+    watch: {
+      async chatOn() {
+        const data = {
+          text: this.chatOn
+        };
+        await this.$axios.$post(`text/chatOn`, data);
+      },
+      async commentsOn() {
+        const data = {
+          text: this.commentsOn
+        };
+        await this.$axios.$post(`text/commentsOn`, data);
+      }
+    },
     methods: {
       selectSearchResult(result) {
         let path = ''
@@ -54,6 +72,14 @@
       async invalidateCache() {
         await this.$axios.$get('/cache/invalidate');
       }
+    },
+    async asyncData({ app }) {
+      const chatOnResponse = await app.$axios.$get(`text/chatOn`);
+      const commentsOnResponse = await app.$axios.$get(`text/commentsOn`);
+      return {
+        chatOn: chatOnResponse.value,
+        commentsOn: commentsOnResponse.value
+      };
     },
     middleware: 'admin'
   }

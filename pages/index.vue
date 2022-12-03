@@ -2,15 +2,11 @@
   div
     h2 De Tijdloze Website
     .description
-      template(v-if="introMode === 'during'")
+      template(v-if="listInProgress")
         | De #[strong Tijdloze 100] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
         br
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
-      template(v-if="introMode === 'pre'")
-        | De Tijdloze Countdown loopt deze week op #[a(href='https://stubru.be/detijdloze') Studio Brussel].
-        br
-        | Op 31 december vanaf 10 uur kan je de #[strong Tijdloze 100] ook op deze website live volgen.
-      template(v-if="introMode === 'none'")
+      template(v-else)
         | De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
     h3
       | De Tijdloze van {{tableYear.yyyy}}
@@ -46,12 +42,12 @@
       nuxt-link(v-if='listInProgress && exitsKnown' custom v-slot="{ navigate }" :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }')
         el-button(@click="navigate") Uit de lijst verdwenen...
 
-    template(v-if="mode === 'chat'")
+    template(v-if="chatOn")
       h3 Chatbox
       div
         el-button(@click="$router.push('/chat')") Ga naar de chatbox!
 
-    template(v-if="mode === 'comments'")
+    template(v-if="commentsOn")
       h3
         | Reageer en discussieer
       comment-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
@@ -109,11 +105,11 @@
       }
     },
     async asyncData({ params, app, store }) {
-      const modeResponse = await app.$axios.$get(`text/mode`);
-      const introResponse = await app.$axios.$get(`text/intro`);
+      const chatOn = (await app.$axios.$get(`text/chatOn`)).value === 'on';
+      const commentsOn = (await app.$axios.$get(`text/commentsOn`)).value === 'on';
 
       let comments = [];
-      if (modeResponse.value === 'comments') {
+      if (commentsOn) {
         comments = await app.$axios.$get(`comments/1`);
         comments = _.take(comments, 5);
       }
@@ -128,8 +124,8 @@
 
       return {
         poll: latestPoll,
-        mode: modeResponse.value,
-        introMode: introResponse.value,
+        chatOn,
+        commentsOn,
         comments: comments
       };
     },

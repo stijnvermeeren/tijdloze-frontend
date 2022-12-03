@@ -373,6 +373,21 @@ export default [
       `Met [Sonne] van [*Rammstein] staat voor het eerst sinds 1999 een Duitse band (en voor het eerst ooit een Duitstalig nummer) in de Tijdloze 100. Een andere nieuwe band in de top 100 is [Journey] met [Don't Stop Believin']. [Arctic Monkeys] (met [R U Mine?]) en [System of a Down] (met [Toxicity]) krijgen een nieuw nummer in de lijst en [Jeff Buckley] komt opnieuw binnen met [Hallelujah;Jeff Buckley].`,
       `Zes nummers staan niet meer in de top 100 in vergelijking met 2019. [Enter Sandman] van [Metallica] (vorig jaar nog op 65) stond 14 jaar onafgebroken in De Tijdloze. [Born Slippy] van [Underworld] haalt na 21 jaar De Tijdloze niet meer. Ook [Under Pressure], [The Number of the Beast], [Riders on the Storm] en [Down by the Water] vallen weg uit de top 100.`,
       `In de dagen voor de top 100 heeft Studio Brussel een countdown-lijst met in totaal 1066 nummers uitgezonden.`
+    ],
+  },
+  {
+    yyyy: 2021,
+    analyse: [
+      `[*The Chain] van [Fleetwood Mac] neemt de eerste plaats over van [Pearl Jam]'s [Black]. The Chain was pas in 2017 nieuw binnengekomen in de top 100. Nog nooit steeg een nummer zo snel naar de top. Na [Child in Time], [Angie], [Smells Like Teen Spirit], [Mia], [Stairway to Heaven] en [Black] is dit de zevende nummer één in 34 jaar Tijdloze.`,
+      `De rest van de lijst blijft wel heel stabiel. Maar liefst elf nummers veranderen helemaal niet van positie in vergelijking met het voorafgaande jaar, een record.`,
+      `Dankzij re-entries voor [Do I Wanna Know?] en [When the Sun Goes Down] (ook de hoogste nieuwe op 82) hebben de [*Arctic Monkeys] dit jaar vijf nummers in de top 100, iets dat enkel [The Rolling Stones], [U2], [dEUS] en [Radiohead] hen ooit voordeden. [505] stijgt van 19 naar 13 en komt zo dichter bij de top 10.`,
+      `Een minder jaar is het alweer voor [*Metallica]: [One;Metallica], [Master Of Puppets] en [Nothing Else Matters] dalen alle drie voor het derde jaar op rij.`,
+      `[The War On Drugs] kwam vorig jaar nieuw binnen op 45 met [*Thinking Of A Place], en stijgt meteen door naar 14.  Dit is ook het jongste nummer in de top 100.`,
+      `Vorig jaar kwam [*Don't Stop Believin'] van [Journey] nieuw binnen op 98, dit jaar stijgt het 41 plaatsen en staat het op 57, waardoor het de sterkste stijger van de top 100 is.`,
+      `De enige nieuwe artiest in de top 100 van 2021 is [*Paolo Nutini], met [Iron Sky] op 88.`,
+      `Voor het eerst sinds 2016 staat er weer meer dan één nummer van [*The Rolling Stones] in de top 100. [Gimme Shelter] komt nieuw binnen op 92, meteen een plaatsje hoger dan [Paint It Black]. [*Dire Straits] staat dan weer voor het eerst sinds 1991 met vier noteringen in de top 100, [Romeo and Juliet] komt nieuw binnen op 94.`,
+      `[*November Rain] stond 28 jaar op rij in de top 100, maar verdwijnt dit jaar. Ook [*Whole Lotta Rosie] had al 27 top 100-noteringen in de geschiedenis van de Tijdloze. De andere drie exits zijn [Fix You], [I Say a Little Prayer] en [My Hero].`,
+      `De Tijdloze Countdown werd dit jaar uitgebreid naar 2021 nummers.`
     ]
   }
 ]

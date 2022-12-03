@@ -209,7 +209,6 @@
         }
       },
       decreasePostDelay() {
-        console.log("Decrease")
         if (this.postDelay > 0) {
           this.postDelay--;
           setTimeout(()=>{
