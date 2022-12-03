@@ -21,23 +21,28 @@
           td(colspan='2')
             make-links(:text='fullArtistData.notes')
 
-    h3 In de Tijdloze
-    div
-      entry-count(:songs='artist.allSongs')
-    graph(
-      v-if='top100Songs.length'
-      :songs='top100Songs'
-    )
+    el-card
+      div.header(slot="header")
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='artist.allSongs')
+      graph(
+        v-if='top100Songs.length'
+        :songs='top100Songs'
+      )
 
-    h3 Tijdloze albums en nummers
-    div
-      ul(v-if='artist.allAlbums')
-        li(v-for='album in artist.allAlbums')
-          tijdloze-album(:album='album')
-          |  ({{album.releaseYear}})
-          ul(v-if='album.songsSorted.length')
-            li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
-              song-with-second-artist-link(:song='song' :artist="artist")
+    el-card
+      div.header(slot="header")
+        div.title Tijdloze albums en nummers
+      div
+        ul(v-if='artist.allAlbums')
+          li(v-for='album in artist.allAlbums')
+            tijdloze-album(:album='album')
+            |  ({{album.releaseYear}})
+            ul(v-if='album.songsSorted.length')
+              li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
+                song-with-second-artist-link(:song='song' :artist="artist")
 </template>
 
 <script>

@@ -8,62 +8,65 @@
         | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
       template(v-else)
         | De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
-    h3
-      | De Tijdloze van {{tableYear.yyyy}}
-    table.lijst(v-if="top5.length")
-      tbody
-        tr
-          th.n(v-if='tableYear.previous()')
-            nuxt-link(:to='`/lijst/${tableYear.previous().yyyy}`') {{tableYear.previous()._yy}}
-          th.r
-            nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
-          th.a Artiest
-          th Titel
-          th.releaseYear
-            | Jaar
-        tr(v-for='song in top5')
-          td.n(v-if='tableYear.previous()')
-            tijdloze-position(:song='song' :year='tableYear.previous()')
-          td.r
-            tijdloze-position-change(:song='song' :year='tableYear')
-            tijdloze-position(:song='song' :year='tableYear')
-          td.a
-            tijdloze-song-artist(:song='song')
-          td
-            tijdloze-song(:song='song')
-          td.releaseYear
-            | {{song.album.releaseYear}}
-    p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
-    .link
-      nuxt-link(v-if='top5.length' custom v-slot="{ navigate }" :to='`lijst/${tableYear.yyyy}`')
-        el-button(@click="navigate") De volledige lijst van {{tableYear.yyyy}}
-      nuxt-link(v-if='listInProgress' custom v-slot="{ navigate }" to='lijst/opkomst')
-        el-button(@click="navigate") Nog op komst...
-      nuxt-link(v-if='listInProgress && exitsKnown' custom v-slot="{ navigate }" :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }')
-        el-button(@click="navigate") Uit de lijst verdwenen...
+    el-card
+      div.header(slot="header")
+        div.title De Tijdloze van {{tableYear.yyyy}}
+      table.lijst(v-if="top5.length")
+        tbody
+          tr
+            th.n(v-if='tableYear.previous()')
+              nuxt-link(:to='`/lijst/${tableYear.previous().yyyy}`') {{tableYear.previous()._yy}}
+            th.r
+              nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
+            th.a Artiest
+            th Titel
+            th.releaseYear
+              | Jaar
+          tr(v-for='song in top5')
+            td.n(v-if='tableYear.previous()')
+              tijdloze-position(:song='song' :year='tableYear.previous()')
+            td.r
+              tijdloze-position-change(:song='song' :year='tableYear')
+              tijdloze-position(:song='song' :year='tableYear')
+            td.a
+              tijdloze-song-artist(:song='song')
+            td
+              tijdloze-song(:song='song')
+            td.releaseYear
+              | {{song.album.releaseYear}}
+      p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
+      .link
+        nuxt-link(v-if='top5.length' :to='`lijst/${tableYear.yyyy}`')
+          el-button De volledige lijst van {{tableYear.yyyy}}
+        nuxt-link(v-if='listInProgress' to='lijst/opkomst')
+          el-button Nog op komst...
+        nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `lijst/${year.yyyy}`, hash: "#exits" }')
+          el-button Uit de lijst verdwenen...
 
-    template(v-if="chatOn")
-      h3 Chatbox
+    el-card(v-if="chatOn")
+      div.header(slot="header")
+        div.title Chatbox
       div
-        el-button(@click="$router.push('/chat')") Ga naar de chatbox!
+        nuxt-link(to="/chat")
+          el-button Ga naar de chatbox!
 
-    template(v-if="commentsOn")
-      h3
-        | Reageer en discussieer
+    el-card(v-if="commentsOn")
+      div.header(slot="header")
+        div.title Reageer en discussieer
       comment-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
       comment(v-for='comment in comments' :key='comment.id' :comment='comment')
       .link
-        nuxt-link(to='/reacties' custom v-slot="{ navigate }")
-          el-button(@click="navigate") Meer reacties
+        nuxt-link(to='/reacties')
+          el-button Meer reacties
 
-    template(v-if='listInProgress')
-      template(v-if='poll')
-        h3 Poll
-        div
-          poll(:poll='poll')
-        div
-          nuxt-link(to='/polls' custom v-slot="{ navigate }")
-            el-button(@click="navigate") Alle polls
+    el-card(v-if='listInProgress && poll')
+      div.header(slot="header")
+        div.title Poll
+      div
+        poll(:poll='poll')
+      div
+        nuxt-link(to='/polls')
+          el-button Alle polls
 </template>
 
 <script>
@@ -146,7 +149,8 @@
 
   div.link {
     text-align: center;
-    div {
+    margin-top: 20px;
+    button {
       display: inline-block;
       margin: 0 20px;
     }

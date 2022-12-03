@@ -14,15 +14,16 @@
     div(v-if='success')
       el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
         a(@click='reset()') Verzend een nieuw bericht
-      h3 Verzonden bericht:
-      h4 Van:
-      p
-        | {{name}}
-        span(v-if='email.trim()')
-        |
-        | ({{email}})
-      h4 Bericht:
-      p.message {{message}}
+      el-card
+        div.header(slot="header")
+          div
+            div.title Verzonden bericht:
+            div.subtitle
+              | Van {{name}}
+              span(v-if='email.trim()')
+                |
+                | ({{email}})
+        p.message {{message}}
     div(v-if='inProgress')
       | Bericht wordt verzonden...
 

@@ -3,8 +3,9 @@
     h2 De Tijdloze van {{year.yyyy}}
     full-list(:songs='songsExtended' :year='year')
 
-    div(v-if='year.previous()')
-      h3 {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
+    el-card(v-if='year.previous()')
+      div.header(slot="header")
+        div.title {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
       table.list-summary
         tbody
           tr
@@ -37,8 +38,9 @@
 
     div(id="exits")
 
-    div(v-if='exits.length')
-      h3 Exits
+    el-card(v-if='exits.length')
+      div.header(slot="header")
+        div.title Exits
       table.lijst.perVijf
         tbody
           tr
@@ -58,8 +60,9 @@
             td.releaseYear
               | {{song.album.releaseYear}}
 
-    div(v-if='newSongs.length')
-      h3 Nieuwkomers
+    el-card(v-if='newSongs.length')
+      div.header(slot="header")
+        div.title Nieuwkomers
       table.lijst.perVijf
         tbody
           tr
@@ -82,8 +85,9 @@
             td.releaseYear
               | {{song.album.releaseYear}}
 
-    div(v-if='analysis')
-      h3 Interessante feiten
+    el-card(v-if='analysis')
+      div.header(slot="header")
+        div.title Interessante feiten
       .analysis
         ul
           li(v-for='text in analysis')

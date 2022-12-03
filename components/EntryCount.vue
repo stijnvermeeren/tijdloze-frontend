@@ -1,7 +1,7 @@
 <template lang="pug">
   span
     span(v-if='listCount')
-      | {{listCount}} {{listCount > 1 ? 'noteringen' : 'notering' }}
+      | {{listCount}} {{listCount > 1 ? 'noteringen' : 'notering' }} in de top 100
       | ({{inListSummary}})
     span(v-else) Geen top-100 noteringen
 </template>

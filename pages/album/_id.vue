@@ -21,16 +21,21 @@
             div(v-for='(link, index) in links' :key='index')
               a(:href='link.href') {{ link.title }}
 
-    h3 In de Tijdloze
-    div
-      entry-count(:songs='album.songs')
-    graph(v-if='top100Songs.length' :songs='top100Songs')
+    el-card
+      div.header(slot="header")
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='album.songs')
+      graph(v-if='top100Songs.length' :songs='top100Songs')
 
-    h3 Tijdloze nummers
-    div
-      ul(v-if='album.songsSorted')
-        li(v-for='song in album.songsSorted')
-          song-with-second-artist-link(:song='song')
+    el-card
+      div.header(slot="header")
+        div.title Tijdloze nummers
+      div
+        ul(v-if='album.songsSorted')
+          li(v-for='song in album.songsSorted')
+            song-with-second-artist-link(:song='song')
 </template>
 
 <script>

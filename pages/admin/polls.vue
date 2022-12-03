@@ -2,29 +2,27 @@
   div
     h2 Admin: polls
     div
-      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
-    h3 Maak een nieuwe poll ({{currentYear.yyyy}})
-    div
-      h4 Vraag
+      el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
+    el-card
+      div.header(slot="header")
+        div.title Maak een nieuwe poll ({{currentYear.yyyy}})
       div
-        input(v-model='question')
-      h4 Antwoorden
-        |
-        | -
-        |
-        a(@click="answers.push({text: ''})") Nog een antwoord
-        template(v-if='answers.length > 2')
+        h4 Vraag
+        div
+          input(v-model='question')
+        h4 Antwoorden
           |
-          | -
-          |
-          a(@click='answers.pop()') Laatste antwoord verwijderen
-      ul(v-for='answer in answers')
-        li
-          input(v-model='answer.text')
-      div
-        button(@click='submit()', :disabled='!formValid') Opslaan
-    template(v-for='{year, polls} in groupedPolls')
-      h3 {{year}}
+          el-button(@click="answers.push({text: ''})" small) Nog een antwoord
+          el-button(v-if='answers.length > 2' @click='answers.pop()' small) Laatste antwoord verwijderen
+        ul(v-for='answer in answers')
+          li
+            input(v-model='answer.text')
+        div
+          el-button(@click='submit()' :disabled='!formValid' type="primary") Opslaan
+
+    el-card(v-for='{year, polls} in groupedPolls')
+      div.header(slot="header")
+        div.title {{year}}
       div(v-for='poll in polls', :key='poll.id')
         poll(:poll='poll', :is-admin='true')
 </template>
@@ -94,5 +92,9 @@
 <style lang="scss" scoped>
   input {
     width: 100%;
+  }
+
+  button {
+    margin: 0 10px;
   }
 </style>

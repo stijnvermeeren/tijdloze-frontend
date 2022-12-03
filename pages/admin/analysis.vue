@@ -2,22 +2,26 @@
   div
     h2 "Interessante feiten" {{currentYear.yyyy}}
 
-    h3 Aanpassen
-    div
-      textarea(v-model='analyse')
-    div(v-if="outOfDate")
-      | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
-      |
-      button(@click='refresh()', :disabled='refreshing') Opnieuw laden
-    div
-      button(@click='save()', :disabled='saving') Opslaan
+    el-card
+      div.header(slot="header")
+        div.title Aanpassen
+      div
+        textarea(v-model='analyse')
+      div(v-if="outOfDate")
+        | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
+        |
+        el-button(@click='refresh()', :disabled='refreshing') Opnieuw laden
+      div
+        el-button(@click='save()', :disabled='saving') Opslaan
 
-    h3 Preview
-    div
-      .analyse
-        ul
-          li(v-for='text in analysePreview')
-            tijdloze-links(:text='text')
+    el-card
+      div.header(slot="header")
+        div.title Preview
+      div
+        .analyse
+          ul
+            li(v-for='text in analysePreview')
+              tijdloze-links(:text='text')
 </template>
 
 <script>

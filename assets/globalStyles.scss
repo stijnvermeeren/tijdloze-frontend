@@ -49,19 +49,6 @@ h2 {
   font-size: 28px;
   margin: 15px 0 20px 0;
 }
-h3 {
-  border-top: 3px solid styleConfig.$headerBackgroundColor;
-  border-bottom: 1px solid styleConfig.$headerBackgroundColor;
-  background-color: styleConfig.$inputBackgroundColor;
-  font-size: 24px;
-  margin: 20px 0 15px 0;
-  padding: 5px 5px 5px 10px;
-}
-h4 {
-  font-size: 20px;
-  margin-top: 1em;
-  margin-bottom: 0.4em;
-}
 
 
 ul.info {
@@ -165,4 +152,36 @@ table.info {
 
 .clear {
   clear: both;
+}
+
+
+.el-card {
+  margin: 20px 0;
+
+  p {
+    margin: 0 0 10px;
+  }
+
+  table.lijst {
+    margin: 0;
+  }
+
+  ul {
+    margin: 0 20px 0 0;
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .title {
+    font-size: 24px;
+    margin: 4px 0;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
 }

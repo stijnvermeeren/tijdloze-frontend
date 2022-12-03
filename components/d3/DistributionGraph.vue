@@ -156,6 +156,12 @@
 
   $hoverColor: #AAAAAA;
 
+  h4 {
+    font-size: 20px;
+    margin-top: 1em;
+    margin-bottom: 0.4em;
+  }
+
   div.graph {
     text-align: center;
     margin: 0 auto 20px auto;

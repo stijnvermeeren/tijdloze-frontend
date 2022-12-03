@@ -2,8 +2,9 @@
   div
     h2 Admin: live updates
 
-    template(v-if='previousSong')
-      h3 Vorig nummer
+    el-card(v-if='previousSong')
+      div.header(slot="header")
+        div.title Vorig nummer
       div
         strong Positie {{previousPosition}} in {{currentYear.yyyy}}:
       div
@@ -14,22 +15,25 @@
         |
         | - {{ previousSong.title }}
         |
-        button(@click='undo()', :disabled='processing') Ongedaan maken
+        el-button(@click='undo()', :disabled='processing') Ongedaan maken
 
-    template(v-if='!lastSong')
-      h3 Jaar {{currentYear.yyyy}} gestart
+    el-card(v-if='!lastSong')
+      div.header(slot="header")
+        div.title Jaar {{currentYear.yyyy}} gestart
       div
-        button(@click='deleteYear()')
+        el-button(@click='deleteYear()')
           | Jaar starten ongedaan maken
 
-    template(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy')
-      h3 Volgend nummer
+    el-card(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy')
+      div.header(slot="header")
+        div.title Volgend nummer
       div
-        button(@click='startYear()')
+        el-button(@click='startYear()')
           | Jaar {{nextYearYyyy}} starten
 
-    div(v-show='!lastSong || nextPosition > 0')
-      h3 Volgend nummer
+    el-card(v-show='!lastSong || nextPosition > 0')
+      div.header(slot="header")
+        div.title Volgend nummer
       div
         strong Positie {{nextPosition}} in {{currentYear.yyyy}}
 
@@ -73,11 +77,12 @@
             @newSong='add($event.id)'
           )
 
-    template
-      h3 Import
+    el-card
+      div.header(slot="header")
+        div.title Import
       textarea(v-model="importText" rows="10")
       div
-        button(@click="startImport") Import beginnen
+        el-button(@click="startImport") Import beginnen
 </template>
 
 <script>

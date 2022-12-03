@@ -33,39 +33,44 @@
           spotify(:spotify-id='fullSongData.spotifyId')
       .lyrics {{ fullSongData.lyrics }}
 
-    div(v-else-if="fullSongData.spotifyId")
-      h3 Beluister fragment via Spotify
+    el-card(v-else-if="fullSongData.spotifyId")
+      div.header(slot="header")
+        div.title Beluister fragment via Spotify
       .spotify(v-if='fullSongData.spotifyId' :class="{withLyrics: fullSongData.languageId === 'ins'}")
         div
           spotify(:spotify-id='fullSongData.spotifyId')
       div(v-if="fullSongData.languageId === 'ins'") (Instrumentaal nummer)
       .clear
 
-    div(v-else-if="fullSongData.languageId === 'ins'")
-      h3 Lyrics
+    el-card(v-else-if="fullSongData.languageId === 'ins'")
+      div.header(slot="header")
+        div.title Lyrics
       div (Instrumentaal nummer)
       .clear
 
-    h3 In de Tijdloze
-    div
-      entry-count(:songs='[song]')
-    tijdloze-graph(v-if='song.listCount($store.getters.years) > 0' :songs='[song]' :no-label='true')
-    .allPositions
-      table
-        tbody
-          tr
-            th Jaar
-            th Positie
-          template(v-for='(interval, index) in intervals')
-            tr(v-if='index')
-              td ...
-              td
-            tr(v-for='year in interval' :key='year.yyyy')
-              th
-                tijdloze-year(:year='year')
-              td
-                tijdloze-position-change(:song='song' :year='year')
-                tijdloze-position(:song='song' :year='year')
+    el-card
+      div.header(slot="header")
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='[song]')
+      tijdloze-graph(v-if='song.listCount($store.getters.years) > 0' :songs='[song]' :no-label='true')
+      .allPositions
+        table
+          tbody
+            tr
+              th Jaar
+              th Positie
+            template(v-for='(interval, index) in intervals')
+              tr(v-if='index')
+                td ...
+                td
+              tr(v-for='year in interval' :key='year.yyyy')
+                th
+                  tijdloze-year(:year='year')
+                td
+                  tijdloze-position-change(:song='song' :year='year')
+                  tijdloze-position(:song='song' :year='year')
 </template>
 
 <script>

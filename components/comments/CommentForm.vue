@@ -113,7 +113,7 @@
 
   div.commentForm {
     padding: 0.3em 1em;
-    margin: 1.7em 3em 0.7em 3em;
+    margin: 0.7em 3em;
 
     &.expanded {
       border: 3px solid styleConfig.$inputBorderColor;

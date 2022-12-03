@@ -9,15 +9,17 @@
     p Bij Studio Brussel was men inmiddels danig onder de indruk van deze website, dat men in 2006 #[a(href='http://www.stijnvermeeren.be/download/tijdloze.mp3') Stijn zelfs opbelde en uitgebreid zijn zegje liet doen in volle uitzending]. (In feite was het gesprek de dag ervoor al opgenomen, en is Stijn de makers erg dankbaar om de allerdomste uitspraken en langste euh-momenter er toch uit te knippen.) Het resultaat was de omgekeerde wereld: de Tijdloze Website lag plots plat door de enorme belangstelling, terwijl de website van Studio Brussel het zowaar een hele Tijdloze lang vol hield. Ondanks die problemen vonden meer dan 5000 unieke bezoekers hun weg naar de website op de dag van de Tijdloze.
     p In de daarop volgende jaren bleef de Tijdloze website een vaste waarde, meer elk jaar tussen de 5000 en 10000 unieke bezoekers op de dag van de uitzending. In 2013 kon Stijn wegens andere verplichtingen de website zelf niet aanpassen tijdens de Tijdloze. Twee trouwe bezoekers - Wibren #[em "Munz"] Moens en Wouter #[em "Link"] Verbeke - zetten meteen een #[a(href='http://tijdloze.weebly.com/') plaatsvervangende website] op, met live updates en een chatbox. Sinds 2014 is Stijn er weer zelf bij, en ook Wouter blijft sindsdien meehelpen bij het onderhouden van de echte Tijdloze Website.
     p Op 24 november 2014, tijdens de stemweek voor de Tijdloze, werd #[a(href='http://www.stijnvermeeren.be/download/tijdloze20141124.mp3') webmaster Stijn live opgebeld door Studio Brussel].
-    p In 2018 werd de technologie van de website volledig vernieuwd. Een moderne &quot;single page application&quot; op basis van Vue.js kwam in de plaats van de oude PHP-technologie.
+    p In 2018 werd de technologie van de website volledig vernieuwd. Een moderne &quot;single page application&quot; op basis van Vue.js kwam in de plaats van de oude PHP-technologie. Sinds 2020 is de website officeel volledig #[nuxt-link(to="/website/opensource") open source].
 
-    h3 De toekomst
-    p Elk jaar steekt webmaster Stijn enkele dagen werk in De Tijdloze Website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:
-    ul
-      li Geleidelijke overgang naar een modernere &quot;responsive&quot; layout voor de website.
-      li Meer interactieve elementen in de grafieken.
-      li Betere integratie van de chatbox in de website.
-      li Involveren van meerdere medewerkers, vooral tijdens de uitzending, zodat de website niet langer afhankelijk is van een enkele webmaster.
+    el-card
+      div.header(slot="header")
+        div.title De toekomst
+      p Elk jaar steekt webmaster Stijn enkele dagen werk in De Tijdloze Website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:
+      ul
+        li Geleidelijke overgang naar een modernere &quot;responsive&quot; layout voor de website.
+        li Meer interactieve elementen in de grafieken.
+        li Betere integratie van de chatbox in de website.
+        li Involveren van meerdere medewerkers, vooral tijdens de uitzending, zodat de website niet langer afhankelijk is van een enkele webmaster.
 </template>
 
 <script>
