@@ -8,7 +8,7 @@
 
     h3 Webmaster
     p De Tijdloze Website wordt beheerd door #[strong Stijn Vermeeren]. U kunt hem een berichtje sturen via het #[nuxt-link(to='/website/contact') contactformulier]. Suggesties of verbeteringen voor de website worden ten zeerste geapprecieerd. U kan ook eens een kijkje nemen op de #[a(href='http://www.stijnvermeeren.be' title='Persoonlijke website Stijn Vermeeren') persoonlijke website] van webmaster Stijn.
-    p Sinds 2014 krijgt Stijn hulp van #[strong Wouter #[em "Link"] Verbeke] bij het onderhouden en updaten van de website tijdens de uitzending van de Tijdloze.
+    p Sinds 2014 krijgt Stijn hulp van #[strong Wouter #[em "Link"] Verbeke] bij het onderhouden en updaten van de website tijdens de uitzending van de Tijdloze, en sinds 2021 ook van #[strong Dries Wellekens].
 
     h3 Technische details
     p De website werd gemaakt met het JavaScript framework #[a(href='https://vuejs.org/') Vue.js], meer bepaald met #[a(href='https://nuxtjs.org/') Nuxt]. De nieuwe grafieken worden gegenereerd in de browser met de JavaScript library #[a(href='http://d3js.org/') D3.js].
@@ -19,7 +19,6 @@
     ul
       li #[a(href='http://stubru.be' title='Website Studio Brussel') Studio Brussel] - voor het uitzenden van de Tijdloze, zonder wie er geen Tijdloze Website zou zijn, en voor de hulp bij het vervolledigen van de statistieken.
       li Kris De Rocker voor de domeinnaam #[a(href='http://www.detijdloze.be/') detijdloze.be].
-      li Michaël Arnauts - voor de technische hulp en tips.
       li De vlag-icoontjes komen van #[a(href='https://flagpedia.net') Flagpedia].
       li Iedereen die mij tips gemaild heeft of mij op foutjes gewezen heeft - voor het verbeteren van de kwaliteit van deze website.
 </template>
