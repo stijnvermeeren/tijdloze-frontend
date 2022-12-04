@@ -53,7 +53,8 @@
         tr
           th
           td
-            button(@click='submit' :disabled='disabled') Aanpassen
+            el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
+            el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -78,9 +79,6 @@
       artistId() {
         return this.fullSongData.artistId;
       },
-      song() {
-        return Song.find(this.fullSongData.id);
-      },
       album() {
         return Album.find(this.fullSongData.albumId);
       },
@@ -103,23 +101,37 @@
         this.$axios.$put(`song/${this.fullSongData.id}`, this.fullSongData).then(result => {
           this.$router.push(`/nummer/${this.fullSongData.id}`);
         })
+      },
+      submitDelete() {
+        if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
+          this.processing = true;
+          this.$axios.$delete(`song/${this.fullSongData.id}`).then(result => {
+            this.$router.push(`/database`);
+          })
+        }
       }
     },
     async asyncData({ params, app }) {
+      const fullSongData = await app.$axios.$get(`song/${params.id}`)
       return {
-        fullSongData: await app.$axios.$get(`song/${params.id}`)
+        fullSongData,
+        title: fullSongData.title
       };
     },
     middleware: 'admin',
     head() {
       return {
-        title: `Admin: Song: ${this.song.title}`
+        title: `Admin: Song: ${this.title}`
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
+  .deleteButton {
+    float: right;
+  }
+
   textarea.lyrics {
     height: 200px;
   }

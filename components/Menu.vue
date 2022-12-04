@@ -5,62 +5,99 @@
 
       nav
         el-menu(
-          router
           :default-openeds="openeds"
           :default-active="route"
           background-color="inherit"
           text-color="#003388"
         )
-          el-menu-item(index="/") Home
-          el-menu-item(v-if='!listInProgress' index="/reacties") Reageer en discussieer
+          nuxt-link(to="/")
+            el-menu-item(index="/") Home
+          nuxt-link(to="/reacties")
+            el-menu-item(v-if='!listInProgress' index="/reacties") Reageer en discussieer
           el-submenu(v-if='listInProgress' index="inprogress")
             template(slot="title") De Tijdloze {{currentYear.yyyy}}
-            el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
-            el-menu-item(index="/lijst/opkomst") Nog op komst...
-            el-menu-item(index="/chat") Chatbox
-            el-menu-item(index="/polls") Polls
+            nuxt-link(:to="`/lijst/${currentYear.yyyy}`")
+              el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
+            nuxt-link(to="/lijst/opkomst")
+              el-menu-item(index="/lijst/opkomst") Nog op komst...
+            nuxt-link(to="/chat")
+              el-menu-item(index="/chat") Chatbox
+            nuxt-link(to="/polls")
+              el-menu-item(index="/polls") Polls
           el-submenu(index="/lijst")
             template(slot="title") De Tijdloze van...
-            el-menu-item(v-for='year in years' :index='`/lijst/${year.yyyy}`' :key='year.yyyy') {{year.yyyy}}
-          el-menu-item(index="/database") Volledige database
+            nuxt-link(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`')
+              el-menu-item(:index='`/lijst/${year.yyyy}`') {{year.yyyy}}
+          nuxt-link(to="/database")
+            el-menu-item(index="/database") Volledige database
           el-submenu(index="/statistieken")
             template(slot="title") Statistieken
             el-menu-item-group(title="Verschuivingen")
-              el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
-              el-menu-item(index="/statistieken/reentries") Re-entries
-              el-menu-item(index="/statistieken/exits") Exits
-              el-menu-item(index="/statistieken/eenjaarsvliegen") Eenjaarsvliegen
-              el-menu-item(index="/statistieken/stijgers") Stijgers
-              el-menu-item(index="/statistieken/dalers") Dalers
-              el-menu-item(index="/statistieken/stationair") Stationaire nummers
+              nuxt-link(to="/statistieken/nieuwkomers")
+                el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
+              nuxt-link(to="/statistieken/reentries")
+                el-menu-item(index="/statistieken/reentries") Re-entries
+              nuxt-link(to="/statistieken/exits")
+                el-menu-item(index="/statistieken/exits") Exits
+              nuxt-link(to="/statistieken/eenjaarsvliegen")
+                el-menu-item(index="/statistieken/eenjaarsvliegen") Eenjaarsvliegen
+              nuxt-link(to="/statistieken/stijgers")
+                el-menu-item(index="/statistieken/stijgers") Stijgers
+              nuxt-link(to="/statistieken/dalers")
+                el-menu-item(index="/statistieken/dalers") Dalers
+              nuxt-link(to="/statistieken/stationair")
+                el-menu-item(index="/statistieken/stationair") Stationaire nummers
             el-menu-item-group(title="Andere statistieken")
-              el-menu-item(index="/statistieken/noteringen") Noteringen
-              el-menu-item(index="/statistieken/noteringen_album") Noteringen (Albums)
-              el-menu-item(index="/statistieken/landen") Landen
-              el-menu-item(index="/statistieken/talen") Talen
-              el-menu-item(index="/statistieken/leadvocals") Lead vocals
-              el-menu-item(index="/statistieken/decennia") Decennia
-              el-menu-item(index="/statistieken/leeftijden") Leeftijden
+              nuxt-link(to="/statistieken/noteringen")
+                el-menu-item(index="/statistieken/noteringen") Noteringen
+              nuxt-link(to="/statistieken/noteringen_album")
+                el-menu-item(index="/statistieken/noteringen_album") Noteringen (Albums)
+              nuxt-link(to="/statistieken/landen")
+                el-menu-item(index="/statistieken/landen") Landen
+              nuxt-link(to="/statistieken/talen")
+                el-menu-item(index="/statistieken/talen") Talen
+              nuxt-link(to="/statistieken/leadvocals")
+                el-menu-item(index="/statistieken/leadvocals") Lead vocals
+              nuxt-link(to="/statistieken/decennia")
+                el-menu-item(index="/statistieken/decennia") Decennia
+              nuxt-link(to="/statistieken/leeftijden")
+                el-menu-item(index="/statistieken/leeftijden") Leeftijden
           el-submenu(index="/website")
             template(slot="title") Deze website
-            el-menu-item(index="/website") Algemene info
-            el-menu-item(index="/website/geschiedenis") Geschiedenis
-            el-menu-item(index="/website/methodologie") Methodologie
-            el-menu-item(index="/website/opendata") Open data
-            el-menu-item(index="/website/opensource") Open source
-            el-menu-item(index="/website/privacy") Privacybeleid
-            el-menu-item(index="/website/contact") Contact
+            nuxt-link(to="/website")
+              el-menu-item(index="/website") Algemene info
+            nuxt-link(to="/website/geschiedenis")
+              el-menu-item(index="/website/geschiedenis") Geschiedenis
+            nuxt-link(to="/website/methodologie")
+              el-menu-item(index="/website/methodologie") Methodologie
+            nuxt-link(to="/website/opendata")
+              el-menu-item(index="/website/opendata") Open data
+            nuxt-link(to="/website/opensource")
+              el-menu-item(index="/website/opensource") Open source
+            nuxt-link(to="/website/privacy")
+              el-menu-item(index="/website/privacy") Privacybeleid
+            nuxt-link(to="/website/contact")
+              el-menu-item(index="/website/contact") Contact
           el-submenu(v-if='isAdmin' index="/admin")
             template(slot="title") Admin
-            el-menu-item(index="/admin/live") Nummers toevoegen
-            el-menu-item(index="/admin/lijst") Nummers verwijderen
-            el-menu-item(index="/admin/exits") Exits markeren
-            el-menu-item(index="/admin/polls") Polls
-            el-menu-item(index="/admin/analysis") Interessante feiten
-            el-menu-item(index="/admin/artist") Nieuwe artiest
-            el-menu-item(index="/admin/users") Gebruikers
-            el-menu-item(index="/admin/comments") Verwijderde reacties
-            el-menu-item(index="/admin/settings") Instellingen
+            nuxt-link(to="/admin/live")
+              el-menu-item(index="/admin/live") Nummers toevoegen
+            nuxt-link(to="/admin/lijst")
+              el-menu-item(index="/admin/lijst") Nummers verwijderen
+            nuxt-link(to="/admin/exits")
+              el-menu-item(index="/admin/exits") Exits markeren
+            nuxt-link(to="/admin/polls")
+              el-menu-item(index="/admin/polls") Polls
+            nuxt-link(to="/admin/analysis")
+              el-menu-item(index="/admin/analysis") Interessante feiten
+            nuxt-link(to="/admin/artist")
+              el-menu-item(index="/admin/artist") Nieuwe artiest
+            nuxt-link(to="/admin/users")
+              el-menu-item(index="/admin/users") Gebruikers
+            nuxt-link(to="/admin/comments")
+              el-menu-item(index="/admin/comments") Verwijderde reacties
+            nuxt-link(to="/admin/settings")
+              el-menu-item(index="/admin/settings") Instellingen
 
       tijdloze-login
       span.cross-button(@click='isOpen = false')

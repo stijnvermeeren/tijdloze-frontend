@@ -5,6 +5,35 @@
     el-card
       div.header(slot="header")
         div.title Aanpassen
+      el-alert(:closable="false" show-icon)
+        div Link naar nummer of artiest:
+          |
+          code [The Chain]
+          |
+          | wordt
+          |
+          tijdloze-links(text="[The Chain]")
+        div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
+          |
+          code [One;Metallica]
+          |
+          | wordt
+          |
+          tijdloze-links(text="[One;Metallica]")
+        div Een ster in het begin maakt de link vetgedrukt:
+          |
+          code [*Pink Floyd]
+          |
+          | wordt
+          |
+          tijdloze-links(text="[*Pink Floyd]")
+        div HTML werkt ook (gebruik voorzichtig en met mate):
+          |
+          code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
+          |
+          | wordt
+          |
+          tijdloze-links(text="<strong>vet</strong> <em>scheef</em>")
       div
         textarea(v-model='analyse')
       div(v-if="outOfDate")
@@ -104,5 +133,10 @@
 
   div.analyse {
     font-size: 14px;
+  }
+
+  code {
+    background-color: #ddd;
+    margin-left: 10px;
   }
 </style>

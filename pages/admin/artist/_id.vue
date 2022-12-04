@@ -38,7 +38,8 @@
         tr
           th
           td
-            button(@click='submit' :disabled='disabled') Aanpassen
+            el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
+            el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -72,6 +73,14 @@
         this.$axios.$put(`artist/${this.fullArtistData.id}`, this.fullArtistData).then(result => {
           this.$router.push(`/artiest/${this.fullArtistData.id}`);
         })
+      },
+      submitDelete() {
+        if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
+          this.processing = true;
+          this.$axios.$delete(`artist/${this.fullArtistData.id}`).then(result => {
+            this.$router.push(`/database`);
+          })
+        }
       }
     },
     async asyncData({ params, app }) {
@@ -89,6 +98,10 @@
 </script>
 
 <style lang="scss" scoped>
+  .deleteButton {
+    float: right;
+  }
+
   textarea.notes {
     height: 60px;
   }

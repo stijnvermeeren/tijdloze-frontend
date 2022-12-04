@@ -86,10 +86,7 @@
         return Artist.all().filter(this.artistFilter);
       },
       allSongs() {
-        const start = new Date().getTime()
-        const x = Song.query().with('artist').with('secondArtist').all().filter(this.songFilter);
-        console.log(new Date().getTime() - start)
-        return x
+        return Song.query().with('artist').with('secondArtist').all().filter(this.songFilter);
       },
       allAlbums() {
         return Album.query().with('artist').all().filter(this.albumFilter);

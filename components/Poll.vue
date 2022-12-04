@@ -77,6 +77,9 @@
     watch: {
       poll(newPoll) {
         this.livePoll = newPoll
+      },
+      myVote() {
+        this.reload()
       }
     },
     methods: {

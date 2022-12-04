@@ -83,16 +83,31 @@ export default function ({ app, store }) {
         })
       }
 
+      if (response.deletedArtistId) {
+        Song.delete(song => song.artistId === response.deletedArtistId)
+        Album.delete(album => album.artistId === response.deletedArtistId)
+        Artist.delete(response.deletedArtistId)
+      }
+
       if (response.album) {
         Album.insertOrUpdate({
           data: response.album
         })
       }
 
+      if (response.deletedAlbumId) {
+        Song.delete(song => song.albumId === response.deletedAlbumId)
+        Album.delete(response.deletedAlbumId)
+      }
+
       if (response.song) {
         Song.insertOrUpdate({
           data: response.song
         })
+      }
+
+      if (response.deletedSongId) {
+        Song.delete(response.deletedSongId)
       }
 
       if (response.poll) {
