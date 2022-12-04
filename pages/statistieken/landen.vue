@@ -17,14 +17,16 @@
             th.r Tot.
           tr(v-for='{countryId, total, perYear} in counts')
             td.r
-              tijdloze-country-icon(:country-id='countryId' :include-name='true')
+              nuxt-link(:to='`/database?type=artiesten&land=${countryId}`')
+                tijdloze-country-icon(:country-id='countryId' :include-name='true')
             td(v-for='{count} in perYear')
               | {{count}}
             td.r
               | {{total}}
     .graph(v-for='{countryId, dataPoints} in graphData')
       tijdloze-distribution-graph(:points='dataPoints')
-        tijdloze-country-icon(:country-id='countryId' :include-name='true')
+        nuxt-link(:to='`/database?type=artiesten&land=${countryId}`')
+          tijdloze-country-icon(:country-id='countryId' :include-name='true')
 </template>
 
 <script>

@@ -94,8 +94,6 @@
               el-menu-item(index="/admin/artist") Nieuwe artiest
             nuxt-link(to="/admin/users")
               el-menu-item(index="/admin/users") Gebruikers
-            nuxt-link(to="/admin/comments")
-              el-menu-item(index="/admin/comments") Verwijderde reacties
             nuxt-link(to="/admin/settings")
               el-menu-item(index="/admin/settings") Instellingen
 

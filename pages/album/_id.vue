@@ -6,24 +6,17 @@
       div(v-if="$store.getters['auth/isAdmin']")
         nuxt-link(:to="`/admin/album/${album.id}`")
           el-button(type="warning" round size="small") Admin: album aanpassen
-    table.info
-      tbody
-        tr.important
-          th Album van
-          td
-            tijdloze-artist(:artist='album.artist')
-        tr
-          th Uitgebracht in
-          td {{ album.releaseYear }}
-        tr
-          th In de Tijdloze
-          td
-            in-current-list(:songs='album.songs')
-        tr.unimportant(v-if='links.length')
-          th Externe links
-          td
-            div(v-for='(link, index) in links' :key='index')
-              a(:href='link.href') {{ link.title }}
+
+    div Album van
+      = " "
+      strong
+        tijdloze-artist(:artist='album.artist')
+      = " "
+      | uit {{ album.releaseYear }}.
+
+    div.links
+      a(v-for='(link, index) in links' :key='index' :href='link.href')
+        el-button(size="mini" round icon="el-icon-link") {{ link.title }}
 
     el-card
       div.header(slot="header")
@@ -31,15 +24,22 @@
           div.title In de Tijdloze
           div.subtitle
             entry-count(:songs='album.songs')
-      graph(v-if='top100Songs.length' :songs='top100Songs')
-
-    el-card
-      div.header(slot="header")
-        div.title Tijdloze nummers
-      div
+        div
+          el-radio-group(v-model="tab" size="small")
+            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
+            el-radio-button(label='all') Alle Tijdloze nummers
+      div(v-if="tab === 'tijdloze'")
+        in-current-list(:songs='album.songs')
+      div(v-if="tab === 'all'")
         ul(v-if='album.songsSorted')
           li(v-for='song in album.songsSorted')
             song-with-second-artist-link(:song='song')
+
+    el-card(v-if='top100Songs.length')
+      div.header(slot="header")
+        div
+          div.title Grafiek
+      graph(:songs='top100Songs')
 </template>
 
 <script>
@@ -58,6 +58,11 @@
       EntryCount,
       Graph,
       PageTitle
+    },
+    data() {
+      return {
+        tab: 'tijdloze'
+      }
     },
     computed: {
       album() {
@@ -102,3 +107,21 @@
     }
   }
 </script>
+
+<style lang="scss" scoped>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+
+    a {
+      margin: 0 5px;
+    }
+  }
+
+  .el-radio-group {
+    text-align: right;
+  }
+</style>

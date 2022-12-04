@@ -6,45 +6,27 @@
       div(v-if="$store.getters['auth/isAdmin']")
         nuxt-link(:to="`/admin/song/${song.id}`")
           el-button(type="warning" round size="small") Admin: nummer aanpassen
-    table.info
-      tbody
-        tr.important
-          th Nummer van
-          td
-            tijdloze-song-artist(:song='song')
-        tr
-          th Origineel op album
-          td
-            tijdloze-album(:album='song.album')
-            |
-            | ({{ song.album.releaseYear }})
-        tr(:class='{unimportant: !song.probablyInList(currentYear)}')
-          th In de Tijdloze
-          td
-            in-current-list-song(:song='song')
-        tr.unimportant(v-if='links.length')
-          th Externe links
-          td
-            div(v-for='(link, index) in links' :key='index')
-              a(:href='link.href') {{ link.title }}
-        tr.unimportant(v-if='fullSongData.notes')
-          td(colspan='2')
-            make-links(:text='fullSongData.notes')
+
+    div Nummer van
+      = " "
+      strong #[tijdloze-song-artist(:song='song')]
+    div Origineel op album
+      = " "
+      strong #[tijdloze-album(:album='song.album')] ({{ song.album.releaseYear }})
+
+    div.links
+      a(v-for='(link, index) in links' :key='index' :href='link.href')
+        el-button(size="mini" round icon="el-icon-link") {{ link.title }}
+
+    el-alert(v-if='fullSongData.notes' :closable="false" show-icon)
+      make-links(:text='fullSongData.notes')
+
+    .spotify(v-if='fullSongData.spotifyId')
+      div
+        spotify(:spotify-id='fullSongData.spotifyId')
 
     lyrics(v-if='fullSongData.lyrics')
-      .spotify(v-if='fullSongData.spotifyId')
-        div
-          spotify(:spotify-id='fullSongData.spotifyId')
       .lyrics {{ fullSongData.lyrics }}
-
-    el-card(v-else-if="fullSongData.spotifyId")
-      div.header(slot="header")
-        div.title Beluister fragment via Spotify
-      .spotify(v-if='fullSongData.spotifyId' :class="{withLyrics: fullSongData.languageId === 'ins'}")
-        div
-          spotify(:spotify-id='fullSongData.spotifyId')
-      div(v-if="fullSongData.languageId === 'ins'") (Instrumentaal nummer)
-      .clear
 
     el-card(v-else-if="fullSongData.languageId === 'ins'")
       div.header(slot="header")
@@ -58,23 +40,24 @@
           div.title In de Tijdloze
           div.subtitle
             entry-count(:songs='[song]')
-      tijdloze-graph(v-if='song.listCount($store.getters.years) > 0' :songs='[song]' :no-label='true')
       .allPositions
-        table
-          tbody
-            tr
-              th Jaar
-              th Positie
-            template(v-for='(interval, index) in intervals')
-              tr(v-if='index')
-                td ...
-                td
-              tr(v-for='year in interval' :key='year.yyyy')
-                th
-                  tijdloze-year(:year='year')
-                td
-                  tijdloze-position-change(:song='song' :year='year')
-                  tijdloze-position(:song='song' :year='year')
+        template(v-for='(interval, index) in intervals')
+          div(v-if='index' :key="index")
+            div ...
+            div
+          div(v-for='year in interval' :key='year.yyyy')
+            div.year
+              tijdloze-year(:year='year' short)
+            div
+              tijdloze-position-change(:song='song' :year='year')
+              tijdloze-position(:song='song' :year='year')
+
+
+    el-card(v-if='song.listCount($store.getters.years) > 0')
+      div.header(slot="header")
+        div
+          div.title Grafiek
+      tijdloze-graph(:songs='[song]' :no-label='true')
 </template>
 
 <script>
@@ -84,7 +67,6 @@
   import EntryCount from '../../components/EntryCount'
   import {probablyInListIntervals} from '~/utils/intervals'
   import MakeLinks from '../../components/MakeLinks'
-  import InCurrentListSong from '../../components/InCurrentListSong'
   import Spotify from '../../components/Spotify'
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
@@ -92,7 +74,6 @@
   export default {
     components: {
       Spotify,
-      InCurrentListSong,
       MakeLinks,
       EntryCount,
       PageTitle,
@@ -142,37 +123,59 @@
 </script>
 
 <style lang="scss" scoped>
-    div.allPositions {
-        margin: 1em 3em;
-        text-align: center;
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
 
-        table {
-            width: 160px;
-        }
+    a {
+      margin: 0 5px;
+    }
+  }
+
+  .el-alert {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .el-radio-group {
+    text-align: right;
+  }
+
+  div.allPositions {
+    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+
+    > div {
+      margin: 12px 12px;
+      min-width: 45px;
+      display: flex;
+      flex-direction: column;
+
+      > div {
+
+      }
+    }
+  }
+
+  div.lyrics {
+    white-space: pre-line;
+    font-style: italic;
+    font-size: 14px;
+  }
+
+  div.spotify {
+    margin-bottom: 20px;
+
+    iframe {
+      border: 1px solid grey;
     }
 
-    div.lyrics {
-        white-space: pre-line;
-        font-style: italic;
-        font-size: 14px;
+    div {
+      text-align: center;
     }
-
-    div.spotify {
-        margin-bottom: 20px;
-
-        iframe {
-            border: 1px solid grey;
-        }
-
-        div {
-            font-size: 12px;
-            font-style: italic;
-            text-align: center;
-        }
-    }
-
-
-    table.info > tbody > tr > th {
-        width: 150px;
-    }
+  }
 </style>

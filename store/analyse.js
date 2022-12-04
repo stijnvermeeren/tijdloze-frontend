@@ -382,7 +382,7 @@ export default [
       `De rest van de lijst blijft wel heel stabiel. Maar liefst elf nummers veranderen helemaal niet van positie in vergelijking met het voorafgaande jaar, een record.`,
       `Dankzij re-entries voor [Do I Wanna Know?] en [When the Sun Goes Down] (ook de hoogste nieuwe op 82) hebben de [*Arctic Monkeys] dit jaar vijf nummers in de top 100, iets dat enkel [The Rolling Stones], [U2], [dEUS] en [Radiohead] hen ooit voordeden. [505] stijgt van 19 naar 13 en komt zo dichter bij de top 10.`,
       `Een minder jaar is het alweer voor [*Metallica]: [One;Metallica], [Master of Puppets] en [Nothing Else Matters] dalen alle drie voor het derde jaar op rij.`,
-      `[The War On Drugs] kwam vorig jaar nieuw binnen op 45 met [*Thinking Of A Place], en stijgt meteen door naar 14.  Dit is ook het jongste nummer in de top 100.`,
+      `[The War on Drugs] kwam vorig jaar nieuw binnen op 45 met [*Thinking Of A Place], en stijgt meteen door naar 14.  Dit is ook het jongste nummer in de top 100.`,
       `Vorig jaar kwam [*Don't Stop Believin'] van [Journey] nieuw binnen op 98, dit jaar stijgt het 41 plaatsen en staat het op 57, waardoor het de sterkste stijger van de top 100 is.`,
       `De enige nieuwe artiest in de top 100 van 2021 is [*Paolo Nutini], met [Iron Sky] op 88.`,
       `Voor het eerst sinds 2016 staat er weer meer dan één nummer van [*The Rolling Stones] in de top 100. [Gimme Shelter] komt nieuw binnen op 92, meteen een plaatsje hoger dan [Paint It Black]. [*Dire Straits] staat dan weer voor het eerst sinds 1991 met vier noteringen in de top 100, [Romeo and Juliet] komt nieuw binnen op 94.`,

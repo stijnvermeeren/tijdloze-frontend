@@ -6,24 +6,16 @@
       div(v-if="$store.getters['auth/isAdmin']")
         nuxt-link(:to="`/admin/artist/${artist.id}`")
           el-button(type="warning" round size="small") Admin: artist aanpassen
-    table.info
-      tbody
-        tr(v-if="artist.countryId")
-          th Land
-          td
-            tijdloze-country-icon(:country-id='artist.countryId' :include-name="true")
-        tr
-          th In de Tijdloze
-          td
-            in-current-list(:songs='artist.allSongs' :artist='artist')
-        tr.unimportant(v-if='links.length')
-          th Externe links
-          td
-            div(v-for='(link, index) in links' :key='index')
-              a(:href='link.href') {{ link.title }}
-        tr.unimportant(v-if='fullArtistData.notes')
-          td(colspan='2')
-            make-links(:text='fullArtistData.notes')
+
+    div.links
+      nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
+        el-button(size="small" round)
+          tijdloze-country-icon(:country-id='artist.countryId' :include-name="true")
+      a(v-for='(link, index) in links' :key='index' :href='link.href')
+        el-button(size="mini" round icon="el-icon-link") {{ link.title }}
+
+    el-alert(v-if='fullArtistData.notes' :closable="false" show-icon)
+      make-links(:text='fullArtistData.notes')
 
     el-card
       div.header(slot="header")
@@ -31,15 +23,13 @@
           div.title In de Tijdloze
           div.subtitle
             entry-count(:songs='artist.allSongs')
-      graph(
-        v-if='top100Songs.length'
-        :songs='top100Songs'
-      )
-
-    el-card
-      div.header(slot="header")
-        div.title Tijdloze albums en nummers
-      div
+        div
+          el-radio-group(v-model="tab" size="small")
+            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
+            el-radio-button(label='album') Per album
+      div(v-if="tab === 'tijdloze'")
+        in-current-list(:songs='artist.allSongs' :artist='artist')
+      div(v-if="tab === 'album'")
         ul(v-if='artist.allAlbums')
           li(v-for='album in artist.allAlbums')
             tijdloze-album(:album='album')
@@ -47,6 +37,12 @@
             ul(v-if='album.songsSorted.length')
               li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
                 song-with-second-artist-link(:song='song' :artist="artist")
+
+    el-card(v-if='top100Songs.length')
+      div.header(slot="header")
+        div
+          div.title Grafiek
+      graph(:songs='top100Songs')
 </template>
 
 <script>
@@ -69,6 +65,11 @@
       Graph,
       PageTitle
     },
+    data() {
+      return {
+        tab: 'tijdloze'
+      }
+    },
     computed: {
       artist() {
         return Artist.query()
@@ -76,6 +77,7 @@
           .with('albums.songs')
           .with('albums.songs.secondArtist')
           .with('songs.album')
+          .with('songs.secondArtist')
           .with('secondarySongs.artist')
           .with('secondarySongs.album.songs.artist')
           .find(this.fullArtistData.id);
@@ -117,4 +119,25 @@
   }
 </script>
 
+<style lang="scss" scoped>
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
 
+    a {
+      margin: 0 5px;
+    }
+  }
+
+  .el-alert {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .el-radio-group {
+    text-align: right;
+  }
+</style>

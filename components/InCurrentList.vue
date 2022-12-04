@@ -1,5 +1,5 @@
 <template lang="pug">
-  div
+  div.container
     table(v-if='filteredAndSorted.length')
       tbody
         tr
@@ -79,8 +79,10 @@
 </script>
 
 <style lang="scss" scoped>
+
   table {
     table-layout: fixed;
+    margin: 0 10% 10px;
 
     td, th {
       &.previous {
