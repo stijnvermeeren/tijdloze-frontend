@@ -22,5 +22,6 @@
 <style lang="scss" scoped>
   iframe {
     border-radius: 12px;
+    max-width: 80%;
   }
 </style>

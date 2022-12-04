@@ -94,6 +94,10 @@ export default function ({ app, store }) {
           data: response.song
         })
       }
+
+      if (response.poll) {
+        store.commit('poll/setCurrentPoll', response.poll)
+      }
     },
     onreconnect: e => {},
     onmaximum: e => {},

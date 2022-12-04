@@ -1,6 +1,7 @@
 
 export const state = () => ({
-  votes: []
+  votes: [],
+  currentPoll: undefined
 })
 
 export const getters = {
@@ -13,5 +14,8 @@ export const getters = {
 export const mutations = {
   setVotes(state, votes) {
     state.votes = votes
+  },
+  setCurrentPoll(state, poll) {
+    state.currentPoll = poll
   }
 }

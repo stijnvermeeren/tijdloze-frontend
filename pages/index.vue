@@ -46,7 +46,7 @@
     el-card(v-if="chatOn")
       div.header(slot="header")
         div.title Chatbox
-      div
+      div.link
         nuxt-link(to="/chat")
           el-button Ga naar de chatbox!
 
@@ -64,7 +64,7 @@
         div.title Poll
       div
         poll(:poll='poll')
-      div
+      div.link
         nuxt-link(to='/polls')
           el-button Alle polls
 </template>
@@ -80,6 +80,9 @@
     computed: {
       listInProgress() {
         return this.$store.getters.listInProgress;
+      },
+      poll() {
+        return this.$store.state.poll.currentPoll;
       },
       top5() {
         return _.take(this.$store.getters.list(this.tableYear, true), 5);
@@ -117,16 +120,7 @@
         comments = _.take(comments, 5);
       }
 
-      let latestPoll = undefined;
-      if (store.getters.listInProgress) {
-        const poll = await app.$axios.$get('poll/latest');
-        if (poll.year === store.getters.currentYear.yyyy) {
-          latestPoll = poll;
-        }
-      }
-
       return {
-        poll: latestPoll,
         chatOn,
         commentsOn,
         comments: comments

@@ -120,10 +120,17 @@ export const mutations = {
 }
 
 export const actions = {
-  async nuxtServerInit({commit, dispatch}) {
+  async nuxtServerInit({commit, dispatch, getters}) {
     const response = await this.$axios.$get('core-data');
 
     commit('updateCoreData', response);
+
+    if (getters.listInProgress) {
+      const poll = await this.$axios.$get('poll/latest');
+      if (poll.year === getters.currentYear.yyyy) {
+        commit('poll/setCurrentPoll', poll);
+      }
+    }
 
     dispatch('entities/artists/create', {
       data: response.artists

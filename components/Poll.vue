@@ -1,5 +1,7 @@
 <template lang="pug">
   .poll
+    div.reload
+      el-button(icon="el-icon-refresh-left" @click="reload" :loading="isLoading" circle)
     poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
     div(v-if='showResults')
       div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
@@ -54,7 +56,8 @@
         isDeleted: this.poll.isDeleted,
         deleting: false,
         voting: false,
-        myVoteEdit: undefined
+        myVoteEdit: undefined,
+        isLoading: false
       }
     },
     computed: {
@@ -71,16 +74,25 @@
         return _.sumBy(this.livePoll.answers, answer => answer.voteCount);
       }
     },
+    watch: {
+      poll(newPoll) {
+        this.livePoll = newPoll
+      }
+    },
     methods: {
+      async reload() {
+        this.isLoading = true;
+        const result = await this.$axios.$get(`poll/my-votes`);
+        this.$store.commit('poll/setVotes', result.votes);
+        this.livePoll = await this.$axios.$get(`poll/${this.poll.id}`);
+        this.isLoading = false;
+      },
       async vote() {
         if (this.isAuthenticated) {
           this.voting = true;
           await this.$axios.$post(`poll/${this.poll.id}/${this.myVoteEdit}`);
 
-          const result = await this.$axios.$get(`poll/my-votes`);
-          this.$store.commit('poll/setVotes', result.votes);
-
-          this.livePoll = await this.$axios.$get(`poll/${this.poll.id}`);
+          await this.reload();
           this.voting = false;
         }
       },
@@ -121,6 +133,10 @@
     padding: 5px 10px;
     border: 1px solid grey;
     background-color: styleConfig.$inputBackgroundColor;
+
+    .reload {
+      float: right;
+    }
 
     div.answer {
       display: flex;
