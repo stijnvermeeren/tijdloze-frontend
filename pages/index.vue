@@ -1,13 +1,13 @@
 <template lang="pug">
   div
-    h2 De Tijdloze Website
     .description
-      template(v-if="listInProgress")
-        | De #[strong Tijdloze 100] wordt momenteel uitgezonden door #[a(href='https://stubru.be/') Studio Brussel].
+      el-alert.alert(v-if="listInProgress" :closable="false" show-icon)
+        | De #[strong Tijdloze] van {{year.yyyy}} wordt momenteel uitgezonden door #[a(href='https://stubru.be/') StuBru].
         br
-        | Op deze website kan je de lijst en alle bijhorende statistieken live volgen.
-      template(v-else)
-        | De Tijdloze Website is nu volledig #[em open source]. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Zie #[strong #[nuxt-link(to='website/opensource') open source]] voor meer info.
+        | Op deze website kan je de lijst en alle bijhorende statistieken volgen.
+
+      el-alert.alert(v-else title="Officiële informatie / stemmen" :closable="false" show-icon)
+        | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') StuBru]. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je #[a(href='https://stubru.be/rubriek/de-tijdloze/') op de website van StuBru] zijn.
     el-card
       div.header(slot="header")
         div.title De Tijdloze van {{tableYear.yyyy}}
@@ -138,7 +138,7 @@
 
 <style lang="scss" scoped>
   div.description {
-    text-align: center;
+    margin-top: 20px;
   }
 
   div.link {

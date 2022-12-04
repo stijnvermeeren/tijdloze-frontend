@@ -32,7 +32,7 @@
       div.header(slot="header")
         div.title Landen
       p
-        tijdloze-links(text="In de databank van de Tijdloze Website is het land van herkomst van elke artiest vastgelegd. Hierbij wordt steeds het best passende vandaag bestaande land gekozen. Bands zoals [Scorpions] and [Kraftwerk], die in het voormalige West-Duitsland zijn groot geworden, worden dus gewoon als Duits geteld.")
+        tijdloze-links(text="In de databank van tijdloze.rocks is het land van herkomst van elke artiest vastgelegd. Hierbij wordt steeds het best passende vandaag bestaande land gekozen. Bands zoals [Scorpions] and [Kraftwerk], die in het voormalige West-Duitsland zijn groot geworden, worden dus gewoon als Duits geteld.")
       p
         tijdloze-links(text="De nationaliteit van de artiest en/of van de bandleden geeft niet altijd een eenduidig antwoord. Enerzijds hebben sommige mensen meerdere nationaliteiten. Anderzijds kan een band uit leden met verschillende nationaliteit zijn samengesteld. In geval van twijfel houden we daarom ook rekening met het land waar be band is opgericht, of met het land waar de artiest de eerste doorbraak heeft gemaakt. Bijvoorbeeld:")
         ul
@@ -53,7 +53,7 @@
       div.header(slot="header")
         div.title Talen
       p
-        tijdloze-links(text="In de databank van de Tijdloze Website is de taal van elk nummer vastgelegd. We hebben ervoor gekozen om hier geen fijne indeling te maken in dialecten en streektalen. De West-Vlaamse teksten van [Het Zesde Metaal] of ['t Hof van Commerce], en het Antwerps van [The Clement Peerens Explosition] worden dus bijvoorbeeld als Nederlands geteld. Nummers die geen duidelijke tekst hebben, worden als instrumentaal geteld.")
+        tijdloze-links(text="In de databank van tijdloze.rocks is de taal van elk nummer vastgelegd. We hebben ervoor gekozen om hier geen fijne indeling te maken in dialecten en streektalen. De West-Vlaamse teksten van [Het Zesde Metaal] of ['t Hof van Commerce], en het Antwerps van [The Clement Peerens Explosition] worden dus bijvoorbeeld als Nederlands geteld. Nummers die geen duidelijke tekst hebben, worden als instrumentaal geteld.")
       p
         | Meestal is de taal van een nummer duidelijk gedefinieerd, maar toch zijn er een aantal interessante randgevallen waar de taal toch niet zo eenduidig is, bijvoorbeeld:
       ul

@@ -194,7 +194,7 @@
     width: 56px;
     height: 50px;
     left: 26px;
-    top: 20px;
+    top: 10px;
     cursor: pointer;
 
     @media (min-width: 1200px) {

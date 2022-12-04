@@ -4,15 +4,15 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: 'De Tijdloze Website',
-    titleTemplate: '%s - De Tijdloze Website',
+    title: 'tijdloze.rocks',
+    titleTemplate: '%s - tijdloze.rocks',
     htmlAttrs: {
       lang: 'nl',
     },
     meta: [
       { charset: 'utf-8' },
       { name: 'author', content: 'Stijn Vermeeren - contact: www.stijnvermeeren.be/contact' },
-      { name: 'keywords', content: 'Tijdloze, Tijdloze 100, De Tijdloze Website, Tijdloos, Tijdloze100, StuBru, Studio Brussel, muziek, aller tijden, allertijden, beste' },
+      { name: 'keywords', content: 'Tijdloze, Tijdloze 100, De Tijdloze Website, tijdloze.rocks, Tijdloos, Tijdloze100, StuBru, Studio Brussel, muziek, aller tijden, allertijden, beste' },
       { name: 'description', content: 'Statistieken en informatie over de Tijdloze 100, de allertijden-lijst van Studio Brussel' },
       { name: 'robots', content: 'all' },
       { name: 'viewport', content: 'width=480, initial-scale=1'}

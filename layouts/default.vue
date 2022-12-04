@@ -2,13 +2,15 @@
   #container
     #header
       #logo(@click="$router.push('/')")
-        h1 De Tijdloze Website
+        h1 tijdloze
+          span.domain .rocks
+        div.subtitle Tijdloze muziek-klasiekers + data-analyse
     #container2
       #left
       tijdloze-menu
       #maincontainer
         .hidden
-          | De Tijdloze website bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
+          | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
         #main
           #inhoud
             nuxt
@@ -89,17 +91,28 @@
     background-color: styleConfig.$headerBackgroundColor;
 
     #logo {
-      display: block;
-      background: url("/images/logo.png") no-repeat;
-      background-position-x: 65px;
-      overflow: hidden;
-      margin: 0 auto;
-      height: 90px;
-      width: 480px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 8px;
+      height: 60px;
       cursor: pointer;
+      text-align: center;
 
       h1 {
-        display: none;
+        margin: 0 20px;
+        font-size: 32px;
+        font-style: italic;
+
+        .domain {
+          font-size: 20px;
+        }
+      }
+
+      .subtitle {
+        margin: 0 20px;
+        font-size: 12px;
+        color: #444;
       }
     }
   }

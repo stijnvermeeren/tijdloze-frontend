@@ -6,7 +6,7 @@
       div De makers van deze website zijn #[strong niet betrokken] bij de radio-uitzending of de samenstelling van de Tijdloze.
       div Feedback daarover kan je direct aan #[a(href='https://stubru.be') StuBru] en de #[a(href='https://vrtklantendienst.force.com/s/contactus') VRT] sturen.
 
-    p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van de Tijdloze Website, contacteren.
+    p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van tijdloze.rocks, contacteren.
     p Alle suggesties, verbeteringen of andere berichten omtrent deze website zijn van harte welkom!
 
     el-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!" :closable="false" show-icon)

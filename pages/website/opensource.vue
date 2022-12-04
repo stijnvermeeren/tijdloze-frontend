@@ -1,7 +1,7 @@
 <template lang="pug">
   div
     h2 Open source
-    p De Tijdloze Website is volledig open source. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Wie geïnteresseerd is om mee te helpen, mag ons steeds #[nuxt-link(to='/website/contact') contacteren] of meteen op Github aan de slag gaan.
+    p Tijdloze.rocks is volledig open source. Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Wie geïnteresseerd is om mee te helpen, mag ons steeds #[nuxt-link(to='/website/contact') contacteren] of meteen op Github aan de slag gaan.
 
     el-card
       div.header(slot="header")
@@ -9,7 +9,7 @@
         div
           a(href='https://github.com/stijnvermeeren/tijdloze-frontend')
             el-button(round type="primary") Github #[strong stijnvermeeren/tijdloze-frontend]
-      p Het #[em frontend] van de Tijdloze Website is een #[em single page application] die geschreven is met #[a(href='https://vuejs.org/') Vue.js] en het framework #[a(href='https://nuxtjs.org/') Nuxt]. De grafieken worden gegenereerd in de browser met de JavaScript library #[a(href='https://d3js.org/') D3.js].
+      p Het #[em frontend] van tijdloze.rocks is een #[em single page application] die geschreven is met #[a(href='https://vuejs.org/') Vue.js] en het framework #[a(href='https://nuxtjs.org/') Nuxt]. De grafieken worden gegenereerd in de browser met de JavaScript library #[a(href='https://d3js.org/') D3.js].
       p De broncode en meer informatie is te vinden in het Github-project #[strong #[a(href='https://github.com/stijnvermeeren/tijdloze-frontend') stijnvermeeren/tijdloze-frontend]].
 
 
