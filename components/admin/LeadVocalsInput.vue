@@ -1,11 +1,12 @@
 <template lang="pug">
-  div
-    div
-      select(:value='value' ref='input' @input='update()')
-        option(value='')
-          | (Lead vocals niet gedefinieerd)
-        option(v-for='[genderId, genderName] in Object.entries(vocalsGenders)' :key='genderId' :value='genderId')
-          | {{genderName}}
+  div.container
+    el-radio-group(v-model='liveValue' size="small")
+      el-radio-button(
+        v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
+        :key='genderId'
+        :label="genderId"
+      ) {{genderName}}
+    el-button(icon="el-icon-circle-close" @click="liveValue = undefined" circle)
 </template>
 
 <script>
@@ -16,23 +17,31 @@
     props: {
       value: String
     },
+    data() {
+      return {
+        liveValue: this.value
+      }
+    },
     computed: {
       vocalsGenders() {
         return vocalsGenders;
       }
     },
-    methods: {
-      update() {
-        const newValue = this.$refs['input'].value;
-        this.$emit('input', newValue);
+    watch: {
+      value(newValue) {
+        this.liveValue = newValue
+      },
+      liveValue(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.$emit('input', newValue);
+        }
       }
     }
   }
 </script>
 
-<style scoped>
-  select {
-    box-sizing: border-box;
-    width: 100%;
+<style lang="scss" scoped>
+  .el-radio-group {
+    margin-right: 10px;
   }
 </style>

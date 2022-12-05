@@ -1,16 +1,19 @@
 <template lang="pug">
   div
-    select(:value='value' @input='update()' ref='input' :disabled="disabled")
-      option(value='')
-        | (Ander land)
-      option(disabled=true)
-        | -- Reeds gebruikte landen --
-      option(v-for='countryId in usedCountryIds' :key='`used_${countryId}`' :value='countryId')
-        | {{countries[countryId]}}
-      option(disabled=true)
-       | -- Alle landen --
-      option(v-for='countryId in sortedCountryIds' :key='`all_${countryId}`' :value='countryId')
-        | {{countries[countryId]}}
+    el-radio-group(v-model='liveValue' size="small")
+      el-radio-button(label="us")
+        tijdloze-country-icon(country-id="us")
+      el-radio-button(label="gb")
+        tijdloze-country-icon(country-id="gb")
+      el-radio-button(label="be")
+        tijdloze-country-icon(country-id="be")
+    el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd")
+      el-option(
+        v-for='countryId in sortedCountryIds'
+        :key='countryId'
+        :value='countryId'
+        :label="countries[countryId]"
+      )
 </template>
 
 <script>
@@ -28,29 +31,35 @@
         default: false
       }
     },
+    data() {
+      return {
+        liveValue: this.value
+      }
+    },
     computed: {
       countries() {
         return countries;
       },
       sortedCountryIds() {
         return _.sortBy(Object.keys(this.countries), countryId => countries[countryId])
-      },
-      usedCountryIds() {
-        return this.sortedCountryIds.filter(countryId => this.$store.getters.usedCountryIds.has(countryId));
       }
     },
-    methods: {
-      update() {
-        const newValue = this.$refs['input'].value;
-        this.$emit('input', newValue);
+    watch: {
+      value(newValue) {
+        this.liveValue = newValue;
+      },
+      liveValue(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.$emit('input', newValue);
+        }
       }
     }
   }
 </script>
 
-<style scoped>
-  select {
-    box-sizing: border-box;
-    width: 100%;
+<style lang="scss" scoped>
+  .el-radio-group {
+    margin-right: 10px;
   }
 </style>
+
