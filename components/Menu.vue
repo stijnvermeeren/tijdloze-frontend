@@ -82,8 +82,6 @@
             template(slot="title") Admin
             nuxt-link(to="/admin/live")
               el-menu-item(index="/admin/live") Nummers toevoegen
-            nuxt-link(to="/admin/lijst")
-              el-menu-item(index="/admin/lijst") Nummers verwijderen
             nuxt-link(to="/admin/exits")
               el-menu-item(index="/admin/exits") Exits markeren
             nuxt-link(to="/admin/polls")

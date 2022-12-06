@@ -1,12 +1,17 @@
 <template lang="pug">
   div
-    h2 Admin: live updates
-
-    el-card(v-if='previousSong')
-      div.header(slot="header")
-        div.title Vorig nummer
+    div.flexTitle
+      h2 Admin: nummers toevoegen
       div
-        strong Positie {{previousPosition}} in {{currentYear.yyyy}}:
+        nuxt-link(to="/admin/lijst")
+          el-button(type="warning" round size="small") Nummers verwijderen uit de lijst
+
+    el-alert(v-if='previousSong'
+      show-icon
+      type="success"
+      :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
+      :closable="false"
+    )
       div
         | {{ previousSong.artist.fullName }}
         template(v-if='previousSong.secondArtist')
@@ -15,7 +20,7 @@
         |
         | - {{ previousSong.title }}
         |
-        el-button(@click='undo()', :disabled='processing') Ongedaan maken
+        el-button(@click='undo()' :disabled='processing' round size="mini") Ongedaan maken
 
     el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
       | Jaar {{currentYear.yyyy}} starten ongedaan maken
@@ -81,7 +86,7 @@
     el-card
       div.header(slot="header")
         div.title Tijdloze {{this.currentYear.yyyy}}: import
-        el-button(@click="cancelImport" type="warning" round) Import annuleren
+        el-button(@click="cancelImport" type="warning" round size="small") Import annuleren
       div(v-if="importSongs.length")
         div In de wachtrij om geïmporteerd te worden...
         div(v-for="{overridePosition, query} in importSongs")
@@ -214,11 +219,12 @@
       },
       async add(songId) {
         this.processing = true;
+        const position = this.nextPosition
         const data = {
           songId
         }
-        await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
-        this.previousPosition = this.nextPosition;
+        await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${position}`, data)
+        this.previousPosition = position;
         this.nextSongTab = 'existing';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;

@@ -55,21 +55,6 @@ export const getters = {
   },
   years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
   currentYear: (state, getters) => _.last(getters.years),
-  /* songs: (state, getters) => _.sortBy(
-    state.songsRaw.map(song => {
-      return new Song(song, getters.albumsById[song.albumId].releaseYear, getters.years);
-    }),
-    song => song.title.toLowerCase()
-  ), */
-  completedYears (state, getters) {
-    return getters.years.filter(year => {
-      const list = List.query().with('songs').find(year.yyyy)
-      if (list) {
-        const firstSong = _.first(list.songs)
-        return firstSong && firstSong.position(year) === 1;
-      }
-    });
-  },
   usedCountryIds (state, getters) {
     return new Set(Artist.all().map(artist => artist.countryId));
   },
@@ -97,6 +82,13 @@ export const getters = {
   },
   listInProgress(state, getters) {
     return getters.lastPosition !== 1;
+  },
+  lastCompleteYear(state, getters) {
+    if (getters.listInProgress) {
+      return getters.currentYear.previous()
+    } else {
+      return getters.currentYear
+    }
   },
   completedYear(state, getters) {
     return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();

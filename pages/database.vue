@@ -16,12 +16,12 @@
       | van
       |
       el-select.selectYear(v-model='startYear' size="small")
-        el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+        el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
       |
       | tot en met
       |
       el-select.selectYear(v-model='endYear' size="small")
-        el-option(v-for='year in completedYears' :key='year.yyyy' :value='year.yyyy')
+        el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
     div
       | Filter:
       |
@@ -50,6 +50,9 @@
         controls-position="right"
         @focus="setDefaultMaxReleaseYear"
       )
+
+    el-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning" :closable="false" show-icon)
+      | De statistieken kunnen nog veranderen.
 
     div.list
       client-only(placeholder="Loading...")
@@ -152,8 +155,8 @@
         type,
         filter: parseFilter(this.$route.query.filter),
         cutoff: parseCutoff(this.$route.query.cutoff),
-        startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.completedYears).yyyy,
-        endYear: this.$route.query.einde ? this.$route.query.einde : _.last(this.$store.getters.completedYears).yyyy,
+        startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.years).yyyy,
+        endYear: this.$route.query.einde ? this.$route.query.einde : this.$store.getters.lastCompleteYear.yyyy,
         minReleaseYear: undefined,
         maxReleaseYear: undefined,
         scoreMethod: parseScoreMethod(this.$route.query.score, type),
@@ -196,11 +199,17 @@
       selectedSongs() {
         return this.applyFilters(this.$store.getters.songs);
       },
-      completedYears() {
-        return this.$store.getters.completedYears;
+      years() {
+        return this.$store.getters.years;
+      },
+      currentYear() {
+        return this.$store.getters.currentYear;
       },
       selectedYears() {
-        return this.completedYears.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
+        return this.years.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
+      },
+      showWarning() {
+        return this.$store.getters.listInProgress && this.endYear >= this.currentYear.yyyy
       },
       sortAscending() {
         return this.scoreMethod === SCORE_YEAR_ASC
@@ -319,8 +328,8 @@
         this.type = parseType(newQuery.type);
         this.filter = parseFilter(newQuery.filter);
         this.cutoff = parseCutoff(newQuery.cutoff);
-        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.completedYears).yyyy;
-        this.endYear = newQuery.einde ? newQuery.einde : _.last(this.$store.getters.completedYears).yyyy;
+        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.years).yyyy;
+        this.endYear = newQuery.einde ? newQuery.einde : this.$store.getters.lastCompleteYear.yyyy;
         this.scoreMethod = parseScoreMethod(newQuery.score, this.type);
         this.countryFilter = newQuery.land;
         this.languageFilter = newQuery.taal;
@@ -492,6 +501,7 @@
   }
 
   .alert {
+    margin-top: 10px;
     margin-bottom: 15px;
   }
 </style>
