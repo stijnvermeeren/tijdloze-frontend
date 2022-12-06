@@ -1,13 +1,9 @@
 <template lang="pug">
   div
-    div
-      input(v-model='query' @keypress.enter='search()' placeholder='Titel en/of artiest')
-      button(@click='search()' :disabled='processing')
+    div.search
+      el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
+      el-button(@click='search' type="primary" :disabled='processing')
         | Zoeken op Spotify
-      |  (
-      a(:href="`https://www.google.com/search?q=${encodeURIComponent(query)}`" target="_blank")
-        | Zoek meer info op Google
-      | )
     template(v-if="showingResults")
       div(v-if='!spotifyTracks.length')
         | Geen resultaten van Spotify. Controlleer de query.
@@ -19,7 +15,7 @@
               v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
               :key='track.spotifyId'
             )
-              td
+              td.spotify
                 spotify(:spotify-id='track.spotifyId')
               td.details
                 div
@@ -37,7 +33,7 @@
                   |
                   |({{track.year}}).
               td
-                button(@click='select(track)' v-if="!selectedTrackId") Selecteren
+                el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
 </template>
 
 <script>
@@ -93,13 +89,21 @@
 </script>
 
 <style lang="scss" scoped>
-  input {
-    width: 300px;
+  .search{
+    display: flex;
+
+    .el-input {
+      margin-right: 20px;
+    }
   }
 
   table {
-    width: auto;
     margin: 10px auto 10px 0;
+
+    td.spotify {
+      max-width: 300px;
+      padding-right: 10px;
+    }
 
     td.details {
       font-size: 75%;

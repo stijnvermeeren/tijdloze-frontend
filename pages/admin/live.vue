@@ -17,19 +17,11 @@
         |
         el-button(@click='undo()', :disabled='processing') Ongedaan maken
 
-    el-card(v-if='!lastSong')
-      div.header(slot="header")
-        div.title Jaar {{currentYear.yyyy}} gestart
-      div
-        el-button(@click='deleteYear()')
-          | Jaar starten ongedaan maken
+    el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
+      | Jaar {{currentYear.yyyy}} starten ongedaan maken
 
-    el-card(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy')
-      div.header(slot="header")
-        div.title Volgend nummer
-      div
-        el-button(@click='startYear()')
-          | Jaar {{nextYearYyyy}} starten
+    el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
+      | Jaar {{nextYearYyyy}} starten
 
     el-card(v-show='!lastSong || nextPosition > 0')
       div.header(slot="header")
@@ -37,11 +29,18 @@
       div
         strong Positie {{nextPosition}} in {{currentYear.yyyy}}
 
-      div(v-show="!nextSongNew")
-        h4
-          | Bestaand nummer of
-          |
-          a(@click="nextSongNew = true") nieuw nummer
+      div.query(v-if="initialQuery")
+        | Importeren van "{{initialQuery}}".
+        =" "
+        a(:href="`https://www.google.com/search?q=${encodeURIComponent(query)}`" target="_blank")
+          el-button(size="mini" round icon="el-icon-link") Zoek op Google
+
+      el-radio-group.nextSongTab(v-model="nextSongTab")
+        el-radio-button(label="existing") Nummer uit de database
+        el-radio-button(label="spotify") Nieuw nummer (via Spotify)
+        el-radio-button(label="manual") Nieuw nummer (manueel)
+
+      div(v-show="nextSongTab === 'existing'")
         search-box(
           placeholder='Zoek nummer...'
           :artist-filter='artist => false'
@@ -53,23 +52,19 @@
           @initialResultCount="initialResultCount($event)"
         )
 
-        .box(v-if="nextSong")
+        div(v-if="nextSong")
           div
             strong {{nextSong.artist.fullName}} - {{nextSong.title}}
             |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
           div(v-if='nextSongFullData && nextSongFullData.spotifyId')
             spotify(:spotify-id='nextSongFullData.spotifyId')
           div
-            button(@click='add(nextSong.id)', :disabled='!nextValid')
+            el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
-      div(v-show="nextSongNew")
-        h4
-          a(@click="nextSongNew=false") Bestaand nummer
-          |
-          | of nieuw nummer
-        .box
-          spotify-search(:initialQuery='initialQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+      div(v-show="nextSongTab === 'spotify'")
+        spotify-search(:initialQuery='initialQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+        div(v-if='spotifyData')
           hr
           new-song-wizard(
             :preset='spotifyData'
@@ -77,12 +72,24 @@
             @newSong='add($event.id)'
           )
 
+      div(v-show="nextSongTab === 'manual'")
+        new-song-wizard(
+          :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
+          @newSong='add($event.id)'
+        )
+
     el-card
       div.header(slot="header")
-        div.title Import
-      textarea(v-model="importText" rows="10")
-      div
-        el-button(@click="startImport") Import beginnen
+        div.title Tijdloze {{this.currentYear.yyyy}}: import
+        el-button(@click="cancelImport" type="warning" round) Import annuleren
+      div(v-if="importSongs.length")
+        div In de wachtrij om geïmporteerd te worden...
+        div(v-for="{overridePosition, query} in importSongs")
+          strong {{overridePosition}}.
+          =" "
+          span {{query}}
+      div(v-else)
+        import-form(:startPosition="nextPosition" @startImport="startImport")
 </template>
 
 <script>
@@ -91,19 +98,19 @@
   import Spotify from '../../components/Spotify'
   import SpotifySearch from '../../components/admin/SpotifySearch'
   import NewSongWizard from '../../components/admin/NewSongWizard'
+  import ImportForm from '../../components/admin/ImportForm'
   import Song from "@/orm/Song";
 
   export default {
-    components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
+    components: {ImportForm, NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
-        nextSongNew: false,
+        nextSongTab: 'existing',
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
         spotifyData: undefined,
         initialQuery: '',
-        importText: '',
         importSongs: [],
         overrideNextPosition: undefined,
         previousPosition: undefined
@@ -140,7 +147,7 @@
         }
       },
       nextValid() {
-        if (this.nextSongNew) {
+        if (this.nextSongTab === 'existing') {
           return !!this.nextSong
         } else {
           return true
@@ -149,7 +156,7 @@
     },
     methods: {
       initialResultCount(value) {
-        this.nextSongNew = value === 0;
+        this.nextSongTab = (value === 0) ? 'spotify' : 'existing';
       },
       loadNextFromImport() {
         let canBeImported = false;
@@ -168,24 +175,12 @@
           this.overrideNextPosition = undefined;
         }
       },
-      startImport() {
-        this.importSongs = []
-        const fragments = this.importText.split("\n")
-        fragments.forEach(fragment => {
-          const positionMatch = fragment.match(/^[0-9]+/g);
-          let overridePosition = undefined;
-          if (positionMatch && positionMatch.length) {
-            overridePosition = parseInt(positionMatch[0]);
-          }
-          const cleanFragment = fragment.replace(/^[0-9]*[ \.]+/g, "").trim()
-          if (cleanFragment) {
-            this.importSongs.push({
-              overridePosition: overridePosition,
-              query: cleanFragment
-            })
-          }
-        })
+      startImport(songs) {
+        this.importSongs = songs
         this.loadNextFromImport();
+      },
+      cancelImport() {
+        this.importSongs = []
       },
       async selectSearchResult(result) {
         this.nextSong = result.item;
@@ -224,7 +219,7 @@
         }
         await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${this.nextPosition}`, data)
         this.previousPosition = this.nextPosition;
-        this.nextSongNew = false;
+        this.nextSongTab = 'existing';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
         this.spotifyData = undefined;
@@ -250,13 +245,23 @@
 </script>
 
 <style scoped>
-  div.box {
-    border: 1px solid grey;
-    padding: 5px 10px;
-    margin: 10px 0;
+  .el-card {
+    overflow: visible;
+  }
+
+  .nextSongTab {
+    margin-bottom: 20px;
   }
 
   textarea {
     width: 100%;
+  }
+
+  .importStart {
+    width: 120px;
+  }
+
+  .importStep {
+    width: 240px;
   }
 </style>

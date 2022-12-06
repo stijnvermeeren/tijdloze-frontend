@@ -170,12 +170,12 @@
   div.spotify {
     margin-bottom: 20px;
 
-    iframe {
-      border: 1px solid grey;
-    }
-
     div {
       text-align: center;
+
+      iframe {
+        max-width: 80%;
+      }
     }
   }
 </style>

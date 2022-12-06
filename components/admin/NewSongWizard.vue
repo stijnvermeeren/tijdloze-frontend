@@ -2,57 +2,68 @@
   div
     div
       div.heading Artiest
-      label.flex(for='artist-existing')
-        input#artist-existing(type='radio' v-model='artistType' value='existing')
-        div.flex
-          div Bestaande artiest
-          artist-select(v-model='artistId' :disabled="artistType === 'new'")
-      label.flex(for="artist-new")
-        input#artist-new(type='radio' v-model='artistType' value="new")
-        div.flex
-          div Nieuwe artiest
-          div
+      div.indent
+        el-radio-group(v-model="artistType" size="small")
+          el-radio-button(label="existing") Artiest uit de database
+          el-radio-button(label="new") Nieuwe artiest
+        div(v-if="artistType === 'existing'")
+          artist-select(v-model='artistId')
+        div(v-else)
+          div.flex
             div.hint Voornaam
-            input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...' :disabled="artistType === 'existing'")
-          div.flexGrow
+            div.input
+              el-input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...' size="medium")
+          div.flex
             div.hint Naam
-            input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...' :disabled="artistType === 'existing'")
-          div
+            div.input
+              el-input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...' size="medium")
+          div.flex
             div.hint Land
-            country-input(v-model='artistDetails.countryId' :disabled="artistType === 'existing'")
+            div.input
+              country-input(v-model='artistDetails.countryId')
     div(v-if='artistValid')
       div.heading Album
-      label.flex(v-for="album in candidateAlbums" :for="`album-${album.id}`")
-        input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
-        div.flex
-          div {{album.title}} ({{album.releaseYear}})
-      label.flex(for="album-new")
-        input#album-new(type='radio' v-model='albumId' :value="undefined")
-        div.flex.flexGrow
-          div Nieuw album
-          div.flexGrow
-            div.hint Titel
-            input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId")
-          div
-            div.hint Jaar
-            input(v-model.number='albumDetails.releaseYear' type='number' :disabled="!!albumId")
+      div.indent
+        label.flex(v-for="album in candidateAlbums" :for="`album-${album.id}`")
+          input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
+          div.flex
+            div {{album.title}} ({{album.releaseYear}})
+        label.flex(for="album-new")
+          input#album-new(type='radio' v-model='albumId' :value="undefined")
+          div.flex.flexGrow
+            div Nieuw album
+            div.flex
+              div.hint Titel
+              el-input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId" size="medium")
+            div.flex
+              div.hint Jaar
+              el-input-number(v-model='albumDetails.releaseYear' :disabled="!!albumId" size="medium")
     div.heading Nummer
-    div.flex(v-if='artistValid && albumValid')
-      div.flexGrow
-        div.hint Titel
-        input(v-model='songDetails.title' placeholder="Titel")
-      div
-        div.hint Taal
-        language-input(v-model='songDetails.languageId')
-      div
-        div.hint Lead vocals
-        lead-vocals-input(v-model='songDetails.leadVocals')
-    div.otherArtistSongs(v-if="otherArtistSongs.length")
-      | Opgelet! Reeds gekende nummers van deze artist:
-      span(v-for="song in otherArtistSongs")
-        | {{song.title}}
+    div.indent
+      div(v-if='artistValid && albumValid')
+        div.flex
+          div.hint Titel
+          div.input
+            el-input(v-model='songDetails.title' placeholder="Titel" size="medium")
+        div.flex
+          div.hint Taal
+          div.input
+            language-input(v-model='songDetails.languageId')
+        div.flex
+          div.hint Lead vocals
+          div.input
+            lead-vocals-input(v-model='songDetails.leadVocals')
+      div.otherArtistSongs(v-if="otherArtistSongs.length")
+        | Opgelet! Reeds gekende nummers van deze artist:
+        span(v-for="song in otherArtistSongs")
+          | {{song.title}}
     div
-      button(:disabled='!(artistValid && albumValid && songValid) || submitting' @click='submit()') {{buttonLabel}}
+      el-button(
+        type="primary"
+        round
+        :disabled='!(artistValid && albumValid && songValid) || submitting'
+        @click='submit()'
+      ) {{buttonLabel}}
 </template>
 
 <script>
@@ -117,7 +128,7 @@
         return this.songDetails.title;
       },
       candidateAlbums() {
-        if (!this.artistId) {
+        if (!this.artistId || this.artistType === 'new') {
           return [];
         }
 
@@ -305,15 +316,15 @@
 </script>
 
 <style lang="scss" scoped>
-  div.box {
-    border: 1px solid grey;
-    padding: 5px 10px;
-    margin: 10px 0;
+  .heading {
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
   }
 
-  .heading {
-    margin-top: 15px;
-    font-weight: bold;
+  div.indent {
+    margin-left: 20px;
+    margin-bottom: 20px;
   }
 
   input[type="radio"]:not(:checked) + * {
@@ -323,6 +334,15 @@
   .flex {
     display: flex;
     margin:  5px 0;
+
+    > div.hint {
+      flex-basis: 20%;
+      font-weight: bold;
+    }
+
+    > div.input {
+      flex-basis: 80%;
+    }
 
     * {
       box-sizing: border-box;

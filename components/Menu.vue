@@ -138,7 +138,7 @@
       },
       openeds() {
         const mainPath = this.$route.path.split('/').slice(0, 2).join('/');
-        return ['inprogress', mainPath];
+        return ['inprogress', '/admin', mainPath];
       }
     },
     methods: {
