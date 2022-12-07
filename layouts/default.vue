@@ -36,6 +36,18 @@
     },
     mounted() {
       this.$auth.loginSilently()
+    },
+    head() {
+      return {
+        titleTemplate: title => {
+          console.log(title)
+          if (title === 'tijdloze.rocks') {
+            return title
+          } else {
+            return `${title} - tijdloze.rocks`
+          }
+        }
+      }
     }
   }
 </script>

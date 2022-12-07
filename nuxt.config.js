@@ -5,9 +5,8 @@ module.exports = {
   */
   head: {
     title: 'tijdloze.rocks',
-    titleTemplate: '%s - tijdloze.rocks',
     htmlAttrs: {
-      lang: 'nl',
+      lang: 'nl'
     },
     meta: [
       { charset: 'utf-8' },
