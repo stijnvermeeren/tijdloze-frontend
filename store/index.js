@@ -21,7 +21,10 @@ export const plugins = [ VuexORM.install(database) ]
 
 export const state = () => ({
   yearsRaw: [],
-  exitSongIds: []
+  exitSongIds: [],
+  songIdsByTitle: {},
+  artistIdsByName: {},
+  artistIdsByFullName: {}
 })
 
 export const getters = {
@@ -30,15 +33,6 @@ export const getters = {
       getters['entities/songs/query']().withAll().all(),
       song => [song.title, song.album.releaseYear]
     );
-  },
-  songsForLinks(state, getters) {
-    return _.groupBy(Song.all(), song => song.title.toLowerCase())
-  },
-  artistsFullNameForLinks(state, getters) {
-    return _.groupBy(Artist.all(), artist => artist.fullName.toLowerCase())
-  },
-  artistsNameForLinks(state, getters) {
-    return _.groupBy(Artist.all(), artist => artist.name.toLowerCase())
   },
   decades(state, getters) {
     function getDecadeYear(yyyy) {
@@ -98,6 +92,22 @@ export const getters = {
 }
 
 export const mutations = {
+  songsForLinks(state, songs) {
+    state.songIdsByTitle = _.mapValues(
+      _.groupBy(songs, song => song.title.toLowerCase()),
+      songs => songs.map(song => song.id)
+    )
+  },
+  artistsForLinks(state, artists) {
+    state.artistIdsByFullName = _.mapValues(
+      _.groupBy(artists, artist => artist.fullName.toLowerCase()),
+      artist => artist.id
+    )
+    state.artistIdsByName = _.mapValues(
+      _.groupBy(artists, artist => artist.name.toLowerCase()),
+      artist => artist.id
+    )
+  },
   updateCoreData(state, json) {
     state.yearsRaw = json.years;
     state.exitSongIds = json.exitSongIds;
@@ -145,5 +155,8 @@ export const actions = {
     dispatch('entities/lists/create', {
       data: lists
     });
+
+    commit('songsForLinks', Song.all())
+    commit('artistsForLinks', Artist.all())
   }
 }

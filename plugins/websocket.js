@@ -99,12 +99,17 @@ export default function ({ app, store }) {
         Artist.insertOrUpdate({
           data: response.artist
         })
+        store.commit('artistsForLinks', Artist.all())
       }
 
       if (response.deletedArtistId) {
         Song.delete(song => song.artistId === response.deletedArtistId)
+        store.commit('songsForLinks', Song.all())
+
         Album.delete(album => album.artistId === response.deletedArtistId)
+
         Artist.delete(response.deletedArtistId)
+        store.commit('artistsForLinks', Artist.all())
       }
 
       if (response.album) {
@@ -115,6 +120,8 @@ export default function ({ app, store }) {
 
       if (response.deletedAlbumId) {
         Song.delete(song => song.albumId === response.deletedAlbumId)
+        store.commit('songsForLinks', Song.all())
+
         Album.delete(response.deletedAlbumId)
       }
 
@@ -122,10 +129,12 @@ export default function ({ app, store }) {
         Song.insertOrUpdate({
           data: response.song
         })
+        store.commit('songsForLinks', Song.all())
       }
 
       if (response.deletedSongId) {
         Song.delete(response.deletedSongId)
+        store.commit('songsForLinks', Song.all())
       }
 
       if (response.poll) {

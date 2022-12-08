@@ -8,6 +8,9 @@
 </template>
 
 <script>
+  import Artist from "../orm/Artist";
+  import Song from "../orm/Song";
+
   export default {
     props: {
       to: String
@@ -17,7 +20,8 @@
         return this.$store.getters.years;
       },
       song() {
-        return this.findSong(this.input);
+        const songId = this.findSongId(this.input)
+        return songId ? Song.find(songId) : undefined
       },
       year() {
         return this.findYear(this.input);
@@ -26,7 +30,8 @@
         return this.findYearShort(this.input);
       },
       artist() {
-        return this.findArtist(this.input);
+        const artistId = this.findArtistId(this.input)
+        return artistId ? Artist.find(artistId) : undefined
       },
       isBold() {
         return this.to.startsWith("*");
@@ -46,23 +51,23 @@
       findYearShort(input) {
         return this.years.find(year => year._yy === input);
       },
-      findArtist(input) {
-        const fullNameMatches = this.$store.getters.artistsFullNameForLinks[input.toLowerCase()];
+      findArtistId(input) {
+        const fullNameMatches = this.$store.state.artistIdsByFullName[input.toLowerCase()];
         if (fullNameMatches && fullNameMatches.length === 1) {
           return fullNameMatches[0];
         } else if (fullNameMatches && fullNameMatches.length > 1) {
           return null;
         }
 
-        const lastNameMatches = this.$store.getters.artistsNameForLinks[input.toLowerCase()];
+        const lastNameMatches = this.$store.state.artistIdsByName[input.toLowerCase()];
         if (lastNameMatches && lastNameMatches.length === 1) {
           return lastNameMatches[0];
         }
 
         return null;
       },
-      findSong(input) {
-        const titleMatches = this.$store.getters.songsForLinks[input.toLowerCase()];
+      findSongId(input) {
+        const titleMatches = this.$store.state.songIdsByTitle[input.toLowerCase()];
         if (titleMatches && titleMatches.length === 1) {
           return titleMatches[0];
         }
@@ -73,11 +78,11 @@
           const title = split[0].trim();
           const artistName = split[1].trim();
 
-          const titleMatches = this.$store.getters.songsForLinks[title.toLowerCase()];
+          const titleMatches = this.$store.state.songIdsByTitle[title.toLowerCase()];
           if (titleMatches) {
             const combinedMatches = titleMatches.filter(song => {
-              const foundArtist = this.findArtist(artistName);
-              return foundArtist && foundArtist.id === song.artistId;
+              const foundArtistId = this.findArtistId(artistName);
+              return foundArtistId && foundArtistId === song.artistId;
             });
 
             if (combinedMatches.length === 1) {
