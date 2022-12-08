@@ -47,7 +47,8 @@
       close() {
         this.isHidden = true;
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

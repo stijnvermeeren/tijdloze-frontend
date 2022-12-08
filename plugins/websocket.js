@@ -21,7 +21,8 @@ export default function ({ app, store }) {
           List.insert({
             data: {
               year: response.currentYear,
-              songIds: []
+              songIds: [],
+              top100SongIds: []
             }
           })
         }
@@ -54,6 +55,18 @@ export default function ({ app, store }) {
                 response.songId,
                 ...partition[1]
               ];
+
+              if (response.position <= 100) {
+                const partition = _.partition(
+                  list.top100SongIds.filter(songId => songId !== response.songId),
+                  songId => Song.find(songId).positions[yearShort] < response.position
+                )
+                list.songIds = [
+                  ...partition[0],
+                  response.songId,
+                  ...partition[1]
+                ];
+              }
             }
           })
         } else {
@@ -63,6 +76,11 @@ export default function ({ app, store }) {
               list.songIds = list.songIds.filter(songId => {
                 return Song.find(songId).positions[yearShort] !== response.position
               })
+              if (response.position <= 100) {
+                list.top100SongIds = list.top100SongIds.filter(songId => {
+                  return Song.find(songId).positions[yearShort] !== response.position
+                })
+              }
             }
           })
 

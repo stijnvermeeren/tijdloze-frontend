@@ -98,6 +98,7 @@
     },
     head: {
       title: 'Landen'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

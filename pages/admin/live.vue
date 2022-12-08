@@ -246,7 +246,8 @@
     middleware: 'admin',
     head: {
       title: 'Admin: Live'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

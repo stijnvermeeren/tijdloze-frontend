@@ -41,6 +41,7 @@
     },
     head: {
       title: 'Dalers'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

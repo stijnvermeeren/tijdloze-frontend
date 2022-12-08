@@ -58,24 +58,29 @@ export const getters = {
   usedCountryIds (state, getters) {
     return new Set(Artist.all().map(artist => artist.countryId));
   },
-  list: (state, getters) => (year, extended) => {
+  list: (state, getters) => year => {
     const list = List.query().with(['songs', 'songs.album', 'songs.artist']).find(year.yyyy)
     if (list) {
-      if (extended) {
-        return list.songs
-      } else {
-        return _.takeWhile(list.songs, song => song.position(year, true) <= 100)
-      }
+      return list.songs
+    } else {
+      return []
+    }
+  },
+  listTop100: (state, getters) => year => {
+    const list = List.query().with(['top100Songs', 'top100Songs.album', 'top100Songs.artist']).find(year.yyyy)
+    if (list) {
+      return list.top100Songs
     } else {
       return []
     }
   },
   lastSong(state, getters) {
-    return _.first(getters.list(getters.currentYear, true));
+    return _.first(getters.list(getters.currentYear));
   },
   lastPosition(state, getters) {
-    if (getters.lastSong) {
-      return getters.lastSong.position(getters.currentYear, true)
+    const lastSong = getters.lastSong
+    if (lastSong) {
+      return lastSong.position(getters.currentYear, true)
     } else {
       return undefined
     }
@@ -89,9 +94,6 @@ export const getters = {
     } else {
       return getters.currentYear
     }
-  },
-  completedYear(state, getters) {
-    return getters.lastPosition === 1 ? getters.currentYear : getters.currentYear.previous();
   }
 }
 
@@ -136,8 +138,12 @@ export const actions = {
       data: response.songs
     });
 
+    const lists = response.lists.map(list => {
+      list.top100SongIds = _.take(list.songIds, list.top100SongCount)
+      return list
+    })
     dispatch('entities/lists/create', {
-      data: response.lists
+      data: lists
     });
   }
 }

@@ -36,6 +36,7 @@
     },
     head: {
       title: 'Nieuwkomers'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

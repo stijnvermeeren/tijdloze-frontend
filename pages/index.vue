@@ -85,7 +85,7 @@
         return this.$store.state.poll.currentPoll;
       },
       top5() {
-        return _.take(this.$store.getters.list(this.tableYear, true), 5);
+        return _.take(this.$store.getters.list(this.tableYear), 5);
       },
       exitsKnown() {
         // TODO create getter in store
@@ -97,7 +97,7 @@
         return this.$store.getters.currentYear;
       },
       tableYear() {
-        if (this.$store.getters.list(this.year, true).length === 0 && this.year.previous()) {
+        if (this.$store.getters.list(this.year).length === 0 && this.year.previous()) {
           return this.year.previous();
         } else {
           return this.year;
@@ -132,7 +132,8 @@
         const comments = await this.$axios.$get(`comments/1`);
         this.comments = _.take(comments, 5);
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

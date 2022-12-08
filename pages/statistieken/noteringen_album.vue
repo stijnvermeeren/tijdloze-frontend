@@ -24,6 +24,7 @@
     },
     head: {
       title: 'Noteringen (albums)'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

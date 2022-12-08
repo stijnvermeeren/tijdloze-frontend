@@ -1,7 +1,8 @@
 <template lang="pug">
   div
     h2 De Tijdloze van {{year.yyyy}}
-    full-list(:songs='songsExtended' :year='year')
+    client-only(placeholder="Loading...")
+      full-list(:songs='songsExtended' :year='year')
 
     el-card(v-if='year.previous()')
       div.header(slot="header")
@@ -109,10 +110,10 @@
         return this.years.find(year => year.yyyy.toString() === this.$route.params.yyyy);
       },
       songs() {
-        return this.$store.getters.list(this.year);
+        return this.$store.getters.listTop100(this.year);
       },
       songsExtended() {
-        return this.$store.getters.list(this.year, true);
+        return this.$store.getters.list(this.year);
       },
       newSongs() {
         if (this.year.previous()) {
@@ -124,7 +125,7 @@
       exits() {
         if (this.year.previous()) {
           return _.sortBy(
-            this.$store.getters.list(this.year.previous()).filter(song => {
+            this.$store.getters.listTop100(this.year.previous()).filter(song => {
               return song.notInList(this.year);
             }),
             song => song.position(this.year.previous())
@@ -184,7 +185,8 @@
     },
     validate({params, store}) {
       return store.getters.years.find(year => year.yyyy.toString() === params.yyyy);
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

@@ -61,7 +61,7 @@ export default class Song extends Model {
 
     if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
       if (extended) {
-        return this.$store().getters.lastPosition > 1;
+        return this.$store().getters.listInProgress;
       } else {
         return !(this.markedAsExit() || this.position(year, true) > 100)
       }

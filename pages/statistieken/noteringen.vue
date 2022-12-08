@@ -27,6 +27,7 @@
     },
     head: {
       title: 'Noteringen'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

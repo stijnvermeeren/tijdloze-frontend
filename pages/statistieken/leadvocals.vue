@@ -88,6 +88,7 @@
     },
     head: {
       title: 'Lead Vocals'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

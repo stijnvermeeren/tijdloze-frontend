@@ -115,7 +115,8 @@
       return {
         title: this.artist.fullName
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

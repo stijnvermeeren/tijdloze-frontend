@@ -184,6 +184,7 @@
         document.removeEventListener('click', this.close);
       }
     },
+    ssrComputedCache: true
   };
 </script>
 

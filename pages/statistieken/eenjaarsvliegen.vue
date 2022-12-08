@@ -50,6 +50,7 @@
     },
     head: {
       title: 'Eenjaarsvliegen'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

@@ -34,7 +34,8 @@ module.exports = {
     '~/plugins/vue-virtual-scroller',
     '~/plugins/element-ui',
     { src: '~/plugins/auth', mode: 'client'},
-    { src: '~/plugins/websocket', mode: 'client'}
+    { src: '~/plugins/websocket', mode: 'client'},
+    { src: '~/plugins/ssrcache', mode: 'server'}
   ],
   css: [
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }

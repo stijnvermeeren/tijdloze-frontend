@@ -41,6 +41,7 @@
     },
     head: {
       title: 'Stijgers'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

@@ -37,6 +37,7 @@
     },
     head: {
       title: 'Stationaire nummers'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

@@ -46,6 +46,7 @@
     },
     head: {
       title: 'Re-entries'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

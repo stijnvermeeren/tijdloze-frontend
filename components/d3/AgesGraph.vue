@@ -103,7 +103,7 @@
         },
         tooltipSong() {
           if (!!this.hoverYear && !!this.hoverPosition) {
-            return this.$store.getters.list(this.hoverYear).find(song => {
+            return this.$store.getters.listTop100(this.hoverYear).find(song => {
               return song.position(this.hoverYear) === this.hoverPosition;
             })
           }

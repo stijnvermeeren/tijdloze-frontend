@@ -104,7 +104,8 @@
       return {
         title: `${this.album.title} (${this.album.artist.fullName})`
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

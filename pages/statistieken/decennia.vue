@@ -101,6 +101,7 @@
     },
     head: {
       title: 'Decennia'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

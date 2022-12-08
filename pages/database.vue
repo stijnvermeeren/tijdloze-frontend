@@ -203,12 +203,14 @@
         return this.$store.getters.years;
       },
       currentYear() {
+        console.log("currentYear")
         return this.$store.getters.currentYear;
       },
       selectedYears() {
         return this.years.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
       },
       showWarning() {
+        console.log("showWarning")
         return this.$store.getters.listInProgress && this.endYear >= this.currentYear.yyyy
       },
       sortAscending() {
@@ -393,7 +395,8 @@
     },
     head: {
       title: 'Volledige database'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

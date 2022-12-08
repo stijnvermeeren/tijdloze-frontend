@@ -118,7 +118,8 @@
       return {
         title: `${this.song.title} (${this.song.artist.fullName})`
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

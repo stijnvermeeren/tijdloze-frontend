@@ -39,6 +39,7 @@
     },
     head: {
       title: 'Exits'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

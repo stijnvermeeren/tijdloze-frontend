@@ -24,6 +24,7 @@
   export default {
     head: {
       title: 'Leeftijden'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

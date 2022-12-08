@@ -93,6 +93,7 @@
     },
     head: {
       title: 'Talen'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

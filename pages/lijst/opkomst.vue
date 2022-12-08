@@ -46,7 +46,8 @@
           song => -song.position(this.year.previous())
         );
       }
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

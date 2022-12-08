@@ -28,6 +28,7 @@
     },
     head: {
       title: 'Polls'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

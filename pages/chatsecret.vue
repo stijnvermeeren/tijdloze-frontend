@@ -55,7 +55,8 @@
     },
     head: {
       title: 'Chatbox'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>
 

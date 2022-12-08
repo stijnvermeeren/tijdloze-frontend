@@ -27,7 +27,7 @@
         return this.$store.getters.currentYear;
       },
       songs() {
-        return this.$store.getters.list(this.currentYear, true)
+        return this.$store.getters.list(this.currentYear)
       }
     },
     methods: {
@@ -41,6 +41,7 @@
     middleware: 'admin',
     head: {
       title: 'Admin: huidige lijst'
-    }
+    },
+    ssrComputedCache: true
   }
 </script>

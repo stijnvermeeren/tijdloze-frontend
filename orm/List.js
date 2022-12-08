@@ -12,7 +12,9 @@ export default class List extends Model {
     return {
       year: this.attr(null),
       songIds: this.attr(null),
-      songs: this.hasManyBy(Song, 'songIds')
+      top100SongIds: this.attr(null),
+      songs: this.hasManyBy(Song, 'songIds'),
+      top100Songs: this.hasManyBy(Song, 'top100SongIds')
     };
   }
 }
