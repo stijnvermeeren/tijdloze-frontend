@@ -37,10 +37,10 @@
           el-input-number(v-model="nextPosition" size="small")
           |  in {{currentYear.yyyy}}
 
-      div.query(v-if="initialQuery")
-        | Importeren van "{{initialQuery}}".
+      div.query(v-if="importQuery")
+        | Importeren van "{{importQuery}}".
         =" "
-        a(:href="`https://www.google.com/search?q=${encodeURIComponent(query)}`" target="_blank")
+        a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
           el-button(size="mini" round icon="el-icon-link") Zoek op Google
 
       el-radio-group.nextSongTab(v-model="nextSongTab")
@@ -55,7 +55,7 @@
           :album-filter='album => false'
           :song-filter='possibleSong'
           :songs-year='previousYear'
-          :initial-query='initialQuery'
+          :initial-query='importQuery'
           @selectSearchResult='selectSearchResult($event)'
           @initialResultCount="initialResultCount($event)"
         )
@@ -71,7 +71,7 @@
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongTab === 'spotify'")
-        spotify-search(:initialQuery='initialQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+        spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
         div(v-if='spotifyData')
           hr
           new-song-wizard(
@@ -89,7 +89,7 @@
     el-card
       div.header(slot="header")
         div.title Tijdloze {{this.currentYear.yyyy}}: import
-        el-button(@click="cancelImport" type="warning" round size="small") Import annuleren
+        el-button(v-if="importSongs.length" @click="cancelImport" type="warning" round size="small") Import annuleren
       div(v-if="importSongs.length")
         div In de wachtrij om geïmporteerd te worden...
         div(v-for="{overridePosition, query} in importSongs")
@@ -118,7 +118,7 @@
         nextSongFullData: undefined,
         processing: false,
         spotifyData: undefined,
-        initialQuery: '',
+        importQuery: '',
         importSongs: [],
         nextPosition: this.$store.getters.lastPosition ? this.$store.getters.lastPosition - 1 : 100,
         previousPosition: undefined
@@ -160,22 +160,23 @@
     },
     watch: {
       nextPositionAuto(newValue) {
-        if (!this.initialQuery) {
+        if (!this.importQuery) {
           this.nextPosition = newValue
         }
       }
     },
     methods: {
-      initialResultCount(value) {
-        this.nextSongTab = (value === 0) ? 'spotify' : 'existing';
+      initialResultCount(count) {
+        this.nextSongTab = (this.importQuery && count === 0) ? 'spotify' : 'existing';
       },
       loadNextFromImport() {
+
         let canBeImported = false;
         let nextImport = this.importSongs.shift();
         while (!canBeImported && nextImport) {
           const {overridePosition, query} = nextImport;
           if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
-            this.initialQuery = query;
+            this.importQuery = query;
             this.nextPosition = overridePosition;
             canBeImported = true;
           } else {
@@ -183,7 +184,9 @@
           }
         }
         if (!canBeImported) {
-          this.nextPosition = this.nextPositionAuto;
+          console.log("hoho")
+          this.importQuery = ''
+          this.nextPosition = this.nextPositionAuto
         }
       },
       startImport(songs) {

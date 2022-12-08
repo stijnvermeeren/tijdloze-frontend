@@ -59,9 +59,13 @@
     },
     watch: {
       initialQuery(newQuery) {
+        this.query = newQuery;
         if (newQuery) {
-          this.query = newQuery;
           this.search();
+        } else {
+          this.showingResults = false
+          this.spotifyTracks = []
+          this.selectedTrackId = undefined
         }
       }
     },
