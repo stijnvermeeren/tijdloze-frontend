@@ -34,6 +34,11 @@
                   |({{track.year}}).
               td
                 el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
+      el-alert.alert(title="Let op bij Spotify" :closable="false" show-icon)
+        ul
+          li Het eerste zoekresultaat is niet altijd de originele album-versie.
+          li De jaartallen van de albums kloppen niet altijd.
+          li Het gebruik van hoofdletters volgt niet altijd de #[nuxt-link(to="/website/methodologie" target="_blank") conventies].
 </template>
 
 <script>

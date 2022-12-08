@@ -12,6 +12,10 @@
           td
             input(v-model='fullArtistData.name' placeholder='Beatles / Dylan / ...')
         tr
+          th Aliases
+          td
+            input(v-model='fullArtistData.aliases' placeholder='De artiest wordt ook onder deze namen gevonden')
+        tr
           th Land
           td
             country-input(v-model='fullArtistData.countryId')

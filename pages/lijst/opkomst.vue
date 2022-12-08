@@ -37,15 +37,14 @@
         return this.$store.getters.currentYear;
       },
       upcomingSongs() {
-        return _.sortBy(
-          this.$store.getters.songs.filter(song => {
-            return song.position(this.year.previous()) && (
-              !song.position(this.year) && song.probablyInList(this.year)
-            );
-          }),
-          song => -song.position(this.year.previous())
+        const previousYear = this.$store.getters.listTop100(this.year.previous())
+        return _.reverse(
+          previousYear.filter(song => !song.position(this.year) && song.probablyInList(this.year))
         );
       }
+    },
+    head: {
+      title: 'Op komst'
     },
     ssrComputedCache: true
   }

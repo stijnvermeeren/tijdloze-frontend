@@ -14,6 +14,7 @@ export default class Artist extends Model {
       id: this.attr(null),
       namePrefix: this.attr(null),
       name: this.attr(null),
+      aliases: this.attr(null),
       countryId: this.attr(null),
 
       songs: this.hasMany(Song, 'artistId'),

@@ -13,6 +13,7 @@ export default class Song extends Model {
     return {
       id: this.attr(null),
       title: this.attr(null),
+      aliases: this.attr(null),
       artistId: this.attr(null),
       secondArtistId: this.attr(null),
       albumId: this.attr(null),

@@ -34,19 +34,6 @@ export const getters = {
       song => [song.title, song.album.releaseYear]
     );
   },
-  decades(state, getters) {
-    function getDecadeYear(yyyy) {
-      return yyyy - yyyy % 10;
-    }
-
-    const startYear = _.min(getters.songs.map(song => song.releaseYear));
-    const endYear = getters.currentYear.yyyy;
-    const decades = [];
-    for (let decadeYear = getDecadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {
-      decades.push({ decadeYear, name: `De jaren '${decadeYear.toString().substring(2,4)}` })
-    }
-    return decades.reverse();
-  },
   years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
   year: state => yyyy => new Year(yyyy, state.yearsRaw),
   currentYear: (state, getters) => _.last(getters.years),

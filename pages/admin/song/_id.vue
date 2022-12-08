@@ -8,6 +8,10 @@
           td
             input(v-model='fullSongData.title')
         tr
+          th Aliases
+          td
+            input(v-model='fullSongData.aliases' placeholder='Het nummer wordt ook onder deze titels gevonden')
+        tr
           th Artist
           td
             artist-select(v-model='fullSongData.artistId')

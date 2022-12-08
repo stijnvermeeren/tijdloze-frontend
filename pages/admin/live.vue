@@ -245,7 +245,7 @@
       clean(input) {
         return input
             .trim()
-            .replace(/[-–(][^-–(]*(bonus|edition|expanded|version|remaster|mix|deluxe|edit).*[)]?$/gi, "")
+            .replace(/[-–(][^-–(]*\b(feat|bonus|edition|expanded|version|remaster|mix|deluxe|edit).*[)]?$/gi, "")
             .trim()
       },
       possibleSong(song) {
@@ -254,9 +254,8 @@
     },
     middleware: 'admin',
     head: {
-      title: 'Admin: Live'
-    },
-    ssrComputedCache: true
+      title: 'Admin: nummers toevoegen'
+    }
   }
 </script>
 

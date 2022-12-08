@@ -126,6 +126,7 @@ export default function ({ app, store }) {
       }
 
       if (response.song) {
+        response.song.secondArtistId = response.song.secondArtistId || undefined
         Song.insertOrUpdate({
           data: response.song
         })

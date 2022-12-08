@@ -125,12 +125,19 @@
     },
     methods: {
       artistMatchAttribute(artist) {
-        return artist.fullName;
+        let matchData = artist.fullName;
+        if (artist.aliases) {
+          matchData += ` ${artist.aliases}`
+        }
+        return matchData
       },
       songMatchAttribute(song) {
-        let matchData = `${song.title} ${song.artist.fullName}`;
+        let matchData = `${song.title} ${this.artistMatchAttribute(song.artist)}`;
+        if (song.aliases) {
+          matchData += ` ${song.aliases}`
+        }
         if (song.secondArtist) {
-          matchData += ` ${song.secondArtist.fullName}`
+          matchData += ` ${this.artistMatchAttribute(song.secondArtist)}`
         }
         return matchData;
       },
