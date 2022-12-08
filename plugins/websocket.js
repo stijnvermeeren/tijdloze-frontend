@@ -61,7 +61,7 @@ export default function ({ app, store }) {
                   list.top100SongIds.filter(songId => songId !== response.songId),
                   songId => Song.find(songId).positions[yearShort] < response.position
                 )
-                list.songIds = [
+                list.top100SongIds = [
                   ...partition[0],
                   response.songId,
                   ...partition[1]

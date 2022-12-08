@@ -32,7 +32,10 @@
       div.header(slot="header")
         div.title Volgend nummer
       div
-        strong Positie {{nextPosition}} in {{currentYear.yyyy}}
+        strong Positie
+          =" "
+          el-input-number(v-model="nextPosition" size="small")
+          |  in {{currentYear.yyyy}}
 
       div.query(v-if="initialQuery")
         | Importeren van "{{initialQuery}}".
@@ -117,7 +120,7 @@
         spotifyData: undefined,
         initialQuery: '',
         importSongs: [],
-        overrideNextPosition: undefined,
+        nextPosition: this.$store.getters.lastPosition ? this.$store.getters.lastPosition - 1 : 100,
         previousPosition: undefined
       }
     },
@@ -137,12 +140,8 @@
       nextYearYyyy() {
         return (new Date()).getFullYear();
       },
-      nextPosition() {
-        if (this.overrideNextPosition) {
-          return this.overrideNextPosition;
-        } else {
-          return this.lastPosition ? this.lastPosition - 1 : 100;
-        }
+      nextPositionAuto() {
+        return this.lastPosition ? this.lastPosition - 1 : 100;
       },
       previousSong() {
         if (this.previousPosition) {
@@ -159,6 +158,13 @@
         }
       }
     },
+    watch: {
+      nextPositionAuto(newValue) {
+        if (!this.initialQuery) {
+          this.nextPosition = newValue
+        }
+      }
+    },
     methods: {
       initialResultCount(value) {
         this.nextSongTab = (value === 0) ? 'spotify' : 'existing';
@@ -170,14 +176,14 @@
           const {overridePosition, query} = nextImport;
           if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
             this.initialQuery = query;
-            this.overrideNextPosition = overridePosition;
+            this.nextPosition = overridePosition;
             canBeImported = true;
           } else {
             nextImport = this.importSongs.shift()
           }
         }
         if (!canBeImported) {
-          this.overrideNextPosition = undefined;
+          this.nextPosition = this.nextPositionAuto;
         }
       },
       startImport(songs) {

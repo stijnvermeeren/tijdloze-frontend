@@ -1,6 +1,6 @@
 <template lang="pug">
   #snackbar(v-if='song' :class='{isHidden: isHidden}')
-    .header
+    .snackbarHeader
       | Positie {{position}} in de Tijdloze van #[tijdloze-year(:year='year')]
     .song
       | #[tijdloze-song-artist(:song='song')] - #[tijdloze-song(:song='song')]
@@ -29,7 +29,7 @@
       }
     },
     watch: {
-      song(oldSong, newSong) {
+      song(newSong, oldSong) {
         if (newSong && (!oldSong || oldSong.id !== newSong.id) && this.position <= 100) {
           this.refreshSnackbar()
         }
@@ -71,7 +71,7 @@
       transform: translateY(calc(-200% - 20px));
     }
 
-    div.header {
+    div.snackbarHeader {
       font-size: 14px;
     }
 
