@@ -48,6 +48,7 @@ export const getters = {
     return decades.reverse();
   },
   years: state => state.yearsRaw.map(yyyy => new Year(yyyy, state.yearsRaw)),
+  year: state => yyyy => new Year(yyyy, state.yearsRaw),
   currentYear: (state, getters) => _.last(getters.years),
   usedCountryIds (state, getters) {
     return new Set(Artist.all().map(artist => artist.countryId));
@@ -101,11 +102,11 @@ export const mutations = {
   artistsForLinks(state, artists) {
     state.artistIdsByFullName = _.mapValues(
       _.groupBy(artists, artist => artist.fullName.toLowerCase()),
-      artist => artist.id
+      artists => artists.map(artist => artist.id)
     )
     state.artistIdsByName = _.mapValues(
       _.groupBy(artists, artist => artist.name.toLowerCase()),
-      artist => artist.id
+      artists => artists.map(artist => artist.id)
     )
   },
   updateCoreData(state, json) {

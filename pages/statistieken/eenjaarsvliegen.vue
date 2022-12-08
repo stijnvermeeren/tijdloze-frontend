@@ -22,6 +22,8 @@
 </template>
 
 <script>
+  import List from "../../orm/List";
+
   export default {
     computed: {
       years() {
@@ -32,10 +34,11 @@
       },
       data() {
         const dataPoints = [];
-        this.years.forEach(year => {
+        List.query().with(['top100Songs', 'top100Songs.artist']).get().forEach(list => {
+          const year = this.$store.getters.year(list.year)
           if (year.previous() && year.next()) {
-            this.songs.forEach(song => {
-              if (song.position(year) && song.notInList(year.previous()) && song.notInList(year.next())) {
+            list.top100Songs.forEach(song => {
+              if (song.notInList(year.previous()) && song.notInList(year.next())) {
                 dataPoints.push({
                   song: song,
                   year: year,

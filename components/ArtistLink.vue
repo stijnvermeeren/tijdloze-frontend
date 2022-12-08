@@ -6,6 +6,7 @@
   import Artist from "../orm/Artist";
 
   export default {
+    name: 'ArtistLink',
     props: {
       artist: Artist,
       text: String
