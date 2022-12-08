@@ -4,8 +4,12 @@ import Vue from 'vue'
 
 Vue.mixin({
     created () {
-        if (process.server && this.$options.ssrComputedCache) {
+        if (!!process.server && this.$options.ssrComputedCache) {
             const { computed, ssrComputedCache } = this.$options
+            if (!computed) {
+                return
+            }
+
             const cachedProperties = ssrComputedCache === true ? Object.keys(computed) : ssrComputedCache
             cachedProperties.forEach(name => {
                 let value
