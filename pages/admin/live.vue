@@ -170,7 +170,6 @@
         this.nextSongTab = (this.importQuery && count === 0) ? 'spotify' : 'existing';
       },
       loadNextFromImport() {
-
         let canBeImported = false;
         let nextImport = this.importSongs.shift();
         while (!canBeImported && nextImport) {
