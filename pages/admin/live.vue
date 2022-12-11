@@ -183,7 +183,6 @@
           }
         }
         if (!canBeImported) {
-          console.log("hoho")
           this.importQuery = ''
           this.nextPosition = this.nextPositionAuto
         }

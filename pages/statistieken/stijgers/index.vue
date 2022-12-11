@@ -5,19 +5,19 @@
         th.r Jaar
         th Aantal
         th.l(colspan='4') Grootste stijger
-      tr(v-for='year in listYears')
+      tr(v-for='{year, entries, topEntry} in listData')
         td.r
           tijdloze-year(:year='year')
-        td {{entriesPerYear(year).length}}
-        td(v-if='topEntry(year)')
-          | {{topEntry(year).oldPosition - topEntry(year).newPosition}} posities
-        td.i(v-if='topEntry(year)')
-          | {{topEntry(year).oldPosition}} &rarr; {{topEntry(year).newPosition}}
-        td.a(v-if='topEntry(year)')
-          tijdloze-song-artist(:song='topEntry(year).song')
-        td(v-if='topEntry(year)')
-          tijdloze-song(:song='topEntry(year).song')
-        td.l(v-if='!topEntry(year)' colspan='4')
+        td {{entries.length}}
+        td(v-if='topEntry')
+          | {{topEntry.oldPosition - topEntry.newPosition}} posities
+        td.i(v-if='topEntry')
+          | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
+        td.a(v-if='topEntry')
+          tijdloze-song-artist(:song='topEntry.song')
+        td(v-if='topEntry')
+          tijdloze-song(:song='topEntry.song')
+        td.l(v-if='!topEntry' colspan='4')
           | /
 </template>
 
@@ -30,8 +30,16 @@
       years: Array
     },
     computed: {
-      listYears() {
-        return _.reverse(_.drop(this.years, 1));
+      listData() {
+        const listYears = _.reverse(_.drop(this.years, 1));
+        return listYears.map(year => {
+          const entries = this.entriesPerYear(year);
+          return {
+            year,
+            entries,
+            topEntry: _.first(entries)
+          }
+        })
       }
     },
     methods: {
@@ -40,9 +48,6 @@
           this.data.filter(entry => entry.year.equals(year)),
           [entry => entry.newPosition - entry.oldPosition, entry => entry.newPosition]
         );
-      },
-      topEntry(year) {
-        return _.first(this.entriesPerYear(year));
       }
     }
   }

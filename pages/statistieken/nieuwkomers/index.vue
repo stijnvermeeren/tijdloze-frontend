@@ -5,14 +5,14 @@
         th.r Jaar
         th Aantal
         th.l Nieuwkomers
-      tr(v-for='year in listYears')
+      tr(v-for='{year, entries} in listData')
         td.r
           tijdloze-year(:year='year')
-        td {{entriesPerYear(year).length}}
+        td {{entries.length}}
         td
-          table.valueDataData(v-if='entriesPerYear(year).length')
+          table.valueDataData(v-if='entries.length')
             tbody
-              tr(v-for='entry in entriesPerYear(year)')
+              tr(v-for='entry in entries')
                 td {{entry.song.position(entry.year)}}
                 td.a
                   tijdloze-song-artist(:song='entry.song')
@@ -30,8 +30,14 @@
       years: Array
     },
     computed: {
-      listYears() {
-        return _.reverse(_.drop(this.years, 1));
+      listData() {
+        const listYears = _.reverse(_.drop(this.years, 1));
+        return listYears.map(year => {
+          return {
+            year,
+            entries: this.entriesPerYear(year)
+          }
+        })
       }
     },
     methods: {

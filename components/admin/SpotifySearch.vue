@@ -4,6 +4,9 @@
       el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
       el-button(@click='search' type="primary" :disabled='processing')
         | Zoeken op Spotify
+    div(v-if="spotifyError")
+      el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
+        div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
     template(v-if="showingResults")
       div(v-if='!spotifyTracks.length')
         | Geen resultaten van Spotify. Controlleer de query.
@@ -59,7 +62,8 @@
         processing: false,
         showingResults: false,
         selectedTrackId: undefined,
-        spotifyTracks: []
+        spotifyTracks: [],
+        spotifyError: false
       }
     },
     watch: {
@@ -86,7 +90,11 @@
         this.$axios.$get('/spotify/find', {params: {query: cleanQuery, limit: 3}}).then(result => {
           this.spotifyTracks = result;
           this.processing = false;
+          this.spotifyError = false;
           this.showingResults = true;
+        }).catch(error => {
+          this.spotifyError = true;
+          this.processing = false;
         })
       },
       select(track) {

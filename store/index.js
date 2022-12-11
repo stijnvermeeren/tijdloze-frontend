@@ -24,7 +24,9 @@ export const state = () => ({
   exitSongIds: [],
   songIdsByTitle: {},
   artistIdsByName: {},
-  artistIdsByFullName: {}
+  artistIdsByFullName: {},
+  commentsOn: true,
+  chatOn: false
 })
 
 export const getters = {
@@ -80,6 +82,12 @@ export const getters = {
 }
 
 export const mutations = {
+  setCommentsOn(state, commentsOn) {
+    state.commentsOn = commentsOn
+  },
+  setChatOn(state, chatOn) {
+    state.chatOn = chatOn
+  },
   songsForLinks(state, songs) {
     state.songIdsByTitle = _.mapValues(
       _.groupBy(songs, song => song.title.toLowerCase()),
@@ -113,6 +121,11 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({commit, dispatch, getters}) {
+    const chatOn = (await this.$axios.$get(`text/chatOn`)).value === 'on';
+    commit('setChatOn', chatOn)
+    const commentsOn = (await this.$axios.$get(`text/commentsOn`)).value === 'on';
+    commit('setCommentsOn', commentsOn)
+
     const response = await this.$axios.$get('core-data');
 
     commit('updateCoreData', response);

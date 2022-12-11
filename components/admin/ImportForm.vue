@@ -64,14 +64,18 @@ export default {
       let overridePosition = this.importStart
 
       fragments.forEach(fragment => {
+        let cleanFragment = fragment
         if (this.importMode === 'manual') {
           overridePosition = undefined
           const positionMatch = fragment.match(/^[0-9]+/g);
           if (positionMatch && positionMatch.length) {
             overridePosition = parseInt(positionMatch[0]);
           }
+          cleanFragment = fragment
+              .replace(/^[0-9]*[\.]?/g, "")
+              .replaceAll("\t", " ")
+              .trim()
         }
-        const cleanFragment = fragment.replace(/^[0-9]*[ \.]+/g, "").trim()
         if (cleanFragment) {
           importSongs.push({
             overridePosition: overridePosition,

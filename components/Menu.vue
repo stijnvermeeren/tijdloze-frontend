@@ -12,15 +12,15 @@
         )
           nuxt-link(to="/")
             el-menu-item(index="/") Home
-          nuxt-link(to="/reacties")
-            el-menu-item(v-if='!listInProgress' index="/reacties") Reageer en discussieer
+          nuxt-link(v-if='commentsOn' to="/reacties")
+            el-menu-item(index="/reacties") Reageer en discussieer
           el-submenu(v-if='listInProgress' index="inprogress")
             template(slot="title") De Tijdloze {{currentYear.yyyy}}
             nuxt-link(:to="`/lijst/${currentYear.yyyy}`")
               el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
             nuxt-link(to="/lijst/opkomst")
               el-menu-item(index="/lijst/opkomst") Nog op komst...
-            nuxt-link(to="/chat")
+            nuxt-link(v-if="chatOn" to="/chat")
               el-menu-item(index="/chat") Chatbox
             nuxt-link(to="/polls")
               el-menu-item(index="/polls") Polls
@@ -31,7 +31,7 @@
           nuxt-link(to="/database")
             el-menu-item(index="/database") Volledige database
           el-submenu(index="/statistieken")
-            template(slot="title") Statistieken
+            template(slot="title") Statistieken #[span.addition (top 100)]
             el-menu-item-group(title="Verschuivingen")
               nuxt-link(to="/statistieken/nieuwkomers")
                 el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
@@ -107,6 +107,7 @@
 <script>
   import Login from '../components/Login'
   import SearchBox from '../components/SearchBox'
+  import _ from "lodash";
 
   export default {
     components: {
@@ -119,6 +120,12 @@
       };
     },
     computed: {
+      commentsOn() {
+        return this.$store.state.commentsOn;
+      },
+      chatOn() {
+        return this.$store.state.chatOn;
+      },
       listInProgress() {
         return this.$store.getters.listInProgress;
       },
@@ -281,6 +288,11 @@
   #sideNav {
     .el-menu {
       border: none;
+    }
+
+    span.addition {
+      font-size: 12px;
+      font-weight: normal;
     }
 
     .el-menu--inline .el-menu-item {
