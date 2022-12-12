@@ -111,8 +111,12 @@
       }
     },
     async asyncData({ params, app, store }) {
-      const chatOn = (await app.$axios.$get(`text/chatOn`)).value === 'on';
-      const commentsOn = (await app.$axios.$get(`text/commentsOn`)).value === 'on';
+      const [chatOnResponse, commentsOnResponse] = await Promise.all([
+        app.$axios.$get(`text/chatOn`),
+        app.$axios.$get(`text/commentsOn`)
+      ])
+      const chatOn = chatOnResponse.value === 'on';
+      const commentsOn = commentsOnResponse.value === 'on';
 
       let comments = [];
       if (commentsOn) {
@@ -127,7 +131,7 @@
       };
     },
     async mounted() {
-      if (this.mode === 'comments') {
+      if (this.commentsOn) {
         // refresh on client side to avoid a stale cache on the server-side
         const comments = await this.$axios.$get(`comments/1`);
         this.comments = _.take(comments, 5);

@@ -121,14 +121,14 @@ export const mutations = {
 
 export const actions = {
   async nuxtServerInit({commit, dispatch, getters}) {
-    const chatOn = (await this.$axios.$get(`text/chatOn`)).value === 'on';
-    commit('setChatOn', chatOn)
-    const commentsOn = (await this.$axios.$get(`text/commentsOn`)).value === 'on';
-    commit('setCommentsOn', commentsOn)
-
-    const response = await this.$axios.$get('core-data');
-
-    commit('updateCoreData', response);
+    const [chatOnResponse, commentsOnResponse, coreDataResponse] = await Promise.all([
+      this.$axios.$get(`text/chatOn`),
+      this.$axios.$get(`text/commentsOn`),
+      this.$axios.$get('core-data')
+    ])
+    commit('setChatOn', chatOnResponse.value === 'on')
+    commit('setCommentsOn', commentsOnResponse.value === 'on')
+    commit('updateCoreData', coreDataResponse);
 
     if (getters.listInProgress) {
       const poll = await this.$axios.$get('poll/latest');
@@ -138,18 +138,18 @@ export const actions = {
     }
 
     dispatch('entities/artists/create', {
-      data: response.artists
+      data: coreDataResponse.artists
     });
 
     dispatch('entities/albums/create', {
-      data: response.albums
+      data: coreDataResponse.albums
     });
 
     dispatch('entities/songs/create', {
-      data: response.songs
+      data: coreDataResponse.songs
     });
 
-    const lists = response.lists.map(list => {
+    const lists = coreDataResponse.lists.map(list => {
       list.top100SongIds = _.take(list.songIds, list.top100SongCount)
       return list
     })
