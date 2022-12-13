@@ -28,7 +28,7 @@
     el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
       | Jaar {{nextYearYyyy}} starten
 
-    el-card(v-show='!lastSong || nextPosition > 0')
+    el-card
       div.header(slot="header")
         div.title Volgend nummer
       div
@@ -43,48 +43,49 @@
         a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
           el-button(size="mini" round icon="el-icon-link") Zoek op Google
 
-      el-radio-group.nextSongTab(v-model="nextSongTab")
-        el-radio-button(label="existing") Nummer uit de database
-        el-radio-button(label="spotify") Nieuw nummer (via Spotify)
-        el-radio-button(label="manual") Nieuw nummer (manueel)
+      div(v-show="nextPosition > 0")
+        el-radio-group.nextSongTab(v-model="nextSongTab")
+          el-radio-button(label="existing") Nummer uit de database
+          el-radio-button(label="spotify") Nieuw nummer (via Spotify)
+          el-radio-button(label="manual") Nieuw nummer (manueel)
 
-      div(v-show="nextSongTab === 'existing'")
-        search-box(
-          placeholder='Zoek nummer...'
-          :artist-filter='artist => false'
-          :album-filter='album => false'
-          :song-filter='possibleSong'
-          :songs-year='previousYear'
-          :initial-query='importQuery'
-          @selectSearchResult='selectSearchResult($event)'
-          @initialResultCount="initialResultCount($event)"
-        )
+        div(v-show="nextSongTab === 'existing'")
+          search-box(
+            placeholder='Zoek nummer...'
+            :artist-filter='artist => false'
+            :album-filter='album => false'
+            :song-filter='possibleSong'
+            :songs-year='previousYear'
+            :initial-query='importQuery'
+            @selectSearchResult='selectSearchResult($event)'
+            @initialResultCount="initialResultCount($event)"
+          )
 
-        div(v-if="nextSong")
-          div
-            strong {{nextSong.artist.fullName}} - {{nextSong.title}}
-            |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
-          div(v-if='nextSongFullData && nextSongFullData.spotifyId')
-            spotify(:spotify-id='nextSongFullData.spotifyId')
-          div
-            el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
-              | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
+          div(v-if="nextSong")
+            div
+              strong {{nextSong.artist.fullName}} - {{nextSong.title}}
+              |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
+            div(v-if='nextSongFullData && nextSongFullData.spotifyId')
+              spotify(:spotify-id='nextSongFullData.spotifyId')
+            div
+              el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
+                | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
-      div(v-show="nextSongTab === 'spotify'")
-        spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
-        div(v-if='spotifyData')
-          hr
+        div(v-show="nextSongTab === 'spotify'")
+          spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+          div(v-if='spotifyData')
+            hr
+            new-song-wizard(
+              :preset='spotifyData'
+              :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
+              @newSong='add($event.id)'
+            )
+
+        div(v-show="nextSongTab === 'manual'")
           new-song-wizard(
-            :preset='spotifyData'
             :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
             @newSong='add($event.id)'
           )
-
-      div(v-show="nextSongTab === 'manual'")
-        new-song-wizard(
-          :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
-          @newSong='add($event.id)'
-        )
 
     el-card
       div.header(slot="header")

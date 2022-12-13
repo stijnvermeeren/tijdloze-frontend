@@ -43,12 +43,22 @@ export default function ({ app, store }) {
             }
           })
 
+          function partitionFn(songId) {
+            const song = Song.find(songId)
+            if (song) {
+              return song.positions[yearShort] < response.position
+            } else {
+              console.log(`Failed to find song with id ${songId}.`)
+              return false
+            }
+          }
+
           List.update({
             where: response.year,
             data: list => {
               const partition = _.partition(
                 list.songIds.filter(songId => songId !== response.songId),
-                songId => Song.find(songId).positions[yearShort] < response.position
+                partitionFn
               )
               list.songIds = [
                 ...partition[0],
@@ -59,7 +69,7 @@ export default function ({ app, store }) {
               if (response.position <= 100) {
                 const partition = _.partition(
                   list.top100SongIds.filter(songId => songId !== response.songId),
-                  songId => Song.find(songId).positions[yearShort] < response.position
+                  partitionFn
                 )
                 list.top100SongIds = [
                   ...partition[0],
