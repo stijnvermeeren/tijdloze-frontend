@@ -4,7 +4,7 @@
       #logo(@click="$router.push('/')")
         h1 tijdloze
           span.domain .rocks
-        div.subtitle Tijdloze muziek-klasiekers + data-analyse
+        div.subtitle Tijdloze muziek-klassiekers + data-analyse
     #container2
       #left
       tijdloze-menu
