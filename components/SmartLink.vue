@@ -79,10 +79,12 @@
           const artistName = split[1].trim();
 
           const titleMatches = this.$store.state.songIdsByTitle[title.toLowerCase()];
+          console.log(title, artistName, titleMatches)
           if (titleMatches) {
-            const combinedMatches = titleMatches.filter(song => {
+            const combinedMatches = titleMatches.filter(songId => {
+              const foundSong = Song.find(songId);
               const foundArtistId = this.findArtistId(artistName);
-              return foundArtistId && foundArtistId === song.artistId;
+              return foundSong && foundArtistId && foundArtistId === foundSong.artistId;
             });
 
             if (combinedMatches.length === 1) {
