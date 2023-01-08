@@ -16,7 +16,6 @@
       p Speciale dank aan...
       ul
         li #[a(href='http://stubru.be' title='Website Studio Brussel') Studio Brussel] - voor het uitzenden van de Tijdloze, zonder wie er geen Tijdloze Website zou zijn, en voor de hulp bij het vervolledigen van de statistieken.
-        li Kris De Rocker voor de domeinnaam #[a(href='http://www.detijdloze.be/') detijdloze.be].
         li De vlag-icoontjes komen van #[a(href='https://flagpedia.net') Flagpedia].
         li Iedereen die mij tips gemaild heeft of mij op foutjes gewezen heeft - voor het verbeteren van de kwaliteit van deze website.
 

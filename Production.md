@@ -32,7 +32,7 @@ log_format log_time '$remote_addr - $upstream_cache_status [$time_local; $reques
 server {
   listen 443 ssl;
   listen [::]:443 ssl;
-  server_name tijdloze.stijnshome.be www.tijdloze.stijnshome.be detijdloze.be www.detijdloze.be;
+  server_name tijdloze.stijnshome.be www.tijdloze.stijnshome.be;
 
   ssl_certificate /etc/letsencrypt/live/tijdloze.stijnshome.be/fullchain.pem;
   ssl_certificate_key /etc/letsencrypt/live/tijdloze.stijnshome.be/privkey.pem;
@@ -65,7 +65,7 @@ server {
 server {
   listen 80;
   listen [::]:80;
-  server_name tijdloze.stijnshome.be www.tijdloze.stijnshome.be detijdloze.be www.detijdloze.be;
+  server_name tijdloze.stijnshome.be www.tijdloze.stijnshome.be;
 
   location /.well-known { 
     root /srv/httproot;
