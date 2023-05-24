@@ -1,17 +1,17 @@
 <template lang="pug">
-  div
-    h2 Instellingen
-    ul
-      li
-        el-switch(v-model="commentsOn" :active-value="'on'" :inactive-value="'off'")
-        |
-        | Reacties open
-      li
-        el-switch(v-model="chatOn" :active-value="'on'" :inactive-value="'off'")
-        |
-        | Chatbox open
-      li
-        el-button(@click="invalidateCache" size="small") Invalidate API caches
+div
+  h2 Instellingen
+  ul
+    li
+      el-switch(v-model="commentsOn" :active-value="'on'" :inactive-value="'off'")
+      |
+      | Reacties open
+    li
+      el-switch(v-model="chatOn" :active-value="'on'" :inactive-value="'off'")
+      |
+      | Chatbox open
+    li
+      el-button(@click="invalidateCache" size="small") Invalidate API caches
 </template>
 
 <script>

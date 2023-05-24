@@ -1,56 +1,56 @@
 <template lang="pug">
-  div
-    h2 "Interessante feiten" {{currentYear.yyyy}}
+div
+  h2 "Interessante feiten" {{currentYear.yyyy}}
 
-    el-card
-      div.header(slot="header")
-        div.title Aanpassen
-      el-alert(:closable="false" show-icon)
-        div Link naar nummer of artiest:
-          |
-          code [The Chain]
-          |
-          | wordt
-          |
-          tijdloze-links(text="[The Chain]")
-        div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
-          |
-          code [One;Metallica]
-          |
-          | wordt
-          |
-          tijdloze-links(text="[One;Metallica]")
-        div Een ster in het begin maakt de link vetgedrukt:
-          |
-          code [*Pink Floyd]
-          |
-          | wordt
-          |
-          tijdloze-links(text="[*Pink Floyd]")
-        div HTML werkt ook (gebruik voorzichtig en met mate):
-          |
-          code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
-          |
-          | wordt
-          |
-          tijdloze-links(text="<strong>vet</strong> <em>scheef</em>")
-      div
-        textarea(v-model='analyse')
-      div(v-if="outOfDate")
-        | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
+  el-card
+    div.header(slot="header")
+      div.title Aanpassen
+    el-alert(:closable="false" show-icon)
+      div Link naar nummer of artiest:
         |
-        el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
-      div
-        el-button(@click='save()' :disabled='saving') Opslaan
+        code [The Chain]
+        |
+        | wordt
+        |
+        tijdloze-links(text="[The Chain]")
+      div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
+        |
+        code [One;Metallica]
+        |
+        | wordt
+        |
+        tijdloze-links(text="[One;Metallica]")
+      div Een ster in het begin maakt de link vetgedrukt:
+        |
+        code [*Pink Floyd]
+        |
+        | wordt
+        |
+        tijdloze-links(text="[*Pink Floyd]")
+      div HTML werkt ook (gebruik voorzichtig en met mate):
+        |
+        code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
+        |
+        | wordt
+        |
+        tijdloze-links(text="<strong>vet</strong> <em>scheef</em>")
+    div
+      textarea(v-model='analyse')
+    div(v-if="outOfDate")
+      | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
+      |
+      el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
+    div
+      el-button(@click='save()' :disabled='saving') Opslaan
 
-    el-card
-      div.header(slot="header")
-        div.title Preview
-      div
-        .analyse
-          ul
-            li(v-for='text in analysePreview')
-              tijdloze-links(:text='text')
+  el-card
+    div.header(slot="header")
+      div.title Preview
+    div
+      .analyse
+        ul
+          li(v-for='text in analysePreview')
+            tijdloze-links(:text='text')
 </template>
 
 <script>

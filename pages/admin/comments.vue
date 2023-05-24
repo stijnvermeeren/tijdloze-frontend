@@ -1,9 +1,9 @@
 <template lang="pug">
-  div
-    h2 Verwijderde reacties terugzetten
+div
+  h2 Verwijderde reacties terugzetten
 
-    comment(v-for='comment in comments' :key='comment.id' :comment='comment' @restored="reload()")
-    div(v-if="!comments.length") Geen verwijderde reacties
+  comment(v-for='comment in comments' :key='comment.id' :comment='comment' @restored="reload()")
+  div(v-if="!comments.length") Geen verwijderde reacties
 </template>
 
 <script>

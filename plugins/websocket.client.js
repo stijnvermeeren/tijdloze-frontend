@@ -1,12 +1,18 @@
 import Sockette from "sockette"
-import Artist from '~/orm/Artist'
-import Album from '~/orm/Album'
 import Song from '~/orm/Song'
-import List from '~/orm/List'
+import Artist from '~/orm/Artist'
+import List from "~/orm/List";
+import Album from "~/orm/Album";
 import _ from 'lodash'
+import {useRootStore} from "~/stores/root";
+import {usePollStore} from "~/stores/poll";
+import {useRepo} from "pinia-orm";
 
-export default function ({ app, store }) {
-  new Sockette(app.$url.websocket("ws/current-list"), {
+export default defineNuxtPlugin( nuxtApp => {
+  const rootStore = useRootStore()
+  const pollStore = usePollStore()
+
+  new Sockette(nuxtApp.$url.websocket("ws/current-list"), {
     timeout: 5e3,
     maxAttempts: 10,
     onopen: e => {
@@ -15,36 +21,33 @@ export default function ({ app, store }) {
       const response = JSON.parse(e.data)
 
       if (response.currentYear) {
-        store.commit('setCurrentYear', response.currentYear)
+        rootStore.setCurrentYear(response.currentYear)
 
-        if (!List.query().find(response.currentYear)) {
-          List.insert({
-            data: {
-              year: response.currentYear,
-              songIds: [],
-              top100SongIds: []
-            }
+        if (!useRepo(List).query().find(response.currentYear)) {
+          useRepo(List).save({
+            year: response.currentYear,
+            songIds: [],
+            top100SongIds: []
           })
         }
       }
 
       if (response.exitSongIds) {
-        store.commit('setExitSongIds', response.exitSongIds)
+        rootStore.setExitSongIds(response.exitSongIds)
       }
 
       if (response.year && response.position) {
         const yearShort = response.year % 100
 
         if (response.songId) {
-          Song.update({
-            where: response.songId,
-            data: song => {
-              song.positions[yearShort] = response.position
-            }
+          const positions = useRepo(Song).find(response.songId)?.positions ?? {}
+          positions[yearShort] = response.position
+          useRepo(Song).where('id', response.songId).update({
+            positions
           })
 
           function partitionFn(songId) {
-            const song = Song.find(songId)
+            const song = useRepo(Song).find(songId)
             if (song) {
               return song.positions[yearShort] < response.position
             } else {
@@ -53,7 +56,7 @@ export default function ({ app, store }) {
             }
           }
 
-          List.update({
+          useRepo(List).update({
             where: response.year,
             data: list => {
               const partition = _.partition(
@@ -80,21 +83,21 @@ export default function ({ app, store }) {
             }
           })
         } else {
-          List.update({
+          useRepo(List).update({
             where: response.year,
             data: list => {
               list.songIds = list.songIds.filter(songId => {
-                return Song.find(songId).positions[yearShort] !== response.position
+                return useRepo(Song).find(songId).positions[yearShort] !== response.position
               })
               if (response.position <= 100) {
                 list.top100SongIds = list.top100SongIds.filter(songId => {
-                  return Song.find(songId).positions[yearShort] !== response.position
+                  return useRepo(Song).find(songId).positions[yearShort] !== response.position
                 })
               }
             }
           })
 
-          Song.update({
+          useRepo(Song).update({
             where: song => {
               return song.positions[yearShort] === response.position
             },
@@ -106,50 +109,44 @@ export default function ({ app, store }) {
       }
 
       if (response.artist) {
-        Artist.insertOrUpdate({
-          data: response.artist
-        })
-        store.commit('artistsForLinks', Artist.all())
+        useRepo(Artist).save(response.artist)
+        rootStore.artistsForLinks(useRepo(Artist).all())
       }
 
       if (response.deletedArtistId) {
-        Song.delete(song => song.artistId === response.deletedArtistId)
-        store.commit('songsForLinks', Song.all())
+        useRepo(Song).where(song => song.artistId === response.deletedArtistId).delete()
+        rootStore.songsForLinks(useRepo(Song).all())
 
-        Album.delete(album => album.artistId === response.deletedArtistId)
+        useRepo(Album).where(album => album.artistId === response.deletedArtistId).delete()
 
-        Artist.delete(response.deletedArtistId)
-        store.commit('artistsForLinks', Artist.all())
+        useRepo(Artist).destroy(response.deletedArtistId)
+        rootStore.artistsForLinks(useRepo(Artist).all())
       }
 
       if (response.album) {
-        Album.insertOrUpdate({
-          data: response.album
-        })
+        useRepo(Album).save(response.album)
       }
 
       if (response.deletedAlbumId) {
-        Song.delete(song => song.albumId === response.deletedAlbumId)
-        store.commit('songsForLinks', Song.all())
+        useRepo(Song).where(song => song.albumId === response.deletedAlbumId).delete()
+        rootStore.songsForLinks(useRepo(Song).all())
 
-        Album.delete(response.deletedAlbumId)
+        useRepo(Album).destroy(response.deletedAlbumId)
       }
 
       if (response.song) {
         response.song.secondArtistId = response.song.secondArtistId || undefined
-        Song.insertOrUpdate({
-          data: response.song
-        })
-        store.commit('songsForLinks', Song.all())
+        useRepo(Song).save(response.song)
+        rootStore.songsForLinks(useRepo(Song).all())
       }
 
       if (response.deletedSongId) {
-        Song.delete(response.deletedSongId)
-        store.commit('songsForLinks', Song.all())
+        useRepo(Song).destroy(response.deletedSongId)
+        rootStore.songsForLinks(useRepo(Song).all())
       }
 
       if (response.poll) {
-        store.commit('poll/setCurrentPoll', response.poll)
+        pollStore.setCurrentPoll(response.poll)
       }
     },
     onreconnect: e => {},
@@ -157,4 +154,4 @@ export default function ({ app, store }) {
     onclose: e => {},
     onerror: e => {}
   });
-}
+})

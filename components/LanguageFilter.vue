@@ -1,10 +1,10 @@
 <template lang="pug">
-  el-select(:value='value' @input='input' placeholder="Taal" clearable size="small")
-    el-option(
-      v-for='[languageId, languageName] in Object.entries(languages)'
-      :key='languageId'
-      :value='languageId'
-      :label="languageName")
+el-select(:value='value' @input='input' placeholder="Taal" clearable size="small")
+  el-option(
+    v-for='[languageId, languageName] in Object.entries(languages)'
+    :key='languageId'
+    :value='languageId'
+    :label="languageName")
 </template>
 
 <script>

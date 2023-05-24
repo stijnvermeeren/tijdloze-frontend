@@ -1,8 +1,8 @@
 <template lang="pug">
-  span
-    template(v-for='fragment in fragments')
-      span(v-if='fragment.text' v-html='fragment.text')
-      tijdloze-link(v-if='fragment.to' :to='fragment.to')
+span
+  template(v-for='fragment in fragments')
+    span(v-if='fragment.text' v-html='fragment.text')
+    smart-link(v-if='fragment.to' :to='fragment.to')
 </template>
 
 <script>

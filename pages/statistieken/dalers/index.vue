@@ -1,25 +1,25 @@
 <template lang="pug">
-  table.lijst.perVijf
-    tbody
-      tr
-        th.r Jaar
-        th Aantal
-        th.l(colspan='4') Grootste daler
-      tr(v-for='{year, entries, topEntry} in listData')
-        td.r
-          tijdloze-year(:year='year')
-        td
-          | {{entries.length}}
-        td(v-if='topEntry')
-          | {{topEntry.newPosition - topEntry.oldPosition}} posities
-        td.i(v-if='topEntry')
-          | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
-        td.a(v-if='topEntry')
-          tijdloze-song-artist(:song='topEntry.song')
-        td(v-if='topEntry')
-          tijdloze-song(:song='topEntry.song')
-        td.l(v-if='!topEntry' colspan='4')
-          | /
+table.lijst.perVijf
+  tbody
+    tr
+      th.r Jaar
+      th Aantal
+      th.l(colspan='4') Grootste daler
+    tr(v-for='{year, entries, topEntry} in listData')
+      td.r
+        tijdloze-year(:year='year')
+      td
+        | {{entries.length}}
+      td(v-if='topEntry')
+        | {{topEntry.newPosition - topEntry.oldPosition}} posities
+      td.i(v-if='topEntry')
+        | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
+      td.a(v-if='topEntry')
+        tijdloze-song-artist(:song='topEntry.song')
+      td(v-if='topEntry')
+        tijdloze-song(:song='topEntry.song')
+      td.l(v-if='!topEntry' colspan='4')
+        | /
 </template>
 
 <script>

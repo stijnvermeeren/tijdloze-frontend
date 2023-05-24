@@ -1,13 +1,12 @@
 <template lang="pug">
-  div
-    h2 Tijdloze exits
-    tijdloze-tabs(:tabs="[\
-      { to: '/statistieken/exits', title: 'Per jaar' },\
-      { to: '/statistieken/exits/lijst', title: 'Hoogste aller tijden' },\
-      { to: '/statistieken/exits/grafiek', title: 'Op grafiek' }\
-    ]")
-      nuxt-child(:data='data' :years='years')
-
+div
+  h2 Tijdloze exits
+  tijdloze-tabs(:tabs="[\
+    { to: '/statistieken/exits', title: 'Per jaar' },\
+    { to: '/statistieken/exits/lijst', title: 'Hoogste aller tijden' },\
+    { to: '/statistieken/exits/grafiek', title: 'Op grafiek' }\
+  ]")
+    nuxt-child(:data='data' :years='years')
 </template>
 
 <script>

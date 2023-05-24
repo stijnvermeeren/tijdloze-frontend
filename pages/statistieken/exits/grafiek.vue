@@ -1,5 +1,5 @@
 <template lang="pug">
-  tijdloze-distribution-graph(:points='data')
+tijdloze-distribution-graph(:points='data')
 </template>
 
 <script>

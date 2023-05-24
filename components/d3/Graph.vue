@@ -1,60 +1,59 @@
 <template lang="pug">
-  .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
-    .tooltip(v-if="!!hoverYear && tooltipEntries.length" :style="tooltipStyle")
-      .year
-        | {{hoverYear.yyyy}}
-      .entry(
-        v-for="entry in tooltipEntries"
-        :class="[`color-${entry.index}`, { highlighted: hoverIndex === entry.index }]"
+.graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+  .tooltip(v-if="!!hoverYear && tooltipEntries.length" :style="tooltipStyle")
+    .year
+      | {{hoverYear.yyyy}}
+    .entry(
+      v-for="entry in tooltipEntries"
+      :class="[`color-${entry.index}`, { highlighted: hoverIndex === entry.index }]"
+    )
+      | {{entry.position}}. {{entry.song.title}}
+  svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
+    g(:transform='`translate(${margin.left},${margin.top})`')
+      tijdloze-axes(
+        :x-scale='xScale'
+        :y-scale='yScale'
+        :years='years'
+        :hover-year='hoverYear'
       )
-        | {{entry.position}}. {{entry.song.title}}
-    svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
-      g(:transform='`translate(${margin.left},${margin.top})`')
-        tijdloze-axes(
-          :x-scale='xScale'
-          :y-scale='yScale'
-          :years='years'
-          :hover-year='hoverYear'
-        )
-        line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
-        g(
-          v-for='(song, index) in songs'
-          :class="[\
-            'line',\
-            `color-${index}`,\
-            {\
-              highlighted: hoverIndex === index,\
-              notHighlighted: hoverIndex !== undefined && hoverIndex !== index\
-            }]"
-        )
-          path.coloredPath(:d='fullSongLine(song)')
-          circle.circle.coloredCircle(
-            v-for='year in years'
-            v-if='song.position(year)'
-            :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year))'
-            r='3'
-          )
-        rect.overlay(
-          :x="0"
-          :y="0"
-          :width="width"
-          :height="height"
-          @mousemove="onHover($event)"
-          @touchmove="onHover($event)"
-          :opacity="0"
-        )
-
-    .legend(v-if='!noLabel')
-      div(
+      line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+      g(
         v-for='(song, index) in songs'
-        :key='song.id'
-        :class="['songLegend', `color-${index}`, { highlighted: hoverIndex === index }]"
-        @mouseover='onSongHover(index)'
-        @mouseleave='onSongHover(undefined)'
+        :class="[\
+          'line',\
+          `color-${index}`,\
+          {\
+            highlighted: hoverIndex === index,\
+            notHighlighted: hoverIndex !== undefined && hoverIndex !== index\
+          }]"
       )
-        | {{song.title}}
+        path.coloredPath(:d='fullSongLine(song)')
+        circle.circle.coloredCircle(
+          v-for='year in years'
+          v-if='song.position(year)'
+          :cx='xScale(year._yy)'
+          :cy='yScale(song.position(year))'
+          r='3'
+        )
+      rect.overlay(
+        :x="0"
+        :y="0"
+        :width="width"
+        :height="height"
+        @mousemove="onHover($event)"
+        @touchmove="onHover($event)"
+        :opacity="0"
+      )
 
+  .legend(v-if='!noLabel')
+    div(
+      v-for='(song, index) in songs'
+      :key='song.id'
+      :class="['songLegend', `color-${index}`, { highlighted: hoverIndex === index }]"
+      @mouseover='onSongHover(index)'
+      @mouseleave='onSongHover(undefined)'
+    )
+      | {{song.title}}
 </template>
 
 <script>

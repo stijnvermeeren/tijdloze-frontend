@@ -1,13 +1,13 @@
 <template lang="pug">
-  .answer(v-if='isAdmin && editing')
-    input(v-model='answerEdit')
-    button(@click='send()') Opslaan
-    button(@click='cancel()') Terug
-  div(v-else)
-    .answer
-      | {{answerEdit}}
-      |
-      button(v-if='isAdmin' @click='editing = true') Aanpassen
+.answer(v-if='isAdmin && editing')
+  input(v-model='answerEdit')
+  button(@click='send()') Opslaan
+  button(@click='cancel()') Terug
+div(v-else)
+  .answer
+    | {{answerEdit}}
+    |
+    button(v-if='isAdmin' @click='editing = true') Aanpassen
 </template>
 
 <script>

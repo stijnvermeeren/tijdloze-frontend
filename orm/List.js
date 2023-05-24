@@ -1,4 +1,4 @@
-import { Model } from '@vuex-orm/core'
+import { Model } from 'pinia-orm'
 import Song from "./Song";
 
 export default class List extends Model {

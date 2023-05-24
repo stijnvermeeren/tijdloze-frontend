@@ -1,18 +1,18 @@
 <template lang="pug">
-  div
-    div(v-if='artist') {{artist.fullName}}
-    div(v-if='editing')
-      search-box(
-        :song-filter='song => false'
-        :album-filter='album => false'
-        placeholder='Zoek artiest...'
-        @selectSearchResult='selectArtist($event.item)'
-        :disabled="disabled"
-      )
-      button(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
-    div(v-else)
-      button(@click='editing = true' :disabled="disabled") Wijzigen
-      button(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
+div
+  div(v-if='artist') {{artist.fullName}}
+  div(v-if='editing')
+    search-box(
+      :song-filter='song => false'
+      :album-filter='album => false'
+      placeholder='Zoek artiest...'
+      @selectSearchResult='selectArtist($event.item)'
+      :disabled="disabled"
+    )
+    button(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
+  div(v-else)
+    button(@click='editing = true' :disabled="disabled") Wijzigen
+    button(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
 </template>
 
 <script>

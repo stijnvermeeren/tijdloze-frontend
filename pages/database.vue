@@ -1,98 +1,98 @@
 <template lang="pug">
+div
+  h2 Volledige database
+  el-alert.alert(title="Database downloaden" :closable="false" show-icon)
+    | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
   div
-    h2 Volledige database
-    el-alert.alert(title="Database downloaden" :closable="false" show-icon)
-      | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
-    div
-      el-select(v-model="filter" size="small")
-        el-option(value="alle" label="In minstens een")
-        el-option(value="alle_jaren" label="In elke")
-        el-option(value="geen_exit" label="Niet weggevallen uit de")
-      |
-      el-select(v-model="cutoff" size="small")
-        el-option(value="top100" label="top 100")
-        el-option(value="full" label="volledige lijst")
-      |
-      | van
-      |
-      el-select.selectYear(v-model='startYear' size="small")
-        el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
-      |
-      | tot en met
-      |
-      el-select.selectYear(v-model='endYear' size="small")
-        el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
-    div
-      | Filter:
-      |
-      country-filter(v-model='countryFilter')
-      language-filter(v-model='languageFilter')
-      lead-vocals-filter(v-model='leadVocalsFilter')
-    div
-      | Jaar van release van
-      |
-      el-input-number(
-        v-model='minReleaseYear'
-        :min="lowestReleaseYear"
-        :max="highestReleaseYear"
-        size="small"
-        controls-position="right"
-        @focus="setDefaultMinReleaseYear"
-      )
-      |
-      | tot en met
-      |
-      el-input-number(
-        v-model='maxReleaseYear'
-        :min="lowestReleaseYear"
-        :max="highestReleaseYear"
-        size="small"
-        controls-position="right"
-        @focus="setDefaultMaxReleaseYear"
-      )
+    el-select(v-model="filter" size="small")
+      el-option(value="alle" label="In minstens een")
+      el-option(value="alle_jaren" label="In elke")
+      el-option(value="geen_exit" label="Niet weggevallen uit de")
+    |
+    el-select(v-model="cutoff" size="small")
+      el-option(value="top100" label="top 100")
+      el-option(value="full" label="volledige lijst")
+    |
+    | van
+    |
+    el-select.selectYear(v-model='startYear' size="small")
+      el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
+    |
+    | tot en met
+    |
+    el-select.selectYear(v-model='endYear' size="small")
+      el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
+  div
+    | Filter:
+    |
+    country-filter(v-model='countryFilter')
+    language-filter(v-model='languageFilter')
+    lead-vocals-filter(v-model='leadVocalsFilter')
+  div
+    | Jaar van release van
+    |
+    el-input-number(
+      v-model='minReleaseYear'
+      :min="lowestReleaseYear"
+      :max="highestReleaseYear"
+      size="small"
+      controls-position="right"
+      @focus="setDefaultMinReleaseYear"
+    )
+    |
+    | tot en met
+    |
+    el-input-number(
+      v-model='maxReleaseYear'
+      :min="lowestReleaseYear"
+      :max="highestReleaseYear"
+      size="small"
+      controls-position="right"
+      @focus="setDefaultMaxReleaseYear"
+    )
 
-    el-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning" :closable="false" show-icon)
-      | De statistieken kunnen nog veranderen.
+  el-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning" :closable="false" show-icon)
+    | De statistieken kunnen nog veranderen.
 
-    div.list
-      client-only(placeholder="Loading...")
-        div.entry.header
-          div.r
-          div.c
-            el-radio-group(v-model="type" size="small")
-              el-radio-button(label='nummers') Nummers
-              el-radio-button(label='artiesten') Artiesten
-              el-radio-button(label='albums') Albums
-          div.p
-            el-select(v-model="scoreMethod" size="small")
-              el-option(value="entry_count" label="Aantal noteringen")
-              el-option(v-if="type !== 'nummers'" value="song_count" label="Aantal verschillende nummers")
-              el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
-              el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
-              el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
-        div.content
-          div.wrapper
-            RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
-              template(v-slot="{ item, index }")
-                div.entry(:class="{lineBelow: index % 5 === 4}")
-                  div.r
-                    | {{ item.position }}
-                  div.c
-                    div.a(v-if="type === 'nummers'")
-                      tijdloze-song-artist(:song='item.entry.song')
-                    div.a(v-else)
-                      tijdloze-artist(:artist='item.entry.artist')
-                    div(v-if="type === 'nummers'")
-                      tijdloze-song(:song='item.entry.song')
-                    div(v-if="type === 'albums'")
-                      tijdloze-album(:album='item.entry.album')
-                  div.p {{ Math.round(item.entry.points * 10) / 10 }}
+  div.list
+    client-only(placeholder="Loading...")
+      div.entry.header
+        div.r
+        div.c
+          el-radio-group(v-model="type" size="small")
+            el-radio-button(label='nummers') Nummers
+            el-radio-button(label='artiesten') Artiesten
+            el-radio-button(label='albums') Albums
+        div.p
+          el-select(v-model="scoreMethod" size="small")
+            el-option(value="entry_count" label="Aantal noteringen")
+            el-option(v-if="type !== 'nummers'" value="song_count" label="Aantal verschillende nummers")
+            el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
+            el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
+            el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
+      div.content
+        div.wrapper
+          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
+            template(v-slot="{ item, index }")
+              div.entry(:class="{lineBelow: index % 5 === 4}")
+                div.r
+                  | {{ item.position }}
+                div.c
+                  div.a(v-if="type === 'nummers'")
+                    tijdloze-song-artist(:song='item.entry.song')
+                  div.a(v-else)
+                    tijdloze-artist(:artist='item.entry.artist')
+                  div(v-if="type === 'nummers'")
+                    tijdloze-song(:song='item.entry.song')
+                  div(v-if="type === 'albums'")
+                    tijdloze-album(:album='item.entry.album')
+                div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
 <script>
   import _ from 'lodash'
 
-  import ranking from '../store/ranking';
+  import ranking from '~/utils/ranking';
   import Artist from "@/orm/Artist";
   import CountryFilter from "@/components/CountryFilter";
   import LanguageFilter from "@/components/LanguageFilter";
@@ -155,8 +155,8 @@
         type,
         filter: parseFilter(this.$route.query.filter),
         cutoff: parseCutoff(this.$route.query.cutoff),
-        startYear: this.$route.query.start ? this.$route.query.start : _.first(this.$store.getters.years).yyyy,
-        endYear: this.$route.query.einde ? this.$route.query.einde : this.$store.getters.lastCompleteYear.yyyy,
+        startYear: this.$route.query.start ? this.$route.query.start : _.first(useRootStore().years).yyyy,
+        endYear: this.$route.query.einde ? this.$route.query.einde : useRootStore().lastCompleteYear.yyyy,
         minReleaseYear: undefined,
         maxReleaseYear: undefined,
         scoreMethod: parseScoreMethod(this.$route.query.score, type),
@@ -167,10 +167,10 @@
     },
     computed: {
       lowestReleaseYear() {
-        return _.min(Album.all().map(album => album.releaseYear))
+        return _.min(useRepo(Album).all().map(album => album.releaseYear))
       },
       highestReleaseYear() {
-        return _.max(Album.all().map(album => album.releaseYear))
+        return _.max(useRepo(Album).all().map(album => album.releaseYear))
       },
       queryParams() {
         const allParams = {
@@ -197,19 +197,19 @@
         return this.cutoff === CUTOFF_FULL;
       },
       selectedSongs() {
-        return this.applyFilters(this.$store.getters.songs);
+        return this.applyFilters(useRootStore().songs);
       },
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       selectedYears() {
         return this.years.filter(year => year.yyyy >= this.startYear && year.yyyy <= this.endYear);
       },
       showWarning() {
-        return this.$store.getters.listInProgress && this.endYear >= this.currentYear.yyyy
+        return useRootStore().listInProgress && this.endYear >= this.currentYear.yyyy
       },
       sortAscending() {
         return this.scoreMethod === SCORE_YEAR_ASC

@@ -1,5 +1,5 @@
 <template lang="pug">
-    nuxt-link(:to='`/artiest/${artist.id}-${artist.slug}`') {{content}}
+nuxt-link(:to='`/artiest/${artist.id}-${artist.slug}`') {{content}}
 </template>
 
 <script>

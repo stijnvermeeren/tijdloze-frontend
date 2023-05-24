@@ -1,14 +1,14 @@
 <template lang="pug">
-  div(:class="['container', {open: isOpen, closed: !isOpen}]")
-    el-card
-      div.header(slot="header" ref='lyrics')
-        div.title Lyrics
-      .lyricsContainer
-        slot
-        .toggle(@click.prevent='toggle()')
-          div
-            a(v-if='!isOpen') Meer tonen
-            a(v-else) Minder tonen
+div(:class="['container', {open: isOpen, closed: !isOpen}]")
+  el-card
+    div.header(slot="header" ref='lyrics')
+      div.title Lyrics
+    .lyricsContainer
+      slot
+      .toggle(@click.prevent='toggle()')
+        div
+          a(v-if='!isOpen') Meer tonen
+          a(v-else) Minder tonen
 </template>
 
 <script>

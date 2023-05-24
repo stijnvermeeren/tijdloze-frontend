@@ -1,9 +1,9 @@
 <template lang="pug">
-  div.pageTitleContainer
-    .icon
-      img.icon(:src='`/images/icon/${icon}.png`' :alt='iconAlt')
-    .pageTitle
-      slot
+div.pageTitleContainer
+  .icon
+    img.icon(:src='`/images/icon/${icon}.png`' :alt='iconAlt')
+  .pageTitle
+    slot
 </template>
 
 <script>

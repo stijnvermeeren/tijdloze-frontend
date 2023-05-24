@@ -1,20 +1,22 @@
 <template lang="pug">
-  #login
-    div(v-if='isAuthenticated')
-      div Aangemeld als {{userName}}
-      el-button(round @click='logout()' size="small") Afmelden
-    div(v-else)
-      el-button(round @click='login()') Aanmelden
+#login
+  div(v-if='isAuthenticated')
+    div Aangemeld als {{userName}}
+    el-button(round @click='logout()' size="small") Afmelden
+  div(v-else)
+    el-button(round @click='login()') Aanmelden
 </template>
 
 <script>
-  export default {
+  import {useAuthStore} from "~/stores/auth";
+
+  export default defineNuxtComponent({
     computed: {
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       userName() {
-        return this.$store.getters['auth/displayNameWithFallback'];
+        return useAuthStore().displayNameWithFallback;
       }
     },
     methods: {
@@ -22,11 +24,11 @@
         this.$auth.login(this.$route.path);
       },
       logout() {
-        this.$store.commit('auth/setUser', null);
+        useAuthStore().setUser( null);
         this.$auth.logout();
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

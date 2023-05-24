@@ -1,5 +1,5 @@
 <template lang="pug">
-  tijdloze-stationary-graph(:songs='songs')
+tijdloze-stationary-graph(:songs='songs')
 </template>
 
 <script>

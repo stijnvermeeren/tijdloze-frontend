@@ -1,45 +1,45 @@
 <template lang="pug">
-  .chat
-    .header
-      span(v-if='changeName')
-        input(v-model='displayNameEdit' placeholder='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()')
-        button(@click='saveDisplayName()' :disabled='!displayNameValid || savingDisplayName') Wijzigen
-        button(@click='cancelDisplayName()') Terug
-        | .
-      span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
-      |
-      | Er zijn {{online.length}} aanwezigen in de chat
-      span(v-if='!showAllOnline')
-        |  (
-        a(@click='showAllOnline = true') toon iedereen
-        | )
+.chat
+  .header
+    span(v-if='changeName')
+      input(v-model='displayNameEdit' placeholder='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()')
+      button(@click='saveDisplayName()' :disabled='!displayNameValid || savingDisplayName') Wijzigen
+      button(@click='cancelDisplayName()') Terug
       | .
-    .online(v-if='showAllOnline')
-      | Online
-      |
-      a(@click='showAllOnline = false') (lijst verbergen)
-      | :
-      div(v-for='onlineUser in onlineSorted' :class="['user', {isAdmin: onlineUser.isAdmin}]")
-        user(:user='onlineUser')
-    .messages(ref='messages')
-      .messagesContainer
-        template(v-for='message in messages')
-          div(v-if='message.userId' :title='message.created' :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}')
-            span.userName
-              user(:user='messageUser(message)')
-            | : {{message.message}}
-          .systemMessage(v-else)
-            | {{message.message}}
-    .input
-      input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
-      button(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
-    .belowInputMessage
-      div(v-if='error')
-        | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
-      div(v-else-if='!connected')
-        | Even geduld terwijl we je verbinden met de chat...
-      div(v-else-if='uppercaseMessage')
-        | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
+    span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
+    |
+    | Er zijn {{online.length}} aanwezigen in de chat
+    span(v-if='!showAllOnline')
+      |  (
+      a(@click='showAllOnline = true') toon iedereen
+      | )
+    | .
+  .online(v-if='showAllOnline')
+    | Online
+    |
+    a(@click='showAllOnline = false') (lijst verbergen)
+    | :
+    div(v-for='onlineUser in onlineSorted' :class="['user', {isAdmin: onlineUser.isAdmin}]")
+      user(:user='onlineUser')
+  .messages(ref='messages')
+    .messagesContainer
+      template(v-for='message in messages')
+        div(v-if='message.userId' :title='message.created' :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}')
+          span.userName
+            user(:user='messageUser(message)')
+          | : {{message.message}}
+        .systemMessage(v-else)
+          | {{message.message}}
+  .input
+    input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
+    button(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
+  .belowInputMessage
+    div(v-if='error')
+      | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
+    div(v-else-if='!connected')
+      | Even geduld terwijl we je verbinden met de chat...
+    div(v-else-if='uppercaseMessage')
+      | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
 </template>
 
 <script>

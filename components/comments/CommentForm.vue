@@ -1,36 +1,36 @@
 <template lang="pug">
-  div.commentForm(:class="{expanded: isExpanded}")
-    div(v-if='isAuthenticated')
-      .displayName(v-if='!displayName || editingDisplayName')
-        div.changeDisplayName
-          | Kies een gebruikersnaam:
-          input(:disabled='submittingDisplayName' type='text' v-model='name')
-          button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
-            | Ok
-        div.changeDisplayNameInfo(v-if='editingDisplayName')
-          | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-      div(v-else)
+div.commentForm(:class="{expanded: isExpanded}")
+  div(v-if='isAuthenticated')
+    .displayName(v-if='!displayName || editingDisplayName')
+      div.changeDisplayName
+        | Kies een gebruikersnaam:
+        input(:disabled='submittingDisplayName' type='text' v-model='name')
+        button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+          | Ok
+      div.changeDisplayNameInfo(v-if='editingDisplayName')
+        | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+    div(v-else)
+      div
+        div.commentHeader(v-if="isExpanded")
+          span.name {{ displayName }}
+          span.changeName
+            | (
+            a(@click='editDisplayName') Gebruikersnaam aanpassen
+            | )
         div
-          div.commentHeader(v-if="isExpanded")
-            span.name {{ displayName }}
-            span.changeName
-              | (
-              a(@click='editDisplayName') Gebruikersnaam aanpassen
-              | )
-          div
-            textarea(
-              :disabled='submitting'
-              cols='60'
-              placeholder='Schrijf een nieuwe reactie...'
-              :rows='isExpanded ? 4 : 1'
-              v-model='message'
-              @click.once="onFocus($event)"
-            )
-          div(v-if="isExpanded")
-            button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
-              | Verzenden
-    .message(v-if='!isAuthenticated')
-      | Om reacties the plaatsen, moet je je #[a(@click='login()') aanmelden/registeren].
+          textarea(
+            :disabled='submitting'
+            cols='60'
+            placeholder='Schrijf een nieuwe reactie...'
+            :rows='isExpanded ? 4 : 1'
+            v-model='message'
+            @click.once="onFocus($event)"
+          )
+        div(v-if="isExpanded")
+          button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+            | Verzenden
+  .message(v-if='!isAuthenticated')
+    | Om reacties the plaatsen, moet je je #[a(@click='login()') aanmelden/registeren].
 </template>
 
 <script>

@@ -1,41 +1,41 @@
 <template lang="pug">
-  div
-    h2 Album aanpassen
-    table.info
-      tbody
-        tr
-          th Titel
-          td
-            input(v-model='fullAlbumData.title')
-        tr
-          th Artist
-          td
-            artist-select(v-model='fullAlbumData.artistId')
-        tr
-          th Jaar
-          td
-            input(v-model.number='fullAlbumData.releaseYear' type='number')
-        tr
-          th Opmerkingen
-          td
-            textarea.notes(v-model='fullAlbumData.notes')
-        tr
-          th Wikipedia Nederlands
-          td
-            wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
-        tr
-          th Wikipedia Engels
-          td
-            wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
-        tr
-          th AllMusic
-          td
-            all-music-url-input(v-model='fullAlbumData.urlAllMusic' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
-        tr
-          th
-          td
-            el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
-            el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
+div
+  h2 Album aanpassen
+  table.info
+    tbody
+      tr
+        th Titel
+        td
+          input(v-model='fullAlbumData.title')
+      tr
+        th Artist
+        td
+          artist-select(v-model='fullAlbumData.artistId')
+      tr
+        th Jaar
+        td
+          input(v-model.number='fullAlbumData.releaseYear' type='number')
+      tr
+        th Opmerkingen
+        td
+          textarea.notes(v-model='fullAlbumData.notes')
+      tr
+        th Wikipedia Nederlands
+        td
+          wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+      tr
+        th Wikipedia Engels
+        td
+          wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
+      tr
+        th AllMusic
+        td
+          all-music-url-input(v-model='fullAlbumData.urlAllMusic' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+      tr
+        th
+        td
+          el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
+          el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -43,9 +43,8 @@
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import ArtistSelect from '../../../components/admin/ArtistSelect'
   import Artist from "@/orm/Artist";
-  import Album from "@/orm/Album";
 
-  export default {
+  export default defineNuxtComponent({
     components: {ArtistSelect, AllMusicUrlInput, WikiUrlInput},
     data() {
       return {
@@ -89,7 +88,7 @@
         title: `Admin: Album: ${this.title}`
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

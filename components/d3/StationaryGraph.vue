@@ -1,37 +1,37 @@
 <template lang="pug">
-  .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
-    .tooltip(v-if="tooltipSong" :style="tooltipStyle")
-      .year
-        | {{hoverYear.yyyy}}
-      .entry
-        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}}
-    svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
-      g(:transform='`translate(${margin.left},${margin.top})`')
-        tijdloze-axes(
-          :x-scale='xScale'
-          :y-scale='yScale'
-          :years='years'
-          :hover-year="hoverYear"
+.graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+  .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+    .year
+      | {{hoverYear.yyyy}}
+    .entry
+      | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}}
+  svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
+    g(:transform='`translate(${margin.left},${margin.top})`')
+      tijdloze-axes(
+        :x-scale='xScale'
+        :y-scale='yScale'
+        :years='years'
+        :hover-year="hoverYear"
+      )
+      line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+      g.color-1(v-for='song in songs')
+        path.coloredPath(:d='stationarySongLine(song)')
+        circle.circle.coloredCircle(
+          v-for='year in stationaryYears(song)'
+          v-if='song.position(year)'
+          :cx='xScale(year._yy)'
+          :cy='yScale(song.position(year))'
+          r='3'
         )
-        line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
-        g.color-1(v-for='song in songs')
-          path.coloredPath(:d='stationarySongLine(song)')
-          circle.circle.coloredCircle(
-            v-for='year in stationaryYears(song)'
-            v-if='song.position(year)'
-            :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year))'
-            r='3'
-          )
-        rect.overlay(
-          :x="0"
-          :y="0"
-          :width="width"
-          :height="height"
-          @mousemove="onHover($event)"
-          @touchmove="onHover($event)"
-          :opacity="0"
-        )
+      rect.overlay(
+        :x="0"
+        :y="0"
+        :width="width"
+        :height="height"
+        @mousemove="onHover($event)"
+        @touchmove="onHover($event)"
+        :opacity="0"
+      )
 </template>
 
 <script>

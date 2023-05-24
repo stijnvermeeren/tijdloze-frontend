@@ -1,35 +1,35 @@
 <template lang="pug">
-  g
-    g.x.axis
-      path.domain(:d='`M0,0 H ${rightX}`')
-      g.tick(
-        v-for='year in years'
-        v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
-        :transform='`translate(${xScale(year._yy)},0)`'
-        :class="{nextToHighlighted: isNextToHoverYear(year)}"
-      )
-        line(y2='-6' x2='0')
-        text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
-          | {{year.yyyy}}
-      g.tick(
-        v-if="!!hoverYear"
-        :transform='`translate(${xScale(hoverYear._yy)},0)`'
-        class="highlighted"
-      )
-        line(y2='-6' x2='0')
-        text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
-          | {{hoverYear.yyyy}}
+g
+  g.x.axis
+    path.domain(:d='`M0,0 H ${rightX}`')
+    g.tick(
+      v-for='year in years'
+      v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
+      :transform='`translate(${xScale(year._yy)},0)`'
+      :class="{nextToHighlighted: isNextToHoverYear(year)}"
+    )
+      line(y2='-6' x2='0')
+      text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
+        | {{year.yyyy}}
+    g.tick(
+      v-if="!!hoverYear"
+      :transform='`translate(${xScale(hoverYear._yy)},0)`'
+      class="highlighted"
+    )
+      line(y2='-6' x2='0')
+      text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
+        | {{hoverYear.yyyy}}
 
-    g.y.axis
-      path.domain(:d='`M${rightX},0 V ${yScale.range()[1]}`')
-      g.tick(
-        v-for='position in yTickValues'
-        :transform='`translate(${rightX},${yScale(position)})`'
-        style='opacity: 1;'
-      )
-        line(:x2='-rightX' y2='0')
-        text(dy='.32em' x='3' y='0' style='text-anchor: start;')
-          | {{position}}
+  g.y.axis
+    path.domain(:d='`M${rightX},0 V ${yScale.range()[1]}`')
+    g.tick(
+      v-for='position in yTickValues'
+      :transform='`translate(${rightX},${yScale(position)})`'
+      style='opacity: 1;'
+    )
+      line(:x2='-rightX' y2='0')
+      text(dy='.32em' x='3' y='0' style='text-anchor: start;')
+        | {{position}}
 </template>
 
 <script>

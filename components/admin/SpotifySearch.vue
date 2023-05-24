@@ -1,47 +1,47 @@
 <template lang="pug">
-  div
-    div.search
-      el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
-      el-button(@click='search' type="primary" :disabled='processing')
-        | Zoeken op Spotify
-    div(v-if="spotifyError")
-      el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
-        div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
-    template(v-if="showingResults")
-      div(v-if='!spotifyTracks.length')
-        | Geen resultaten van Spotify. Controlleer de query.
-      div(v-else)
-        table
-          tbody
-            tr(
-              v-for='track in spotifyTracks'
-              v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
-              :key='track.spotifyId'
-            )
-              td.spotify
-                spotify(:spotify-id='track.spotifyId')
-              td.details
-                div
-                  | Artist:
-                  |
-                  strong {{track.artist}}
-                div
-                  | Titel:
-                  |
-                  strong {{track.title}}
-                div
-                  | Album:
-                  |
-                  em {{track.album}}
-                  |
-                  |({{track.year}}).
-              td
-                el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
-      el-alert.alert(title="Let op bij Spotify" :closable="false" show-icon)
-        ul
-          li Het eerste zoekresultaat is niet altijd de originele album-versie.
-          li De jaartallen van de albums kloppen niet altijd.
-          li Het gebruik van hoofdletters volgt niet altijd de #[nuxt-link(to="/website/methodologie" target="_blank") conventies].
+div
+  div.search
+    el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
+    el-button(@click='search' type="primary" :disabled='processing')
+      | Zoeken op Spotify
+  div(v-if="spotifyError")
+    el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
+      div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
+  template(v-if="showingResults")
+    div(v-if='!spotifyTracks.length')
+      | Geen resultaten van Spotify. Controlleer de query.
+    div(v-else)
+      table
+        tbody
+          tr(
+            v-for='track in spotifyTracks'
+            v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
+            :key='track.spotifyId'
+          )
+            td.spotify
+              spotify(:spotify-id='track.spotifyId')
+            td.details
+              div
+                | Artist:
+                |
+                strong {{track.artist}}
+              div
+                | Titel:
+                |
+                strong {{track.title}}
+              div
+                | Album:
+                |
+                em {{track.album}}
+                |
+                |({{track.year}}).
+            td
+              el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
+    el-alert.alert(title="Let op bij Spotify" :closable="false" show-icon)
+      ul
+        li Het eerste zoekresultaat is niet altijd de originele album-versie.
+        li De jaartallen van de albums kloppen niet altijd.
+        li Het gebruik van hoofdletters volgt niet altijd de #[nuxt-link(to="/website/methodologie" target="_blank") conventies].
 </template>
 
 <script>

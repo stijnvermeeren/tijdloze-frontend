@@ -1,37 +1,31 @@
 <template lang="pug">
-  div.container
-    table(v-if='filteredAndSorted.length')
-      tbody
-        tr
-          th.previous
-            year-link(:year='previousYear')
-          th.current
-            year-link(:year='currentYear')
-          th.song
-        tr(v-for='song in filteredAndSorted' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
-          td.previous
-            position(:year='previousYear' :song='song')
-          td.current
-            position-change(:year='currentYear' :song='song')
-            position(:year='currentYear' :song='song')
-          td.song
-            song-with-second-artist-link(:song='song' :artist='artist')
-    div(v-else)
-      | Geen nummers in de top 100 van #[year-link(:year='currentYear')].
+div.container
+  table(v-if='filteredAndSorted.length')
+    tbody
+      tr
+        th.previous
+          year-link(:year='previousYear')
+        th.current
+          year-link(:year='currentYear')
+        th.song
+      tr(v-for='song in filteredAndSorted' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
+        td.previous
+          position(:year='previousYear' :song='song')
+        td.current
+          position-change(:year='currentYear' :song='song')
+          position(:year='currentYear' :song='song')
+        td.song
+          song-with-second-artist-link(:song='song' :artist='artist')
+  div(v-else)
+    | Geen nummers in de top 100 van #[year-link(:year='currentYear')].
 </template>
 
 <script>
   import _ from 'lodash'
-  import SongLink from './SongLink'
-  import PositionChange from './PositionChange'
-  import Position from './Position'
-  import YearLink from './YearLink'
-  import SongWithSecondArtistLink from "./SongWithSecondArtistLink";
   import Artist from "../orm/Artist";
 
   export default {
     name: 'InCurrentList',
-    components: {SongWithSecondArtistLink, YearLink, Position, PositionChange, SongLink},
     props: {
       songs: Array,
       artist: Artist

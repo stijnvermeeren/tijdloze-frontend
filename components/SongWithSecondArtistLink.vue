@@ -1,12 +1,12 @@
 <template lang="pug">
-  span
-    song-link(:song="song")
-    template(v-if="secondArtist")
-      |
-      | (met
-      |
-      artist-link(:artist="secondArtist")
-      | )
+span
+  song-link(:song="song")
+  template(v-if="secondArtist")
+    |
+    | (met
+    |
+    artist-link(:artist="secondArtist")
+    | )
 </template>
 
 <script>

@@ -1,6 +1,6 @@
 <template lang="pug">
-  el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
-    el-option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId' :label="countries[countryId]")
+el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
+  el-option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId' :label="countries[countryId]")
 </template>
 
 <script>

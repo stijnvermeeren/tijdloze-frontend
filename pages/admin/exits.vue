@@ -1,29 +1,29 @@
 <template lang="pug">
+div
+  h2 Exits markeren ({{currentYear.yyyy}})
   div
-    h2 Exits markeren ({{currentYear.yyyy}})
-    div
-      search-box(
-        :placeholder='`Zoek nummer uit de Tijdloze van ${previousYear.yyyy}`'
-        :song-filter='songValid', :songs-year='previousYear'
-        :album-filter='album => false'
-        :artist-filter='artist => false'
-        @selectSearchResult='markExit($event.item)'
-      )
+    search-box(
+      :placeholder='`Zoek nummer uit de Tijdloze van ${previousYear.yyyy}`'
+      :song-filter='songValid', :songs-year='previousYear'
+      :album-filter='album => false'
+      :artist-filter='artist => false'
+      @selectSearchResult='markExit($event.item)'
+    )
 
-    div(v-if='exits.length')
-      h3 Exits
-      div
-        ul
-          li(v-for='song in exits', :key='song.id')
-            | {{song.artist.fullName}}
-            template(v-if='song.secondArtist')
-              |
-              | en {{song.secondArtist.fullName}}
+  div(v-if='exits.length')
+    h3 Exits
+    div
+      ul
+        li(v-for='song in exits', :key='song.id')
+          | {{song.artist.fullName}}
+          template(v-if='song.secondArtist')
             |
-            | - {{song.title}}
-            button(@click='unmarkExit(song)') Terugzetten
-        div
-          button(@click='unmarkAll()') Alle exits terugzetten
+            | en {{song.secondArtist.fullName}}
+          |
+          | - {{song.title}}
+          button(@click='unmarkExit(song)') Terugzetten
+      div
+        button(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
 <script>

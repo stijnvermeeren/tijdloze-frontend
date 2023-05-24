@@ -1,14 +1,14 @@
 <template lang="pug">
-  div
-    tijdloze-distribution-graph(:points='finalPoints' :secondary-points='nonFinalPoints')
-    .legende
-      ul
-        li
-          tijdloze-color-label(:index='1')
-          |  Definitieve eenjaarsvliegen (slechts één notering in alle lijsten)
-        li
-          tijdloze-color-label(:index='2')
-          |  Niet-definitieve eenjaarsvliegen
+div
+  tijdloze-distribution-graph(:points='finalPoints' :secondary-points='nonFinalPoints')
+  .legende
+    ul
+      li
+        tijdloze-color-label(:index='1')
+        |  Definitieve eenjaarsvliegen (slechts één notering in alle lijsten)
+      li
+        tijdloze-color-label(:index='2')
+        |  Niet-definitieve eenjaarsvliegen
 </template>
 
 <script>

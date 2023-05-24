@@ -1,16 +1,16 @@
 <template lang="pug">
-  div
-    el-radio-group(v-model='liveValue' size="small")
-      el-radio-button(label="en") Engels
-      el-radio-button(label="nl") Nederlands
-      el-radio-button(label="i") Instrumentaal
-    el-select(v-model='liveValue' clearable filterable placeholder="Geen taal geselecteerd")
-      el-option(
-        v-for='[languageId, languageName] in Object.entries(languages)'
-        :key='languageId'
-        :value='languageId'
-        :label="languageName"
-      )
+div
+  el-radio-group(v-model='liveValue' size="small")
+    el-radio-button(label="en") Engels
+    el-radio-button(label="nl") Nederlands
+    el-radio-button(label="i") Instrumentaal
+  el-select(v-model='liveValue' clearable filterable placeholder="Geen taal geselecteerd")
+    el-option(
+      v-for='[languageId, languageName] in Object.entries(languages)'
+      :key='languageId'
+      :value='languageId'
+      :label="languageName"
+    )
 </template>
 
 <script>

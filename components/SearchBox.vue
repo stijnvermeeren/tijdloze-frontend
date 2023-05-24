@@ -1,29 +1,29 @@
 <template lang="pug">
-  #searchBox
-    span.fa.fa-search
-    input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
-    #searchResults(v-if='query.length > 0')
-      .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
-        div(v-if="result.type === 'artist'")
-          | {{result.item.fullName}}
-        div(v-if="result.type === 'song'")
-          | {{result.item.title}}
-          span.info
-            | (nummer van #[span.artiest {{result.item.artist.fullName}}]
-            template(v-if='result.item.secondArtist')
-              |
-              | en #[span.artiest {{result.item.secondArtist.fullName}}]
-            template(v-if='songsYear && result.item.position(songsYear, true)')
-              | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
-            | )
-        div(v-if="result.type === 'album'")
-          | {{result.item.title}}
-          span.info
-            | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
-      .more-suggestions(v-if='resultsCount > resultsLimit')
-        | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
-      .more-suggestions(v-if='resultsCount === 0')
-        | Geen resultaten gevonden.
+#searchBox
+  span.fa.fa-search
+  input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
+  #searchResults(v-if='query.length > 0')
+    .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
+      div(v-if="result.type === 'artist'")
+        | {{result.item.fullName}}
+      div(v-if="result.type === 'song'")
+        | {{result.item.title}}
+        span.info
+          | (nummer van #[span.artiest {{result.item.artist.fullName}}]
+          template(v-if='result.item.secondArtist')
+            |
+            | en #[span.artiest {{result.item.secondArtist.fullName}}]
+          template(v-if='songsYear && result.item.position(songsYear, true)')
+            | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
+          | )
+      div(v-if="result.type === 'album'")
+        | {{result.item.title}}
+        span.info
+          | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
+    .more-suggestions(v-if='resultsCount > resultsLimit')
+      | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
+    .more-suggestions(v-if='resultsCount === 0')
+      | Geen resultaten gevonden.
 </template>
 
 <script>

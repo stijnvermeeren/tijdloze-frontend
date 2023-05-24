@@ -1,12 +1,12 @@
 <template lang="pug">
-  div
-    h2 Admin: volledige lijst van dit jaar
+div
+  h2 Admin: volledige lijst van dit jaar
 
-    div(v-for="song in songs")
-      | {{song.position(currentYear, true)}}. {{song.artist.fullName}} - {{song.title}} (
-      a(@click="remove(song)")
-        | Uit lijst verwijderen
-      | )
+  div(v-for="song in songs")
+    | {{song.position(currentYear, true)}}. {{song.artist.fullName}} - {{song.title}} (
+    a(@click="remove(song)")
+      | Uit lijst verwijderen
+    | )
 </template>
 
 <script>

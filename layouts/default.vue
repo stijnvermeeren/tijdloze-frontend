@@ -1,49 +1,31 @@
 <template lang="pug">
-  #container
-    #header
-      #logo(@click="$router.push('/')")
-        h1 tijdloze
-          span.domain .rocks
-        div.subtitle Tijdloze muziek-klassiekers + data-analyse
-    #container2
-      #left
-      tijdloze-menu
-      #maincontainer
-        .hidden
-          | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
-        #main
-          #inhoud
-            nuxt
-        snackbar
-      #right
+#container
+  #header
+    #logo(@click="$router.push('/')")
+      h1 tijdloze
+        span.domain .rocks
+      div.subtitle Tijdloze muziek-klassiekers + data-analyse
+  #container2
+    #left
+    site-menu
+    #maincontainer
+      .hidden
+        | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
+      #main
+        #inhoud
+          slot
+      snackbar
+    #right
 </template>
 
 <script>
-  import Menu from '../components/Menu'
-  import Snackbar from "../components/Snackbar";
+  import 'element-plus/theme-chalk/index.css';
 
-  import 'element-ui/lib/theme-chalk/index.css';
-
-  export default {
-    components: {
-      Snackbar,
-      tijdlozeMenu: Menu
-    },
+  export default defineNuxtComponent({
     mounted() {
       this.$auth.loginSilently()
-    },
-    head() {
-      return {
-        titleTemplate: title => {
-          if (title === 'tijdloze.rocks') {
-            return title
-          } else {
-            return `${title} - tijdloze.rocks`
-          }
-        }
-      }
     }
-  }
+  })
 </script>
 
 <style lang="scss">

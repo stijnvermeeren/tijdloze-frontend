@@ -1,11 +1,11 @@
 <template lang="pug">
+div
   div
-    div
-      input(:value='value' ref='input' @input='update()')
-    .visit(v-if='value')
-      a(:href='value') Visit
-    .search(v-if='query')
-      a(:href='searchUrl') Search
+    input(:value='value' ref='input' @input='update()')
+  .visit(v-if='value')
+    a(:href='value') Visit
+  .search(v-if='query')
+    a(:href='searchUrl') Search
 </template>
 
 <script>

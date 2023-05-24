@@ -1,11 +1,11 @@
 <template lang="pug">
+div
+  h2 Pagina niet gevonden
   div
-    h2 Pagina niet gevonden
-    div
-      | Ga naar de
-      |
-      nuxt-link(to="/") startpagina
-      | .
+    | Ga naar de
+    |
+    nuxt-link(to="/") startpagina
+    | .
 </template>
 
 <script>

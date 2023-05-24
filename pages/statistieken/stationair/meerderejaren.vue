@@ -1,34 +1,32 @@
 <template lang="pug">
-  table.lijst.perEen
-    tbody
-      tr
-        th.r Aantal jaren
-        th
-          table.valueValueDataData
-            tr
-              th.i Jaren
-              th.i Positie
-              th.a Artiest
-              th Nummer
-      tr(v-for='data in byNumberOfYears')
-        td.r {{data.numberOfYears}}
-        td
-          table.valueValueDataData
-            tbody
-              tr(v-for='entry in data.entries')
-                td.i
-                  | {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
-                td.i
-                  | {{entry.song.position(entry.years[0])}}
-                td.a
-                  tijdloze-song-artist(:song='entry.song')
-                td
-                  tijdloze-song(:song='entry.song')
-
+table.lijst.perEen
+  tbody
+    tr
+      th.r Aantal jaren
+      th
+        table.valueValueDataData
+          tr
+            th.i Jaren
+            th.i Positie
+            th.a Artiest
+            th Nummer
+    tr(v-for='data in byNumberOfYears')
+      td.r {{data.numberOfYears}}
+      td
+        table.valueValueDataData
+          tbody
+            tr(v-for='entry in data.entries')
+              td.i
+                | {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
+              td.i
+                | {{entry.song.position(entry.years[0])}}
+              td.a
+                tijdloze-song-artist(:song='entry.song')
+              td
+                tijdloze-song(:song='entry.song')
 </template>
 
 <script>
-  import ranking from '../../../store/ranking';
   import _ from 'lodash';
 
   export default {

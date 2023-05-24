@@ -1,103 +1,103 @@
 <template lang="pug">
-  div
-    h2 De Tijdloze van {{year.yyyy}}
-    client-only(placeholder="Loading...")
-      full-list(:songs='songsExtended' :year='year')
+div
+  h2 De Tijdloze van {{year.yyyy}}
+  client-only(placeholder="Loading...")
+    full-list(:songs='songsExtended' :year='year')
 
-    el-card(v-if='year.previous()')
-      div.header(slot="header")
-        div.title {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
-      table.list-summary
-        tbody
-          tr
-            th Hoogste nieuwkomer
-            td
-              span(v-if='highestNew')
-                tijdloze-song(:song='highestNew')
+  el-card(v-if='year.previous()')
+    div.header(slot="header")
+      div.title {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
+    table.list-summary
+      tbody
+        tr
+          th Hoogste nieuwkomer
+          td
+            span(v-if='highestNew')
+              tijdloze-song(:song='highestNew')
+              |
+              | -
+              |
+              tijdloze-song-artist(:song='highestNew')
+              |
+              | (
+              tijdloze-position(:song='highestNew' :year='year')
+              | )
+              span(v-if='highestNew.isReEntry($store.getters.years, year)')
                 |
-                | -
-                |
-                tijdloze-song-artist(:song='highestNew')
-                |
-                | (
-                tijdloze-position(:song='highestNew' :year='year')
-                | )
-                span(v-if='highestNew.isReEntry($store.getters.years, year)')
-                  |
-                  | (re-entry)
-              span(v-else) /
-          tr
-            th Grootste stijger
-            td
-              span(v-if='biggestUp') #[tijdloze-song(:song='biggestUp')] - #[tijdloze-song-artist(:song='biggestUp')] (#[tijdloze-position(:song='biggestUp' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestUp' :year='year')])
-              span(v-else) /
-          tr
-            th Grootste daler
-            td
-              span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-song-artist(:song='biggestDown')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
-              span(v-else) /
+                | (re-entry)
+            span(v-else) /
+        tr
+          th Grootste stijger
+          td
+            span(v-if='biggestUp') #[tijdloze-song(:song='biggestUp')] - #[tijdloze-song-artist(:song='biggestUp')] (#[tijdloze-position(:song='biggestUp' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestUp' :year='year')])
+            span(v-else) /
+        tr
+          th Grootste daler
+          td
+            span(v-if='biggestDown') #[tijdloze-song(:song='biggestDown')] - #[tijdloze-song-artist(:song='biggestDown')] (#[tijdloze-position(:song='biggestDown' :year='year.previous()')] &rarr; #[tijdloze-position(:song='biggestDown' :year='year')])
+            span(v-else) /
 
-    div(id="exits")
+  div(id="exits")
 
-    el-card(v-if='exits.length')
-      div.header(slot="header")
-        div.title Exits
-      table.lijst.perVijf
-        tbody
-          tr
-            th.r
-              | {{year.previous().yyyy}}
-            th.a Artiest
-            th Titel
-            th.releaseYear
-              | Jaar
-          tr(v-for='song in exits')
-            td.r
-              tijdloze-position(:song='song' :year='year.previous()')
-            td.a
-              tijdloze-song-artist(:song='song')
-            td
-              tijdloze-song(:song='song')
-            td.releaseYear
-              | {{song.album.releaseYear}}
+  el-card(v-if='exits.length')
+    div.header(slot="header")
+      div.title Exits
+    table.lijst.perVijf
+      tbody
+        tr
+          th.r
+            | {{year.previous().yyyy}}
+          th.a Artiest
+          th Titel
+          th.releaseYear
+            | Jaar
+        tr(v-for='song in exits')
+          td.r
+            tijdloze-position(:song='song' :year='year.previous()')
+          td.a
+            tijdloze-song-artist(:song='song')
+          td
+            tijdloze-song(:song='song')
+          td.releaseYear
+            | {{song.album.releaseYear}}
 
-    el-card(v-if='newSongs.length')
-      div.header(slot="header")
-        div.title Nieuwkomers
-      table.lijst.perVijf
-        tbody
-          tr
-            th.r
-              | {{year.yyyy}}
-            th.a Artiest
-            th Titel
-            th
-            th.releaseYear
-              | Jaar
-          tr(v-for='song in newSongs')
-            td.r
-              tijdloze-position(:song='song' :year='year')
-            td.a
-              tijdloze-song-artist(:song='song')
-            td
-              tijdloze-song(:song='song')
-            td
-              span(v-if='song.isReEntry($store.getters.years, year)') Re-entry
-            td.releaseYear
-              | {{song.album.releaseYear}}
+  el-card(v-if='newSongs.length')
+    div.header(slot="header")
+      div.title Nieuwkomers
+    table.lijst.perVijf
+      tbody
+        tr
+          th.r
+            | {{year.yyyy}}
+          th.a Artiest
+          th Titel
+          th
+          th.releaseYear
+            | Jaar
+        tr(v-for='song in newSongs')
+          td.r
+            tijdloze-position(:song='song' :year='year')
+          td.a
+            tijdloze-song-artist(:song='song')
+          td
+            tijdloze-song(:song='song')
+          td
+            span(v-if='song.isReEntry($store.getters.years, year)') Re-entry
+          td.releaseYear
+            | {{song.album.releaseYear}}
 
-    el-card(v-if='analysis')
-      div.header(slot="header")
-        div.title Interessante feiten
-      .analysis
-        ul
-          li(v-for='text in analysis')
-            tijdloze-links(:text='text')
+  el-card(v-if='analysis')
+    div.header(slot="header")
+      div.title Interessante feiten
+    .analysis
+      ul
+        li(v-for='text in analysis')
+          tijdloze-links(:text='text')
 </template>
 
 <script>
   import _ from 'lodash';
-  import analyse from '../../store/analyse';
+  import analyse from '~/utils/analyse';
   import FullList from '../../components/FullList'
 
   export default {

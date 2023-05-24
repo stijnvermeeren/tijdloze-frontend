@@ -1,33 +1,33 @@
 <template lang="pug">
-  div
-    .toelichting
-      p
-        tijdloze-links(text='Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden.')
-    table.lijst.perEen
-      tbody
-        tr
-          th.r Jaar
-          th
-            table.valueData
-              tbody
-                tr
-                  th Not.
-                  th.l Albums
-        tr(v-for='{year, counts} in data')
-          td.r
-            year-link(:year='year')
-          td
-            table.valueData
-              tbody
-                tr(v-for='{count, albums} in counts')
-                  td {{count}}
-                  td.l(v-if='albums')
-                    template(v-for='(album, index) in albums')
-                      template(v-if='index > 0')
-                        | ,
-                        |
-                      | #[tijdloze-album(:album='album')] (#[tijdloze-artist(:artist='album.artist')])
-                  td.l(v-else) /
+div
+  .toelichting
+    p
+      tijdloze-links(text='Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden.')
+  table.lijst.perEen
+    tbody
+      tr
+        th.r Jaar
+        th
+          table.valueData
+            tbody
+              tr
+                th Not.
+                th.l Albums
+      tr(v-for='{year, counts} in data')
+        td.r
+          year-link(:year='year')
+        td
+          table.valueData
+            tbody
+              tr(v-for='{count, albums} in counts')
+                td {{count}}
+                td.l(v-if='albums')
+                  template(v-for='(album, index) in albums')
+                    template(v-if='index > 0')
+                      | ,
+                      |
+                    | #[tijdloze-album(:album='album')] (#[tijdloze-artist(:artist='album.artist')])
+                td.l(v-else) /
 </template>
 
 <script>

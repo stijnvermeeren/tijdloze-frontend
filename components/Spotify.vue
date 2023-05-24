@@ -1,13 +1,13 @@
 <template lang="pug">
-  iframe(
-    :src="`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator`"
-    width="500"
-    height="80"
-    frameBorder="0"
-    allowfullscreen=""
-    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-    loading="lazy"
-  )
+iframe(
+  :src="`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator`"
+  width="500"
+  height="80"
+  frameBorder="0"
+  allowfullscreen=""
+  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+  loading="lazy"
+)
 </template>
 
 <script>

@@ -1,18 +1,18 @@
 <template lang="pug">
-  div
-    h2 De Tijdloze chatbox
-    div(v-if='isAuthenticated')
-      div(v-if='displayName')
-        chat
-      div(v-else)
-        .displayName
-          div
-            | Kies een gebruikersnaam:
-            input(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()')
-            button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
-              | Naar de chatbox
+div
+  h2 De Tijdloze chatbox
+  div(v-if='isAuthenticated')
+    div(v-if='displayName')
+      chat
     div(v-else)
-      | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
+      .displayName
+        div
+          | Kies een gebruikersnaam:
+          input(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()')
+          button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+            | Naar de chatbox
+  div(v-else)
+    | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
 </template>
 
 <script>

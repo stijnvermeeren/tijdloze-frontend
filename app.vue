@@ -1,0 +1,44 @@
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+
+<script setup lang="ts">
+useHead({
+    titleTemplate: title => {
+        if (title === 'tijdloze.rocks') {
+            return title
+        } else {
+            return `${title} - tijdloze.rocks`
+        }
+    },
+    htmlAttrs: {
+        lang: 'nl'
+    },
+    meta: [
+        { charset: 'utf-8' },
+        { name: 'author', content: 'Stijn Vermeeren - contact: www.stijnvermeeren.be/contact' },
+        { name: 'keywords', content: 'Tijdloze, Tijdloze 100, De Tijdloze Website, tijdloze.rocks, Tijdloos, Tijdloze100, StuBru, Studio Brussel, muziek, aller tijden, allertijden, beste' },
+        { name: 'description', content: 'Statistieken en informatie over de Tijdloze 100, de allertijden-lijst van Studio Brussel' },
+        { name: 'robots', content: 'all' },
+        { name: 'viewport', content: 'width=480, initial-scale=1'}
+    ],
+    link: [
+        {
+            rel: 'start',
+            href: 'https://tijdloze.rocks/'
+        },
+        {
+            rel: 'stylesheet',
+            type: 'text/css',
+            href: 'https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css'
+        },
+        {
+            rel: 'icon',
+            href: '/images/favicon.png',
+            type: "image/x-icon"
+        }
+    ],
+})
+</script>

@@ -1,38 +1,38 @@
 <template lang="pug">
-  .poll
-    div.reload
-      el-button(icon="el-icon-refresh-left" @click="reload" :loading="isLoading" circle)
-    poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
-    div(v-if='showResults')
-      div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
-        .answerVotes
-          span.bar(:style="{width: barWidth(answer.voteCount) + 'px'}")
-          span.count {{percentage(answer.voteCount)}}
-        .answerText
-          poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
+.poll
+  div.reload
+    el-button(icon="el-icon-refresh-left" @click="reload" :loading="isLoading" circle)
+  poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
+  div(v-if='showResults')
+    div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
+      .answerVotes
+        span.bar(:style="{width: barWidth(answer.voteCount) + 'px'}")
+        span.count {{percentage(answer.voteCount)}}
+      .answerText
+        poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
+  div(v-else)
+    .answer(v-for='answer in livePoll.answers')
+      input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
+      label(:for='`vote-${answer.id}`') {{answer.answer}}
+    div(v-if='isAuthenticated')
+      button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
     div(v-else)
-      .answer(v-for='answer in livePoll.answers')
-        input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
-        label(:for='`vote-${answer.id}`') {{answer.answer}}
-      div(v-if='isAuthenticated')
-        button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
-      div(v-else)
-        | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
-    .voteCount {{voteCount}} {{ voteCount === 1 ? 'stem' : 'stemmen' }}
-    div(v-if='isAdmin')
-      .isDeleted(v-if='isDeleted')
-        | Poll is verborgen op de website.
-        |
-        button(@click='restore()' :disabled='deleting') Opnieuw tonen
-      div(v-else)
-        button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
-
+      | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
+  .voteCount {{voteCount}} {{ voteCount === 1 ? 'stem' : 'stemmen' }}
+  div(v-if='isAdmin')
+    .isDeleted(v-if='isDeleted')
+      | Poll is verborgen op de website.
+      |
+      button(@click='restore()' :disabled='deleting') Opnieuw tonen
+    div(v-else)
+      button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
 </template>
 
 <script>
   import _ from 'lodash';
   import PollQuestion from "./PollQuestion";
   import PollAnswer from "./PollAnswer";
+  import {usePollStore} from "~/stores/poll";
 
   export default {
     name: "Poll",
@@ -85,9 +85,9 @@
     methods: {
       async reload() {
         this.isLoading = true;
-        const result = await this.$axios.$get(`poll/my-votes`);
-        this.$store.commit('poll/setVotes', result.votes);
-        this.livePoll = await this.$axios.$get(`poll/${this.poll.id}`);
+        const result = await useApiFetch(`poll/my-votes`);
+        usePollStore().setVotes(result.votes);
+        this.livePoll = await useApiFetch(`poll/${this.poll.id}`);
         this.isLoading = false;
       },
       async vote() {

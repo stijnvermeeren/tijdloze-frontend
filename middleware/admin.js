@@ -1,6 +1,8 @@
+import {useAuthStore} from "~/stores/auth";
 
-export default function ({ store, redirect, route }) {
-  if (!store.getters['auth/isAdmin']) {
-    redirect('/auth/admin', { redirect: route.path })
+export default defineNuxtRouteMiddleware((to, from) => {
+  const authStore = useAuthStore()
+  if (!authStore.isAdmin) {
+    return navigateTo({ path : '/auth/admin', query: { redirect: to }})
   }
-}
+})

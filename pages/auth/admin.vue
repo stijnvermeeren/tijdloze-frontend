@@ -1,5 +1,5 @@
 <template lang="pug">
-  p Signing in
+p Signing in
 </template>
 
 <script>

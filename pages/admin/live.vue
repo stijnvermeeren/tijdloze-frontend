@@ -1,104 +1,104 @@
 <template lang="pug">
-  div
-    div.flexTitle
-      h2 Admin: nummers toevoegen
-      div
-        nuxt-link(to="/admin/lijst")
-          el-button(type="warning" round size="small") Nummers verwijderen uit de lijst
+div
+  div.flexTitle
+    h2 Admin: nummers toevoegen
+    div
+      nuxt-link(to="/admin/lijst")
+        el-button(type="warning" round size="small") Nummers verwijderen uit de lijst
 
-    el-alert(v-if='previousSong'
-      show-icon
-      type="success"
-      :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
-      :closable="false"
-    )
-      div
-        | {{ previousSong.artist.fullName }}
-        template(v-if='previousSong.secondArtist')
-          |
-          | en {{previousSong.secondArtist.fullName}}
+  el-alert(v-if='previousSong'
+    show-icon
+    type="success"
+    :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
+    :closable="false"
+  )
+    div
+      | {{ previousSong.artist.fullName }}
+      template(v-if='previousSong.secondArtist')
         |
-        | - {{ previousSong.title }}
-        |
-        el-button(@click='undo()' :disabled='processing' round size="mini") Ongedaan maken
+        | en {{previousSong.secondArtist.fullName}}
+      |
+      | - {{ previousSong.title }}
+      |
+      el-button(@click='undo()' :disabled='processing' round size="mini") Ongedaan maken
 
-    el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
-      | Jaar {{currentYear.yyyy}} starten ongedaan maken
+  el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
+    | Jaar {{currentYear.yyyy}} starten ongedaan maken
 
-    el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
-      | Jaar {{nextYearYyyy}} starten
+  el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
+    | Jaar {{nextYearYyyy}} starten
 
-    el-card
-      div.header(slot="header")
-        div.title Volgend nummer
-      div
-        strong Positie
-          =" "
-          el-input-number(v-model="nextPosition" size="small")
-          |  in {{currentYear.yyyy}}
-
-      div.query(v-if="importQuery")
-        | Importeren van "{{importQuery}}".
+  el-card
+    div.header(slot="header")
+      div.title Volgend nummer
+    div
+      strong Positie
         =" "
-        a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
-          el-button(size="mini" round icon="el-icon-link") Zoek op Google
+        el-input-number(v-model="nextPosition" size="small")
+        |  in {{currentYear.yyyy}}
 
-      div(v-show="nextPosition > 0")
-        el-radio-group.nextSongTab(v-model="nextSongTab")
-          el-radio-button(label="existing") Nummer uit de database
-          el-radio-button(label="spotify") Nieuw nummer (via Spotify)
-          el-radio-button(label="manual") Nieuw nummer (manueel)
+    div.query(v-if="importQuery")
+      | Importeren van "{{importQuery}}".
+      =" "
+      a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
+        el-button(size="mini" round icon="el-icon-link") Zoek op Google
 
-        div(v-show="nextSongTab === 'existing'")
-          search-box(
-            placeholder='Zoek nummer...'
-            :artist-filter='artist => false'
-            :album-filter='album => false'
-            :song-filter='possibleSong'
-            :songs-year='previousYear'
-            :initial-query='importQuery'
-            @selectSearchResult='selectSearchResult($event)'
-            @initialResultCount="initialResultCount($event)"
-          )
+    div(v-show="nextPosition > 0")
+      el-radio-group.nextSongTab(v-model="nextSongTab")
+        el-radio-button(label="existing") Nummer uit de database
+        el-radio-button(label="spotify") Nieuw nummer (via Spotify)
+        el-radio-button(label="manual") Nieuw nummer (manueel)
 
-          div(v-if="nextSong")
-            div
-              strong {{nextSong.artist.fullName}} - {{nextSong.title}}
-              |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
-            div(v-if='nextSongFullData && nextSongFullData.spotifyId')
-              spotify(:spotify-id='nextSongFullData.spotifyId')
-            div
-              el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
-                | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
+      div(v-show="nextSongTab === 'existing'")
+        search-box(
+          placeholder='Zoek nummer...'
+          :artist-filter='artist => false'
+          :album-filter='album => false'
+          :song-filter='possibleSong'
+          :songs-year='previousYear'
+          :initial-query='importQuery'
+          @selectSearchResult='selectSearchResult($event)'
+          @initialResultCount="initialResultCount($event)"
+        )
 
-        div(v-show="nextSongTab === 'spotify'")
-          spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
-          div(v-if='spotifyData')
-            hr
-            new-song-wizard(
-              :preset='spotifyData'
-              :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
-              @newSong='add($event.id)'
-            )
+        div(v-if="nextSong")
+          div
+            strong {{nextSong.artist.fullName}} - {{nextSong.title}}
+            |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
+          div(v-if='nextSongFullData && nextSongFullData.spotifyId')
+            spotify(:spotify-id='nextSongFullData.spotifyId')
+          div
+            el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
+              | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
-        div(v-show="nextSongTab === 'manual'")
+      div(v-show="nextSongTab === 'spotify'")
+        spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+        div(v-if='spotifyData')
+          hr
           new-song-wizard(
+            :preset='spotifyData'
             :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
             @newSong='add($event.id)'
           )
 
-    el-card
-      div.header(slot="header")
-        div.title Tijdloze {{this.currentYear.yyyy}}: import
-        el-button(v-if="importSongs.length" @click="cancelImport" type="warning" round size="small") Import annuleren
-      div(v-if="importSongs.length")
-        div In de wachtrij om geïmporteerd te worden...
-        div(v-for="{overridePosition, query} in importSongs")
-          strong {{overridePosition}}.
-          =" "
-          span {{query}}
-      div(v-else)
-        import-form(:startPosition="nextPosition" @startImport="startImport")
+      div(v-show="nextSongTab === 'manual'")
+        new-song-wizard(
+          :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
+          @newSong='add($event.id)'
+        )
+
+  el-card
+    div.header(slot="header")
+      div.title Tijdloze {{this.currentYear.yyyy}}: import
+      el-button(v-if="importSongs.length" @click="cancelImport" type="warning" round size="small") Import annuleren
+    div(v-if="importSongs.length")
+      div In de wachtrij om geïmporteerd te worden...
+      div(v-for="{overridePosition, query} in importSongs")
+        strong {{overridePosition}}.
+        =" "
+        span {{query}}
+    div(v-else)
+      import-form(:startPosition="nextPosition" @startImport="startImport")
 </template>
 
 <script>

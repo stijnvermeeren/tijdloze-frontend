@@ -1,13 +1,13 @@
 <template lang="pug">
-  span(v-if="countryName")
-    img(
-      :src='`https://flagcdn.com/20x15/${countryId}.png`'
-      :srcset='`https://flagcdn.com/40x30/${countryId}.png 2x, https://flagcdn.com/60x45/${countryId}.png 3x`'
-      :alt='countryName'
-      width="20"
-      height="15"
-    )
-    span(v-if='includeName')  {{countryName}}
+span(v-if="countryName")
+  img(
+    :src='`https://flagcdn.com/20x15/${countryId}.png`'
+    :srcset='`https://flagcdn.com/40x30/${countryId}.png 2x, https://flagcdn.com/60x45/${countryId}.png 3x`'
+    :alt='countryName'
+    width="20"
+    height="15"
+  )
+  span(v-if='includeName')  {{countryName}}
 </template>
 
 <script>

@@ -1,45 +1,45 @@
 <template lang="pug">
-  div
-    .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
-      h4(v-if='$slots.default || title')
-        slot {{title}}
-      .tooltip(v-if="tooltipSong" :style="tooltipStyle")
-        .year
-          | {{hoverYear.yyyy}}
-        .entry
-          | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}}
-      svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
-        g(:transform='`translate(${margin.left},${margin.top})`')
-          tijdloze-axes(
-            :x-scale='xScale'
-            :y-scale='yScale'
-            :years='years'
-            :hover-year='hoverYear'
+div
+  .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+    h4(v-if='$slots.default || title')
+      slot {{title}}
+    .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+      .year
+        | {{hoverYear.yyyy}}
+      .entry
+        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}}
+    svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
+      g(:transform='`translate(${margin.left},${margin.top})`')
+        tijdloze-axes(
+          :x-scale='xScale'
+          :y-scale='yScale'
+          :years='years'
+          :hover-year='hoverYear'
+        )
+        line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+        g.color-1
+          circle.circle.coloredCircle(
+            v-for='point in points'
+            :cx='xScale(point.year._yy)'
+            :cy='yScale(point.song.position(point.year))'
+            r='3'
           )
-          line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
-          g.color-1
-            circle.circle.coloredCircle(
-              v-for='point in points'
-              :cx='xScale(point.year._yy)'
-              :cy='yScale(point.song.position(point.year))'
-              r='3'
-            )
-          g.color-2
-            circle.circle.coloredCircle(
-              v-for='point in secondaryPoints'
-              :cx='xScale(point.year._yy)'
-              :cy='yScale(point.song.position(point.year))'
-              r='3'
-            )
-          rect.overlay(
-            :x="0"
-            :y="0"
-            :width="width"
-            :height="height"
-            @mousemove="onHover($event)"
-            @touchmove="onHover($event)"
-            :opacity="0"
+        g.color-2
+          circle.circle.coloredCircle(
+            v-for='point in secondaryPoints'
+            :cx='xScale(point.year._yy)'
+            :cy='yScale(point.song.position(point.year))'
+            r='3'
           )
+        rect.overlay(
+          :x="0"
+          :y="0"
+          :width="width"
+          :height="height"
+          @mousemove="onHover($event)"
+          @touchmove="onHover($event)"
+          :opacity="0"
+        )
 </template>
 
 <script>

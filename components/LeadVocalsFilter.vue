@@ -1,10 +1,10 @@
 <template lang="pug">
-  el-select(:value='value' @input='input' placeholder="Lead vocals" clearable size="small")
-    el-option(
-      v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
-      :key='genderId'
-      :value='genderId'
-      :label="genderName")
+el-select(:value='value' @input='input' placeholder="Lead vocals" clearable size="small")
+  el-option(
+    v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
+    :key='genderId'
+    :value='genderId'
+    :label="genderName")
 </template>
 
 <script>

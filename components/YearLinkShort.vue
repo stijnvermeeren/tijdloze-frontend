@@ -1,5 +1,5 @@
 <template lang="pug">
-  nuxt-link(:to='`/lijst/${year.yyyy}`') {{year._yy}}
+nuxt-link(:to='`/lijst/${year.yyyy}`') {{year._yy}}
 </template>
 
 <script>

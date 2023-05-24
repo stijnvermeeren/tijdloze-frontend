@@ -1,5 +1,5 @@
 <template lang="pug">
-  p Je wordt aangemeld...
+p Je wordt aangemeld...
 </template>
 
 <script>

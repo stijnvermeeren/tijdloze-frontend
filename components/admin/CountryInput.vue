@@ -1,19 +1,19 @@
 <template lang="pug">
-  div
-    el-radio-group(v-model='liveValue' size="small")
-      el-radio-button(label="us")
-        tijdloze-country-icon(country-id="us")
-      el-radio-button(label="gb")
-        tijdloze-country-icon(country-id="gb")
-      el-radio-button(label="be")
-        tijdloze-country-icon(country-id="be")
-    el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd")
-      el-option(
-        v-for='countryId in sortedCountryIds'
-        :key='countryId'
-        :value='countryId'
-        :label="countries[countryId]"
-      )
+div
+  el-radio-group(v-model='liveValue' size="small")
+    el-radio-button(label="us")
+      tijdloze-country-icon(country-id="us")
+    el-radio-button(label="gb")
+      tijdloze-country-icon(country-id="gb")
+    el-radio-button(label="be")
+      tijdloze-country-icon(country-id="be")
+  el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd")
+    el-option(
+      v-for='countryId in sortedCountryIds'
+      :key='countryId'
+      :value='countryId'
+      :label="countries[countryId]"
+    )
 </template>
 
 <script>

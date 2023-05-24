@@ -1,60 +1,60 @@
 <template lang="pug">
-  div
-    h2 Contact
+div
+  h2 Contact
 
-    el-alert(title="Radio-uitzending en samenstelling van de Tijdloze" :closable="false" show-icon)
-      div De makers van deze website zijn #[strong niet betrokken] bij de radio-uitzending of de samenstelling van de Tijdloze.
-      div Feedback daarover kan je direct aan #[a(href='https://stubru.be') StuBru] en de #[a(href='https://vrtklantendienst.force.com/s/contactus') VRT] sturen.
+  el-alert(title="Radio-uitzending en samenstelling van de Tijdloze" :closable="false" show-icon)
+    div De makers van deze website zijn #[strong niet betrokken] bij de radio-uitzending of de samenstelling van de Tijdloze.
+    div Feedback daarover kan je direct aan #[a(href='https://stubru.be') StuBru] en de #[a(href='https://vrtklantendienst.force.com/s/contactus') VRT] sturen.
 
-    p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van tijdloze.rocks, contacteren.
-    p Alle suggesties, verbeteringen of andere berichten omtrent deze website zijn van harte welkom!
+  p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van tijdloze.rocks, contacteren.
+  p Alle suggesties, verbeteringen of andere berichten omtrent deze website zijn van harte welkom!
 
-    el-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!" :closable="false" show-icon)
-      | {{error}}
-    div(v-if='success')
-      el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
-        a(@click='reset()') Verzend een nieuw bericht
-      el-card
-        div.header(slot="header")
-          div
-            div.title Verzonden bericht:
-            div.subtitle
-              | Van {{name}}
-              span(v-if='email.trim()')
-                |
-                | ({{email}})
-        p.message {{message}}
-    div(v-if='inProgress')
-      | Bericht wordt verzonden...
+  el-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!" :closable="false" show-icon)
+    | {{error}}
+  div(v-if='success')
+    el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
+      a(@click='reset()') Verzend een nieuw bericht
+    el-card
+      div.header(slot="header")
+        div
+          div.title Verzonden bericht:
+          div.subtitle
+            | Van {{name}}
+            span(v-if='email.trim()')
+              |
+              | ({{email}})
+      p.message {{message}}
+  div(v-if='inProgress')
+    | Bericht wordt verzonden...
 
-    div(v-if='!success && !inProgress')
-      table
-        tbody
-          tr
-            th Naam:
-            td
-              input.formtext(type='text' v-model='name' placeholder='Verplicht veld')
-          tr
-            th E-mailadres:
-            td
-              div
-                input.formtext(@blur='emailTouched = true' name='email' v-model='email')
-              el-alert(
-                v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
-                type="warning"
-                title="Ongeldig e-mailadres."
-                :closable="false"
-              )
-                | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
-          tr
-            th Bericht:
-            td
-              textarea(cols='30' rows='4' v-model='message' placeholder='Verplicht veld')
-          tr
-            th &nbsp;
-            td
-              button.formsubmit(@click='submit' :disabled='submitDisabled' type='submit')
-                | Bericht verzenden
+  div(v-if='!success && !inProgress')
+    table
+      tbody
+        tr
+          th Naam:
+          td
+            input.formtext(type='text' v-model='name' placeholder='Verplicht veld')
+        tr
+          th E-mailadres:
+          td
+            div
+              input.formtext(@blur='emailTouched = true' name='email' v-model='email')
+            el-alert(
+              v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
+              type="warning"
+              title="Ongeldig e-mailadres."
+              :closable="false"
+            )
+              | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
+        tr
+          th Bericht:
+          td
+            textarea(cols='30' rows='4' v-model='message' placeholder='Verplicht veld')
+        tr
+          th &nbsp;
+          td
+            button.formsubmit(@click='submit' :disabled='submitDisabled' type='submit')
+              | Bericht verzenden
 </template>
 
 <script>

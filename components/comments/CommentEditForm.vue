@@ -1,10 +1,10 @@
 <template lang="pug">
+div
   div
-    div
-      textarea(:disabled='submitting' cols='60' placeholder='Schrijf een nieuwe reactie...' rows='4' v-model='editMessage')
-    div
-      button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
-        | Bericht wijzigen
+    textarea(:disabled='submitting' cols='60' placeholder='Schrijf een nieuwe reactie...' rows='4' v-model='editMessage')
+  div
+    button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+      | Bericht wijzigen
 </template>
 
 <script>

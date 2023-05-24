@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { createSlug } from '~/utils/slug'
-import { Model } from '@vuex-orm/core'
+import { Model } from 'pinia-orm'
 import Artist from "./Artist";
 import Album from "./Album";
 

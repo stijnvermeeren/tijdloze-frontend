@@ -1,18 +1,18 @@
 <template lang="pug">
-  el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
-    div.reacinfo(slot="header")
-      span.name {{ comment.name }}
-      span.created {{ comment.created }}
-      span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
-      span.edit(v-if="isMine")
-        a(@click="editComment") Wijzigen
-      span.delete(v-if="!isDeleted && (isMine || isAdmin)")
-        a(@click="deleteComment") Verwijderen
-      span.delete(v-if="isDeleted && isAdmin")
-        a(@click="restoreComment") Terugzetten
-    div
-      div.bericht(v-if="!editing") {{ message }}
-      comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
+el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
+  div.reacinfo(slot="header")
+    span.name {{ comment.name }}
+    span.created {{ comment.created }}
+    span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
+    span.edit(v-if="isMine")
+      a(@click="editComment") Wijzigen
+    span.delete(v-if="!isDeleted && (isMine || isAdmin)")
+      a(@click="deleteComment") Verwijderen
+    span.delete(v-if="isDeleted && isAdmin")
+      a(@click="restoreComment") Terugzetten
+  div
+    div.bericht(v-if="!editing") {{ message }}
+    comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
 <script>
