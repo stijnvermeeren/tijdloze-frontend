@@ -28,13 +28,13 @@
           }]"
       )
         path.coloredPath(:d='fullSongLine(song)')
-        circle.circle.coloredCircle(
-          v-for='year in years'
-          v-if='song.position(year)'
-          :cx='xScale(year._yy)'
-          :cy='yScale(song.position(year))'
-          r='3'
-        )
+        template(v-for='year in years' key='year.yyyy')
+          circle.circle.coloredCircle(
+            v-if='song.position(year)'
+            :cx='xScale(year._yy)'
+            :cy='yScale(song.position(year))'
+            r='3'
+          )
       rect.overlay(
         :x="0"
         :y="0"
@@ -65,6 +65,7 @@
 
   export default defineNuxtComponent({
     extends: BaseGraph,
+    setup: BaseGraph.setup,
     components: {
       TijdlozeAxes: BaseGraphAxes
     },

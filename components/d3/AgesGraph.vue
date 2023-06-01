@@ -40,9 +40,11 @@
     import BaseGraph from './BaseGraph';
     import BaseGraphAxes from './BaseGraphAxes';
     import {bisect} from "d3-array";
+    import {useRootStore} from "~/stores/root";
 
-    export default {
+    export default defineNuxtComponent({
       extends: BaseGraph,
+      setup: BaseGraph.setup,
       components: {
         TijdlozeAxes: BaseGraphAxes
       },
@@ -59,8 +61,8 @@
           return this.yScale(1) - this.yScale(0);
         },
         points() {
-          const years = this.$store.getters.years;
-          const songs = this.$store.getters.songs;
+          const years = useRootStore().years;
+          const songs = useRootStore().songs;
           const points = [];
           years.forEach(year => {
             songs.forEach(song => {
@@ -103,7 +105,7 @@
         },
         tooltipSong() {
           if (!!this.hoverYear && !!this.hoverPosition) {
-            return this.$store.getters.listTop100(this.hoverYear).find(song => {
+            return useRootStore().listTop100(this.hoverYear).find(song => {
               return song.position(this.hoverYear) === this.hoverPosition;
             })
           }
@@ -150,7 +152,7 @@
           }
         }
       }
-    }
+    })
 </script>
 
 <style lang="scss" scoped>

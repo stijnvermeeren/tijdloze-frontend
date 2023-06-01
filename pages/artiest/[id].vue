@@ -13,21 +13,25 @@ div
       el-button(size="small" round)
         country-icon(:country-id='artist.countryId' :include-name="true")
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round)
+        el-icon
+          el-icon-link
+        span {{ link.title }}
 
   el-alert(v-if='fullArtistData.notes' :closable="false" show-icon)
     make-links(:text='fullArtistData.notes')
 
   el-card
-    div.header(slot="header")
-      div
-        div.title In de Tijdloze
-        div.subtitle
-          entry-count(:songs='artist.allSongs')
-      div
-        el-radio-group(v-model="tab" size="small")
-          el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
-          el-radio-button(label='album') Per album
+    template(#header)
+      div.header
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='artist.allSongs')
+        div
+          el-radio-group(v-model="tab" size="small")
+            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
+            el-radio-button(label='album') Per album
     div(v-if="tab === 'tijdloze'")
       in-current-list(:songs='artist.allSongs' :artist='artist')
     div(v-if="tab === 'album'")
@@ -36,13 +40,15 @@ div
           album-link(:album='album')
           |  ({{album.releaseYear}})
           ul(v-if='album.songsSorted.length')
-            li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
-              song-with-second-artist-link(:song='song' :artist="artist")
+            template(v-for='song in album.songsSorted' key='song.id')
+              li(v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
+                song-with-second-artist-link(:song='song' :artist="artist")
 
   el-card(v-if='top100Songs.length')
-    div.header(slot="header")
-      div
-        div.title Grafiek
+    template(#header)
+      div.header
+        div
+          div.title Grafiek
     graph(:songs='top100Songs')
 </template>
 

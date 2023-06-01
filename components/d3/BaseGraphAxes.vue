@@ -2,24 +2,23 @@
 g
   g.x.axis
     path.domain(:d='`M0,0 H ${rightX}`')
-    g.tick(
-      v-for='year in years'
-      key='year.yyyy'
-      v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
-      :transform='`translate(${xScale(year._yy)},0)`'
-      :class="{nextToHighlighted: isNextToHoverYear(year)}"
-    )
-      line(y2='-6' x2='0')
-      text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
-        | {{year.yyyy}}
-    g.tick(
-      v-if="!!hoverYear"
-      :transform='`translate(${xScale(hoverYear._yy)},0)`'
-      class="highlighted"
-    )
-      line(y2='-6' x2='0')
-      text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
-        | {{hoverYear.yyyy}}
+    template(v-for='year in years' key='year.yyyy')
+      g.tick(
+        v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
+        :transform='`translate(${xScale(year._yy)},0)`'
+        :class="{nextToHighlighted: isNextToHoverYear(year)}"
+      )
+        line(y2='-6' x2='0')
+        text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
+          | {{year.yyyy}}
+      g.tick(
+        v-if="!!hoverYear"
+        :transform='`translate(${xScale(hoverYear._yy)},0)`'
+        class="highlighted"
+      )
+        line(y2='-6' x2='0')
+        text(dy='0em' y='-9' x='0' style='text-anchor: middle;')
+          | {{hoverYear.yyyy}}
 
   g.y.axis
     path.domain(:d='`M${rightX},0 V ${yScale.range()[1]}`')

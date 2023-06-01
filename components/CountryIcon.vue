@@ -7,7 +7,7 @@ span(v-if="countryName")
     width="20"
     height="15"
   )
-  span(v-if='includeName')  {{countryName}}
+  span.name(v-if='includeName') {{countryName}}
 </template>
 
 <script>
@@ -25,3 +25,14 @@ span(v-if="countryName")
     }
   }
 </script>
+
+<style scoped lang="scss">
+img {
+  vertical-align: middle;
+}
+
+span.name {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+</style>

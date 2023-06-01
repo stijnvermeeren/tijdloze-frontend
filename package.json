@@ -1,6 +1,6 @@
 {
   "name": "tijdloze",
-  "description": "De Tijdloze Website",
+  "description": "tijdloze.rocks frontend",
   "version": "1.0.0",
   "author": "Stijn Vermeeren",
   "private": true,
@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.16.1",
+    "@element-plus/icons-vue": "^2.1.0",
     "@pinia/nuxt": "^0.4.11",
     "babel-runtime": "^6.26.0",
     "clusterize.js": "^0.19.0",

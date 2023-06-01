@@ -17,18 +17,22 @@ div
 
   div.links
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round)
+        el-icon
+          el-icon-link
+        span {{ link.title }}
 
   el-card
-    div.header(slot="header")
-      div
-        div.title In de Tijdloze
-        div.subtitle
-          entry-count(:songs='album.songs')
-      div
-        el-radio-group(v-model="tab" size="small")
-          el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
-          el-radio-button(label='all') Alle Tijdloze nummers
+    template(#header)
+      div.header(slot="header")
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='album.songs')
+        div
+          el-radio-group(v-model="tab" size="small")
+            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
+            el-radio-button(label='all') Alle Tijdloze nummers
     div(v-if="tab === 'tijdloze'")
       in-current-list(:songs='album.songs')
     div(v-if="tab === 'all'")
@@ -37,9 +41,10 @@ div
           song-with-second-artist-link(:song='song')
 
   el-card(v-if='top100Songs.length')
-    div.header(slot="header")
-      div
-        div.title Grafiek
+    template(#header)
+      div.header(slot="header")
+        div
+          div.title Grafiek
     graph(:songs='top100Songs')
 </template>
 
@@ -50,14 +55,10 @@ div
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
   import {useRepo} from "pinia-orm";
-
-  const rootStore = useRootStore()
-  const authStore = useAuthStore()
+  import {Lightning} from "@element-plus/icons-vue";
 
   export default defineNuxtComponent({
-    components: {
-      Graph
-    },
+    components: {Lightning, Graph },
     data() {
       return {
         tab: 'tijdloze'
@@ -66,16 +67,15 @@ div
     computed: {
       album() {
         return useRepo(Album)
-          .withAll()
-          .with('songs.album')
-          .with('songs.secondArtist')
+          .with('artist')
+          .with('songs', query => query.with("secondArtist").with("album"))
           .find(this.fullAlbumData.id);
       },
       currentYear() {
-        return rootStore.currentYear;
+        return useRootStore().currentYear;
       },
       top100Songs() {
-        return this.album.songsSorted.filter(song => song.listCount(this.$store.getters.years) > 0)
+        return this.album.songsSorted.filter(song => song.listCount(useRootStore().years) > 0)
       },
       links() {
         const links = [];
@@ -94,7 +94,7 @@ div
         return links;
       },
       isAdmin() {
-        return authStore.isAdmin;
+        return useAuthStore().isAdmin;
       }
     },
     async asyncData() {

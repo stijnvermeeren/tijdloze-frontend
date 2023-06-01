@@ -17,7 +17,10 @@ Title {{song.title}} ({{song.artist.fullName}})
 
   div.links
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round)
+        el-icon
+          el-icon-link
+        span {{ link.title }}
 
   el-alert(v-if='fullSongData.notes' :closable="false" show-icon)
     make-links(:text='fullSongData.notes')
@@ -29,18 +32,20 @@ Title {{song.title}} ({{song.artist.fullName}})
   lyrics(v-if='fullSongData.lyrics')
     .lyrics {{ fullSongData.lyrics }}
 
-  el-card(v-else-if="fullSongData.languageId === 'ins'")
-    div.header(slot="header")
-      div.title Lyrics
+  el-card(v-else-if="fullSongData.languageId === 'i'")
+    template(#header)
+      div.header
+        div.title Lyrics
     div (Instrumentaal nummer)
     .clear
 
   el-card
-    div.header(slot="header")
-      div
-        div.title In de Tijdloze
-        div.subtitle
-          entry-count(:songs='[song]')
+    template(#header)
+      div.header
+        div
+          div.title In de Tijdloze
+          div.subtitle
+            entry-count(:songs='[song]')
     .allPositions
       template(v-for='(interval, index) in intervals')
         div(v-if='index' :key="index")
@@ -55,9 +60,10 @@ Title {{song.title}} ({{song.artist.fullName}})
 
 
   el-card(v-if='song.listCount(years) > 0')
-    div.header(slot="header")
-      div
-        div.title Grafiek
+    template(#header)
+      div.header
+        div
+          div.title Grafiek
     tijdloze-graph(:songs='[song]' :no-label='true')
 </template>
 

@@ -281,7 +281,7 @@ div
           item => item.song.secondArtistId
         )
 
-        const data = Artist.all().map(artist => {
+        const data = useRepo(Artist).all().map(artist => {
           const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
           const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
 
