@@ -4,6 +4,7 @@ tijdloze-stationary-graph(:songs='songs')
 
 <script>
   import StationaryGraph from "../../../components/d3/StationaryGraph"
+  import {useRootStore} from "~/stores/root";
 
   export default {
     components: {
@@ -11,7 +12,7 @@ tijdloze-stationary-graph(:songs='songs')
     },
     computed: {
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       }
     }
   }

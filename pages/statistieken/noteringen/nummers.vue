@@ -2,7 +2,7 @@
 div
   .toelichting
     p
-      tijdloze-links(text='Hoeveel verschillende nummers van eenzelfde artiest stonden ooit in een top 100 van de Tijdloze (niet noodzakelijk in hetzelfde jaar)?')
+      make-links(text='Hoeveel verschillende nummers van eenzelfde artiest stonden ooit in een top 100 van de Tijdloze (niet noodzakelijk in hetzelfde jaar)?')
   table.lijst.perVijf
     tbody
       tr
@@ -12,7 +12,7 @@ div
       tr(v-for='{position, entry} in ranking')
         td.r {{position}}
         td.l
-          tijdloze-artist(:artist='entry.artist')
+          artist-link(:artist='entry.artist')
         td {{entry.count}}
 </template>
 

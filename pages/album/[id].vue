@@ -1,4 +1,5 @@
 <template lang="pug">
+Title {{album.title}} ({{album.artist.fullName}})
 div
   div.flexTitle
     page-title(icon='album' icon-alt='Album')
@@ -10,13 +11,13 @@ div
   div Album van
     = " "
     strong
-      tijdloze-artist(:artist='album.artist')
+      artist-link(:artist='album.artist')
     = " "
     | uit {{ album.releaseYear }}.
 
   div.links
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="mini" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round icon="el-icon-link") {{ link.title }}
 
   el-card
     div.header(slot="header")
@@ -48,11 +49,12 @@ div
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
+  import {useRepo} from "pinia-orm";
 
   const rootStore = useRootStore()
   const authStore = useAuthStore()
 
-  export default {
+  export default defineNuxtComponent({
     components: {
       Graph
     },
@@ -63,7 +65,7 @@ div
     },
     computed: {
       album() {
-        return Album.query()
+        return useRepo(Album)
           .withAll()
           .with('songs.album')
           .with('songs.secondArtist')
@@ -95,18 +97,11 @@ div
         return authStore.isAdmin;
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        fullAlbumData: await app.$axios.$get(`album/${idFromSlug(params.id)}`)
-      };
-    },
-    head() {
-      return {
-        title: `${this.album.title} (${this.album.artist.fullName})`
-      }
-    },
-    ssrComputedCache: true
-  }
+    async asyncData() {
+      const {data: fullAlbumData} = await useApiFetch(`album/${idFromSlug(useRoute().params.id)}`)
+      return {fullAlbumData};
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

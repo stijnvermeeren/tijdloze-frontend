@@ -63,7 +63,7 @@
   import {bisect} from "d3-array";
   import _ from "lodash"
 
-  export default {
+  export default defineNuxtComponent({
     extends: BaseGraph,
     components: {
       TijdlozeAxes: BaseGraphAxes
@@ -153,7 +153,7 @@
         );
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

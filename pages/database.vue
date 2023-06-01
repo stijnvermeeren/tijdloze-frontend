@@ -72,21 +72,20 @@ div
             el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
       div.content
         div.wrapper
-          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
-            template(v-slot="{ item, index }")
-              div.entry(:class="{lineBelow: index % 5 === 4}")
-                div.r
-                  | {{ item.position }}
-                div.c
-                  div.a(v-if="type === 'nummers'")
-                    tijdloze-song-artist(:song='item.entry.song')
-                  div.a(v-else)
-                    tijdloze-artist(:artist='item.entry.artist')
-                  div(v-if="type === 'nummers'")
-                    tijdloze-song(:song='item.entry.song')
-                  div(v-if="type === 'albums'")
-                    tijdloze-album(:album='item.entry.album')
-                div.p {{ Math.round(item.entry.points * 10) / 10 }}
+          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40" v-slot="{ item, index }")
+            div.entry(:class="{lineBelow: index % 5 === 4}")
+              div.r
+                | {{ item.position }}
+              div.c
+                div.a(v-if="type === 'nummers'")
+                  song-artist-link(:song='item.entry.song')
+                div.a(v-else)
+                  artist-link(:artist='item.entry.artist')
+                div(v-if="type === 'nummers'")
+                  song-link(:song='item.entry.song')
+                div(v-if="type === 'albums'")
+                  album-link(:album='item.entry.album')
+              div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
 <script>
@@ -98,6 +97,8 @@ div
   import LanguageFilter from "@/components/LanguageFilter";
   import LeadVocalsFilter from "@/components/LeadVocalsFilter";
   import Album from "../orm/Album";
+  import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
   const TYPE_SONGS = 'nummers'
   const TYPE_ALBUMS = 'albums'
@@ -146,7 +147,7 @@ div
     }
   }
 
-  export default {
+  export default defineNuxtComponent({
     components: {CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
       const type = parseType(this.$route.query.type)
@@ -155,8 +156,8 @@ div
         type,
         filter: parseFilter(this.$route.query.filter),
         cutoff: parseCutoff(this.$route.query.cutoff),
-        startYear: this.$route.query.start ? this.$route.query.start : _.first(useRootStore().years).yyyy,
-        endYear: this.$route.query.einde ? this.$route.query.einde : useRootStore().lastCompleteYear.yyyy,
+        startYear: this.$route.query.start ? this.$route.query.start : _.first(useRootStore().years)?.yyyy,
+        endYear: this.$route.query.einde ? this.$route.query.einde : useRootStore().lastCompleteYear?.yyyy,
         minReleaseYear: undefined,
         maxReleaseYear: undefined,
         scoreMethod: parseScoreMethod(this.$route.query.score, type),
@@ -175,8 +176,8 @@ div
       queryParams() {
         const allParams = {
           type: this.type,
-          start: this.startYear.toString(),
-          einde: this.endYear.toString(),
+          start: this.startYear?.toString(),
+          einde: this.endYear?.toString(),
           filter: this.filter,
           cutoff: this.cutoff,
           score: this.scoreMethod,
@@ -328,8 +329,8 @@ div
         this.type = parseType(newQuery.type);
         this.filter = parseFilter(newQuery.filter);
         this.cutoff = parseCutoff(newQuery.cutoff);
-        this.startYear = newQuery.start ? newQuery.start : _.first(this.$store.getters.years).yyyy;
-        this.endYear = newQuery.einde ? newQuery.einde : this.$store.getters.lastCompleteYear.yyyy;
+        this.startYear = newQuery.start ? newQuery.start : _.first(useRootStore().years)?.yyyy;
+        this.endYear = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
         this.scoreMethod = parseScoreMethod(newQuery.score, this.type);
         this.countryFilter = newQuery.land;
         this.languageFilter = newQuery.taal;
@@ -393,9 +394,8 @@ div
     },
     head: {
       title: 'Volledige database'
-    },
-    ssrComputedCache: true
-  }
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

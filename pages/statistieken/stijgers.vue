@@ -1,23 +1,25 @@
 <template lang="pug">
+Title Stijgers
 div
   h2 Tijdloze stijgers
-  tijdloze-tabs(:tabs="[\
+  tabs(:tabs="[\
     { to: '/statistieken/stijgers', title: 'Per jaar' },\
     { to: '/statistieken/stijgers/lijst', title: 'Grootste aller tijden' }\
   ]")
-    nuxt-child(:data='data' :years='years')
+    nuxt-page(:data='data' :years='years')
 </template>
 
 <script>
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
   export default {
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       },
       data() {
         const dataPoints = [];
@@ -37,10 +39,6 @@ div
         });
         return dataPoints;
       }
-    },
-    head: {
-      title: 'Stijgers'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

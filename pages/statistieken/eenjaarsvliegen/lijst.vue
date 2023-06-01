@@ -11,11 +11,11 @@ table.lijst.perVijf
     tr(v-for='{entry, position} in ranking')
       td.r {{position}}
       td
-        tijdloze-year(:year='entry.year')
+        year-link(:year='entry.year')
       td.a
-        tijdloze-song-artist(:song='entry.song')
+        song-artist-link(:song='entry.song')
       td
-        tijdloze-song(:song='entry.song')
+        song-link(:song='entry.song')
       td {{entry.song.position(entry.year)}}
       td
         template(v-if='entry.isFinal') *

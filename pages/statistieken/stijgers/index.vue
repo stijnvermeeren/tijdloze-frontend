@@ -7,16 +7,16 @@ table.lijst.perVijf
       th.l(colspan='4') Grootste stijger
     tr(v-for='{year, entries, topEntry} in listData')
       td.r
-        tijdloze-year(:year='year')
+        year-link(:year='year')
       td {{entries.length}}
       td(v-if='topEntry')
         | {{topEntry.oldPosition - topEntry.newPosition}} posities
       td.i(v-if='topEntry')
         | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
       td.a(v-if='topEntry')
-        tijdloze-song-artist(:song='topEntry.song')
+        song-artist-link(:song='topEntry.song')
       td(v-if='topEntry')
-        tijdloze-song(:song='topEntry.song')
+        song-link(:song='topEntry.song')
       td.l(v-if='!topEntry' colspan='4')
         | /
 </template>

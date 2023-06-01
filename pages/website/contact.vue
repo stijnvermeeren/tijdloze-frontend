@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Contact
 div
   h2 Contact
 
@@ -61,8 +62,8 @@ div
   export default {
     data() {
       return {
-        name: this.$store.getters['auth/isAuthenticated'] ? this.$store.getters['auth/displayNameWithFallback'] : '',
-        email: this.$store.getters['auth/isAuthenticated'] ? this.$store.state.auth.user.email: '',
+        name: useAuthStore().isAuthenticated ? useAuthStore().displayNameWithFallback : '',
+        email: useAuthStore().isAuthenticated ? useAuthStore().user.email: '',
         message: "",
         error: null,
         emailTouched: false,
@@ -97,7 +98,7 @@ div
           payLoad.email = this.email.trim();
         }
 
-        this.$axios.$post('/contact', payLoad).then(response => {
+        useFetch('/contact', { method: 'POST', data: payLoad }).then(response => {
           this.inProgress = false;
           this.success = true;
         }, error => {
@@ -109,9 +110,6 @@ div
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email.toLowerCase());
       }
-    },
-    head: {
-      title: "Contact"
     }
   }
 </script>

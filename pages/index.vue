@@ -137,8 +137,7 @@ div
         const comments = await useApiFetch(`comments/1`);
         this.comments = _.take(comments, 5);
       }
-    },
-    ssrComputedCache: true
+    }
   })
 </script>
 

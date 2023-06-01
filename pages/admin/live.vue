@@ -20,7 +20,7 @@ div
       |
       | - {{ previousSong.title }}
       |
-      el-button(@click='undo()' :disabled='processing' round size="mini") Ongedaan maken
+      el-button(@click='undo()' :disabled='processing' round size="small") Ongedaan maken
 
   el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
     | Jaar {{currentYear.yyyy}} starten ongedaan maken
@@ -41,7 +41,7 @@ div
       | Importeren van "{{importQuery}}".
       =" "
       a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
-        el-button(size="mini" round icon="el-icon-link") Zoek op Google
+        el-button(size="small" round icon="el-icon-link") Zoek op Google
 
     div(v-show="nextPosition > 0")
       el-radio-group.nextSongTab(v-model="nextSongTab")

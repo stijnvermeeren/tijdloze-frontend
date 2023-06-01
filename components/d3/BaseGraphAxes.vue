@@ -4,6 +4,7 @@ g
     path.domain(:d='`M0,0 H ${rightX}`')
     g.tick(
       v-for='year in years'
+      key='year.yyyy'
       v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
       :transform='`translate(${xScale(year._yy)},0)`'
       :class="{nextToHighlighted: isNextToHoverYear(year)}"
@@ -35,7 +36,7 @@ g
 <script>
   import Year from "../../orm/Year";
 
-  export default {
+  export default defineNuxtComponent({
     props: {
       xScale: Function,
       yScale: Function,
@@ -58,12 +59,12 @@ g
       },
       isNextToHoverYear(year) {
         return !!this.hoverYear && (
-            (!!year.previous() && year.previous().yyyy === this.hoverYear.yyyy) ||
-            (!!year.next() && year.next().yyyy === this.hoverYear.yyyy)
+            (year.previous()?.yyyy === this.hoverYear.yyyy) ||
+            (year.next()?.yyyy === this.hoverYear.yyyy)
         );
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

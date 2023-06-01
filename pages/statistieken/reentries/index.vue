@@ -14,7 +14,7 @@ table.lijst.perEen
               th Afwezigheid
     tr(v-for='{year, entries} in listData')
       td.r
-        tijdloze-year(:year='year')
+        year-link(:year='year')
       td {{entries.length}}
       td
         table.valueDataDataValue(v-if='entries.length')
@@ -22,9 +22,9 @@ table.lijst.perEen
             tr(v-for='entry in entries')
               td {{entry.song.position(entry.year)}}
               td.a
-                tijdloze-song-artist(:song='entry.song')
+                song-artist-link(:song='entry.song')
               td
-                tijdloze-song(:song='entry.song')
+                song-link(:song='entry.song')
               td
                 | {{entry.absenceYears}} jaar
         div(v-else) /

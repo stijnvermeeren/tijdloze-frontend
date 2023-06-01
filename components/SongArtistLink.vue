@@ -1,11 +1,11 @@
 <template lang="pug">
 span
-  tijdloze-artist(:artist="song.artist")
+  artist-link(:artist="song.artist")
   template(v-if='song.secondArtist')
     |
     | en
     |
-    tijdloze-artist(:artist='song.secondArtist')
+    artist-link(:artist='song.secondArtist')
 </template>
 
 <script>

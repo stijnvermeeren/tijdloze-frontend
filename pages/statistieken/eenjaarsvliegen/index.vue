@@ -14,7 +14,7 @@ table.lijst.perEen
               th Definitief
     tr(v-for='year in listYears')
       td.r
-        tijdloze-year(:year='year')
+        year-link(:year='year')
       td {{entriesPerYear(year).length}}
       td
         table.valueDataDataValue(v-if='entriesPerYear(year).length')
@@ -22,9 +22,9 @@ table.lijst.perEen
             tr(v-for='entry in entriesPerYear(year)')
               td {{entry.song.position(entry.year)}}
               td.a
-                tijdloze-song-artist(:song='entry.song')
+                song-artist-link(:song='entry.song')
               td
-                tijdloze-song(:song='entry.song')
+                song-link(:song='entry.song')
               td
                 template(v-if='entry.isFinal') *
         div(v-else) /

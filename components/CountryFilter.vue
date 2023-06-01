@@ -6,6 +6,7 @@ el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nation
 <script>
   import countries from '~/utils/country'
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
   export default {
     name: 'CountryInput',
@@ -27,7 +28,7 @@ el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nation
         return _.sortBy(Object.keys(this.countries), countryId => countries[countryId])
       },
       usedCountryIds() {
-        return this.sortedCountryIds.filter(countryId => this.$store.getters.usedCountryIds.has(countryId));
+        return this.sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId));
       }
     },
     methods: {

@@ -12,8 +12,8 @@ div
         input(v-model='question')
       h4 Antwoorden
         |
-        el-button(@click="answers.push({text: ''})" size="mini") Nog een antwoord
-        el-button(v-if='answers.length > 2' @click='answers.pop()' size="mini") Laatste antwoord verwijderen
+        el-button(@click="answers.push({text: ''})" size="small") Nog een antwoord
+        el-button(v-if='answers.length > 2' @click='answers.pop()' size="small") Laatste antwoord verwijderen
       ul(v-for='answer in answers')
         li
           input(v-model='answer.text')

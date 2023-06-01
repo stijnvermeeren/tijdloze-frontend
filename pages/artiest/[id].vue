@@ -1,4 +1,5 @@
 <template lang="pug">
+Title {{artist.fullName}}
 div
   div.flexTitle
     page-title(icon='artist' icon-alt='Artiest')
@@ -10,9 +11,9 @@ div
   div.links
     nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
       el-button(size="small" round)
-        tijdloze-country-icon(:country-id='artist.countryId' :include-name="true")
+        country-icon(:country-id='artist.countryId' :include-name="true")
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="mini" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round icon="el-icon-link") {{ link.title }}
 
   el-alert(v-if='fullArtistData.notes' :closable="false" show-icon)
     make-links(:text='fullArtistData.notes')
@@ -32,7 +33,7 @@ div
     div(v-if="tab === 'album'")
       ul(v-if='artist.allAlbums')
         li(v-for='album in artist.allAlbums')
-          tijdloze-album(:album='album')
+          album-link(:album='album')
           |  ({{album.releaseYear}})
           ul(v-if='album.songsSorted.length')
             li(v-for='song in album.songsSorted' v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
@@ -51,11 +52,9 @@ div
   import Artist from "@/orm/Artist";
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
+  import {useRepo} from "pinia-orm";
 
-  const rootStore = useRootStore()
-  const authStore = useAuthStore()
-
-  export default {
+  export default defineNuxtComponent({
     components: {
       Graph
     },
@@ -66,21 +65,25 @@ div
     },
     computed: {
       artist() {
-        return Artist.query()
-          .withAll()
-          .with('albums.songs')
-          .with('albums.songs.secondArtist')
-          .with('songs.album')
-          .with('songs.secondArtist')
-          .with('secondarySongs.artist')
-          .with('secondarySongs.album.songs.artist')
+        return useRepo(Artist)
+          .with('albums', q1 => q1
+            .with('songs', q2 => q2
+              .with('secondArtist')))
+          .with('songs', q1 => q1
+            .with('album')
+            .with('secondArtist'))
+          .with('secondarySongs', q1 => q1
+            .with('artist')
+            .with('album', q2 => q2
+              .with('songs', q3 => q3
+                .with('artist'))))
           .find(this.fullArtistData.id);
       },
       top100Songs() {
-        return this.artist.allSongs.filter(song => song.listCount(this.$store.getters.years) > 0)
+        return this.artist.allSongs.filter(song => song.listCount(useRootStore().years) > 0)
       },
       currentYear() {
-        return rootStore.currentYear;
+        return useRootStore().currentYear;
       },
       links() {
         const links = [];
@@ -100,21 +103,14 @@ div
         return links;
       },
       isAdmin() {
-        return authStore.isAdmin;
+        return useAuthStore().isAdmin;
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        fullArtistData: await useApiFetch(`artist/${idFromSlug(params.id)}`)
-      };
-    },
-    head() {
-      return {
-        title: this.artist.fullName
-      }
-    },
-    ssrComputedCache: true
-  }
+    async asyncData() {
+      const {data: fullArtistData} = await useApiFetch(`artist/${idFromSlug(useRoute().params.id)}`)
+      return {fullArtistData}
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -7,7 +7,7 @@ div
       el-menu(
         :default-openeds="openeds"
         :default-active="route"
-        background-color="inherit"
+        background-color="#fadfbb"
         text-color="#003388"
       )
         nuxt-link(to="/")
@@ -15,7 +15,7 @@ div
         nuxt-link(v-if='commentsOn' to="/reacties")
           el-menu-item(index="/reacties") Reageer en discussieer
         el-sub-menu(v-if='listInProgress' index="inprogress")
-          template(slot="title") De Tijdloze {{currentYear.yyyy}}
+          template(#title) De Tijdloze {{currentYear.yyyy}}
           nuxt-link(:to="`/lijst/${currentYear.yyyy}`")
             el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
           nuxt-link(to="/lijst/opkomst")
@@ -25,13 +25,14 @@ div
           nuxt-link(to="/polls")
             el-menu-item(index="/polls") Polls
         el-sub-menu(index="/lijst")
-          template(slot="title") De Tijdloze van...
+          template(#title) De Tijdloze van...
           nuxt-link(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`')
             el-menu-item(:index='`/lijst/${year.yyyy}`') {{year.yyyy}}
         nuxt-link(to="/database")
           el-menu-item(index="/database") Volledige database
         el-sub-menu(index="/statistieken")
-          template(slot="title") Statistieken #[span.addition (top 100)]
+          template(#title)
+            span Statistieken #[span.addition (top 100)]
           el-menu-item-group(title="Verschuivingen")
             nuxt-link(to="/statistieken/nieuwkomers")
               el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
@@ -63,7 +64,7 @@ div
             nuxt-link(to="/statistieken/leeftijden")
               el-menu-item(index="/statistieken/leeftijden") Leeftijden
         el-sub-menu(index="/website")
-          template(slot="title") Deze website
+          template(#title) Deze website
           nuxt-link(to="/website")
             el-menu-item(index="/website") Algemene info
           nuxt-link(to="/website/geschiedenis")

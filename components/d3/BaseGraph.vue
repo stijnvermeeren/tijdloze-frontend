@@ -2,8 +2,9 @@
   import {scaleLinear, scaleBand} from "d3-scale";
   import {line} from "d3-shape";
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
-  export default {
+  export default defineNuxtComponent({
     data() {
       return {
         fullWidth: 760,
@@ -19,7 +20,7 @@
         return this.fullHeight - this.margin.top - this.margin.bottom;
       },
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       xScale() {
         return scaleBand()
@@ -83,5 +84,5 @@
         return songLine(_.flatten(intervalLines));
       }
     }
-  }
+  })
 </script>

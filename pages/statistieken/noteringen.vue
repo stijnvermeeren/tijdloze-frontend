@@ -1,32 +1,31 @@
 <template lang="pug">
+Title Noteringen
 div
   h2 Tijdloze Noteringen
-  tijdloze-tabs(:tabs="[\
+  tabs(:tabs="[\
     { to: '/statistieken/noteringen', title: 'In totaal' },\
     { to: '/statistieken/noteringen/perjaar', title: 'Per jaar' },\
     { to: '/statistieken/noteringen/nummers', title: 'Verschillende nummers' }\
   ]")
-    nuxt-child(:artists='artists' :years='years')
+    nuxt-page(:artists='artists' :years='years')
 </template>
 
 <script>
   import Artist from "@/orm/Artist";
+  import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
   export default {
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       artists() {
-        return Artist.query()
+        return useRepo(Artist)
           .with('songs')
           .with('secondarySongs')
-          .all();
+          .get();
       }
-    },
-    head: {
-      title: 'Noteringen'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

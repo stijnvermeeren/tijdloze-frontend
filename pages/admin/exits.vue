@@ -70,8 +70,7 @@ div
     middleware: 'admin',
     head: {
       title: 'Admin: Exits markeren'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>
 

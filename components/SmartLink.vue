@@ -1,9 +1,9 @@
 <template lang="pug">
 span(:class='{bold: isBold}')
-  song(v-if='song' :song='song')
-  artist(v-else-if='artist' :artist='artist' :text='input')
-  year(v-else-if='year' :year='year')
-  year(v-else-if='yearShort' :year='yearShort' short)
+  song-link(v-if='song' :song='song')
+  artist-link(v-else-if='artist' :artist='artist' :text='input')
+  year-link(v-else-if='year' :year='year')
+  year-link(v-else-if='yearShort' :year='yearShort' short)
   span(v-else) {{input}}
 </template>
 
@@ -81,10 +81,9 @@ span(:class='{bold: isBold}')
           const artistName = split[1].trim();
 
           const titleMatches = useRootStore().songIdsByTitle[title.toLowerCase()];
-          console.log(title, artistName, titleMatches)
           if (titleMatches) {
             const combinedMatches = titleMatches.filter(songId => {
-              const foundSong = Song.find(songId);
+              const foundSong = useRepo(Song).find(songId);
               const foundArtistId = this.findArtistId(artistName);
               return foundSong && foundArtistId && foundArtistId === foundSong.artistId;
             });

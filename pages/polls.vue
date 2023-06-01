@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Polls
 div
   h2 Tijdloze {{currentYear.yyyy}}: polls
   div(v-for='poll in currentYearPolls' :key='poll.id')
@@ -20,13 +21,8 @@ div
       }
     },
     async asyncData() {
-      return {
-        polls: await useApiFetch(`poll/list`)
-      };
-    },
-    head: {
-      title: 'Polls'
-    },
-    ssrComputedCache: true
+      const {data: polls} = await useApiFetch(`poll/list`)
+      return {polls}
+    }
   })
 </script>

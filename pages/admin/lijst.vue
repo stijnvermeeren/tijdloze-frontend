@@ -41,7 +41,6 @@ div
     middleware: 'admin',
     head: {
       title: 'Admin: huidige lijst'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

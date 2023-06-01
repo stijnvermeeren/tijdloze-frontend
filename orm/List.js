@@ -11,8 +11,8 @@ export default class List extends Model {
   static fields() {
     return {
       year: this.attr(null),
-      songIds: this.attr(null),
-      top100SongIds: this.attr(null),
+      songIds: this.attr([]),
+      top100SongIds: this.attr([]),
       songs: this.hasManyBy(Song, 'songIds'),
       top100Songs: this.hasManyBy(Song, 'top100SongIds')
     };

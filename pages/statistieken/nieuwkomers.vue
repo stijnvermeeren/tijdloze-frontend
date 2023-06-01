@@ -1,22 +1,25 @@
 <template lang="pug">
+Title Nieuwkomers
 div
   h2 Tijdloze nieuwkomers
-  tijdloze-tabs(:tabs="[\
+  tabs(:tabs="[\
     { to: '/statistieken/nieuwkomers', title: 'Per jaar' },\
     { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },\
     { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }\
   ]")
-    nuxt-child(:data='data' :years='years')
+    nuxt-page(:data='data' :years='years')
 </template>
 
 <script>
+  import {useRootStore} from "~/stores/root";
+
   export default {
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       },
       data() {
         const dataPoints = [];
@@ -32,10 +35,6 @@ div
         });
         return dataPoints;
       }
-    },
-    head: {
-      title: 'Nieuwkomers'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

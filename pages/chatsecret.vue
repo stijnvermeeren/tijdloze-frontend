@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Chatbox
 div
   h2 De Tijdloze chatbox
   div(v-if='isAuthenticated')
@@ -17,21 +18,22 @@ div
 
 <script>
   import Chat from '../components/Chat'
+  import {useAuthStore} from "~/stores/auth";
 
   export default {
     components: { Chat },
     data() {
       return {
-        name: this.$store.getters['auth/displayName'],
+        name: useAuthStore().displayName,
         submittingDisplayName: false
       }
     },
     computed: {
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       displayName() {
-        return this.$store.getters['auth/displayName'];
+        return useAuthStore().displayName;
       },
       invalidDisplayName() {
         return !this.name || this.name.length === 0;
@@ -46,17 +48,13 @@ div
         };
         this.$axios.$post(`user/display-name`, data).then(user => {
           this.submittingDisplayName = false;
-          this.$store.commit('auth/setUser', user);
+          useAuthStore().setUser(user);
         });
       },
       login() {
-        this.$auth.login(this.$route.path);
+        this.$auth.login(useRoute().path);
       }
-    },
-    head: {
-      title: 'Chatbox'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>
 

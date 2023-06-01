@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Op komst
 div
   h2 Op komst in de Tijdloze van {{year.yyyy}}?
   #toelichting(style='margin-bottom: 1.5em;')
@@ -17,35 +18,32 @@ div
         th Nummer
       tr(v-for='song in upcomingSongs')
         td.n
-          tijdloze-position(:song='song' :year='year.previous().previous()')
+          position(:song='song' :year='year.previous().previous()')
         td.r
-          tijdloze-position-change(:song='song' :year='year.previous()')
-          tijdloze-position(:song='song' :year='year.previous()')
+          position-change(:song='song' :year='year.previous()')
+          position(:song='song' :year='year.previous()')
         td.a
-          tijdloze-song-artist(:song='song')
+          song-artist-link(:song='song')
         td
-          tijdloze-song(:song='song')
+          song-link(:song='song')
 </template>
 
 <script>
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
   export default {
     computed: {
       year() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       upcomingSongs() {
-        const previousYear = this.$store.getters.listTop100(this.year.previous())
+        const previousYear = useRootStore().listTop100(this.year.previous())
         return _.reverse(
           previousYear.filter(song => !song.position(this.year) && song.probablyInList(this.year))
         );
       }
-    },
-    head: {
-      title: 'Op komst'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>
 

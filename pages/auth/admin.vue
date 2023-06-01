@@ -3,6 +3,8 @@ p Signing in
 </template>
 
 <script>
+  import {useAuthStore} from "~/stores/auth";
+
   export default {
     data() {
       return {
@@ -11,17 +13,17 @@ p Signing in
     },
     computed: {
       user() {
-        return this.$store.state.auth.user;
+        return useAuthStore().user;
       }
     },
     watch: {
       user(newUser) {
         if (!this.redirected && newUser) {
           if (newUser.isAdmin) {
-            const redirect = this.$route.query['redirect']
-            this.$router.replace(redirect ? redirect : '/');
+            const redirect = useRoute().query['redirect']
+            useRouter().replace(redirect ? redirect : '/');
           } else {
-            this.$router.replace('/');
+            useRouter().replace('/');
           }
           this.redirected = true;
         }

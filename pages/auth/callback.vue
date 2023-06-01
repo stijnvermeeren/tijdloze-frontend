@@ -10,7 +10,7 @@ p Je wordt aangemeld...
       const sessionRedirectPath = sessionStorage.getItem("redirectPath");
       sessionStorage.removeItem("redirectPath");
       const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
-      this.$router.replace(redirectPath);
+      await useRouter().replace(redirectPath);
     }
   }
 </script>

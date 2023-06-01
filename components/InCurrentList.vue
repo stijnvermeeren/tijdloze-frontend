@@ -23,6 +23,7 @@ div.container
 <script>
   import _ from 'lodash'
   import Artist from "../orm/Artist";
+  import {useRootStore} from "~/stores/root";
 
   export default {
     name: 'InCurrentList',
@@ -32,7 +33,7 @@ div.container
     },
     computed: {
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       previousYear() {
         return this.currentYear.previous();

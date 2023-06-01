@@ -1,19 +1,20 @@
 <template lang="pug">
+Title Decennia
 div
   h2 Tijdloze decennia
   .toelichting
     p
-      tijdloze-links(text='Er stond slechts éénmaal een nummer uit de <strong>Fifties</strong> in de Tijdloze: [Jailhouse Rock] van [Elvis Presley], op positie 63 in [1987].')
+      make-links(text='Er stond slechts éénmaal een nummer uit de <strong>Fifties</strong> in de Tijdloze: [Jailhouse Rock] van [Elvis Presley], op positie 63 in [1987].')
     p
-      tijdloze-links(text="De gouden <strong>[Sixties]</strong> vulden lange tijd ongeveer 20% van de Tijdloze. Rond de eeuwwisseling daalde dit aantal echter dramatisch, met maar liefst zes exits in [2001] alleen. Op het dieptepunt ('04-'06) stonden er nog maar vijf nummers uit de Sixties in de Tijdloze. De laatste jaren is er echter een kleine revival, en is het aantal Sixties-songs weer langzaam aan het stijgen.")
+      make-links(text="De gouden <strong>[Sixties]</strong> vulden lange tijd ongeveer 20% van de Tijdloze. Rond de eeuwwisseling daalde dit aantal echter dramatisch, met maar liefst zes exits in [2001] alleen. Op het dieptepunt ('04-'06) stonden er nog maar vijf nummers uit de Sixties in de Tijdloze. De laatste jaren is er echter een kleine revival, en is het aantal Sixties-songs weer langzaam aan het stijgen.")
     p
-      tijdloze-links(text='De <strong>[Seventies]</strong> en <strong>Eighties</strong> zorgden in de beginjaren van de Tijdloze voor de grote meerderheid van de nummers. Logisch eigenlijk, want de [Nineties] waren nog maar nauwelijks of niet begonnen.')
+      make-links(text='De <strong>[Seventies]</strong> en <strong>Eighties</strong> zorgden in de beginjaren van de Tijdloze voor de grote meerderheid van de nummers. Logisch eigenlijk, want de [Nineties] waren nog maar nauwelijks of niet begonnen.')
     p
-      tijdloze-links(text="[The Ship Song] van [Nick Cave] was in [1990] het eerste nummer uit de <strong>Nineties</strong> dat in de Tijdloze stond. De muziek uit dit decennium kreeg echter buitengewoon snel de status van 'tijdloos'. In de eerste jaren van de 21ste eeuw bestond de helft van de lijst uit nummers uit de Nineties. Geen enkel ander decennium had ooit zo'n overwicht.")
+      make-links(text="[The Ship Song] van [Nick Cave] was in [1990] het eerste nummer uit de <strong>Nineties</strong> dat in de Tijdloze stond. De muziek uit dit decennium kreeg echter buitengewoon snel de status van 'tijdloos'. In de eerste jaren van de 21ste eeuw bestond de helft van de lijst uit nummers uit de Nineties. Geen enkel ander decennium had ooit zo'n overwicht.")
     p
-      tijdloze-links(text='[They Stood Up For Love] van [Live] en [I Would Stay] van [Krezip] waren in [2000] de eerste nummers uit de <strong>Noughties</strong> in de Tijdloze. Ironisch genoeg zijn beide nummers ondertussen reeds verdwenen uit de lijst. Andere liedjes zijn in de plaats gekomen, maar in mindere mate dan dit met nummers uit de Nineties is gebeurd.')
+      make-links(text='[They Stood Up For Love] van [Live] en [I Would Stay] van [Krezip] waren in [2000] de eerste nummers uit de <strong>Noughties</strong> in de Tijdloze. Ironisch genoeg zijn beide nummers ondertussen reeds verdwenen uit de lijst. Andere liedjes zijn in de plaats gekomen, maar in mindere mate dan dit met nummers uit de Nineties is gebeurd.')
     p
-      tijdloze-links(text='De <strong>Twenty-tens</strong> kwamen voor het eerst in [2011] in de Tijdloze met [No Sound But the Wind] van de [Editors].')
+      make-links(text='De <strong>Twenty-tens</strong> kwamen voor het eerst in [2011] in de Tijdloze met [No Sound But the Wind] van de [Editors].')
   .scrollbox
     table.lijst
       tbody
@@ -29,26 +30,28 @@ div
           td.r
             | {{total}}
   .graph(v-for='{decade, dataPoints} in graphData' v-if="dataPoints.length")
-    tijdloze-distribution-graph(:title='decade.name' :points='dataPoints')
+    distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 
 <script>
   import DistributionGraph from "../../components/d3/DistributionGraph"
   import Album from "@/orm/Album";
+  import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
   export default {
     components: {
-      TijdlozeDistributionGraph: DistributionGraph
+      DistributionGraph
     },
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       decades() {
-        const startYear = Album.query().min('releaseYear');
+        const startYear = useRepo(Album).query().min('releaseYear');
         const endYear = this.currentYear.yyyy;
         const decades = [];
         for (let decadeYear = this.decadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {
@@ -66,7 +69,7 @@ div
           };
         });
 
-        this.$store.getters.songs.forEach(song => {
+        useRootStore().songs.forEach(song => {
           this.years.forEach(year => {
             if (song.position(year)) {
               dataPoints[this.decadeYear(song.album.releaseYear)].push({
@@ -98,10 +101,6 @@ div
       decadeYear(yyyy) {
         return yyyy - yyyy % 10;
       }
-    },
-    head: {
-      title: 'Decennia'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

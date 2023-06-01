@@ -1,6 +1,6 @@
 import {useAuthStore} from "~/stores/auth";
 
-export const useApiFetch = (request, opts) => {
+export const useApiFetch = (request, opts = {}) => {
   const apiUri = useApiUri()
   const authStore = useAuthStore()
 

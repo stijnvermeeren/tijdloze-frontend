@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Geschiedenis
 div
   h2 Geschiedenis van tijdloze.rocks
   p In 1987 zag niet alleen de eerste Tijdloze het levenslicht, maar ook de maker van deze website, Stijn Vermeeren.
@@ -21,11 +22,3 @@ div
       li Betere integratie van de chatbox in de website.
       li Upgrade van Vue 2 naar Vue 3.
 </template>
-
-<script>
-  export default {
-    head: {
-      title: "Geschiedenis"
-    }
-  }
-</script>

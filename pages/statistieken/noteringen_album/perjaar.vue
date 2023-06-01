@@ -2,7 +2,7 @@
 div
   .toelichting
     p
-      tijdloze-links(text='Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden.')
+      make-links(text='Deze tabel toont welke albums in een bepaalde editie van Tijdloze veel noteringen hadden.')
   table.lijst.perEen
     tbody
       tr
@@ -26,7 +26,7 @@ div
                     template(v-if='index > 0')
                       | ,
                       |
-                    | #[tijdloze-album(:album='album')] (#[tijdloze-artist(:artist='album.artist')])
+                    | #[album-link(:album='album')] (#[artist-link(:artist='album.artist')])
                 td.l(v-else) /
 </template>
 

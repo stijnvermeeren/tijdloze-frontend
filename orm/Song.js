@@ -3,6 +3,7 @@ import { createSlug } from '~/utils/slug'
 import { Model } from 'pinia-orm'
 import Artist from "./Artist";
 import Album from "./Album";
+import {useRootStore} from "~/stores/root";
 
 export default class Song extends Model {
   static get entity() {
@@ -41,7 +42,7 @@ export default class Song extends Model {
   }
 
   markedAsExit() {
-    return this.$store().state.exitSongIds.includes(this.id)
+    return useRootStore().exitSongIds.includes(this.id)
   }
 
   notInList(year, extended) {
@@ -62,7 +63,7 @@ export default class Song extends Model {
 
     if (year.isCurrent() && year.previous() && this.position(year.previous(), extended)) {
       if (extended) {
-        return this.$store().getters.listInProgress;
+        return useRootStore().listInProgress;
       } else {
         return !(this.markedAsExit() || this.position(year, true) > 100)
       }

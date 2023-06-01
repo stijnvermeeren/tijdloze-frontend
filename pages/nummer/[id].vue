@@ -1,4 +1,5 @@
 <template lang="pug">
+Title {{song.title}} ({{song.artist.fullName}})
 .container
   div.flexTitle
     page-title(icon='song' icon-alt='Nummer')
@@ -9,14 +10,14 @@
 
   div Nummer van
     = " "
-    strong #[tijdloze-song-artist(:song='song')]
+    strong #[song-artist-link(:song='song')]
   div Origineel op album
     = " "
-    strong #[tijdloze-album(:album='song.album')] ({{ song.album.releaseYear }})
+    strong #[album-link(:album='song.album')] ({{ song.album.releaseYear }})
 
   div.links
     a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="mini" round icon="el-icon-link") {{ link.title }}
+      el-button(size="small" round icon="el-icon-link") {{ link.title }}
 
   el-alert(v-if='fullSongData.notes' :closable="false" show-icon)
     make-links(:text='fullSongData.notes')
@@ -47,13 +48,13 @@
           div
         div(v-for='year in interval' :key='year.yyyy')
           div.year
-            tijdloze-year(:year='year' short)
+            year-link(:year='year' short)
           div
-            tijdloze-position-change(:song='song' :year='year')
-            tijdloze-position(:song='song' :year='year')
+            position-change(:song='song' :year='year')
+            position(:song='song' :year='year')
 
 
-  el-card(v-if='song.listCount($store.getters.years) > 0')
+  el-card(v-if='song.listCount(years) > 0')
     div.header(slot="header")
       div
         div.title Grafiek
@@ -67,23 +68,21 @@
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
+  import {useRepo} from "pinia-orm";
 
-  const rootStore = useRootStore()
-  const authStore = useAuthStore()
-
-  export default {
+  export default defineNuxtComponent({
     components: {
       TijdlozeGraph: Graph
     },
     computed: {
       song() {
-        return Song.query().withAll().find(this.fullSongData.id);
+        return useRepo(Song).withAll().find(this.fullSongData.id);
       },
       years() {
-        return rootStore.years;
+        return useRootStore().years;
       },
       currentYear() {
-        return rootStore.currentYear;
+        return useRootStore().currentYear;
       },
       links() {
         const links = [];
@@ -104,21 +103,14 @@
         return probablyInListIntervals([this.song], this.years, true);
       },
       isAdmin() {
-        return authStore.isAdmin;
+        return useAuthStore().isAdmin;
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        fullSongData: await app.$axios.$get(`song/${idFromSlug(params.id)}`)
-      };
-    },
-    head() {
-      return {
-        title: `${this.song.title} (${this.song.artist.fullName})`
-      }
-    },
-    ssrComputedCache: true
-  }
+    async asyncData() {
+      const {data: fullSongData} = await useApiFetch(`song/${idFromSlug(useRoute().params.id)}`)
+      return {fullSongData}
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

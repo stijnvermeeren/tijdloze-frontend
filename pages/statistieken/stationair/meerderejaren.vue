@@ -21,13 +21,14 @@ table.lijst.perEen
               td.i
                 | {{entry.song.position(entry.years[0])}}
               td.a
-                tijdloze-song-artist(:song='entry.song')
+                song-artist-link(:song='entry.song')
               td
-                tijdloze-song(:song='entry.song')
+                song-link(:song='entry.song')
 </template>
 
 <script>
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
   export default {
     props: {
@@ -35,7 +36,7 @@ table.lijst.perEen
     },
     computed: {
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       },
       byNumberOfYears() {
         let data = [];

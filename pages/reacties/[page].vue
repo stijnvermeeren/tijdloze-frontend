@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Reacties
 div
   div.flexTitle
     h2 Reageer op de Tijdloze
@@ -58,10 +59,10 @@ div
         next();
       });
     },
-    async asyncData({ route, app, params }) {
+    async asyncData() {
       const commentsOn = (await useApiFetch(`text/commentsOn`)).value === 'on';
 
-      const page = +params.page || +route.query.page || 1;
+      const page = +useRoute().params.page || +useRoute().query.page || 1;
       return {
         page,
         commentsOn,
@@ -72,9 +73,6 @@ div
     async mounted() {
       // refresh on client side to avoid a stale cache on the server-side
       this.reload()
-    },
-    head: {
-      title: 'Reacties'
     },
     scrollToTop: true
   })
