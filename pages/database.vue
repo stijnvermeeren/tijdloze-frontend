@@ -72,20 +72,21 @@ div
             el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
       div.content
         div.wrapper
-          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40" v-slot="{ item, index }")
-            div.entry(:class="{lineBelow: index % 5 === 4}")
-              div.r
-                | {{ item.position }}
-              div.c
-                div.a(v-if="type === 'nummers'")
-                  song-artist-link(:song='item.entry.song')
-                div.a(v-else)
-                  artist-link(:artist='item.entry.artist')
-                div(v-if="type === 'nummers'")
-                  song-link(:song='item.entry.song')
-                div(v-if="type === 'albums'")
-                  album-link(:album='item.entry.album')
-              div.p {{ Math.round(item.entry.points * 10) / 10 }}
+          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
+            template(#default="{ item, index }")
+              div.entry(:class="{lineBelow: index % 5 === 4}")
+                div.r
+                  | {{ item.position }}
+                div.c
+                  div.a(v-if="type === 'nummers'")
+                    song-artist-link(:song='item.entry.song')
+                  div.a(v-else)
+                    artist-link(:artist='item.entry.artist')
+                  div(v-if="type === 'nummers'")
+                    song-link(:song='item.entry.song')
+                  div(v-if="type === 'albums'")
+                    album-link(:album='item.entry.album')
+                div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
 <script>

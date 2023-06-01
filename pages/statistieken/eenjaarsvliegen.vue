@@ -25,6 +25,7 @@ div
 <script>
   import List from "../../orm/List";
   import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
   export default {
     computed: {
@@ -36,7 +37,7 @@ div
       },
       data() {
         const dataPoints = [];
-        List.query().with(['top100Songs', 'top100Songs.artist']).get().forEach(list => {
+        useRepo(List).with('top100Songs', query => query.with('artist')).get().forEach(list => {
           const year = useRootStore().year(list.year)
           if (year.previous() && year.next()) {
             list.top100Songs.forEach(song => {

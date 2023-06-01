@@ -112,7 +112,7 @@ div
       }
     },
     async asyncData() {
-      const [chatOnResponse, commentsOnResponse] = await Promise.all([
+      const [{data: chatOnResponse}, {data: commentsOnResponse}] = await Promise.all([
         useApiFetch(`text/chatOn`),
         useApiFetch(`text/commentsOn`)
       ])

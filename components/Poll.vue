@@ -33,6 +33,7 @@
   import PollQuestion from "./PollQuestion";
   import PollAnswer from "./PollAnswer";
   import {usePollStore} from "~/stores/poll";
+  import {useAuthStore} from "~/stores/auth";
 
   export default {
     name: "Poll",
@@ -65,10 +66,10 @@
         return this.isAdmin || !!this.myVote
       },
       myVote() {
-        return this.$store.getters['poll/vote'](this.poll.id)
+        return usePollStore().vote(this.poll.id)
       },
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       voteCount() {
         return _.sumBy(this.livePoll.answers, answer => answer.voteCount);

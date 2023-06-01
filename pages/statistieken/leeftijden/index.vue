@@ -17,6 +17,7 @@
 
 <script>
   import _ from 'lodash'
+  import {useRootStore} from "~/stores/root";
 
   export default {
     data() {
@@ -26,11 +27,11 @@
     },
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       data() {
         const years = this.years;
-        const songs = this.$store.getters.songs;
+        const songs = useRootStore().songs;
 
         return this.cutoffs.map(cutoff => {
           const cutoffData = years.map(year => {

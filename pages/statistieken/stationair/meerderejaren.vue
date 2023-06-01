@@ -42,7 +42,7 @@ table.lijst.perEen
         let data = [];
         let maxYears = 0;
         this.songs.forEach(song => {
-          song.stationaryIntervals(this.$store.getters.years)
+          song.stationaryIntervals(useRootStore().years)
             .filter(interval => interval.length > 2)
             .map(interval => {
               maxYears = Math.max(maxYears, interval.length);
