@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: huidige lijst
 div
   h2 Admin: volledige lijst van dit jaar
 
@@ -9,14 +10,19 @@ div
     | )
 </template>
 
+<script setup>
+definePageMeta({ middleware: 'admin' })
+</script>
+
 <script>
   import SearchBox from '../../components/SearchBox'
   import Position from '../../components/Position'
   import Spotify from '../../components/Spotify'
   import SpotifySearch from '../../components/admin/SpotifySearch'
   import NewSongWizard from '../../components/admin/NewSongWizard'
+  import {useRootStore} from "~/stores/root";
 
-  export default {
+  export default defineNuxtComponent({
     components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
@@ -24,23 +30,19 @@ div
     },
     computed: {
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       songs() {
-        return this.$store.getters.list(this.currentYear)
+        return useRootStore().list(this.currentYear)
       }
     },
     methods: {
       async remove(song) {
         const position = song.position(this.currentYear, true)
         if (confirm(`"${song.artist.fullName} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${this.currentYear.yyyy})?`)) {
-          await this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${position}`)
+          await useApiFetchDelete(`list-entry/${this.currentYear.yyyy}/${position}`)
         }
       }
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: huidige lijst'
     }
-  }
+  })
 </script>

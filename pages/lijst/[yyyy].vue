@@ -181,6 +181,10 @@ div
         return {
           analysisCurrentYear: analysisCurrentYearResponse?.value ?? ''
         }
+      } else {
+        return {
+          analysisCurrentYear: ''
+        }
       }
     },
     validate() {

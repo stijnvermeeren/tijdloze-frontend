@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Gebruikers
 div
   h2 Gebruikers
   div
@@ -34,9 +35,14 @@ div
 
 <script>
   import _ from 'lodash'
+  import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    name: 'users',
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     data() {
       return {
         refreshing: false,
@@ -45,7 +51,7 @@ div
     },
     computed: {
       currentUser() {
-        return this.$store.state.auth.user;
+        return useAuthStore().user;
       },
       userCount() {
         return this.users.length;
@@ -90,32 +96,30 @@ div
       },
       async block(userId) {
         this.refreshing = true;
-        await this.$axios.$post(`/user/${userId}/block`);
-        this.users = await this.$axios.$get(`user/list`);
+        await useApiFetchPost(`/user/${userId}/block`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       },
       async unblock(userId) {
         this.refreshing = true;
-        await this.$axios.$delete(`/user/${userId}/block`);
-        this.users = await this.$axios.$get(`user/list`);
+        await useApiFetchDelete(`/user/${userId}/block`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       },
       async refresh() {
         this.refreshing = true;
-        this.users = await this.$axios.$get(`user/list`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        users: await app.$axios.$get(`user/list`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Gebruikers'
+    async asyncData() {
+      const {data: users} = await useApiFetch(`user/list`);
+      return {users};
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

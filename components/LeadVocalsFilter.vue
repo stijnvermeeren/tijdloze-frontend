@@ -1,5 +1,5 @@
 <template lang="pug">
-el-select(:value='value' @input='input' placeholder="Lead vocals" clearable size="small")
+el-select(:value='modelValue' @input='input' placeholder="Lead vocals" clearable size="small")
   el-option(
     v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
     :key='genderId'
@@ -13,8 +13,9 @@ el-select(:value='value' @input='input' placeholder="Lead vocals" clearable size
   export default {
     name: 'LeadVocalsInput',
     props: {
-      value: String
+      modelValue: String
     },
+    emits: ['update:modelValue'],
     computed: {
       vocalsGenders() {
         return vocalsGenders;
@@ -22,7 +23,7 @@ el-select(:value='value' @input='input' placeholder="Lead vocals" clearable size
     },
     methods: {
       input(newValue) {
-        this.$emit('input', newValue);
+        this.$emit('update:modelValue', newValue);
       }
     }
   }

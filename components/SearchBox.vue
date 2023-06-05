@@ -1,6 +1,7 @@
 <template lang="pug">
 #searchBox
-  span.fa.fa-search
+  span.icon
+    el-icon-search
   input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
   #searchResults(v-if='query.length > 0')
     .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
@@ -32,6 +33,7 @@
   import Song from "@/orm/Song";
   import Album from "@/orm/Album";
   import {normalize} from "@/utils/string";
+  import {useRepo} from "pinia-orm";
 
   export default {
     props: {
@@ -88,13 +90,13 @@
         return tokens;
       },
       allArtists() {
-        return Artist.all().filter(this.artistFilter);
+        return useRepo(Artist).all().filter(this.artistFilter);
       },
       allSongs() {
-        return Song.query().with('artist').with('secondArtist').all().filter(this.songFilter);
+        return useRepo(Song).with('artist').with('secondArtist').get().filter(this.songFilter);
       },
       allAlbums() {
-        return Album.query().with('artist').all().filter(this.albumFilter);
+        return useRepo(Album).with('artist').get().filter(this.albumFilter);
       },
       results() {
         if (!this.query) {
@@ -233,17 +235,19 @@
     margin: 10px 0;
     font-size: 16px;
 
-    .fa-search {
+    .icon {
       position: absolute;
       top: 8px;
       left: 10px;
+      height: 16px;
+      width: 16px;
       z-index: 1;
     }
 
     input {
       width: 100%;
       height: 28px;
-      text-indent: 32px;
+      text-indent: 30px;
 
       background: styleConfig.$inputBackgroundColor;
       border: 1px solid #aaa;

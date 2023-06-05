@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Album: {{title}}
 div
   h2 Album aanpassen
   table.info
@@ -43,8 +44,15 @@ div
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import ArtistSelect from '../../../components/admin/ArtistSelect'
   import Artist from "@/orm/Artist";
+  import {useApiFetchPut} from "~/composables/useApiFetchPut";
+  import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     components: {ArtistSelect, AllMusicUrlInput, WikiUrlInput},
     data() {
       return {
@@ -53,40 +61,32 @@ div
     },
     computed: {
       artist() {
-        return Artist.find(this.fullAlbumData.artistId);
+        return useRepo(Artist).find(this.fullAlbumData.artistId);
       },
       disabled() {
         return this.processing || !this.fullAlbumData.title || !this.fullAlbumData.artistId || !this.fullAlbumData.releaseYear
       }
     },
     methods: {
-      submit() {
+      async submit() {
         this.processing = true;
-        this.$axios.$put(`album/${this.fullAlbumData.id}`, this.fullAlbumData).then(result => {
-          this.$router.push(`/album/${this.fullAlbumData.id}`);
-        })
+        await useApiFetchPut(`album/${this.fullAlbumData.id}`, this.fullAlbumData)
+        await useRouter().push(`/album/${this.fullAlbumData.id}`);
       },
-      submitDelete() {
+      async submitDelete() {
         if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          this.$axios.$delete(`album/${this.fullAlbumData.id}`).then(result => {
-            this.$router.push(`/database`);
-          })
+          await useApiFetchDelete(`album/${this.fullAlbumData.id}`)
+          await useRouter().push(`/database`);
         }
       }
     },
-    async asyncData({ params, app }) {
-      const fullAlbumData = await app.$axios.$get(`album/${params.id}`)
+    async asyncData() {
+      const {data: fullAlbumData} = await useApiFetch(`album/${useRoute().params.id}`)
       return {
         fullAlbumData,
         title: fullAlbumData.title
       };
-    },
-    middleware: 'admin',
-    head() {
-      return {
-        title: `Admin: Album: ${this.title}`
-      }
     }
   })
 </script>

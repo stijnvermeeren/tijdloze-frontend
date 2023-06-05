@@ -18,11 +18,12 @@ div
 <script>
   import SearchBox from '../SearchBox'
   import Artist from "@/orm/Artist";
+  import {useRepo} from "pinia-orm";
   export default {
     name: 'ArtistSelect',
     components: {SearchBox},
     props: {
-      value: {
+      modelValue: {
         type: Number
       },
       required: {
@@ -34,32 +35,33 @@ div
         default: false
       }
     },
+    emits: ['update:modelValue'],
     data() {
       return {
-        editing: !this.value
+        editing: !this.modelValue
       }
     },
     computed: {
       artist() {
-        if (this.value) {
-          return Artist.find(this.value);
+        if (this.modelValue) {
+          return useRepo(Artist).find(this.modelValue);
         } else {
           return undefined;
         }
       }
     },
     watch: {
-      value() {
-        this.editing = !this.value;
+      modelValue() {
+        this.editing = !this.modelValue;
       }
     },
     methods: {
       clear() {
-        this.value = undefined;
-        this.$emit('input', undefined);
+        this.modelValue = undefined;
+        this.$emit('update:modelValue', undefined);
       },
       selectArtist(artist) {
-        this.$emit('input', artist.id);
+        this.$emit('update:modelValue', artist.id);
         this.editing = false;
       }
     }

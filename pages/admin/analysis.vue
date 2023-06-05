@@ -1,41 +1,44 @@
 <template lang="pug">
+Title Admin: interessante feiten {{currentYear.yyyy}}
 div
   h2 "Interessante feiten" {{currentYear.yyyy}}
 
   el-card
-    div.header(slot="header")
-      div.title Aanpassen
+    template(#header)
+      div.header
+        div.title Aanpassen
     el-alert(:closable="false" show-icon)
-      div Link naar nummer of artiest:
-        |
-        code [The Chain]
-        |
-        | wordt
-        |
-        make-links(text="[The Chain]")
-      div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
-        |
-        code [One;Metallica]
-        |
-        | wordt
-        |
-        make-links(text="[One;Metallica]")
-      div Een ster in het begin maakt de link vetgedrukt:
-        |
-        code [*Pink Floyd]
-        |
-        | wordt
-        |
-        make-links(text="[*Pink Floyd]")
-      div HTML werkt ook (gebruik voorzichtig en met mate):
-        |
-        code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
-        |
-        | wordt
-        |
-        make-links(text="<strong>vet</strong> <em>scheef</em>")
+      template(#title)
+        div Link naar nummer of artiest:
+          |
+          code [The Chain]
+          |
+          | wordt
+          |
+          make-links(text="[The Chain]")
+        div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
+          |
+          code [One;Metallica]
+          |
+          | wordt
+          |
+          make-links(text="[One;Metallica]")
+        div Een ster in het begin maakt de link vetgedrukt:
+          |
+          code [*Pink Floyd]
+          |
+          | wordt
+          |
+          make-links(text="[*Pink Floyd]")
+        div HTML werkt ook (gebruik voorzichtig en met mate):
+          |
+          code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
+          |
+          | wordt
+          |
+          make-links(text="<strong>vet</strong> <em>scheef</em>")
     div
-      textarea(v-model='analyse')
+      textarea(v-model='analysis')
     div(v-if="outOfDate")
       | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
       |
@@ -44,62 +47,73 @@ div
       el-button(@click='save()' :disabled='saving') Opslaan
 
   el-card
-    div.header(slot="header")
-      div.title Preview
+    template(#header)
+      div.header
+        div.title Preview
     div
       .analyse
         ul
-          li(v-for='text in analysePreview')
+          li(v-for='text in analysisPreview')
             make-links(:text='text')
 </template>
 
 <script>
-  export default {
-    name: 'users',
+  import {useRootStore} from "~/stores/root";
+
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     data() {
       return {
         refreshing: false,
         saving: false,
-        interval: undefined
+        interval: undefined,
+        analysis: this.initialAnalysis
       }
     },
     computed: {
       outOfDate() {
         return this.lastLoadedAnalysis !== this.initialAnalysis;
       },
-      analysePreview() {
-        if (this.analyse) {
-          return this.analyse.split(/\r?\n/);
+      analysisPreview() {
+        if (this.analysis) {
+          return this.analysis.split(/\r?\n/);
         } else {
           return "";
         }
       },
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
+      },
+      apiPath() {
+        return `text/analysis_${this.currentYear.yyyy}`
       }
     },
     methods: {
       async save() {
         this.saving = true;
         const data = {
-          text: this.analyse
+          text: this.analysis
         };
-        await this.$axios.$post(`text/analysis_${this.currentYear.yyyy}`, data);
+        await useApiFetchPost(this.apiPath, data);
         this.saving = false;
       },
       async refresh() {
         this.refreshing = true;
-        const response = await this.$axios.$get(`text/analysis_${this.currentYear.yyyy}`);
-        this.analyse = response.value;
-        this.initialAnalysis = response.value;
-        this.lastLoadedAnalysis = response.value;
+        const { data } = await useApiFetch(this.apiPath);
+        this.analysis = data.value.value;
+        this.initialAnalysis = data.value.value;
+        this.lastLoadedAnalysis = data.value.value;
         this.refreshing = false;
       }
     },
     mounted() {
       this.interval = setInterval(async () => {
-        const response = await this.$axios.$get(`text/analysis_${this.currentYear.yyyy}`);
-        this.lastLoadedAnalysis = response.value;
+        const { data } = await useApiFetch(this.apiPath);
+        this.lastLoadedAnalysis = data.value.value;
       }, 10000);
     },
     beforeDestroy() {
@@ -107,21 +121,14 @@ div
         clearInterval(this.interval);
       }
     },
-    async asyncData({ params, app, store }) {
-      const response = await app.$axios.$get(`text/analysis_${store.getters.currentYear.yyyy}`);
+    async asyncData() {
+      const { data } = await useApiFetch(`text/analysis_${useRootStore().currentYear.yyyy}`);
       return {
-        initialAnalysis: response.value,
-        lastLoadedAnalysis: response.value,
-        analyse: response.value
+        initialAnalysis: data.value.value,
+        lastLoadedAnalysis: data.value.value
       };
-    },
-    middleware: 'admin',
-    head() {
-      return {
-        title: `Admin: interessante feiten ${this.currentYear.yyyy}`
-      }
-    },
-  }
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

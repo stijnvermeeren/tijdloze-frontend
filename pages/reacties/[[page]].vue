@@ -3,7 +3,7 @@ Title Reacties
 div
   div.flexTitle
     h2 Reageer op de Tijdloze
-    div(v-if="$store.getters['auth/isAdmin']")
+    div(v-if="isAdmin")
       nuxt-link(to="/admin/comments")
         el-button(type="warning" round size="small") Admin: verwijderde reacties terugzetten
   comments-pager(:page='page' :pages='pages ')
@@ -24,6 +24,7 @@ div
   import CommentsPager from '~/components/comments/CommentsPager'
   import CommentForm from '~/components/comments/CommentForm'
   import Comment from '~/components/comments/Comment'
+  import {useAuthStore} from "~/stores/auth";
 
   const commentsPerPage = 20;
 
@@ -32,42 +33,47 @@ div
     computed: {
       pages() {
         return Math.ceil(this.commentCount / commentsPerPage);
+      },
+      isAdmin() {
+        return useAuthStore().isAdmin
       }
     },
     methods: {
       async reload() {
-        this.comments = await useApiFetch(`comments/${this.page}`);
-        this.commentCount = (await useApiFetch(`comments/count`)).commentCount;
+        const {data: comments} = await useApiFetch(`comments/${this.page}`);
+        this.comments = comments
+        const {data: commentCountResponse} = await useApiFetch(`comments/count`)
+        this.commentCount = commentCountResponse.value.commentCount;
       },
       onDisplayNameChanged() {
-        const page = this.$route.params.page || 1;
-        useApiFetch(`comments/${page}`).then(comments => {
-          this.comments = comments;
-        });
+        const page = useRoute().params.page || 1;
+        const {data: comments} = useApiFetch(`comments/${page}`)
+        this.comments = comments
       },
       onSubmitted() {
-        useApiFetch(`comments/1`).then(comments => {
-          this.$router.push('/reacties');
-          this.comments = comments;
-        });
+        const {data: comments} = useApiFetch(`comments/1`)
+        useRouter().push('/reacties');
+        this.comments = comments;
       }
     },
-    beforeRouteUpdate (to, from, next) {
+    async beforeRouteUpdate (to, from, next) {
       this.page = +to.query.page || 1;
-      useApiFetch(`comments/${this.page}`).then(comments => {
-        this.comments = comments;
-        next();
-      });
+      const {data: comments} = await useApiFetch(`comments/${this.page}`)
+      this.comments = comments;
+      next();
     },
     async asyncData() {
-      const commentsOn = (await useApiFetch(`text/commentsOn`)).value === 'on';
+      const {data: commentsOnResponse} = await useApiFetch(`text/commentsOn`)
+      const commentsOn = commentsOnResponse.value === 'on';
 
       const page = +useRoute().params.page || +useRoute().query.page || 1;
+      const {data: comments} = await useApiFetch(`comments/${page}`)
+      const {data: commentCountResponse} = await useApiFetch(`comments/count`)
       return {
         page,
         commentsOn,
-        comments: await useApiFetch(`comments/${page}`),
-        commentCount: (await useApiFetch(`comments/count`)).commentCount,
+        comments,
+        commentCount: commentCountResponse.value.commentCount,
       };
     },
     async mounted() {

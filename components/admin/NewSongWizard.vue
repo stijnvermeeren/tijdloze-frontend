@@ -12,11 +12,11 @@ div
         div.flex
           div.hint Voornaam
           div.input
-            el-input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...' size="medium")
+            el-input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...')
         div.flex
           div.hint Naam
           div.input
-            el-input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...' size="medium")
+            el-input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...')
         div.flex
           div.hint Land
           div.input
@@ -34,17 +34,17 @@ div
           div Nieuw album
           div.flex
             div.hint Titel
-            el-input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId" size="medium")
+            el-input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId")
           div.flex
             div.hint Jaar
-            el-input-number(v-model='albumDetails.releaseYear' :disabled="!!albumId" size="medium")
+            el-input-number(v-model='albumDetails.releaseYear' :disabled="!!albumId")
   div.heading Nummer
   div.indent
     div(v-if='artistValid && albumValid')
       div.flex
         div.hint Titel
         div.input
-          el-input(v-model='songDetails.title' placeholder="Titel" size="medium")
+          el-input(v-model='songDetails.title' placeholder="Titel")
       div.flex
         div.hint Taal
         div.input
@@ -76,6 +76,7 @@ div
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
   import {normalize} from "@/utils/string";
+  import {useRepo} from "pinia-orm";
 
   export default {
     name: 'NewSongWizard',
@@ -100,7 +101,7 @@ div
         if (this.artistNew || !this.artistId) {
           return []
         }
-        const artist = Artist.query().withAll().find(this.artistId)
+        const artist = useRepo(Artist).withAll().find(this.artistId)
         if (!artist) {
           return []
         }
@@ -108,7 +109,7 @@ div
         return artist.songs
       },
       album() {
-        return Album.find(this.albumId);
+        return useRepo(Album).find(this.albumId);
       },
       artistValid() {
         if (this.artistNew) {
@@ -280,7 +281,7 @@ div
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
-          const artist = await this.$axios.$post('/artist', artistData);
+          const {data: artist} = await useApiFetchPost('/artist', artistData);
           artistId = artist.id;
         } else {
           artistId = this.artistId;
@@ -293,7 +294,7 @@ div
             title: this.albumDetails.title,
             releaseYear: this.albumDetails.releaseYear
           }
-          const album = await this.$axios.$post('/album', albumData);
+          const {data: album} = await useApiFetchPost('/album', albumData);
           albumId = album.id;
         }
 
@@ -305,7 +306,7 @@ div
           leadVocals: this.songDetails.leadVocals,
           spotifyId: this.songDetails.spotifyId
         }
-        const song = await this.$axios.$post('/song', songData);
+        const {data: song} = await useApiFetchPost('/song', songData);
 
         this.submitting = false;
         Object.assign(this.$data, this.initialData());

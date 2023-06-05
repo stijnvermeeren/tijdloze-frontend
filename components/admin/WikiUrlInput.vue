@@ -1,9 +1,9 @@
 <template lang="pug">
 div
   div
-    input(:value='value' ref='input' @input='update()')
-  .visit(v-if='value')
-    a(:href='value') Visit
+    input(:value='modelValue' ref='input' @input='update()')
+  .visit(v-if='modelValue')
+    a(:href='modelValue') Visit
   .search(v-if='query')
     a(:href='searchUrl') Search
 </template>
@@ -12,10 +12,11 @@ div
   export default {
     name: 'WikiUrlInput',
     props: {
-      value: String,
+      modelValue: String,
       lang: String,
       query: String
     },
+    emits: ['update:modelValue'],
     computed: {
       searchUrl() {
         const query = encodeURIComponent(this.query)
@@ -25,7 +26,7 @@ div
     methods: {
       update() {
         const newValue = this.$refs['input'].value;
-        this.$emit('input', newValue);
+        this.$emit('update:modelValue', newValue);
       }
     }
   }

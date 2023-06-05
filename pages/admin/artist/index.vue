@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: nieuwe artiest
 div
   h2 Nieuwe artiest
   div.flex
@@ -18,7 +19,12 @@ div
 <script>
 import CountryInput from '../../../components/admin/CountryInput'
 
-export default {
+export default defineNuxtComponent({
+  setup() {
+    definePageMeta({
+      middleware: 'admin'
+    })
+  },
   components: {CountryInput},
   data() {
     return {
@@ -36,20 +42,13 @@ export default {
     }
   },
   methods: {
-    submit() {
+    async submit() {
       this.processing = true;
-      this.$axios.$post(`artist`, this.fullArtistData).then(result => {
-        this.$router.push(`/artiest/${result.id}`);
-      })
-    }
-  },
-  middleware: 'admin',
-  head() {
-    return {
-      title: `Admin: nieuwe artiest`
+      const {data} = await useApiFetchPost(`artist`, this.fullArtistData)
+      await useRouter().push(`/artiest/${data.id}`)
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Song: {{title}}
 div
   h2 Nummer aanpassen
   table.info
@@ -70,8 +71,14 @@ div
   import Song from "@/orm/Song";
   import Artist from "@/orm/Artist";
   import Album from "@/orm/Album";
+  import {useRepo} from "pinia-orm";
 
-  export default {
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     components: {AlbumSelect, ArtistSelect, LeadVocalsInput, LanguageInput, WikiUrlInput},
     data() {
       return {
@@ -83,10 +90,10 @@ div
         return this.fullSongData.artistId;
       },
       album() {
-        return Album.find(this.fullSongData.albumId);
+        return useRepo(Album).find(this.fullSongData.albumId);
       },
       artist() {
-        return Artist.find(this.fullSongData.artistId);
+        return useRepo(Artist).find(this.fullSongData.artistId);
       },
       disabled() {
         return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||
@@ -99,35 +106,27 @@ div
       }
     },
     methods: {
-      submit() {
+      async submit() {
         this.processing = true;
-        this.$axios.$put(`song/${this.fullSongData.id}`, this.fullSongData).then(result => {
-          this.$router.push(`/nummer/${this.fullSongData.id}`);
-        })
+        await useApiFetchPut(`song/${this.fullSongData.id}`, this.fullSongData)
+        await useRouter.push(`/nummer/${this.fullSongData.id}`)
       },
-      submitDelete() {
+      async submitDelete() {
         if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          this.$axios.$delete(`song/${this.fullSongData.id}`).then(result => {
-            this.$router.push(`/database`);
-          })
+          await useApiFetchDelete(`song/${this.fullSongData.id}`)
+          await useRouter().push(`/database`)
         }
       }
     },
-    async asyncData({ params, app }) {
-      const fullSongData = await app.$axios.$get(`song/${params.id}`)
+    async asyncData() {
+      const {data: fullSongData} = await useApiFetch(`song/${useRoute().params.id}`)
       return {
         fullSongData,
         title: fullSongData.title
       };
-    },
-    middleware: 'admin',
-    head() {
-      return {
-        title: `Admin: Song: ${this.title}`
-      }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

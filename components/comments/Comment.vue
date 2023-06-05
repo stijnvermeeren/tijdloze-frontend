@@ -17,6 +17,7 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
 
 <script>
   import CommentEditForm from "./CommentEditForm";
+  import {useAuthStore} from "~/stores/auth";
 
   export default {
     name: 'Comment',
@@ -33,13 +34,13 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
     },
     computed: {
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       isAdmin() {
-        return this.$store.getters['auth/isAdmin'];
+        return useAuthStore().isAdmin;
       },
       isMine() {
-        return this.isAuthenticated && this.$store.state.auth.user.id === this.comment.userId;
+        return this.isAuthenticated && useAuthStore().user.id === this.comment.userId;
       },
       showUpdated() {
         function parseDate(dateString) {
@@ -66,20 +67,18 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
         this.message = newMessage;
         this.editing = false;
       },
-      deleteComment() {
+      async deleteComment() {
         if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-          this.$axios.$delete(`comment/${this.comment.id}`).then(response => {
-            this.isDeleted = true;
-            this.$emit("deleted")
-          });
+          await useApiFetchDelete(`comment/${this.comment.id}`)
+          this.isDeleted = true
+          this.$emit("deleted")
         }
       },
-      restoreComment() {
+      async restoreComment() {
         if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-          this.$axios.$post(`comment/${this.comment.id}`).then(response => {
-            this.isDeleted = false;
-            this.$emit("restored")
-          });
+          await useApiFetchPost(`comment/${this.comment.id}`)
+          this.isDeleted = false
+          this.$emit("restored")
         }
       }
     }

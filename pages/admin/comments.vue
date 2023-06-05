@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: verwijderde reacties terugzetten
 div
   h2 Verwijderde reacties terugzetten
 
@@ -9,21 +10,22 @@ div
 <script>
   import Comment from '~/components/comments/Comment'
 
-  export default {
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     components: {Comment},
     methods: {
       async reload() {
-        this.comments = await this.$axios.$get(`comments/deleted`)
+        const { data: comments } = await useApiFetch(`comments/deleted`)
+        this.comments = comments
       }
     },
-    async asyncData({ app }) {
-      return {
-        comments: await app.$axios.$get(`comments/deleted`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: verwijderde reacties terugzetten'
+    async asyncData() {
+      const { data: comments } = await useApiFetch(`comments/deleted`)
+      return {comments};
     }
-  }
+  })
 </script>

@@ -5,10 +5,10 @@ export const useApiFetch = (request, opts = {}) => {
   const authStore = useAuthStore()
 
   const token = authStore.accessToken;
-  const headers = {}
+  opts.headers = opts.headers || {}
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    opts.headers.Authorization = `Bearer ${token}`;
   }
 
-  return useFetch(request, { baseURL: apiUri, headers: headers, ...opts })
+  return useFetch(request, { baseURL: apiUri, ...opts })
 }

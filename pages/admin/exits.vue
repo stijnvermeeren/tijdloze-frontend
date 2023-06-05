@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Exits markeren
 div
   h2 Exits markeren ({{currentYear.yyyy}})
   div
@@ -26,27 +27,33 @@ div
         button(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
+<script setup>
+definePageMeta({ middleware: 'admin' })
+</script>
+
 <script>
   import Song from '~/orm/Song'
   import SearchBox from '../../components/SearchBox'
+  import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
-  export default {
+  export default defineNuxtComponent({
     name: 'exits',
     components: {SearchBox},
     computed: {
       exitSongIds() {
-        return this.$store.state.exitSongIds;
+        return useRootStore().exitSongIds;
       },
       exits() {
         return this.exitSongIds.map(id => {
-          return Song.query().with('artist').with('secondArtist').find(id)
+          return useRepo(Song).with('artist').with('secondArtist').find(id)
         });
       },
       previousYear() {
         return this.currentYear.previous();
       },
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       }
     },
     methods: {
@@ -58,22 +65,15 @@ div
         return inPreviousYear && notYetInCurrentYear && notYetMarked;
       },
       async unmarkAll() {
-        await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}`);
+        await useApiFetchDelete(`/list-exit/${this.currentYear.yyyy}`);
       },
       async unmarkExit(song) {
-        await this.$axios.$delete(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
+        await useApiFetchDelete(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
       },
       async markExit(song) {
-        await this.$axios.$post(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
+        await useApiFetchPost(`/list-exit/${this.currentYear.yyyy}/${song.id}`);
       }
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Exits markeren'
     }
-  }
+  })
 </script>
 
-<style scoped>
-
-</style>

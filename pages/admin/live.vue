@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: nummers toevoegen
 div
   div.flexTitle
     h2 Admin: nummers toevoegen
@@ -101,6 +102,10 @@ div
       import-form(:startPosition="nextPosition" @startImport="startImport")
 </template>
 
+<script setup>
+definePageMeta({ middleware: 'admin' })
+</script>
+
 <script>
   import SearchBox from '../../components/SearchBox'
   import Position from '../../components/Position'
@@ -109,8 +114,9 @@ div
   import NewSongWizard from '../../components/admin/NewSongWizard'
   import ImportForm from '../../components/admin/ImportForm'
   import Song from "@/orm/Song";
+  import {useRootStore} from "~/stores/root";
 
-  export default {
+  export default defineNuxtComponent({
     components: {ImportForm, NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
@@ -121,22 +127,22 @@ div
         spotifyData: undefined,
         importQuery: '',
         importSongs: [],
-        nextPosition: this.$store.getters.lastPosition ? this.$store.getters.lastPosition - 1 : 100,
+        nextPosition: useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100,
         previousPosition: undefined
       }
     },
     computed: {
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       previousYear() {
         return this.currentYear.previous();
       },
       lastSong() {
-        return this.$store.getters.lastSong;
+        return useRootStore().lastSong;
       },
       lastPosition() {
-        return this.$store.getters.lastPosition
+        return useRootStore().lastPosition
       },
       nextYearYyyy() {
         return (new Date()).getFullYear();
@@ -175,7 +181,7 @@ div
         let nextImport = this.importSongs.shift();
         while (!canBeImported && nextImport) {
           const {overridePosition, query} = nextImport;
-          if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
+          if (!overridePosition || !useRootStore().songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
             this.importQuery = query;
             this.nextPosition = overridePosition;
             canBeImported = true;
@@ -198,7 +204,8 @@ div
       async selectSearchResult(result) {
         this.nextSong = result.item;
         this.nextSongFullData = undefined;
-        this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
+        const { data } = await useApiFetch(`song/${this.nextSong.id}`)
+        this.nextSongFullData = data;
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {
@@ -211,18 +218,18 @@ div
       },
       async undo() {
         this.processing = true;
-        await this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`)
+        await useApiFetchDelete(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`)
         this.previousPosition = undefined;
         this.processing = false;
       },
       async startYear() {
         this.processing = true;
-        await this.$axios.$post(`year/${this.nextYearYyyy}`)
+        await useApiFetchPost(`year/${this.nextYearYyyy}`)
         this.processing = false;
       },
       async deleteYear() {
         this.processing = true;
-        await this.$axios.$delete(`year/${this.currentYear.yyyy}`)
+        await useApiFetchDelete(`year/${this.currentYear.yyyy}`)
         this.processing = false;
       },
       async add(songId) {
@@ -231,7 +238,7 @@ div
         const data = {
           songId
         }
-        await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${position}`, data)
+        await useApiFetchPost(`list-entry/${this.currentYear.yyyy}/${position}`, data)
         this.previousPosition = position;
         this.nextSongTab = 'existing';
         this.nextSong = undefined;
@@ -250,12 +257,8 @@ div
       possibleSong(song) {
         return !song.position(this.currentYear, true) && (this.nextPosition > 100 || !song.markedAsExit());
       }
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: nummers toevoegen'
     }
-  }
+  })
 </script>
 
 <style scoped>

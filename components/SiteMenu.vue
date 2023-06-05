@@ -80,7 +80,7 @@ div
           nuxt-link(to="/website/contact")
             el-menu-item(index="/website/contact") Contact
         el-sub-menu(v-if='isAdmin' index="/admin")
-          template(slot="title") Admin
+          template(#title) Admin
           nuxt-link(to="/admin/live")
             el-menu-item(index="/admin/live") Nummers toevoegen
           nuxt-link(to="/admin/exits")

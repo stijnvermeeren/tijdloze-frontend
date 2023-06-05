@@ -1,22 +1,23 @@
-import { Auth0Client } from '@auth0/auth0-spa-js';
 import {useAuthStore} from "~/stores/auth";
+import {createAuth0, useAuth0} from "@auth0/auth0-vue";
+import {usePollStore} from "~/stores/poll";
 
 export default defineNuxtPlugin(async nuxtApp => {
   const authStore = useAuthStore()
   const config = useRuntimeConfig()
   const SCOPE = 'openid profile email';
 
-  const authParams = {
-    responseType: 'token id_token',
-    audience: config.auth0Audience,
-    scope: SCOPE
-  }
-
-  const auth = new Auth0Client({
-    client_id: config.auth0ClientId,
-    domain: config.auth0ClientDomain,
-    redirect_uri: config.auth0CallbackUri
-  });
+  const auth = createAuth0({
+    domain: config.public.auth0ClientDomain,
+    clientId: config.public.auth0ClientId,
+    authorizationParams: {
+      redirect_uri: config.public.auth0CallbackUri,
+      responseType: 'token id_token',
+      audience: config.public.auth0Audience,
+      scope: SCOPE
+    }
+  })
+  nuxtApp.vueApp.use(auth)
 
   function unsetAccessToken() {
     authStore.setAccessToken(null);
@@ -24,13 +25,13 @@ export default defineNuxtPlugin(async nuxtApp => {
 
   async function loginSilently() {
     try {
-      const accessToken = await auth.getTokenSilently(authParams);
+      const accessToken = await auth.getAccessTokenSilently();
       authStore.setAccessToken(accessToken);
 
-      const user = await auth.getUser(authParams);
-      await setUser(user);
+      await setUser(auth.user.value);
     } catch(err) {
       // user not logged in, don't raise any error
+      console.log(err)
     }
   }
 
@@ -43,16 +44,13 @@ export default defineNuxtPlugin(async nuxtApp => {
       email: user.email,
       emailVerified: user.email_verified
     };
-    await app.$axios.$post('user', data).then(user => {
-      authStore.setUser(user);
-    });
+    const {data: userData} = await useApiFetchPost('user', data)
+    authStore.setUser(userData.value);
 
     // Don't await / do in the background
-    app.$axios.$get('poll/my-votes').then(result => {
-      authStore.setVotes(result.votes);
-    });
+    const {data: pollData} = useApiFetch('poll/my-votes')
+    usePollStore().setVotes(pollData.votes);
   }
-
 
   return {
     provide: {
@@ -60,12 +58,12 @@ export default defineNuxtPlugin(async nuxtApp => {
         login(redirectPath) {
           sessionStorage.setItem("redirectPath", redirectPath);
           unsetAccessToken()
-          auth.loginWithRedirect(authParams);
+          auth.loginWithRedirect();
         },
         logout() {
           unsetAccessToken()
           auth.logout({
-            returnTo: config.auth0LogoutUri
+            returnTo: config.public.auth0LogoutUri
           });
         },
         unsetAccessToken() {
@@ -75,7 +73,7 @@ export default defineNuxtPlugin(async nuxtApp => {
           return await loginSilently();
         },
         async loginCallback() {
-          await auth.handleRedirectCallback();
+          auth.handleRedirectCallback();
           return await loginSilently();
         }
       }

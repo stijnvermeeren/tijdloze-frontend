@@ -12,7 +12,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "^1.16.1",
+    "@auth0/auth0-vue": "^2.2.0",
     "@element-plus/icons-vue": "^2.1.0",
     "@pinia/nuxt": "^0.4.11",
     "babel-runtime": "^6.26.0",

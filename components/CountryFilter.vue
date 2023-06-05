@@ -1,5 +1,5 @@
 <template lang="pug">
-el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
+el-select(:value='modelValue' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
   el-option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId' :label="countries[countryId]")
 </template>
 
@@ -11,7 +11,7 @@ el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nation
   export default {
     name: 'CountryInput',
     props: {
-      value: {
+      modelValue: {
         type: String,
         default: ''
       },
@@ -20,6 +20,7 @@ el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nation
         default: false
       }
     },
+    emits: ['update:modelValue'],
     computed: {
       countries() {
         return countries;
@@ -33,7 +34,7 @@ el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nation
     },
     methods: {
       input(value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
       }
     }
   }

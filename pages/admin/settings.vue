@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Instellingen
 div
   h2 Instellingen
   ul
@@ -16,20 +17,24 @@ div
 
 <script>
   import SearchBox from '../../components/SearchBox'
-  export default {
-    components: {SearchBox},
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     watch: {
       async chatOn() {
         const data = {
           text: this.chatOn
         };
-        await this.$axios.$post(`text/chatOn`, data);
+        await useApiFetchPost(`text/chatOn`, data);
       },
       async commentsOn() {
         const data = {
           text: this.commentsOn
         };
-        await this.$axios.$post(`text/commentsOn`, data);
+        await useApiFetchPost(`text/commentsOn`, data);
       }
     },
     methods: {
@@ -44,26 +49,22 @@ div
           path = `/admin/album/${result.item.id}`
         }
         if (path) {
-          this.$router.push(path);
+          useRouter().push(path);
         }
       },
       async invalidateCache() {
-        await this.$axios.$get('/cache/invalidate');
+        await useApiFetch('/cache/invalidate');
       }
     },
-    async asyncData({ app }) {
-      const chatOnResponse = await app.$axios.$get(`text/chatOn`);
-      const commentsOnResponse = await app.$axios.$get(`text/commentsOn`);
+    async asyncData() {
+      const { data: chatOnResponse } = await useApiFetch(`text/chatOn`);
+      const { data: commentsOnResponse } = await useApiFetch(`text/commentsOn`);
       return {
-        chatOn: chatOnResponse.value,
-        commentsOn: commentsOnResponse.value
+        chatOn: chatOnResponse.value.value,
+        commentsOn: commentsOnResponse.value.value
       };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Instellingen'
     }
-  }
+  })
 </script>
 
 <style scoped>

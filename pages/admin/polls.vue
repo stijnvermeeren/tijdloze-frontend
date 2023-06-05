@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Polls
 div
   div.flexTitle
     h2 Admin: polls
@@ -27,10 +28,15 @@ div
       poll(:poll='poll', :is-admin='true')
 </template>
 
+<script setup>
+definePageMeta({ middleware: 'admin' })
+</script>
+
 <script>
   import Poll from '~/components/Poll'
+  import {useRootStore} from "~/stores/root";
 
-  export default {
+  export default defineNuxtComponent({
     components: {Poll},
     data() {
       return {
@@ -42,10 +48,10 @@ div
     },
     computed: {
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       groupedPolls() {
-        const pollYears = this.$store.getters.years.filter(year => year.yyyy >= 2015);
+        const pollYears = useRootStore().years.filter(year => year.yyyy >= 2015);
         return pollYears.reverse().map(year => {
           return {
             year: year.yyyy,
@@ -60,7 +66,8 @@ div
     methods: {
       async refresh() {
         this.refreshing = true;
-        this.polls = await this.$axios.$get(`poll/list`);
+        const {data} = await useApiFetch(`poll/list`);
+        this.polls = data;
         this.refreshing = false;
       },
       async submit() {
@@ -70,23 +77,18 @@ div
           answers: this.answers.map(answer => answer.text),
           year: this.currentYear.yyyy
         };
-        await this.$axios.$post('poll', data);
+        await useApiFetchPost('poll', data);
         await this.refresh();
         this.question = '';
         this.answers = [{text: ''}, {text: ''}];
         this.submitting = false;
       }
     },
-    async asyncData({ app }) {
-      return {
-        polls: await app.$axios.$get(`poll/list`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Polls'
+    async asyncData() {
+      const {data: polls} = await useApiFetch(`poll/list`)
+      return {polls: polls};
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

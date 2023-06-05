@@ -9,6 +9,7 @@
 
 <script>
   import {useAuthStore} from "~/stores/auth";
+  import {useAuth0} from "@auth0/auth0-vue";
 
   export default defineNuxtComponent({
     computed: {
@@ -21,7 +22,7 @@
     },
     methods: {
       login() {
-        this.$auth.login(this.$route.path);
+        this.$auth.login(useRoute().path);
       },
       logout() {
         useAuthStore().setUser( null);

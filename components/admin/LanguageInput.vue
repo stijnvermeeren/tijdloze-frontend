@@ -1,10 +1,10 @@
 <template lang="pug">
-div
+div.container
   el-radio-group(v-model='liveValue' size="small")
     el-radio-button(label="en") Engels
     el-radio-button(label="nl") Nederlands
     el-radio-button(label="i") Instrumentaal
-  el-select(v-model='liveValue' clearable filterable placeholder="Geen taal geselecteerd")
+  el-select(v-model='liveValue' clearable filterable placeholder="Geen taal geselecteerd" size="small")
     el-option(
       v-for='[languageId, languageName] in Object.entries(languages)'
       :key='languageId'
@@ -19,11 +19,12 @@ div
   export default {
     name: 'LanguageInput',
     props: {
-      value: String
+      modelValue: String
     },
+    emits: ['update:modelValue'],
     data() {
       return {
-        liveValue: this.value
+        liveValue: this.modelValue
       }
     },
     computed: {
@@ -32,12 +33,12 @@ div
       }
     },
     watch: {
-      value(newValue) {
+      modelValue(newValue) {
         this.liveValue = newValue
       },
       liveValue(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.$emit('input', newValue);
+          this.$emit('update:modelValue', newValue);
         }
       }
     }
@@ -45,7 +46,11 @@ div
 </script>
 
 <style lang="scss" scoped>
-  .el-radio-group {
-    margin-right: 10px;
-  }
+div.container > div {
+  vertical-align: middle;
+}
+
+.el-radio-group {
+  margin-right: 10px;
+}
 </style>

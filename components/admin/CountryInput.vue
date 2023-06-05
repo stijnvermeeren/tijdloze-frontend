@@ -1,5 +1,5 @@
 <template lang="pug">
-div
+div.container
   el-radio-group(v-model='liveValue' size="small")
     el-radio-button(label="us")
       country-icon(country-id="us")
@@ -7,7 +7,7 @@ div
       country-icon(country-id="gb")
     el-radio-button(label="be")
       country-icon(country-id="be")
-  el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd")
+  el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd" size="small")
     el-option(
       v-for='countryId in sortedCountryIds'
       :key='countryId'
@@ -23,7 +23,7 @@ div
   export default {
     name: 'CountryInput',
     props: {
-      value: {
+      modelValue: {
         type: String
       },
       disabled: {
@@ -33,9 +33,10 @@ div
     },
     data() {
       return {
-        liveValue: this.value
+        liveValue: this.modelValue
       }
     },
+    emits: ['update:modelValue'],
     computed: {
       countries() {
         return countries;
@@ -45,12 +46,12 @@ div
       }
     },
     watch: {
-      value(newValue) {
+      modelValue(newValue) {
         this.liveValue = newValue;
       },
       liveValue(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.$emit('input', newValue);
+          this.$emit('update:modelValue', newValue);
         }
       }
     }
@@ -58,8 +59,12 @@ div
 </script>
 
 <style lang="scss" scoped>
-  .el-radio-group {
-    margin-right: 10px;
-  }
+div.container > div {
+  vertical-align: middle;
+}
+
+.el-radio-group {
+  margin-right: 10px;
+}
 </style>
 

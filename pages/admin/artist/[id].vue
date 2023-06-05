@@ -1,4 +1,5 @@
 <template lang="pug">
+Title Admin: Artist: {{this.fullName}}
 div
   h2 Artiest aanpassen
   table.info
@@ -51,8 +52,14 @@ div
   import CountryInput from '../../../components/admin/CountryInput'
   import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
   import OfficialUrlInput from '../../../components/admin/OfficialUrlInput'
+  import {useApiFetchPut} from "~/composables/useApiFetchPut";
 
-  export default {
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     components: {OfficialUrlInput, AllMusicUrlInput, CountryInput, WikiUrlInput},
     data() {
       return {
@@ -72,33 +79,24 @@ div
       }
     },
     methods: {
-      submit() {
+      async submit() {
         this.processing = true;
-        this.$axios.$put(`artist/${this.fullArtistData.id}`, this.fullArtistData).then(result => {
-          this.$router.push(`/artiest/${this.fullArtistData.id}`);
-        })
+        await useApiFetchPut(`artist/${this.fullArtistData.id}`, this.fullArtistData)
+        await useRouter().push(`/artiest/${this.fullArtistData.id}`);
       },
-      submitDelete() {
+      async submitDelete() {
         if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          this.$axios.$delete(`artist/${this.fullArtistData.id}`).then(result => {
-            this.$router.push(`/database`);
-          })
+          await useApiFetchDelete(`artist/${this.fullArtistData.id}`)
+          await useRouter().push(`/database`)
         }
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        fullArtistData: await app.$axios.$get(`artist/${params.id}`)
-      };
-    },
-    middleware: 'admin',
-    head() {
-      return {
-        title: `Admin: Artist: ${this.fullName}`
-      }
+    async asyncData() {
+      const {data: fullArtistData} = await useApiFetch(`artist/${useRoute().params.id}`)
+      return {fullArtistData};
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

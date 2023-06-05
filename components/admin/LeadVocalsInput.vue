@@ -6,7 +6,7 @@ div.container
       :key='genderId'
       :label="genderId"
     ) {{genderName}}
-  el-button(icon="el-icon-circle-close" @click="liveValue = undefined" circle)
+  el-button(icon="el-icon-circle-close" @click="liveValue = undefined" circle size="small")
 </template>
 
 <script>
@@ -15,11 +15,12 @@ div.container
   export default {
     name: 'LeadVocalsInput',
     props: {
-      value: String
+      modelValue: String
     },
+    emits: ['update:modelValue'],
     data() {
       return {
-        liveValue: this.value
+        liveValue: this.modelValue
       }
     },
     computed: {
@@ -28,12 +29,12 @@ div.container
       }
     },
     watch: {
-      value(newValue) {
+      modelValue(newValue) {
         this.liveValue = newValue
       },
       liveValue(newValue, oldValue) {
         if (newValue !== oldValue) {
-          this.$emit('input', newValue);
+          this.$emit('update:modelValue', newValue);
         }
       }
     }
@@ -41,7 +42,11 @@ div.container
 </script>
 
 <style lang="scss" scoped>
-  .el-radio-group {
-    margin-right: 10px;
-  }
+div.container > div {
+  vertical-align: middle;
+}
+
+.el-radio-group {
+  margin-right: 10px;
+}
 </style>
