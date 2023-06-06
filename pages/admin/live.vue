@@ -73,17 +73,17 @@ div
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongTab === 'spotify'")
-        spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+        admin-spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
         div(v-if='spotifyData')
           hr
-          new-song-wizard(
+          admin-new-song-wizard(
             :preset='spotifyData'
             :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
             @newSong='add($event.id)'
           )
 
       div(v-show="nextSongTab === 'manual'")
-        new-song-wizard(
+        admin-new-song-wizard(
           :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
           @newSong='add($event.id)'
         )
@@ -99,7 +99,7 @@ div
         =" "
         span {{query}}
     div(v-else)
-      import-form(:startPosition="nextPosition" @startImport="startImport")
+      admin-import-form(:startPosition="nextPosition" @startImport="startImport")
 </template>
 
 <script setup>
@@ -107,17 +107,10 @@ definePageMeta({ middleware: 'admin' })
 </script>
 
 <script>
-  import SearchBox from '../../components/SearchBox'
-  import Position from '../../components/Position'
-  import Spotify from '../../components/Spotify'
-  import SpotifySearch from '../../components/admin/SpotifySearch'
-  import NewSongWizard from '../../components/admin/NewSongWizard'
-  import ImportForm from '../../components/admin/ImportForm'
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
 
   export default defineNuxtComponent({
-    components: {ImportForm, NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
         nextSongTab: 'existing',

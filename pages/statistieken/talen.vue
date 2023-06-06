@@ -28,18 +28,14 @@ div
             | {{total}}
 
   .graph(v-for='{languageId, dataPoints} in graphData')
-    tijdloze-distribution-graph(:points='dataPoints' :title='languages[languageId]')
+    d3-distribution-graph(:points='dataPoints' :title='languages[languageId]')
 </template>
 
 <script>
-  import DistributionGraph from "../../components/d3/DistributionGraph"
   import languages from '~/utils/language'
   import {useRootStore} from "~/stores/root";
 
   export default {
-    components: {
-      TijdlozeDistributionGraph: DistributionGraph
-    },
     computed: {
       years() {
         return useRootStore().years;

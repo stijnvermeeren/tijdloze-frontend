@@ -21,7 +21,6 @@ div.container
   import _ from 'lodash';
 
   export default {
-    name: 'CountryInput',
     props: {
       modelValue: {
         type: String

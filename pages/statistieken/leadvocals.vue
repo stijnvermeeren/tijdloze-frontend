@@ -24,18 +24,14 @@ div
           td.r
             | {{total}}
   .graph(v-for='{vocalsGenderId, dataPoints} in graphData')
-    tijdloze-distribution-graph(:points='dataPoints' :title='vocalsGenders[vocalsGenderId]')
+    d3-distribution-graph(:points='dataPoints' :title='vocalsGenders[vocalsGenderId]')
 </template>
 
 <script>
-  import DistributionGraph from "../../components/d3/DistributionGraph"
   import vocalsGenders from '~/utils/leadVocals'
   import {useRootStore} from "~/stores/root";
 
   export default {
-    components: {
-      TijdlozeDistributionGraph: DistributionGraph
-    },
     computed: {
       years() {
         return useRootStore().years;

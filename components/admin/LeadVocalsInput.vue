@@ -13,7 +13,6 @@ div.container
   import vocalsGenders from '~/utils/leadVocals'
 
   export default {
-    name: 'LeadVocalsInput',
     props: {
       modelValue: String
     },

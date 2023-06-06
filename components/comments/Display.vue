@@ -12,16 +12,13 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
       a(@click="restoreComment") Terugzetten
   div
     div.bericht(v-if="!editing") {{ message }}
-    comment-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
+    comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
 <script>
-  import CommentEditForm from "./CommentEditForm";
   import {useAuthStore} from "~/stores/auth";
 
   export default {
-    name: 'Comment',
-    components: {CommentEditForm},
     props: {
       comment: Object
     },

@@ -64,11 +64,10 @@ Title {{song.title}} ({{song.artist.fullName}})
       div.header
         div
           div.title Grafiek
-    tijdloze-graph(:songs='[song]' :no-label='true')
+    d3-graph(:songs='[song]' :no-label='true')
 </template>
 
 <script>
-  import Graph from '~/components/d3/Graph'
   import {probablyInListIntervals} from '~/utils/intervals'
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
@@ -77,9 +76,6 @@ Title {{song.title}} ({{song.artist.fullName}})
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
-    components: {
-      TijdlozeGraph: Graph
-    },
     computed: {
       song() {
         return useRepo(Song).withAll().find(this.fullSongData.id);

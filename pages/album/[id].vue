@@ -45,20 +45,17 @@ div
       div.header(slot="header")
         div
           div.title Grafiek
-    graph(:songs='top100Songs')
+    d3-graph(:songs='top100Songs')
 </template>
 
 <script>
-  import Graph from '../../components/d3/Graph'
   import { idFromSlug } from '~/utils/slug'
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
   import {useRepo} from "pinia-orm";
-  import {Lightning} from "@element-plus/icons-vue";
 
   export default defineNuxtComponent({
-    components: {Lightning, Graph },
     data() {
       return {
         tab: 'tijdloze'

@@ -12,24 +12,20 @@ div
       .message
         | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
     template(v-else)
-      comment-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
+      comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
   div
-    comment(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
+    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
 
   comments-pager(:page='page' :pages='pages ')
 </template>
 
 <script>
-  import CommentsPager from '~/components/comments/CommentsPager'
-  import CommentForm from '~/components/comments/CommentForm'
-  import Comment from '~/components/comments/Comment'
   import {useAuthStore} from "~/stores/auth";
 
   const commentsPerPage = 20;
 
   export default defineNuxtComponent({
-    components: {Comment, CommentsPager, CommentForm},
     computed: {
       pages() {
         return Math.ceil(this.commentCount / commentsPerPage);

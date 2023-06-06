@@ -33,11 +33,9 @@ definePageMeta({ middleware: 'admin' })
 </script>
 
 <script>
-  import Poll from '~/components/Poll'
   import {useRootStore} from "~/stores/root";
 
   export default defineNuxtComponent({
-    components: {Poll},
     data() {
       return {
         refreshing: false,

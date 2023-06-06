@@ -1,26 +1,27 @@
 <template lang="pug">
+Title Volledige database
 div
   h2 Volledige database
   el-alert.alert(title="Database downloaden" :closable="false" show-icon)
     | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
   div
-    el-select(v-model="filter" size="small")
+    // el-select(v-model="filter" size="small")
       el-option(value="alle" label="In minstens een")
       el-option(value="alle_jaren" label="In elke")
       el-option(value="geen_exit" label="Niet weggevallen uit de")
     |
-    el-select(v-model="cutoff" size="small")
+    // el-select(v-model="cutoff" size="small")
       el-option(value="top100" label="top 100")
       el-option(value="full" label="volledige lijst")
     |
     | van
     |
-    el-select.selectYear(v-model='startYear' size="small")
+    // el-select.selectYear(v-model='startYear' size="small")
       el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
     |
     | tot en met
     |
-    el-select.selectYear(v-model='endYear' size="small")
+    // el-select.selectYear(v-model='endYear' size="small")
       el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
   div
     | Filter:
@@ -94,9 +95,6 @@ div
 
   import ranking from '~/utils/ranking';
   import Artist from "@/orm/Artist";
-  import CountryFilter from "@/components/CountryFilter";
-  import LanguageFilter from "@/components/LanguageFilter";
-  import LeadVocalsFilter from "@/components/LeadVocalsFilter";
   import Album from "../orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
@@ -149,22 +147,21 @@ div
   }
 
   export default defineNuxtComponent({
-    components: {CountryFilter, LanguageFilter, LeadVocalsFilter },
     data() {
-      const type = parseType(this.$route.query.type)
+      const type = parseType(useRoute().query.type)
       return {
         isMounted: false,
         type,
-        filter: parseFilter(this.$route.query.filter),
-        cutoff: parseCutoff(this.$route.query.cutoff),
-        startYear: this.$route.query.start ? this.$route.query.start : _.first(useRootStore().years)?.yyyy,
-        endYear: this.$route.query.einde ? this.$route.query.einde : useRootStore().lastCompleteYear?.yyyy,
+        filter: parseFilter(useRoute().query.filter),
+        cutoff: parseCutoff(useRoute().query.cutoff),
+        startYear: useRoute().query.start ? useRoute().query.start : _.first(useRootStore().years)?.yyyy,
+        endYear: useRoute().query.einde ? useRoute().query.einde : useRootStore().lastCompleteYear?.yyyy,
         minReleaseYear: undefined,
         maxReleaseYear: undefined,
-        scoreMethod: parseScoreMethod(this.$route.query.score, type),
-        countryFilter: this.$route.query.land,
-        languageFilter: this.$route.query.taal,
-        leadVocalsFilter: this.$route.query.leadVocals
+        scoreMethod: parseScoreMethod(useRoute().query.score, type),
+        countryFilter: useRoute().query.land,
+        languageFilter: useRoute().query.taal,
+        leadVocalsFilter: useRoute().query.leadVocals
       }
     },
     computed: {
@@ -193,7 +190,7 @@ div
         return Object.fromEntries(Object.entries(allParams).filter(([_, value]) => value))
       },
       query() {
-        return this.$route.query;
+        return useRoute().query;
       },
       extended() {
         return this.cutoff === CUTOFF_FULL;
@@ -321,7 +318,7 @@ div
     watch: {
       queryParams(newQueryParams, oldQueryParams) {
         if (JSON.stringify(newQueryParams) !== JSON.stringify(oldQueryParams)) {
-          this.$router.replace({
+          useRouter().replace({
             query: newQueryParams
           });
         }
@@ -392,9 +389,6 @@ div
 
         return result;
       }
-    },
-    head: {
-      title: 'Volledige database'
     }
   })
 </script>
@@ -487,15 +481,6 @@ div
 
   .selectYear {
     width: 100px;
-  }
-
-  div.noot {
-    font-size: 85%;
-    margin-left: 2em;
-  }
-
-  div#toelichting {
-    margin-bottom: 2em;
   }
 
   table.lijst {

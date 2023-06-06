@@ -20,7 +20,6 @@ div
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
   export default {
-    name: 'ArtistSelect',
     components: {SearchBox},
     props: {
       modelValue: {

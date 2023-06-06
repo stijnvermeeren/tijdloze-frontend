@@ -11,7 +11,7 @@ div
       tr
         th Artist
         td
-          artist-select(v-model='fullAlbumData.artistId')
+          admin-artist-select(v-model='fullAlbumData.artistId')
       tr
         th Jaar
         td
@@ -23,15 +23,15 @@ div
       tr
         th Wikipedia Nederlands
         td
-          wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+          admin-wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
       tr
         th Wikipedia Engels
         td
-          wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
+          admin-wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
       tr
         th AllMusic
         td
-          all-music-url-input(v-model='fullAlbumData.urlAllMusic' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
+          admin-all-music-url-input(v-model='fullAlbumData.urlAllMusic' :query='`${fullAlbumData.title} ${artist.fullName}`')
       tr
         th
         td
@@ -40,9 +40,6 @@ div
 </template>
 
 <script>
-  import WikiUrlInput from '../../../components/admin/WikiUrlInput'
-  import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
-  import ArtistSelect from '../../../components/admin/ArtistSelect'
   import Artist from "@/orm/Artist";
   import {useApiFetchPut} from "~/composables/useApiFetchPut";
   import {useRepo} from "pinia-orm";
@@ -53,7 +50,6 @@ div
         middleware: 'admin'
       })
     },
-    components: {ArtistSelect, AllMusicUrlInput, WikiUrlInput},
     data() {
       return {
         processing: false

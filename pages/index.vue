@@ -53,8 +53,8 @@ div
   el-card(v-if="commentsOn")
     div.header(slot="header")
       div.title Reageer en discussieer
-    comment-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
-    comment(v-for='comment in comments' :key='comment.id' :comment='comment')
+    comments-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
+    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment')
     .link
       nuxt-link(to='/reacties')
         el-button Meer reacties
@@ -71,13 +71,10 @@ div
 
 <script>
   import _ from 'lodash';
-  import Comment from '../components/comments/Comment'
-  import CommentForm from '~/components/comments/CommentForm'
   import {useRootStore} from "~/stores/root";
   import {usePollStore} from "~/stores/poll";
 
   export default defineNuxtComponent({
-    components: {Comment, CommentForm},
     computed: {
       listInProgress() {
         return useRootStore().listInProgress;

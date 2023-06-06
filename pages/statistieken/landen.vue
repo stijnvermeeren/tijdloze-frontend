@@ -25,21 +25,17 @@ div
           td.r
             | {{total}}
   .graph(v-for='{countryId, dataPoints} in graphData')
-    tijdloze-distribution-graph(:points='dataPoints')
+    d3-distribution-graph(:points='dataPoints')
       nuxt-link(:to='`/database?type=artiesten&land=${countryId}`')
         country-icon(:country-id='countryId' :include-name='true')
 </template>
 
 <script>
-  import DistributionGraph from "../../components/d3/DistributionGraph"
   import _ from 'lodash';
   import countries from '~/utils/country'
   import {useRootStore} from "~/stores/root";
 
   export default {
-    components: {
-      TijdlozeDistributionGraph: DistributionGraph
-    },
     computed: {
       years() {
         return useRootStore().years;

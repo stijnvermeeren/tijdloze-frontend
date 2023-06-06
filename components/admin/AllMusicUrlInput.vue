@@ -10,7 +10,6 @@ div
 
 <script>
   export default {
-    name: 'AllMusicUrlInput',
     props: {
       modelValue: String,
       query: String

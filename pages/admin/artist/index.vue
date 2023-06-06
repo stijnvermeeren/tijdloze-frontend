@@ -11,13 +11,12 @@ div
       input(v-model='fullArtistData.name' placeholder='Beatles / Dylan / ...')
     div
       div.hint Land
-      country-input(v-model='fullArtistData.countryId')
+      admin-country-input(v-model='fullArtistData.countryId')
   div
     button(@click='submit' :disabled='disabled') Toevoegen
 </template>
 
 <script>
-import CountryInput from '../../../components/admin/CountryInput'
 
 export default defineNuxtComponent({
   setup() {
@@ -25,7 +24,6 @@ export default defineNuxtComponent({
       middleware: 'admin'
     })
   },
-  components: {CountryInput},
   data() {
     return {
       processing: false,

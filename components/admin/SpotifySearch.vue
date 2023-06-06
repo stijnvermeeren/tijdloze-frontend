@@ -48,7 +48,6 @@ div
   import Spotify from '../Spotify'
 
   export default {
-    name: 'SpotifySearch',
     components: {Spotify},
     props: {
       initialQuery: {

@@ -33,13 +33,11 @@ definePageMeta({ middleware: 'admin' })
 
 <script>
   import Song from '~/orm/Song'
-  import SearchBox from '../../components/SearchBox'
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
     name: 'exits',
-    components: {SearchBox},
     computed: {
       exitSongIds() {
         return useRootStore().exitSongIds;

@@ -33,7 +33,6 @@ div
 
 export default {
   props: {
-    name: "ImportForm",
     startPosition: {
       type: Number,
       default: 1

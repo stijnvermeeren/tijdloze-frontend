@@ -23,11 +23,9 @@ div
 </template>
 
 <script>
-  import Chat from '../components/Chat'
   import {useAuthStore} from "~/stores/auth";
 
   export default {
-    components: { Chat },
     data() {
       return {
         name: useAuthStore().displayName,

@@ -7,7 +7,7 @@ div
         el-radio-button(label="existing") Artiest uit de database
         el-radio-button(label="new") Nieuwe artiest
       div(v-if="artistType === 'existing'")
-        artist-select(v-model='artistId')
+        admin-artist-select(v-model='artistId')
       div(v-else)
         div.flex
           div.hint Voornaam
@@ -20,7 +20,7 @@ div
         div.flex
           div.hint Land
           div.input
-            country-input(v-model='artistDetails.countryId')
+            admin-country-input(v-model='artistDetails.countryId')
   div(v-if='artistValid')
     div.heading Album
     div.indent
@@ -48,11 +48,11 @@ div
       div.flex
         div.hint Taal
         div.input
-          language-input(v-model='songDetails.languageId')
+          admin-language-input(v-model='songDetails.languageId')
       div.flex
         div.hint Lead vocals
         div.input
-          lead-vocals-input(v-model='songDetails.leadVocals')
+          admin-lead-vocals-input(v-model='songDetails.leadVocals')
     div.otherArtistSongs(v-if="otherArtistSongs.length")
       | Opgelet! Reeds gekende nummers van deze artist:
       span(v-for="song in otherArtistSongs")
@@ -67,11 +67,6 @@ div
 </template>
 
 <script>
-  import CountryInput from './CountryInput'
-  import ArtistSelect from './ArtistSelect'
-  import AlbumSelect from './AlbumSelect'
-  import LanguageInput from './LanguageInput'
-  import LeadVocalsInput from './LeadVocalsInput'
   import _ from "lodash";
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
@@ -79,8 +74,6 @@ div
   import {useRepo} from "pinia-orm";
 
   export default {
-    name: 'NewSongWizard',
-    components: {LeadVocalsInput, LanguageInput, AlbumSelect, ArtistSelect, CountryInput},
     props: {
       preset: {
         type: Object

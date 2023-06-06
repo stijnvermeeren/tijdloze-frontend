@@ -30,19 +30,15 @@ div
           td.r
             | {{total}}
   .graph(v-for='{decade, dataPoints} in graphData' v-if="dataPoints.length")
-    distribution-graph(:title='decade.name' :points='dataPoints')
+    d3-distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 
 <script>
-  import DistributionGraph from "../../components/d3/DistributionGraph"
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
   export default {
-    components: {
-      DistributionGraph
-    },
     computed: {
       years() {
         return useRootStore().years;

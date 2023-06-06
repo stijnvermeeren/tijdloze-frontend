@@ -17,7 +17,6 @@ div.container
   import languages from '~/utils/language'
 
   export default {
-    name: 'LanguageInput',
     props: {
       modelValue: String
     },

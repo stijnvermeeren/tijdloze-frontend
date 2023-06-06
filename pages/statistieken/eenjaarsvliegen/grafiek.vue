@@ -1,25 +1,18 @@
 <template lang="pug">
 div
-  tijdloze-distribution-graph(:points='finalPoints' :secondary-points='nonFinalPoints')
+  d3-distribution-graph(:points='finalPoints' :secondary-points='nonFinalPoints')
   .legende
     ul
       li
-        tijdloze-color-label(:index='1')
+        d3-color-label(:index='1')
         |  Definitieve eenjaarsvliegen (slechts één notering in alle lijsten)
       li
-        tijdloze-color-label(:index='2')
+        d3-color-label(:index='2')
         |  Niet-definitieve eenjaarsvliegen
 </template>
 
 <script>
-  import DistributionGraph from "../../../components/d3/DistributionGraph"
-  import ColorLabel from "../../../components/d3/ColorLabel"
-
   export default {
-    components: {
-      TijdlozeDistributionGraph: DistributionGraph,
-      TijdlozeColorLabel: ColorLabel
-    },
     props: {
       data: Array
     },

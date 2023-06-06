@@ -19,7 +19,7 @@ div
       tr
         th Land
         td
-          country-input(v-model='fullArtistData.countryId')
+          admin-country-input(v-model='fullArtistData.countryId')
       tr
         th Opmerkingen
         td
@@ -27,19 +27,19 @@ div
       tr
         th Officiële website
         td
-          official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
+          admin-official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
       tr
         th Wikipedia Nederlands
         td
-          wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
+          admin-wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
       tr
         th Wikipedia Engels
         td
-          wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
+          admin-wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
       tr
         th AllMusic
         td
-          all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
+          admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
       tr
         th
         td
@@ -48,10 +48,6 @@ div
 </template>
 
 <script>
-  import WikiUrlInput from '../../../components/admin/WikiUrlInput'
-  import CountryInput from '../../../components/admin/CountryInput'
-  import AllMusicUrlInput from '../../../components/admin/AllMusicUrlInput'
-  import OfficialUrlInput from '../../../components/admin/OfficialUrlInput'
   import {useApiFetchPut} from "~/composables/useApiFetchPut";
 
   export default defineNuxtComponent({
@@ -60,7 +56,6 @@ div
         middleware: 'admin'
       })
     },
-    components: {OfficialUrlInput, AllMusicUrlInput, CountryInput, WikiUrlInput},
     data() {
       return {
         processing: false

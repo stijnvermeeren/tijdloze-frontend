@@ -32,10 +32,8 @@ div
 
 <script>
   import _ from 'lodash'
-  import YearLink from "../../../components/YearLink";
 
   export default {
-    components: {YearLink},
     props: {
       albums: Array,
       years: Array

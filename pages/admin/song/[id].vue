@@ -15,23 +15,23 @@ div
       tr
         th Artist
         td
-          artist-select(v-model='fullSongData.artistId')
+          admin-artist-select(v-model='fullSongData.artistId')
       tr
         th Second artist
         td
-          artist-select(v-model='fullSongData.secondArtistId' :required='false')
+          admin-artist-select(v-model='fullSongData.secondArtistId' :required='false')
       tr
         th Album
         td
-          album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
+          admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
       tr
         th Taal
         td
-          language-input(v-model='fullSongData.languageId')
+          admin-language-input(v-model='fullSongData.languageId')
       tr
         th Lead vocals
         td
-          lead-vocals-input(v-model='fullSongData.leadVocals')
+          admin-lead-vocals-input(v-model='fullSongData.leadVocals')
       tr
         th Lyrics
         td
@@ -43,11 +43,11 @@ div
       tr
         th Wikipedia Nederlands
         td
-          wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.fullName}`')
+          admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.fullName}`')
       tr
         th Wikipedia Engels
         td
-          wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.fullName}`')
+          admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.fullName}`')
       tr
         th Spotify ID
         td
@@ -63,12 +63,6 @@ div
 </template>
 
 <script>
-  import WikiUrlInput from '../../../components/admin/WikiUrlInput'
-  import LanguageInput from '../../../components/admin/LanguageInput'
-  import LeadVocalsInput from '../../../components/admin/LeadVocalsInput'
-  import ArtistSelect from '../../../components/admin/ArtistSelect'
-  import AlbumSelect from '../../../components/admin/AlbumSelect'
-  import Song from "@/orm/Song";
   import Artist from "@/orm/Artist";
   import Album from "@/orm/Album";
   import {useRepo} from "pinia-orm";
@@ -79,7 +73,6 @@ div
         middleware: 'admin'
       })
     },
-    components: {AlbumSelect, ArtistSelect, LeadVocalsInput, LanguageInput, WikiUrlInput},
     data() {
       return {
         processing: false

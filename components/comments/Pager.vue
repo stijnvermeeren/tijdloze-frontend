@@ -23,7 +23,6 @@
       page: Number,
       pages: Number
     },
-    name: 'CommentsPager',
     methods: {
       pagePath(page) {
         if (page > 1) {

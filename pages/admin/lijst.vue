@@ -15,15 +15,9 @@ definePageMeta({ middleware: 'admin' })
 </script>
 
 <script>
-  import SearchBox from '../../components/SearchBox'
-  import Position from '../../components/Position'
-  import Spotify from '../../components/Spotify'
-  import SpotifySearch from '../../components/admin/SpotifySearch'
-  import NewSongWizard from '../../components/admin/NewSongWizard'
   import {useRootStore} from "~/stores/root";
 
   export default defineNuxtComponent({
-    components: {NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
     data() {
       return {
       }

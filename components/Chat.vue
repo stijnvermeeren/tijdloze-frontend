@@ -49,7 +49,6 @@
   import Sockette from 'sockette';
 
   export default {
-    name: "Chat",
     components: {User},
     data() {
       return {

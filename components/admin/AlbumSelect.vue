@@ -17,7 +17,6 @@ div
   import {useRepo} from "pinia-orm";
 
   export default {
-    name: 'AlbumSelect',
     props: {
       modelValue: {
         type: Number

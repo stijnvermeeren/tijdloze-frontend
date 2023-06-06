@@ -10,7 +10,6 @@ div
 
 <script>
   export default {
-    name: 'OfficialUrlInput',
     props: {
       modelValue: String,
       query: String

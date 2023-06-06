@@ -10,7 +10,6 @@ div
 
 <script>
   export default {
-    name: 'WikiUrlInput',
     props: {
       modelValue: String,
       lang: String,

@@ -49,11 +49,10 @@ div
       div.header
         div
           div.title Grafiek
-    graph(:songs='top100Songs')
+    d3-graph(:songs='top100Songs')
 </template>
 
 <script>
-  import Graph from '../../components/d3/Graph'
   import { idFromSlug } from '~/utils/slug'
   import Artist from "@/orm/Artist";
   import {useRootStore} from "~/stores/root";
@@ -61,9 +60,6 @@ div
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
-    components: {
-      Graph
-    },
     data() {
       return {
         tab: 'tijdloze'
