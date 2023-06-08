@@ -2,9 +2,9 @@
 #login
   div(v-if='isAuthenticated')
     div Aangemeld als {{userName}}
-    el-button(round @click='logout()' size="small") Afmelden
+    v-btn(rounded @click='logout()' size="small") Afmelden
   div(v-else)
-    el-button(round @click='login()') Aanmelden
+    v-btn(rounded @click='login()') Aanmelden
 </template>
 
 <script>

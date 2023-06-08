@@ -2,75 +2,53 @@
 Title Volledige database
 div
   h2 Volledige database
-  el-alert.alert(title="Database downloaden" :closable="false" show-icon)
+  ui-alert(title="Database downloaden")
     | Zie #[nuxt-link(to='/website/opendata') open data] voor mogelijkheden om de hele database the downloaden.
-  div
-    // el-select(v-model="filter" size="small")
-      el-option(value="alle" label="In minstens een")
-      el-option(value="alle_jaren" label="In elke")
-      el-option(value="geen_exit" label="Niet weggevallen uit de")
-    |
-    // el-select(v-model="cutoff" size="small")
-      el-option(value="top100" label="top 100")
-      el-option(value="full" label="volledige lijst")
-    |
-    | van
-    |
-    // el-select.selectYear(v-model='startYear' size="small")
-      el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
-    |
-    | tot en met
-    |
-    // el-select.selectYear(v-model='endYear' size="small")
-      el-option(v-for='year in years' :key='year.yyyy' :value='year.yyyy')
-  div
-    | Filter:
-    |
-    country-filter(v-model='countryFilter')
-    language-filter(v-model='languageFilter')
-    lead-vocals-filter(v-model='leadVocalsFilter')
-  div
-    | Jaar van release van
-    |
-    el-input-number(
-      v-model='minReleaseYear'
-      :min="lowestReleaseYear"
-      :max="highestReleaseYear"
-      size="small"
-      controls-position="right"
-      @focus="setDefaultMinReleaseYear"
-    )
-    |
-    | tot en met
-    |
-    el-input-number(
-      v-model='maxReleaseYear'
-      :min="lowestReleaseYear"
-      :max="highestReleaseYear"
-      size="small"
-      controls-position="right"
-      @focus="setDefaultMaxReleaseYear"
-    )
+  v-container
+    v-row(dense)
+      v-col.spanInputMix
+        v-select.inline(v-model="filter" :items="filterOptions" density="compact" :hide-details="true")
+        v-select.inline(v-model="cutoff" :items="cutoffOptions" density="compact" :hide-details="true")
+        span van
+        v-select.inline.selectYear(v-model='startYear' :items="yearOptions" density="compact" :hide-details="true")
+        span tot en met
+        v-select.inline.selectYear(v-model='endYear' :items="yearOptions" density="compact" :hide-details="true")
+    v-row(dense)
+      v-col
+        country-filter(v-model='countryFilter')
+      v-col
+        language-filter(v-model='languageFilter')
+      v-col
+        lead-vocals-filter(v-model='leadVocalsFilter')
+    v-row.mt-8(dense)
+      v-col
+        v-range-slider(
+          :model-value="releaseYearRange"
+          @update:model-value="updateReleaseYearRange"
+          :min="lowestReleaseYear"
+          :max="highestReleaseYear"
+          :step="1"
+          :show-ticks="true"
+          thumb-label="always"
+          density="compact"
+          :hide-details="true"
+          label="Jaar van release"
+        )
 
   el-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning" :closable="false" show-icon)
     | De statistieken kunnen nog veranderen.
 
   div.list
-    client-only(placeholder="Loading...")
-      div.entry.header
-        div.r
-        div.c
-          el-radio-group(v-model="type" size="small")
-            el-radio-button(label='nummers') Nummers
-            el-radio-button(label='artiesten') Artiesten
-            el-radio-button(label='albums') Albums
-        div.p
-          el-select(v-model="scoreMethod" size="small")
-            el-option(value="entry_count" label="Aantal noteringen")
-            el-option(v-if="type !== 'nummers'" value="song_count" label="Aantal verschillende nummers")
-            el-option(value="borda" label="Borda count (positie 1 = 100, positie 2 = 99, enz.)")
-            el-option(v-if="type !== 'artiesten'" value="year_asc" label="Jaar van release (stijgend)")
-            el-option(v-if="type !== 'artiesten'" value="year_desc" label="Jaar van release (dalend)")
+    div.entry.header.pb-1
+      div.r
+      div.c
+        v-btn-toggle(v-model="type" color="blue" density="comfortable" variant="outlined")
+          v-btn(value='nummers') Nummers
+          v-btn(value='artiesten') Artiesten
+          v-btn(value='albums') Albums
+      div.p
+        v-select(v-model="scoreMethod" :items="scoreMethodOptions" hide-details density="compact")
+    v-no-ssr
       div.content
         div.wrapper
           RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
@@ -112,6 +90,11 @@ div
   const FILTER_NO_EXIT = 'geen_exit'
   const FILTER_ALL_YEARS = 'alle_jaren'
   const validFilters = new Set([FILTER_ANY, FILTER_NO_EXIT, FILTER_ALL_YEARS])
+  const filterOptions = [
+    {title: 'In minstens een', value: FILTER_ANY},
+    {title: 'In elke', value: FILTER_ALL_YEARS},
+    {title: 'Niet weggevallen uit de', value: FILTER_NO_EXIT}
+  ]
 
   function parseFilter(value) {
     return validFilters.has(value) ? value : FILTER_ANY
@@ -120,6 +103,10 @@ div
   const CUTOFF_TOP100 = 'top100'
   const CUTOFF_FULL = 'full'
   const validCutoffs = new Set([CUTOFF_TOP100, CUTOFF_FULL])
+  const cutoffOptions = [
+    {title: 'top 100', value: CUTOFF_TOP100},
+    {title: 'volledige lijst', value: CUTOFF_FULL}
+  ]
 
   function parseCutoff(value) {
     return validCutoffs.has(value) ? value : CUTOFF_TOP100
@@ -156,12 +143,14 @@ div
         cutoff: parseCutoff(useRoute().query.cutoff),
         startYear: useRoute().query.start ? useRoute().query.start : _.first(useRootStore().years)?.yyyy,
         endYear: useRoute().query.einde ? useRoute().query.einde : useRootStore().lastCompleteYear?.yyyy,
-        minReleaseYear: undefined,
-        maxReleaseYear: undefined,
+        minReleaseYear: parseInt(useRoute().query.minReleaseYear),
+        maxReleaseYear: parseInt(useRoute().query.maxReleaseYear),
         scoreMethod: parseScoreMethod(useRoute().query.score, type),
         countryFilter: useRoute().query.land,
         languageFilter: useRoute().query.taal,
-        leadVocalsFilter: useRoute().query.leadVocals
+        leadVocalsFilter: useRoute().query.leadVocals,
+        filterOptions: filterOptions,
+        cutoffOptions: cutoffOptions
       }
     },
     computed: {
@@ -170,6 +159,9 @@ div
       },
       highestReleaseYear() {
         return _.max(useRepo(Album).all().map(album => album.releaseYear))
+      },
+      releaseYearRange() {
+        return [this.minReleaseYear, this.maxReleaseYear]
       },
       queryParams() {
         const allParams = {
@@ -200,6 +192,14 @@ div
       },
       years() {
         return useRootStore().years;
+      },
+      yearOptions() {
+        return this.years.map(year => {
+          return {
+            title: year.yyyy,
+            value: year.yyyy
+          }
+        })
       },
       currentYear() {
         return useRootStore().currentYear;
@@ -313,6 +313,23 @@ div
           this.sortAscending ? (item => item.points) : (item => -item.points),
           item => item.album.title,
         )
+      },
+      scoreMethodOptions() {
+        const items = [
+          {value: SCORE_ENTRY_COUNT, title: "Aantal noteringen"}
+        ]
+        if (this.type !== 'nummers') {
+          items.push({value: SCORE_SONG_COUNT, title: "Aantal verschillende nummers"})
+        }
+
+        items.push({value: SCORE_BORDA, title: "Borda count (positie 1 = 100, positie 2 = 99, enz.)"})
+
+        if (this.type !== 'artiesten') {
+          items.push({value: SCORE_YEAR_ASC, title: "Jaar van release (stijgend)"})
+          items.push({value: SCORE_YEAR_DESC, title: "Jaar van release (dalend)"})
+        }
+
+        return items
       }
     },
     watch: {
@@ -339,17 +356,18 @@ div
     },
     mounted() {
       this.isMounted = true
+      if (!this.maxReleaseYear) {
+        this.maxReleaseYear = this.highestReleaseYear
+      }
+      if (!this.minReleaseYear) {
+        this.minReleaseYear = this.lowestReleaseYear
+      }
     },
     methods: {
-      setDefaultMinReleaseYear() {
-        if (!this.minReleaseYear) {
-          this.minReleaseYear = this.lowestReleaseYear
-        }
-      },
-      setDefaultMaxReleaseYear() {
-        if (!this.maxReleaseYear) {
-          this.maxReleaseYear = this.highestReleaseYear
-        }
+      updateReleaseYearRange(newValue) {
+        const [minValue, maxValue] = newValue
+        this.minReleaseYear = minValue
+        this.maxReleaseYear = maxValue
       },
       applyFilters(songs) {
         const selectedYears = this.selectedYears;
@@ -403,7 +421,7 @@ div
 
       div {
         flex-basis: 0;
-        align-items: center;
+        align-items: stretch;
       }
 
       &.header {
@@ -479,8 +497,21 @@ div
     }
   }
 
-  .selectYear {
-    width: 100px;
+  .spanInputMix {
+    text-align: left;
+    > * {
+      vertical-align: middle;
+      margin: 0 4px;
+    }
+  }
+
+  div.inline {
+    display: inline-block;
+    width: auto;
+  }
+
+  div.minWidth {
+    min-width: 200px;
   }
 
   table.lijst {

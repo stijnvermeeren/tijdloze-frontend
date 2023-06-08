@@ -1,14 +1,18 @@
 <template lang="pug">
-el-select(:value='modelValue' @input='input' placeholder="Lead vocals" clearable size="small")
-  el-option(
-    v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
-    :key='genderId'
-    :value='genderId'
-    :label="genderName")
+v-select(
+  :model-value='modelValue'
+  @update:model-value='input'
+  label="Lead vocals"
+  clearable
+  density="compact"
+  :items="items"
+  :hide-details="true"
+)
 </template>
 
 <script>
   import vocalsGenders from '~/utils/leadVocals'
+  import languages from "~/utils/language";
 
   export default {
     name: 'LeadVocalsInput',
@@ -17,8 +21,13 @@ el-select(:value='modelValue' @input='input' placeholder="Lead vocals" clearable
     },
     emits: ['update:modelValue'],
     computed: {
-      vocalsGenders() {
-        return vocalsGenders;
+      items() {
+        return Object.entries(vocalsGenders).map(([genderId, genderName]) => {
+          return {
+            title: genderName,
+            value: genderId,
+          }
+        })
       }
     },
     methods: {

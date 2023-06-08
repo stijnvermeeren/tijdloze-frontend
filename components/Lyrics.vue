@@ -1,9 +1,6 @@
 <template lang="pug">
-div(:class="['container', {open: isOpen, closed: !isOpen}]")
-  el-card
-    template(#header)
-      div.header(ref='lyrics')
-        div.title Lyrics
+div(ref='lyrics' :class="['container', {open: isOpen, closed: !isOpen}]")
+  ui-card(title="Lyrics")
     .lyricsContainer
       slot
       .toggle(@click.prevent='toggle()')

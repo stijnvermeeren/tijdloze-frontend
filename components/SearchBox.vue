@@ -1,8 +1,22 @@
 <template lang="pug">
 #searchBox
-  span.icon
-    el-icon-search
-  input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
+  v-text-field(
+    :label='placeholder'
+    persistent-placeholder
+    autocomplete='off'
+    spellcheck='false'
+    v-model='query'
+    @keyup.down='move(1)'
+    @keyup.up='move(-1)'
+    @keyup.enter='go(selectedIndex)'
+    @keydown.up.prevent='() => true'
+    @keydown.down.prevent='() => true'
+    ref="input"
+    hide-details
+    density="compact"
+  )
+    template(#prepend-inner)
+      v-icon(:icon="mdiMagnify")
   #searchResults(v-if='query.length > 0')
     .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
       div(v-if="result.type === 'artist'")
@@ -27,6 +41,10 @@
       | Geen resultaten gevonden.
 </template>
 
+<script setup>
+  import {mdiMagnify} from "@mdi/js";
+</script>
+
 <script>
   import _ from 'lodash';
   import Artist from "@/orm/Artist";
@@ -39,7 +57,7 @@
     props: {
       placeholder: {
         type: String,
-        default: 'Zoek artiest, album of nummer...'
+        default: 'Zoek artiest, album of nummer'
       },
       songFilter: {
         type: Function,
@@ -234,15 +252,6 @@
     position: relative;
     margin: 10px 0;
     font-size: 16px;
-
-    .icon {
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      height: 16px;
-      width: 16px;
-      z-index: 1;
-    }
 
     input {
       width: 100%;

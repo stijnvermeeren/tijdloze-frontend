@@ -2,7 +2,7 @@
 Title Dalers
 div
   h2 Tijdloze dalers
-  tabs(:tabs="[\
+  ui-tabs(:tabs="[\
     { to: '/statistieken/dalers', title: 'Per jaar' },\
     { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }\
   ]")

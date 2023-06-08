@@ -1,10 +1,13 @@
 <template lang="pug">
-el-select(:value='modelValue' @input='input' placeholder="Taal" clearable size="small")
-  el-option(
-    v-for='[languageId, languageName] in Object.entries(languages)'
-    :key='languageId'
-    :value='languageId'
-    :label="languageName")
+v-select(
+  :model-value='modelValue'
+  @update:model-value='input'
+  :items="items"
+  label="Taal"
+  clearable
+  density="compact"
+  :hide-details="true"
+)
 </template>
 
 <script>
@@ -17,8 +20,13 @@ el-select(:value='modelValue' @input='input' placeholder="Taal" clearable size="
     },
     emits: ['update:modelValue'],
     computed: {
-      languages() {
-        return languages;
+      items() {
+        return Object.entries(languages).map(([languageId, languageName]) => {
+          return {
+            title: languageName,
+            value: languageId,
+          }
+        })
       }
     },
     methods: {

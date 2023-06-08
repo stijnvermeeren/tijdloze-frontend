@@ -5,10 +5,8 @@ div
   client-only(placeholder="Loading...")
     full-list(:songs='songsExtended' :year='year')
 
-  el-card(v-if='year.previous()')
-    template(#header)
-      div.header
-        div.title {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
+  ui-card(v-if='year.previous()')
+    template(#title) {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
     table.list-summary
       tbody
         tr
@@ -41,10 +39,7 @@ div
 
   div(id="exits")
 
-  el-card(v-if='exits.length')
-    template(#header)
-      div.header
-        div.title Exits
+  ui-card(v-if='exits.length' title="Exits")
     table.lijst.perVijf
       tbody
         tr
@@ -64,10 +59,7 @@ div
           td.releaseYear
             | {{song.album.releaseYear}}
 
-  el-card(v-if='newSongs.length')
-    template(#header)
-      div.header
-        div.title Nieuwkomers
+  ui-card(v-if='newSongs.length' title="Nieuwkomers")
     table.lijst.perVijf
       tbody
         tr
@@ -90,10 +82,7 @@ div
           td.releaseYear
             | {{song.album.releaseYear}}
 
-  el-card(v-if='analysis')
-    template(#header)
-      div.header
-        div.title Interessante feiten
+  ui-card(v-if='analysis' title="Interessante feiten")
     .analysis
       div(v-for='text in analysis')
         make-links(:text='text')

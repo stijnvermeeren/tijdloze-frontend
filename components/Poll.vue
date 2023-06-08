@@ -1,7 +1,7 @@
 <template lang="pug">
 .poll
   div.reload
-    el-button(icon="el-icon-refresh-left" @click="reload" :loading="isLoading" circle)
+    v-btn(:icon="mdiRefresh" size="small" density="comfortable" @click="reload" :loading="isLoading")
   poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
   div(v-if='showResults')
     div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
@@ -15,7 +15,7 @@
       input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
       label(:for='`vote-${answer.id}`') {{answer.answer}}
     div(v-if='isAuthenticated')
-      button(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
+      v-btn(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
     div(v-else)
       | Om te kunnen stemmen, moet je je #[a(@click='login()') aanmelden/registeren].
   .voteCount {{voteCount}} {{ voteCount === 1 ? 'stem' : 'stemmen' }}
@@ -23,110 +23,113 @@
     .isDeleted(v-if='isDeleted')
       | Poll is verborgen op de website.
       |
-      button(@click='restore()' :disabled='deleting') Opnieuw tonen
+      v-btn(size="x-small" @click='restore()' :disabled='deleting') Opnieuw tonen
     div(v-else)
-      button(@click='deletePoll()' :disabled='deleting') Poll verbergen op de website
+      v-btn(size="x-small" @click='deletePoll()' :disabled='deleting') Poll verbergen op de website
 </template>
 
-<script>
-  import _ from 'lodash';
-  import PollQuestion from "./PollQuestion";
-  import PollAnswer from "./PollAnswer";
-  import {usePollStore} from "~/stores/poll";
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {mdiRefresh} from "@mdi/js";
+import _ from 'lodash';
+import {usePollStore} from "~/stores/poll";
+import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    name: "Poll",
-    components: {PollAnswer, PollQuestion},
-    props: {
-      poll: {
-        type: Object
-      },
-      isAdmin: {
-        type: Boolean,
-        default: false
-      },
-      isActive: {
-        type: Boolean,
-        default: false
-      }
-    },
-    data() {
-      return {
-        livePoll: this.poll,
-        isDeleted: this.poll.isDeleted,
-        deleting: false,
-        voting: false,
-        myVoteEdit: undefined,
-        isLoading: false
-      }
-    },
-    computed: {
-      showResults() {
-        return this.isAdmin || !!this.myVote
-      },
-      myVote() {
-        return usePollStore().vote(this.poll.id)
-      },
-      isAuthenticated() {
-        return useAuthStore().isAuthenticated;
-      },
-      voteCount() {
-        return _.sumBy(this.livePoll.answers, answer => answer.voteCount);
-      }
-    },
-    watch: {
-      poll(newPoll) {
-        this.livePoll = newPoll
-      },
-      myVote() {
-        this.reload()
-      }
-    },
-    methods: {
-      async reload() {
-        this.isLoading = true;
-        const result = await useApiFetch(`poll/my-votes`);
-        usePollStore().setVotes(result.votes);
-        this.livePoll = await useApiFetch(`poll/${this.poll.id}`);
-        this.isLoading = false;
-      },
-      async vote() {
-        if (this.isAuthenticated) {
-          this.voting = true;
-          await this.$axios.$post(`poll/${this.poll.id}/${this.myVoteEdit}`);
+const auth = inject('auth', {}) // provide default value for server-side
 
-          await this.reload();
-          this.voting = false;
-        }
-      },
-      barWidth(answerVotes) {
-        return 150 * answerVotes / this.voteCount;
-      },
-      percentage(answerVotes) {
-        if (this.voteCount) {
-          return Math.round(100 * answerVotes / this.voteCount) + '%';
-        } else {
-          return '-';
-        }
-      },
-      async deletePoll() {
-        this.deleting = true;
-        await this.$axios.$post(`poll/${this.poll.id}/hide`);
-        this.isDeleted = true;
-        this.deleting = false;
-      },
-      async restore() {
-        this.deleting = true;
-        await this.$axios.$delete(`poll/${this.poll.id}/hide`);
-        this.isDeleted = false;
-        this.deleting = false;
-      },
-      login() {
-        this.$auth.login(this.$route.path);
-      }
-    }
+const props = defineProps({
+  poll: {
+    type: Object
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false
+  },
+  isActive: {
+    type: Boolean,
+    default: false
   }
+})
+
+const livePoll = ref(props.poll)
+const isDeleted = ref(props.poll.isDeleted)
+const deleting = ref(false)
+const voting = ref(false)
+const myVoteEdit = ref(undefined)
+const isLoading = ref(false)
+
+const myVote = computed(() => {
+  return usePollStore().vote(props.poll.id)
+})
+
+const showResults = computed(() => {
+  return props.isAdmin || !!myVote.value
+})
+
+const isAuthenticated = computed(() => {
+  return useAuthStore().isAuthenticated;
+})
+
+const voteCount = computed(() => {
+  return _.sumBy(livePoll.value.answers, answer => answer.voteCount);
+})
+
+watch(props.poll, (newPoll) => {
+  livePoll.value = newPoll
+})
+
+watch(myVote, () => {
+  reload()
+})
+
+async function reload() {
+  isLoading.value = true;
+  const {data: result} = await useApiFetch(`poll/my-votes`)
+  usePollStore().setVotes(result.value.votes);
+
+  const {data: newLivePoll} = await useApiFetch(`poll/${props.poll.id}`)
+  livePoll.value = newLivePoll.value;
+  isLoading.value = false;
+}
+
+async function vote() {
+  if (isAuthenticated.value) {
+    voting.value = true;
+    await useApiFetchPost(`poll/${props.poll.id}/${myVoteEdit.value}`);
+
+    await reload();
+    voting.value = false;
+  }
+}
+
+function barWidth(answerVotes) {
+  return 150 * answerVotes / voteCount.value;
+}
+
+function percentage(answerVotes) {
+  if (voteCount.value) {
+    return Math.round(100 * answerVotes / voteCount.value) + '%';
+  } else {
+    return '-';
+  }
+}
+
+async function deletePoll() {
+  deleting.value = true;
+  await useApiFetchPost(`poll/${props.poll.id}/hide`);
+  isDeleted.value = true;
+  deleting.value = false;
+}
+
+async function restore() {
+  deleting.value = true;
+  await useApiFetchDelete(`poll/${props.poll.id}/hide`);
+  isDeleted.value = false;
+  deleting.value = false;
+}
+
+function login() {
+  auth.login(useRoute().path);
+}
 </script>
 
 <style lang="scss" scoped>

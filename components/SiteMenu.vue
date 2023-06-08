@@ -4,97 +4,62 @@ div
     search-box(@selectSearchResult='selectSearchResult($event)')
 
     nav
-      el-menu(
-        :default-openeds="openeds"
-        :default-active="route"
-        background-color="#fadfbb"
-        text-color="#003388"
-      )
-        nuxt-link(to="/")
-          el-menu-item(index="/") Home
-        nuxt-link(v-if='commentsOn' to="/reacties")
-          el-menu-item(index="/reacties") Reageer en discussieer
-        el-sub-menu(v-if='listInProgress' index="inprogress")
-          template(#title) De Tijdloze {{currentYear.yyyy}}
-          nuxt-link(:to="`/lijst/${currentYear.yyyy}`")
-            el-menu-item(:index="`/lijst/${currentYear.yyyy}`") De lijst
-          nuxt-link(to="/lijst/opkomst")
-            el-menu-item(index="/lijst/opkomst") Nog op komst...
-          nuxt-link(v-if="chatOn" to="/chat")
-            el-menu-item(index="/chat") Chatbox
-          nuxt-link(to="/polls")
-            el-menu-item(index="/polls") Polls
-        el-sub-menu(index="/lijst")
-          template(#title) De Tijdloze van...
-          nuxt-link(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`')
-            el-menu-item(:index='`/lijst/${year.yyyy}`') {{year.yyyy}}
-        nuxt-link(to="/database")
-          el-menu-item(index="/database") Volledige database
-        el-sub-menu(index="/statistieken")
-          template(#title)
-            span Statistieken #[span.addition (top 100)]
-          el-menu-item-group(title="Verschuivingen")
-            nuxt-link(to="/statistieken/nieuwkomers")
-              el-menu-item(index="/statistieken/nieuwkomers") Nieuwkomers
-            nuxt-link(to="/statistieken/reentries")
-              el-menu-item(index="/statistieken/reentries") Re-entries
-            nuxt-link(to="/statistieken/exits")
-              el-menu-item(index="/statistieken/exits") Exits
-            nuxt-link(to="/statistieken/eenjaarsvliegen")
-              el-menu-item(index="/statistieken/eenjaarsvliegen") Eenjaarsvliegen
-            nuxt-link(to="/statistieken/stijgers")
-              el-menu-item(index="/statistieken/stijgers") Stijgers
-            nuxt-link(to="/statistieken/dalers")
-              el-menu-item(index="/statistieken/dalers") Dalers
-            nuxt-link(to="/statistieken/stationair")
-              el-menu-item(index="/statistieken/stationair") Stationaire nummers
-          el-menu-item-group(title="Andere statistieken")
-            nuxt-link(to="/statistieken/noteringen")
-              el-menu-item(index="/statistieken/noteringen") Noteringen
-            nuxt-link(to="/statistieken/noteringen_album")
-              el-menu-item(index="/statistieken/noteringen_album") Noteringen (Albums)
-            nuxt-link(to="/statistieken/landen")
-              el-menu-item(index="/statistieken/landen") Landen
-            nuxt-link(to="/statistieken/talen")
-              el-menu-item(index="/statistieken/talen") Talen
-            nuxt-link(to="/statistieken/leadvocals")
-              el-menu-item(index="/statistieken/leadvocals") Lead vocals
-            nuxt-link(to="/statistieken/decennia")
-              el-menu-item(index="/statistieken/decennia") Decennia
-            nuxt-link(to="/statistieken/leeftijden")
-              el-menu-item(index="/statistieken/leeftijden") Leeftijden
-        el-sub-menu(index="/website")
-          template(#title) Deze website
-          nuxt-link(to="/website")
-            el-menu-item(index="/website") Algemene info
-          nuxt-link(to="/website/geschiedenis")
-            el-menu-item(index="/website/geschiedenis") Geschiedenis
-          nuxt-link(to="/website/methodologie")
-            el-menu-item(index="/website/methodologie") Methodologie
-          nuxt-link(to="/website/opendata")
-            el-menu-item(index="/website/opendata") Open data
-          nuxt-link(to="/website/opensource")
-            el-menu-item(index="/website/opensource") Open source
-          nuxt-link(to="/website/privacy")
-            el-menu-item(index="/website/privacy") Privacybeleid
-          nuxt-link(to="/website/contact")
-            el-menu-item(index="/website/contact") Contact
-        el-sub-menu(v-if='isAdmin' index="/admin")
-          template(#title) Admin
-          nuxt-link(to="/admin/live")
-            el-menu-item(index="/admin/live") Nummers toevoegen
-          nuxt-link(to="/admin/exits")
-            el-menu-item(index="/admin/exits") Exits markeren
-          nuxt-link(to="/admin/polls")
-            el-menu-item(index="/admin/polls") Polls
-          nuxt-link(to="/admin/analysis")
-            el-menu-item(index="/admin/analysis") Interessante feiten
-          nuxt-link(to="/admin/artist")
-            el-menu-item(index="/admin/artist") Nieuwe artiest
-          nuxt-link(to="/admin/users")
-            el-menu-item(index="/admin/users") Gebruikers
-          nuxt-link(to="/admin/settings")
-            el-menu-item(index="/admin/settings") Instellingen
+      v-list(bg-color="#fadfbb" density="comfortable" :opened="openeds")
+        v-list-item(to="/") Home
+        v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
+        v-list-group(v-if='listInProgress' value="/inprogress")
+          template(#activator="{ props }")
+            v-list-item(v-bind="props") De Tijdloze {{currentYear.yyyy}}
+          v-list-item(:to="`/lijst/${currentYear.yyyy}`") De lijst
+          v-list-item(to="/lijst/opkomst") Nog op komst...
+          v-list-item(v-if="chatOn" to="/chat") Chatbox
+          v-list-item(to="/polls") Polls
+        v-list-group(value="/lijst")
+          template(#activator="{ props }")
+            v-list-item(v-bind="props") De Tijdloze van ...
+          v-list-item(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`') {{year.yyyy}}
+        v-list-item(to="/database") Volledige database
+        v-list-group(value="/statistieken")
+          template(#activator="{ props }")
+            v-list-item(v-bind="props") Statistieken #[span.addition (top 100)]
+          v-list-subheader(title="Verschuivingen")
+          v-list-item(to="/statistieken/nieuwkomers") Nieuwkomers
+          v-list-item(to="/statistieken/reentries") Re-entries
+          v-list-item(to="/statistieken/exits") Exits
+          v-list-item(to="/statistieken/eenjaarsvliegen") Eenjaarsvliegen
+          v-list-item(to="/statistieken/stijgers") Stijgers
+          v-list-item(to="/statistieken/dalers") Dalers
+          v-list-item(to="/statistieken/stationair") Stationaire nummers
+          v-list-subheader(title="Andere statistieken")
+          v-list-item(to="/statistieken/noteringen") Noteringen
+          v-list-item(to="/statistieken/noteringen_album") Noteringen (Albums)
+          v-list-item(to="/statistieken/landen") Landen
+          v-list-item(to="/statistieken/talen") Talen
+          v-list-item(to="/statistieken/leadvocals") Lead vocals
+          v-list-item(to="/statistieken/decennia") Decennia
+          v-list-item(to="/statistieken/leeftijden") Leeftijden
+        v-list-group(value="/website")
+          template(#activator="{ props }")
+            v-list-item(v-bind="props") Deze website
+          v-list-item(to="/website") Algemene info
+          v-list-item(to="/website/geschiedenis") Geschiedenis
+          v-list-item(to="/website/methodologie") Methodologie
+          v-list-item(to="/website/opendata") Open data
+          v-list-item(to="/website/opensource") Open source
+          v-list-item(to="/website/privacy") Privacybeleid
+          v-list-item(to="/website/contact") Contact
+        v-list-group(v-if='isAdmin' value="/admin")
+          template(#activator="{ props }")
+            v-list-item(v-bind="props")
+              v-icon.mr-3(:icon="mdiLockOutline")
+              span Admin
+          v-list-item(to="/admin/live") Nummers toevoegen
+          v-list-item(to="/admin/exits") Exits markeren
+          v-list-item(to="/admin/polls") Polls
+          v-list-item(to="/admin/analysis") Interessante feiten
+          v-list-item(to="/admin/artist") Nieuwe artiest
+          v-list-item(to="/admin/users") Gebruikers
+          v-list-item(to="/admin/settings") Instellingen
 
     login
     span.cross-button(@click='isOpen = false')
@@ -108,11 +73,14 @@ div
 <script>
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
+  import {mdiLockOutline} from "@mdi/js";
 
   export default defineNuxtComponent({
     data() {
       return {
-        isOpen: false
+        isOpen: false,
+        mdiLockOutline: mdiLockOutline,
+        selectedPage: undefined
       };
     },
     computed: {
@@ -135,10 +103,10 @@ div
         return useAuthStore().isAdmin;
       },
       route() {
-        return this.$route.path.split('/').slice(0, 3).join('/');
+        return useRoute().path.split('/').slice(0, 3).join('/');
       },
       openeds() {
-        const mainPath = this.$route.path.split('/').slice(0, 2).join('/');
+        const mainPath = useRoute().path.split('/').slice(0, 2).join('/');
         return ['inprogress', '/admin', mainPath];
       }
     },
@@ -155,7 +123,7 @@ div
         }
         if (path) {
           this.isOpen = false;
-          this.$router.push(path);
+          useRouter().push(path);
         }
 
       },
@@ -186,14 +154,45 @@ div
         document.removeEventListener('keyup', this.escapeKeyListener);
         document.removeEventListener('click', this.close);
       }
-    },
-    ssrComputedCache: true
+    }
   });
 </script>
 
 
 <style lang="scss" scoped>
   @use "../assets/styleConfig";
+
+  .v-list {
+    color: styleConfig.$hoverLinkColor;
+    a {
+      color: styleConfig.$hoverLinkColor;
+    }
+
+    font-size: 16px;
+    font-weight: bold;
+
+    .v-list-item:not(:only-child) {
+      margin-bottom: unset;
+    }
+
+    :deep(.v-list-group__items) {
+      font-size: 14px;
+      font-weight: normal;
+
+      .v-list-item {
+        min-height: unset;
+      }
+    }
+
+    a.router-link-active {
+      color: #409eff;
+    }
+
+    span.addition {
+      font-size: 12px;
+      font-weight: normal;
+    }
+  }
 
   #sideNav {
     box-sizing: border-box;
@@ -206,7 +205,7 @@ div
     background-color: styleConfig.$menuBackgroundColor;
     border-right: 2px solid styleConfig.$headerBackgroundColor;
     overflow-x: hidden;
-    padding: 1em 2em;
+    padding: 1em 1em;
     transition: 0.3s;
 
     font-size: 115%;
@@ -280,33 +279,4 @@ div
     background: rgba(0, 0, 0, 0.3);
   }
 
-
-  #sideNav {
-    .el-menu {
-      border: none;
-    }
-
-    span.addition {
-      font-size: 12px;
-      font-weight: normal;
-    }
-
-    .el-menu--inline .el-menu-item {
-      font-size: 14px;
-      font-weight: normal;
-      height: 28px;
-      line-height: 28px;
-    }
-  }
-</style>
-
-<style lang="scss">
-  #sideNav {
-    .el-menu-item, .el-sub-menu__title {
-      font-size: 16px;
-      font-weight: bold;
-      height: 40px;
-      line-height: 40px;
-    }
-  }
 </style>

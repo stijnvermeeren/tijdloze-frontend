@@ -3,53 +3,46 @@ Title Admin: interessante feiten {{currentYear.yyyy}}
 div
   h2 "Interessante feiten" {{currentYear.yyyy}}
 
-  el-card
-    template(#header)
-      div.header
-        div.title Aanpassen
-    el-alert(:closable="false" show-icon)
-      template(#title)
-        div Link naar nummer of artiest:
-          |
-          code [The Chain]
-          |
-          | wordt
-          |
-          make-links(text="[The Chain]")
-        div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
-          |
-          code [One;Metallica]
-          |
-          | wordt
-          |
-          make-links(text="[One;Metallica]")
-        div Een ster in het begin maakt de link vetgedrukt:
-          |
-          code [*Pink Floyd]
-          |
-          | wordt
-          |
-          make-links(text="[*Pink Floyd]")
-        div HTML werkt ook (gebruik voorzichtig en met mate):
-          |
-          code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
-          |
-          | wordt
-          |
-          make-links(text="<strong>vet</strong> <em>scheef</em>")
+  ui-card(title="Aanpassen")
+    ui-alert
+      div Link naar nummer of artiest:
+        |
+        code [The Chain]
+        |
+        | wordt
+        |
+        make-links(text="[The Chain]")
+      div Als de titel niet eenduidig is, voeg dan de artiest toe na een puntkomma:
+        |
+        code [One;Metallica]
+        |
+        | wordt
+        |
+        make-links(text="[One;Metallica]")
+      div Een ster in het begin maakt de link vetgedrukt:
+        |
+        code [*Pink Floyd]
+        |
+        | wordt
+        |
+        make-links(text="[*Pink Floyd]")
+      div HTML werkt ook (gebruik voorzichtig en met mate):
+        |
+        code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
+        |
+        | wordt
+        |
+        make-links(text="<strong>vet</strong> <em>scheef</em>")
     div
-      textarea(v-model='analysis')
+      v-textarea(v-model='analysis' :rows="10")
     div(v-if="outOfDate")
       | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
       |
-      el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
+      v-btn(@click='refresh()' :disabled='refreshing') Opnieuw laden
     div
-      el-button(@click='save()' :disabled='saving') Opslaan
+      v-btn(@click='save()' :disabled='saving') Opslaan
 
-  el-card
-    template(#header)
-      div.header
-        div.title Preview
+  ui-card(title="Preview")
     div
       .analyse
         ul
@@ -132,12 +125,6 @@ div
 </script>
 
 <style lang="scss" scoped>
-  textarea {
-    width: 100%;
-    height: 160px;
-    font-size: 14px;
-  }
-
   div.analyse {
     font-size: 14px;
   }

@@ -47,36 +47,40 @@ export default defineNuxtPlugin(async nuxtApp => {
     const {data: userData} = await useApiFetchPost('user', data)
     authStore.setUser(userData.value);
 
-    // Don't await / do in the background
-    const {data: pollData} = useApiFetch('poll/my-votes')
-    usePollStore().setVotes(pollData.votes);
+    // TODO don't do await, do it in the background instead
+    const {data: pollData} = await useApiFetch('poll/my-votes')
+    usePollStore().setVotes(pollData.value.votes);
   }
+
+  const authInjectable = {
+    login(redirectPath) {
+      sessionStorage.setItem("redirectPath", redirectPath);
+      unsetAccessToken()
+      auth.loginWithRedirect();
+    },
+    logout() {
+      unsetAccessToken()
+      auth.logout({
+        returnTo: config.public.auth0LogoutUri
+      });
+    },
+    unsetAccessToken() {
+      unsetAccessToken()
+    },
+    async loginSilently() {
+      return await loginSilently();
+    },
+    async loginCallback() {
+      auth.handleRedirectCallback();
+      return await loginSilently();
+    }
+  }
+
+  nuxtApp.vueApp.provide('auth', authInjectable)
 
   return {
     provide: {
-      auth: {
-        login(redirectPath) {
-          sessionStorage.setItem("redirectPath", redirectPath);
-          unsetAccessToken()
-          auth.loginWithRedirect();
-        },
-        logout() {
-          unsetAccessToken()
-          auth.logout({
-            returnTo: config.public.auth0LogoutUri
-          });
-        },
-        unsetAccessToken() {
-          unsetAccessToken()
-        },
-        async loginSilently() {
-          return await loginSilently();
-        },
-        async loginCallback() {
-          auth.handleRedirectCallback();
-          return await loginSilently();
-        }
-      }
+      auth: authInjectable
     }
   }
 });

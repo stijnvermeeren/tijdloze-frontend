@@ -25,7 +25,7 @@ table.lijst.perEen
                 song-artist-link(:song='entry.song')
               td
                 song-link(:song='entry.song')
-              td
+              td.text-no-wrap
                 | {{entry.absenceYears}} jaar
         div(v-else) /
 </template>

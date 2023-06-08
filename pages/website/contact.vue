@@ -3,7 +3,7 @@ Title Contact
 div
   h2 Contact
 
-  el-alert(title="Radio-uitzending en samenstelling van de Tijdloze" :closable="false" show-icon)
+  ui-alert(title="Radio-uitzending en samenstelling van de Tijdloze")
     div De makers van deze website zijn #[strong niet betrokken] bij de radio-uitzending of de samenstelling van de Tijdloze.
     div Feedback daarover kan je direct aan #[a(href='https://stubru.be') StuBru] en de #[a(href='https://vrtklantendienst.force.com/s/contactus') VRT] sturen.
 
@@ -15,50 +15,38 @@ div
   div(v-if='success')
     el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
       a(@click='reset()') Verzend een nieuw bericht
-    el-card
-      div.header(slot="header")
-        div
-          div.title Verzonden bericht:
-          div.subtitle
-            | Van {{name}}
-            span(v-if='email.trim()')
-              |
-              | ({{email}})
+    ui-card(title="Verzonden bericht" :subtitle="cardSubtitle")
       p.message {{message}}
   div(v-if='inProgress')
     | Bericht wordt verzonden...
 
   div(v-if='!success && !inProgress')
-    table
-      tbody
-        tr
-          th Naam:
-          td
-            input.formtext(type='text' v-model='name' placeholder='Verplicht veld')
-        tr
-          th E-mailadres:
-          td
-            div
-              input.formtext(@blur='emailTouched = true' name='email' v-model='email')
-            el-alert(
-              v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
-              type="warning"
-              title="Ongeldig e-mailadres."
-              :closable="false"
-            )
-              | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
-        tr
-          th Bericht:
-          td
-            textarea(cols='30' rows='4' v-model='message' placeholder='Verplicht veld')
-        tr
-          th &nbsp;
-          td
-            button.formsubmit(@click='submit' :disabled='submitDisabled' type='submit')
-              | Bericht verzenden
+    v-container
+      v-row
+        v-col
+          v-text-field.formtext(label="Naam *" type='text' v-model='name' hide-details)
+      v-row
+        v-col
+          v-text-field.formtext(label="E-mailadres" @blur='emailTouched = true' name='email' v-model='email' hide-details)
+          el-alert(
+            v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
+            type="warning"
+            title="Ongeldig e-mailadres."
+            :closable="false"
+          )
+            | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
+      v-row
+        v-col
+          v-textarea(label="Bericht *" cols='30' rows='4' v-model='message' hide-details)
+      v-row
+        v-col
+          v-btn.formsubmit(@click='submit' :disabled='submitDisabled' type='submit')
+            | Bericht verzenden
 </template>
 
 <script>
+  import {useAuthStore} from "~/stores/auth";
+
   export default {
     data() {
       return {
@@ -77,6 +65,14 @@ div
         const emailOk = !this.email.trim() || this.validateEmail(this.email.trim());
         const messageOk = !!this.message.trim();
         return !(nameOk && emailOk && messageOk);
+      },
+      cardSubtitle() {
+        const from = `Van ${this.name}`
+        if (this.email.trim()) {
+          return `${from} (${this.email})`
+        } else {
+          return from
+        }
       }
     },
     methods: {
@@ -117,25 +113,5 @@ div
 <style lang="scss" scoped>
     p.message {
         white-space: pre-line;
-    }
-
-    th {
-        width: 120px;
-    }
-
-    input {
-        box-sizing: border-box;
-        width: 100%;
-        padding: 2px 5px;
-    }
-    button {
-        width: 200px;
-    }
-
-    textarea {
-        box-sizing: border-box;
-        width: 100%;
-        height: 90px;
-        padding: 5px;
     }
 </style>

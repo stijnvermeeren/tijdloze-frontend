@@ -2,7 +2,7 @@
 Title Nieuwkomers
 div
   h2 Tijdloze nieuwkomers
-  tabs(:tabs="[\
+  ui-tabs(:tabs="[\
     { to: '/statistieken/nieuwkomers', title: 'Per jaar' },\
     { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },\
     { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }\

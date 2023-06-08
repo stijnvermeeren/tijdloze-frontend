@@ -2,17 +2,12 @@
 Title Admin: Instellingen
 div
   h2 Instellingen
-  ul
-    li
-      el-switch(v-model="commentsOn" :active-value="'on'" :inactive-value="'off'")
-      |
-      | Reacties open
-    li
-      el-switch(v-model="chatOn" :active-value="'on'" :inactive-value="'off'")
-      |
-      | Chatbox open
-    li
-      el-button(@click="invalidateCache" size="small") Invalidate API caches
+  div
+    v-switch(v-model="commentsOn" :true-value="'on'" :false-value="'off'" label="Reacties open" hide-details)
+  div
+    v-switch(v-model="chatOn" :true-value="'on'" :false-value="'off'" label="Chatbox open" hide-details)
+  div
+    v-btn(@click="invalidateCache") Invalidate API caches
 </template>
 
 <script>

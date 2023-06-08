@@ -4,9 +4,7 @@ div
   div.flexTitle
     page-title(icon='album' icon-alt='Album')
       h2 {{album.title}}
-    div(v-if="isAdmin")
-      nuxt-link(:to="`/admin/album/${album.id}`")
-        el-button(type="warning" round size="small") Admin: album aanpassen
+    ui-admin-link-btn(:to="`/admin/album/${album.id}`") Admin: album aanpassen
 
   div Album van
     = " "
@@ -16,23 +14,15 @@ div
     | uit {{ album.releaseYear }}.
 
   div.links
-    a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round)
-        el-icon
-          el-icon-link
-        span {{ link.title }}
+    ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
 
-  el-card
-    template(#header)
-      div.header(slot="header")
-        div
-          div.title In de Tijdloze
-          div.subtitle
-            entry-count(:songs='album.songs')
-        div
-          el-radio-group(v-model="tab" size="small")
-            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
-            el-radio-button(label='all') Alle Tijdloze nummers
+  ui-card(title="In de Tijdloze")
+    template(#subtitle)
+      entry-count(:songs='album.songs')
+    template(#buttons)
+      v-btn-toggle(v-model="tab" density="compact" color="blue" variant="outlined")
+        v-btn(value='tijdloze') Tijdloze {{currentYear.yyyy}}
+        v-btn(value='all') Alle Tijdloze nummers
     div(v-if="tab === 'tijdloze'")
       in-current-list(:songs='album.songs')
     div(v-if="tab === 'all'")
@@ -40,11 +30,7 @@ div
         li(v-for='song in album.songsSorted')
           song-with-second-artist-link(:song='song')
 
-  el-card(v-if='top100Songs.length')
-    template(#header)
-      div.header(slot="header")
-        div
-          div.title Grafiek
+  ui-card(v-if='top100Songs.length' title="Grafiek")
     d3-graph(:songs='top100Songs')
 </template>
 
@@ -52,7 +38,6 @@ div
   import { idFromSlug } from '~/utils/slug'
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
-  import {useAuthStore} from "~/stores/auth";
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
@@ -89,9 +74,6 @@ div
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
         addLink('urlAllMusic', 'AllMusic');
         return links;
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin;
       }
     },
     async asyncData() {

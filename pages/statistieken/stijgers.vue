@@ -2,7 +2,7 @@
 Title Stijgers
 div
   h2 Tijdloze stijgers
-  tabs(:tabs="[\
+  ui-tabs(:tabs="[\
     { to: '/statistieken/stijgers', title: 'Per jaar' },\
     { to: '/statistieken/stijgers/lijst', title: 'Grootste aller tijden' }\
   ]")

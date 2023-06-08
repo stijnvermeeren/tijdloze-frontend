@@ -12,9 +12,7 @@ div
   p Op 24 november 2014, tijdens de stemweek voor de Tijdloze, werd #[a(href='http://www.stijnvermeeren.be/download/tijdloze20141124.mp3') webmaster Stijn live opgebeld door Studio Brussel].
   p In 2018 werd de technologie van de website volledig vernieuwd. Een moderne &quot;single page application&quot; op basis van Vue.js kwam in de plaats van de oude PHP-technologie. Sinds 2020 is de website officeel volledig #[nuxt-link(to="/website/opensource") open source]. In 2022 kwam er een #[em rebranding] van "De Tijdloze Website" naar "tijdloze.rocks", wat ook de nieuwe domeinnaam is van de website.
 
-  el-card
-    div.header(slot="header")
-      div.title De toekomst
+  ui-card(title="De toekomst")
     p Elk jaar steekt webmaster Stijn enkele dagen werk in de website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:
     ul
       li Geleidelijke overgang naar een modernere &quot;responsive&quot; layout voor de website.

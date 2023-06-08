@@ -14,7 +14,7 @@ div
     p
       make-links(text='De eenjaarsvliegkampioen is echter [Michael Jackson]: in [1988] kwamen maar liefst drie van zijn nummers nieuw binnen: [Bad], [Thriller] en [Dirty Diana]. Twintig jaar lang zouden dit zijn enige noteringen in de Tijdloze zijn. Pas in 2009, na [Michael Jackson]s overlijden, zou Thriller opnieuw de Tijdloze binnenkomen.')
 
-  tabs(:tabs="[\
+  ui-tabs(:tabs="[\
     { to: '/statistieken/eenjaarsvliegen', title: 'Per jaar' },\
     { to: '/statistieken/eenjaarsvliegen/lijst', title: 'Hoogste aller tijden' },\
     { to: '/statistieken/eenjaarsvliegen/grafiek', title: 'Op grafiek' }\

@@ -1,17 +1,18 @@
 <template lang="pug">
-el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
-  div.reacinfo(slot="header")
-    span.name {{ comment.name }}
-    span.created {{ comment.created }}
-    span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
-    span.edit(v-if="isMine")
-      a(@click="editComment") Wijzigen
-    span.delete(v-if="!isDeleted && (isMine || isAdmin)")
-      a(@click="deleteComment") Verwijderen
-    span.delete(v-if="isDeleted && isAdmin")
-      a(@click="restoreComment") Terugzetten
+ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
+  template(#title)
+    div.reacinfo
+      span.name {{ comment.name }}
+      span.created {{ comment.created }}
+      span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
+      span.edit(v-if="isMine")
+        a(@click="editComment") Wijzigen
+      span.delete(v-if="!isDeleted && (isMine || isAdmin)")
+        a(@click="deleteComment") Verwijderen
+      span.delete(v-if="isDeleted && isAdmin")
+        a(@click="restoreComment") Terugzetten
   div
-    div.bericht(v-if="!editing") {{ message }}
+    div.bericht(v-if="!editing") {{message}}
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
@@ -82,28 +83,11 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
   }
 </script>
 
-<style lang="scss">
-  .comment {
-    .el-card__header {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
-
-    .el-card__body {
-      padding-top: 10px;
-      padding-bottom: 10px;
-    }
-  }
-</style>
-
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
   div.comment {
     margin: 1em 3em;
-
-    border: 1px solid styleConfig.$inputBorderColor;
-    border-radius: 4px;
 
     &.mine {
       border-width: 3px;
@@ -111,10 +95,6 @@ el-card(v-if="!isDeleted || isAdmin" :class="['comment', {'mine': isMine}]")
 
     div.reacinfo {
       margin-bottom: 0.2em;
-
-      span.name {
-        font-weight: bold;
-      }
 
       span.created, span.updated, span.edit, span.delete {
         margin-left: 1em;

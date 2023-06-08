@@ -4,9 +4,7 @@ Title {{song.title}} ({{song.artist.fullName}})
   div.flexTitle
     page-title(icon='song' icon-alt='Nummer')
       h2 {{song.title}}
-    div(v-if="isAdmin")
-      nuxt-link(:to="`/admin/song/${song.id}`")
-        el-button(type="warning" round size="small") Admin: nummer aanpassen
+    ui-admin-link-btn(:to="`/admin/song/${song.id}`") Admin: nummer aanpassen
 
   div Nummer van
     = " "
@@ -16,13 +14,9 @@ Title {{song.title}} ({{song.artist.fullName}})
     strong #[album-link(:album='song.album')] ({{ song.album.releaseYear }})
 
   div.links
-    a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round)
-        el-icon
-          el-icon-link
-        span {{ link.title }}
+    ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
 
-  el-alert(v-if='fullSongData.notes' :closable="false" show-icon)
+  ui-alert(v-if='fullSongData.notes')
     make-links(:text='fullSongData.notes')
 
   .spotify(v-if='fullSongData.spotifyId')
@@ -32,20 +26,13 @@ Title {{song.title}} ({{song.artist.fullName}})
   lyrics(v-if='fullSongData.lyrics')
     .lyrics {{ fullSongData.lyrics }}
 
-  el-card(v-else-if="fullSongData.languageId === 'i'")
-    template(#header)
-      div.header
-        div.title Lyrics
+  ui-card(v-else-if="fullSongData.languageId === 'i'" title="Lyrics")
     div (Instrumentaal nummer)
     .clear
 
-  el-card
-    template(#header)
-      div.header
-        div
-          div.title In de Tijdloze
-          div.subtitle
-            entry-count(:songs='[song]')
+  ui-card(title="In de Tijdloze")
+    template(#subtitle)
+      entry-count(:songs='[song]')
     .allPositions
       template(v-for='(interval, index) in intervals')
         div(v-if='index' :key="index")
@@ -59,11 +46,7 @@ Title {{song.title}} ({{song.artist.fullName}})
             position(:song='song' :year='year')
 
 
-  el-card(v-if='song.listCount(years) > 0')
-    template(#header)
-      div.header
-        div
-          div.title Grafiek
+  ui-card(v-if='song.listCount(years) > 0' title="Grafiek")
     d3-graph(:songs='[song]' :no-label='true')
 </template>
 
@@ -72,7 +55,6 @@ Title {{song.title}} ({{song.artist.fullName}})
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
-  import {useAuthStore} from "~/stores/auth";
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
@@ -103,9 +85,6 @@ Title {{song.title}} ({{song.artist.fullName}})
       },
       intervals() {
         return probablyInListIntervals([this.song], this.years, true);
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin;
       }
     },
     async asyncData() {

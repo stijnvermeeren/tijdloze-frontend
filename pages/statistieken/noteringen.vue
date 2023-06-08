@@ -2,7 +2,7 @@
 Title Noteringen
 div
   h2 Tijdloze Noteringen
-  tabs(:tabs="[\
+  ui-tabs(:tabs="[\
     { to: '/statistieken/noteringen', title: 'In totaal' },\
     { to: '/statistieken/noteringen/perjaar', title: 'Per jaar' },\
     { to: '/statistieken/noteringen/nummers', title: 'Verschillende nummers' }\

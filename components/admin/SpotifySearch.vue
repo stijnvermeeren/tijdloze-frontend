@@ -1,8 +1,8 @@
 <template lang="pug">
 div
   div.search
-    el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
-    el-button(@click='search' type="primary" :disabled='processing')
+    v-text-field(v-model='query' @change='search' label='Titel en/of artiest' hide-details)
+    v-btn(@click='search' :disabled='processing')
       | Zoeken op Spotify
   div(v-if="spotifyError")
     el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
@@ -36,8 +36,8 @@ div
                 |
                 |({{track.year}}).
             td
-              el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
-    el-alert.alert(title="Let op bij Spotify" :closable="false" show-icon)
+              v-btn(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
+    ui-alert(title="Let op bij Spotify")
       ul
         li Het eerste zoekresultaat is niet altijd de originele album-versie.
         li De jaartallen van de albums kloppen niet altijd.
@@ -78,7 +78,7 @@ div
       }
     },
     methods: {
-      search() {
+      async search() {
         this.spotifyTracks = [];
         this.selectedTrackId = undefined;
         this.showingResults = false;
@@ -86,15 +86,18 @@ div
 
         const cleanQuery = this.query.replace(/[^\p{L}0-9 ]/u, "")
 
-        this.$axios.$get('/spotify/find', {params: {query: cleanQuery, limit: 3}}).then(result => {
+        const {data: result, error} = await useApiFetch('/spotify/find', {params: {query: cleanQuery, limit: 3}})
+
+        if (result) {
           this.spotifyTracks = result;
           this.processing = false;
           this.spotifyError = false;
           this.showingResults = true;
-        }).catch(error => {
+        }
+        if (error) {
           this.spotifyError = true;
           this.processing = false;
-        })
+        }
       },
       select(track) {
         this.$emit('selectSpotifyTrack', track);

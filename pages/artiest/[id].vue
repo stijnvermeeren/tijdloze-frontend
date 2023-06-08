@@ -4,34 +4,24 @@ div
   div.flexTitle
     page-title(icon='artist' icon-alt='Artiest')
       h2 {{artist.fullName}}
-    div(v-if="isAdmin")
-      nuxt-link(:to="`/admin/artist/${artist.id}`")
-        el-button(type="warning" round size="small") Admin: artist aanpassen
+    ui-admin-link-btn(:to="`/admin/artist/${artist.id}`") Admin: artist aanpassen
 
   div.links
     nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
-      el-button(size="small" round)
+      v-btn(size="small" density="comfortable" rounded)
         country-icon(:country-id='artist.countryId' :include-name="true")
-    a(v-for='(link, index) in links' :key='index' :href='link.href')
-      el-button(size="small" round)
-        el-icon
-          el-icon-link
-        span {{ link.title }}
+    external-link-btn(v-for='(link, index) in links' :key='index' :href="link.href") {{ link.title }}
 
-  el-alert(v-if='fullArtistData.notes' :closable="false" show-icon)
+  ui-alert(v-if='fullArtistData.notes')
     make-links(:text='fullArtistData.notes')
 
-  el-card
-    template(#header)
-      div.header
-        div
-          div.title In de Tijdloze
-          div.subtitle
-            entry-count(:songs='artist.allSongs')
-        div
-          el-radio-group(v-model="tab" size="small")
-            el-radio-button(label='tijdloze') Tijdloze {{currentYear.yyyy}}
-            el-radio-button(label='album') Per album
+  ui-card(title="In de Tijdloze")
+    template(#subtitle)
+      entry-count(:songs='artist.allSongs')
+    template(#buttons)
+      v-btn-toggle(v-model="tab" density="compact" color="blue" variant="outlined")
+        v-btn(value='tijdloze') Tijdloze {{currentYear.yyyy}}
+        v-btn(value='album') Per album
     div(v-if="tab === 'tijdloze'")
       in-current-list(:songs='artist.allSongs' :artist='artist')
     div(v-if="tab === 'album'")
@@ -44,11 +34,7 @@ div
               li(v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
                 song-with-second-artist-link(:song='song' :artist="artist")
 
-  el-card(v-if='top100Songs.length')
-    template(#header)
-      div.header
-        div
-          div.title Grafiek
+  ui-card(v-if='top100Songs.length' title="Grafiek")
     d3-graph(:songs='top100Songs')
 </template>
 
@@ -56,13 +42,16 @@ div
   import { idFromSlug } from '~/utils/slug'
   import Artist from "@/orm/Artist";
   import {useRootStore} from "~/stores/root";
-  import {useAuthStore} from "~/stores/auth";
   import {useRepo} from "pinia-orm";
+  import { mdiLink } from '@mdi/js'
+  import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
 
   export default defineNuxtComponent({
+    components: {ExternalLinkBtn},
     data() {
       return {
-        tab: 'tijdloze'
+        tab: 'tijdloze',
+        mdiLinkIcon: mdiLink
       }
     },
     computed: {
@@ -103,9 +92,6 @@ div
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
         addLink('urlAllMusic', 'AllMusic');
         return links;
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin;
       }
     },
     async asyncData() {

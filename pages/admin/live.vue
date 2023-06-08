@@ -29,9 +29,7 @@ div
   el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
     | Jaar {{nextYearYyyy}} starten
 
-  el-card
-    div.header(slot="header")
-      div.title Volgend nummer
+  ui-card(title="Volgend nummer")
     div
       strong Positie
         =" "
@@ -42,7 +40,7 @@ div
       | Importeren van "{{importQuery}}".
       =" "
       a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
-        el-button(size="small" round icon="el-icon-link") Zoek op Google
+        v-btn(size="small" rounded icon="el-icon-link") Zoek op Google
 
     div(v-show="nextPosition > 0")
       el-radio-group.nextSongTab(v-model="nextSongTab")
@@ -69,7 +67,7 @@ div
           div(v-if='nextSongFullData && nextSongFullData.spotifyId')
             spotify(:spotify-id='nextSongFullData.spotifyId')
           div
-            el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
+            v-btn(@click='add(nextSong.id)' :disabled='!nextValid' rounded)
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongTab === 'spotify'")
@@ -88,9 +86,8 @@ div
           @newSong='add($event.id)'
         )
 
-  el-card
-    div.header(slot="header")
-      div.title Tijdloze {{this.currentYear.yyyy}}: import
+  ui-card(:title="`Tijdloze ${currentYear.yyyy}: import`")
+    template(#buttons)
       el-button(v-if="importSongs.length" @click="cancelImport" type="warning" round size="small") Import annuleren
     div(v-if="importSongs.length")
       div In de wachtrij om geïmporteerd te worden...
@@ -255,10 +252,6 @@ definePageMeta({ middleware: 'admin' })
 </script>
 
 <style scoped>
-  .el-card {
-    overflow: visible;
-  }
-
   .nextSongTab {
     margin-bottom: 20px;
   }

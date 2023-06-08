@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  el-alert.alert(:closable="false" show-icon)
+  ui-alert
     ul
       li Eén nummer (artiest + titel) per lijn
       li Lege lijnen en posities die al gedefinieerd zijn in de lijst worden genegeerd

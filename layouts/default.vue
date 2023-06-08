@@ -32,6 +32,19 @@
   @use "../assets/globalStyles";
   @use "../assets/styleConfig";
 
+  .v-btn {
+    text-transform: unset !important;
+    letter-spacing: unset !important;
+  }
+
+  p, ul {
+    margin-bottom: 0.8em;
+  }
+
+  ul {
+    margin-left: 2em;
+  }
+
   #container {
     position: relative;
 
@@ -83,7 +96,7 @@
       flex-direction: column;
       justify-content: center;
       padding-top: 8px;
-      height: 60px;
+      height: 68px;
       cursor: pointer;
       text-align: center;
 

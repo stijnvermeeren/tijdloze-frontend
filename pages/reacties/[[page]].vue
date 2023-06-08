@@ -3,9 +3,7 @@ Title Reacties
 div
   div.flexTitle
     h2 Reageer op de Tijdloze
-    div(v-if="isAdmin")
-      nuxt-link(to="/admin/comments")
-        el-button(type="warning" round size="small") Admin: verwijderde reacties terugzetten
+    ui-admin-link-btn(to="/admin/comments") Admin: verwijderde reacties terugzetten
   comments-pager(:page='page' :pages='pages ')
   template(v-if='page === 1')
     template(v-if="!commentsOn")
@@ -21,17 +19,12 @@ div
 </template>
 
 <script>
-  import {useAuthStore} from "~/stores/auth";
-
   const commentsPerPage = 20;
 
   export default defineNuxtComponent({
     computed: {
       pages() {
         return Math.ceil(this.commentCount / commentsPerPage);
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin
       }
     },
     methods: {
