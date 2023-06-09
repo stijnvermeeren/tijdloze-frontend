@@ -77,7 +77,8 @@ div
       return {
         isOpen: false,
         mdiLockOutline,
-        mdiClose
+        mdiClose,
+        openeds: [this.groupMap(useRoute().path)]
       };
     },
     computed: {
@@ -98,16 +99,20 @@ div
       },
       isAdmin() {
         return useAuthStore().isAdmin;
-      },
-      route() {
-        return useRoute().path.split('/').slice(0, 3).join('/');
-      },
-      openeds() {
-        const mainPath = useRoute().path.split('/').slice(0, 2).join('/');
-        return ['inprogress', '/admin', mainPath];
       }
     },
     methods: {
+      groupMap(path) {
+        const firstPart = path.split('/').slice(0, 2).join('/')
+        switch (path) {
+          case '/lijst/opkomst':
+          case '/polls':
+          case '/chat':
+            return 'inprogress'
+          default:
+            return firstPart
+        }
+      },
       selectSearchResult(result) {
         let path = ''
 

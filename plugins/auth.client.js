@@ -31,7 +31,6 @@ export default defineNuxtPlugin(async nuxtApp => {
       await setUser(auth.user.value);
     } catch(err) {
       // user not logged in, don't raise any error
-      console.log(err)
     }
   }
 
