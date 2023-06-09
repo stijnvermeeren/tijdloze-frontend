@@ -1,51 +1,32 @@
 <template lang="pug">
-div.container
-  el-radio-group(v-model='liveValue' size="small")
-    el-radio-button(
+div.d-flex
+  div Lead vocals:
+  v-btn-toggle.mx-4(:model-value='modelValue' @update:model-value="update" color="blue")
+    v-btn(
       v-for='[genderId, genderName] in Object.entries(vocalsGenders)'
       :key='genderId'
-      :label="genderId"
+      :value="genderId"
     ) {{genderName}}
-  el-button(icon="el-icon-circle-close" @click="liveValue = undefined" circle size="small")
+  v-btn(:icon="mdiClose" v-if="modelValue" @click="update(undefined)" size="small")
 </template>
 
-<script>
-  import vocalsGenders from '~/utils/leadVocals'
+<script setup>
+import vocalsGenders from '~/utils/leadVocals'
+import {mdiClose} from "@mdi/js";
 
-  export default {
-    props: {
-      modelValue: String
-    },
-    emits: ['update:modelValue'],
-    data() {
-      return {
-        liveValue: this.modelValue
-      }
-    },
-    computed: {
-      vocalsGenders() {
-        return vocalsGenders;
-      }
-    },
-    watch: {
-      modelValue(newValue) {
-        this.liveValue = newValue
-      },
-      liveValue(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.$emit('update:modelValue', newValue);
-        }
-      }
-    }
-  }
+defineProps({
+  modelValue: String
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+function update(newValue) {
+  emit('update:modelValue', newValue);
+}
 </script>
 
 <style lang="scss" scoped>
-div.container > div {
-  vertical-align: middle;
-}
-
-.el-radio-group {
-  margin-right: 10px;
+div.d-flex {
+  align-items: center;
 }
 </style>

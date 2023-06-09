@@ -62,25 +62,22 @@ div
           v-list-item(to="/admin/settings") Instellingen
 
     login
-    span.cross-button(@click='isOpen = false')
-      span.cross(style='transform: rotate(45deg)')
-      span.cross(style='transform: rotate(-45deg)')
-  .burger-button(@click.stop='isOpen = true')
-    .burger
-      span.burger-bars(:style="{top:20 * (index * 2) + '%'}" v-for='(x, index) in 3' :key='index')
+    v-btn.cross-button(@click='isOpen = false' circle size="small" variant="text" :icon="mdiClose")
+
+  v-app-bar-nav-icon.burger-button(variant="text" @click.stop="isOpen = !isOpen")
 </template>
 
 <script>
   import {useRootStore} from "~/stores/root";
   import {useAuthStore} from "~/stores/auth";
-  import {mdiLockOutline} from "@mdi/js";
+  import {mdiLockOutline, mdiClose} from "@mdi/js";
 
   export default defineNuxtComponent({
     data() {
       return {
         isOpen: false,
-        mdiLockOutline: mdiLockOutline,
-        selectedPage: undefined
+        mdiLockOutline,
+        mdiClose
       };
     },
     computed: {
@@ -123,9 +120,8 @@ div
         }
         if (path) {
           this.isOpen = false;
-          useRouter().push(path);
+          navigateTo(path);
         }
-
       },
       escapeKeyListener: function (evt) {
         if (evt.code === "Escape" && this.isOpen) {
@@ -203,7 +199,6 @@ div
     top: 0;
     left: 0;
     background-color: styleConfig.$menuBackgroundColor;
-    border-right: 2px solid styleConfig.$headerBackgroundColor;
     overflow-x: hidden;
     padding: 1em 1em;
     transition: 0.3s;
@@ -227,52 +222,23 @@ div
 
   .burger-button {
     position: absolute;
-    width: 56px;
-    height: 50px;
     left: 26px;
     top: 10px;
-    cursor: pointer;
 
     @media (min-width: 1200px) {
       display: none;
-    }
-
-    .burger {
-      position: absolute;
-      top: 10px;
-      bottom: 10px;
-      left: 10px;
-      right: 10px;
-
-      .burger-bars {
-        background-color: #444;
-        position: absolute;
-        height: 20%;
-        left: 0;
-        right: 0;
-      }
     }
   }
 
   .cross-button {
     text-align: center;
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 10px;
     cursor: pointer;
-
-    height: 24px;
-    width: 24px;
 
     @media (min-width: 1200px) {
       display: none;
-    }
-
-    .cross {
-      background-color: #444;
-      position: absolute;
-      width: 5px;
-      height: 24px;
     }
   }
   .bm-overlay {

@@ -1,44 +1,26 @@
 <template lang="pug">
-div
-  div
-    input(:value='modelValue' ref='input' @input='update()')
-  .visit(v-if='modelValue')
-    a(:href='modelValue') Visit
-  .search(v-if='query')
-    a(:href='searchUrl') Search
+div.d-flex
+  v-text-field(:model-value='modelValue' @update:model-value='update' label="AllMusic" hide-details)
+  v-btn.ml-2(v-if='modelValue' :icon="mdiOpenInNew" :href="modelValue" target="_blank")
+  v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>
 
-<script>
-  export default {
-    props: {
-      modelValue: String,
-      query: String
-    },
-    emits: ['update:modelValue'],
-    computed: {
-      searchUrl() {
-        const query = encodeURIComponent(this.query)
-        return `https://www.allmusic.com/search/all/${query}`
-      }
-    },
-    methods: {
-      update() {
-        const newValue = this.$refs['input'].value;
-        this.$emit('update:modelValue', newValue);
-      }
-    }
-  }
+<script setup>
+import {mdiOpenInNew, mdiSearchWeb} from "@mdi/js";
+
+const props = defineProps({
+  modelValue: String,
+  query: String
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const searchUrl = computed(() => {
+  const encodedQuery = encodeURIComponent(props.query)
+  return `https://www.allmusic.com/search/all/${encodedQuery}`
+})
+
+function update(newValue) {
+  emit('update:modelValue', newValue);
+}
 </script>
-
-<style scoped>
-  input {
-    box-sizing: border-box;
-    width: 100%;
-  }
-
-  div.visit, div.search {
-    display: inline-block;
-    padding: 1px 15px;
-    font-size: 14px;
-  }
-</style>

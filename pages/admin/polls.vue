@@ -3,7 +3,7 @@ Title Admin: Polls
 div
   div.flexTitle
     h2 Admin: polls
-    el-button(@click='refresh()' :disabled='refreshing' size="small" round) Opnieuw laden
+    v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
   ui-card(:title="`Maak een nieuwe poll (${currentYear.yyyy})`")
     div
       h4 Vraag
@@ -57,7 +57,7 @@ const formValid = computed (() => {
 async function refresh() {
   refreshing.value = true;
   const {data} = await useApiFetch(`poll/list`);
-  polls.value = data;
+  polls.value = data.value;
   refreshing.value = false;
 }
 

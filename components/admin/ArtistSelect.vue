@@ -9,10 +9,10 @@ div
       @selectSearchResult='selectArtist($event.item)'
       :disabled="disabled"
     )
-    button(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
+    v-btn(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
   div(v-else)
-    button(@click='editing = true' :disabled="disabled") Wijzigen
-    button(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
+    v-btn(@click='editing = true' :disabled="disabled") Wijzigen
+    v-btn(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
 </template>
 
 <script>

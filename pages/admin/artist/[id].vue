@@ -2,49 +2,52 @@
 Title Admin: Artist: {{this.fullName}}
 div
   h2 Artiest aanpassen
-  table.info
-    tbody
-      tr
-        th Naam (prefix)
-        td
-          input(v-model='fullArtistData.namePrefix' placeholder='The / Bob / ...')
-      tr
-        th Naam
-        td
-          input(v-model='fullArtistData.name' placeholder='Beatles / Dylan / ...')
-      tr
-        th Aliases
-        td
-          input(v-model='fullArtistData.aliases' placeholder='De artiest wordt ook onder deze namen gevonden')
-      tr
-        th Land
-        td
-          admin-country-input(v-model='fullArtistData.countryId')
-      tr
-        th Opmerkingen
-        td
-          textarea.notes(v-model='fullArtistData.notes')
-      tr
-        th Officiële website
-        td
-          admin-official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
-      tr
-        th Wikipedia Nederlands
-        td
-          admin-wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
-      tr
-        th Wikipedia Engels
-        td
-          admin-wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
-      tr
-        th AllMusic
-        td
-          admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
-      tr
-        th
-        td
-          el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
-          el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
+
+  v-container
+    v-row(dense)
+      v-col
+        v-text-field(
+          v-model='fullArtistData.namePrefix'
+          placeholder='The / Bob / ...'
+          label="Naam (prefix)"
+          hide-details
+        )
+      v-col
+        v-text-field(
+          v-model='fullArtistData.name'
+          placeholder='Beatles / Dylan / ...'
+          label="Naam"
+          hide-details
+        )
+    v-row(dense)
+      v-col
+        v-text-field(
+          v-model='fullArtistData.aliases'
+          label="Alias (de artiest wordt ook onder deze namen gevonden)"
+          hide-details
+        )
+    v-row(dense)
+      v-col
+        admin-country-input(v-model='fullArtistData.countryId')
+    v-row(dense)
+      v-col
+        v-textarea(v-model='fullArtistData.notes' label="Opmerkingen" rows="2" auto-grow hide-details)
+    v-row(dense)
+      v-col
+        admin-official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
+    v-row(dense)
+      v-col
+        admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
+    v-row
+      v-col
+        admin-delete-btn(@click='submitDelete' :disabled='processing')
+        v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -77,13 +80,13 @@ div
       async submit() {
         this.processing = true;
         await useApiFetchPut(`artist/${this.fullArtistData.id}`, this.fullArtistData)
-        await useRouter().push(`/artiest/${this.fullArtistData.id}`);
+        await navigateTo(`/artiest/${this.fullArtistData.id}`);
       },
       async submitDelete() {
         if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
           this.processing = true;
           await useApiFetchDelete(`artist/${this.fullArtistData.id}`)
-          await useRouter().push(`/database`)
+          await navigateTo(`/database`)
         }
       }
     },
@@ -93,13 +96,3 @@ div
     }
   })
 </script>
-
-<style lang="scss" scoped>
-  .deleteButton {
-    float: right;
-  }
-
-  textarea.notes {
-    height: 60px;
-  }
-</style>

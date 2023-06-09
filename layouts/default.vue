@@ -1,6 +1,7 @@
 <template lang="pug">
 #container
   #header
+    #burgerButtonContainer
     #logo(@click="$router.push('/')")
       h1 tijdloze
         span.domain .rocks

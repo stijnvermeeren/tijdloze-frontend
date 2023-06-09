@@ -1,55 +1,43 @@
 <template lang="pug">
-div.container
-  el-radio-group(v-model='liveValue' size="small")
-    el-radio-button(label="en") Engels
-    el-radio-button(label="nl") Nederlands
-    el-radio-button(label="i") Instrumentaal
-  el-select(v-model='liveValue' clearable filterable placeholder="Geen taal geselecteerd" size="small")
-    el-option(
-      v-for='[languageId, languageName] in Object.entries(languages)'
-      :key='languageId'
-      :value='languageId'
-      :label="languageName"
-    )
+div.d-flex
+  v-autocomplete(
+    :model-value="modelValue"
+    @update:model-value="update"
+    clearable
+    placeholder="Geen taal geselecteerd"
+    label="Taal"
+    :items="selectOptions"
+    hide-details
+  )
+  v-btn-toggle.ml-4(:model-value="modelValue" @update:model-value="update" color="blue")
+    v-btn(value="en") Engels
+    v-btn(value="nl") Nederlands
+    v-btn(value="i") Instrumentaal
 </template>
 
-<script>
-  import languages from '~/utils/language'
+<script setup>
+import languages from '~/utils/language'
 
-  export default {
-    props: {
-      modelValue: String
-    },
-    emits: ['update:modelValue'],
-    data() {
-      return {
-        liveValue: this.modelValue
-      }
-    },
-    computed: {
-      languages() {
-        return languages;
-      }
-    },
-    watch: {
-      modelValue(newValue) {
-        this.liveValue = newValue
-      },
-      liveValue(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.$emit('update:modelValue', newValue);
-        }
-      }
-    }
+defineProps({
+  modelValue: String
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const selectOptions = Object.entries(languages).map(([languageId, languageName]) => {
+  return {
+    value: languageId,
+    title: languageName
   }
+})
+
+function update(newValue) {
+  emit('update:modelValue', newValue)
+}
 </script>
 
 <style lang="scss" scoped>
-div.container > div {
-  vertical-align: middle;
-}
-
-.el-radio-group {
-  margin-right: 10px;
+div.d-flex {
+  align-items: center;
 }
 </style>

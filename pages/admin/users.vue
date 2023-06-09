@@ -1,19 +1,15 @@
 <template lang="pug">
 Title Admin: Gebruikers
 div
-  h2 Gebruikers
+  div.flexTitle
+    h2 Gebruikers
+    v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
+  p {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
   div
-    div {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
-    div
-      el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
-  div
-    | Sorteren op:
-    input#sort-displayName(type='radio' v-model='sortProperty' value='displayName')
-    label(for='sort-displayName') Gebruikersnaam
-    input#sort-lastSeen(type='radio' v-model='sortProperty' value='lastSeen')
-    label(for='sort-lastSeen') Laatste login
-    input#sort-created(type='radio' v-model='sortProperty' value='created')
-    label(for='sort-created') Laatst geregistreerd
+    v-radio-group(inline label="Sorteren op" v-model='sortProperty' hide-details)
+      v-radio(value='displayName' label="Gebruikersnaam")
+      v-radio(value='lastSeen' label="Laatste login")
+      v-radio(value='created' label="Laatst geregistreerd")
   ul
     li(v-for='user in usersSorted')
       .displayName(v-if='user.displayName') {{user.displayName}}
@@ -86,12 +82,12 @@ div
     methods: {
       parseDate(dateString) {
         return new Date(
-          parseInt(dateString.substr(6, 4)),
-          parseInt(dateString.substr(3, 2)) - 1,
-          parseInt(dateString.substr(0, 2)),
-          parseInt(dateString.substr(11, 2)),
-          parseInt(dateString.substr(14, 2)),
-          parseInt(dateString.substr(17, 2))
+          parseInt(dateString.substring(6, 10)),
+          parseInt(dateString.substring(3, 5)) - 1,
+          parseInt(dateString.substring(0, 2)),
+          parseInt(dateString.substring(11, 13)),
+          parseInt(dateString.substring(14, 16)),
+          parseInt(dateString.substring(17, 19))
         )
       },
       async block(userId) {

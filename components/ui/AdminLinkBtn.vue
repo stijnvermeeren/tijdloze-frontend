@@ -12,5 +12,7 @@ defineProps({
   to: String
 })
 
-const isAdmin = useAuthStore().isAdmin
+const isAdmin = computed(() => {
+  return useAuthStore().isAdmin
+})
 </script>

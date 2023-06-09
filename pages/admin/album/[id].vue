@@ -2,41 +2,45 @@
 Title Admin: Album: {{title}}
 div
   h2 Album aanpassen
-  table.info
-    tbody
-      tr
-        th Titel
-        td
-          input(v-model='fullAlbumData.title')
-      tr
-        th Artist
-        td
-          admin-artist-select(v-model='fullAlbumData.artistId')
-      tr
-        th Jaar
-        td
-          input(v-model.number='fullAlbumData.releaseYear' type='number')
-      tr
-        th Opmerkingen
-        td
-          textarea.notes(v-model='fullAlbumData.notes')
-      tr
-        th Wikipedia Nederlands
-        td
-          admin-wiki-url-input(v-model='fullAlbumData.urlWikiNl' lang='nl' :query='`${fullAlbumData.title} ${artist.fullName}`')
-      tr
-        th Wikipedia Engels
-        td
-          admin-wiki-url-input(v-model='fullAlbumData.urlWikiEn' lang='en' :query='`${fullAlbumData.title} ${artist.fullName}`')
-      tr
-        th AllMusic
-        td
-          admin-all-music-url-input(v-model='fullAlbumData.urlAllMusic' :query='`${fullAlbumData.title} ${artist.fullName}`')
-      tr
-        th
-        td
-          el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
-          el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
+
+  v-container
+    v-row(dense)
+      v-col
+        v-text-field(v-model='fullAlbumData.title' label="Title" hide-details)
+    v-row(dense)
+      v-col Artist
+      v-col
+        admin-artist-select(v-model='fullAlbumData.artistId')
+    v-row(dense)
+      v-col
+        v-text-field(v-model.number='fullAlbumData.releaseYear' type='number' label="Jaar" hide-details)
+    v-row(dense)
+      v-col
+        v-textarea.notes(v-model='fullAlbumData.notes' label="Opmerkingen" hide-details auto-grow rows="2")
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(
+          v-model='fullAlbumData.urlWikiNl'
+          lang='nl'
+          :query='`${fullAlbumData.title} ${artist.fullName}`'
+        )
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(
+          v-model='fullAlbumData.urlWikiEn'
+          lang='en'
+          :query='`${fullAlbumData.title} ${artist.fullName}`'
+        )
+    v-row(dense)
+      v-col
+        admin-all-music-url-input(
+          v-model='fullAlbumData.urlAllMusic'
+          :query='`${fullAlbumData.title} ${artist.fullName}`'
+        )
+    v-row
+      v-col
+        admin-delete-btn(@click='submitDelete' :disabled='processing')
+        v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -86,13 +90,3 @@ div
     }
   })
 </script>
-
-<style lang="scss" scoped>
-  .deleteButton {
-    float: right;
-  }
-
-  textarea.notes {
-    height: 60px;
-  }
-</style>

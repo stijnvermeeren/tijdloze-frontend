@@ -2,64 +2,60 @@
 Title Admin: Song: {{title}}
 div
   h2 Nummer aanpassen
-  table.info
-    tbody
-      tr
-        th Titel
-        td
-          input(v-model='fullSongData.title')
-      tr
-        th Aliases
-        td
-          input(v-model='fullSongData.aliases' placeholder='Het nummer wordt ook onder deze titels gevonden')
-      tr
-        th Artist
-        td
-          admin-artist-select(v-model='fullSongData.artistId')
-      tr
-        th Second artist
-        td
-          admin-artist-select(v-model='fullSongData.secondArtistId' :required='false')
-      tr
-        th Album
-        td
-          admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
-      tr
-        th Taal
-        td
-          admin-language-input(v-model='fullSongData.languageId')
-      tr
-        th Lead vocals
-        td
-          admin-lead-vocals-input(v-model='fullSongData.leadVocals')
-      tr
-        th Lyrics
-        td
-          textarea.lyrics(v-model='fullSongData.lyrics')
-      tr
-        th Opmerkingen
-        td
-          textarea.notes(v-model='fullSongData.notes')
-      tr
-        th Wikipedia Nederlands
-        td
-          admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.fullName}`')
-      tr
-        th Wikipedia Engels
-        td
-          admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.fullName}`')
-      tr
-        th Spotify ID
-        td
-          div
-            input(v-model='fullSongData.spotifyId')
-          div(v-if='fullSongData.spotifyId')
-            spotify(:spotify-id='fullSongData.spotifyId')
-      tr
-        th
-        td
-          el-button.deleteButton(@click='submitDelete' type="danger" icon="el-icon-delete" :disabled='processing')
-          el-button(@click='submit' type="primary" :disabled='disabled') Aanpassen
+  v-container
+    v-row(dense)
+      v-col
+        v-text-field(v-model='fullSongData.title' label="Titel" hide-details)
+    v-row(dense)
+      v-col
+        v-text-field(
+          v-model='fullSongData.aliases'
+          label='Aliases (het nummer wordt ook onder deze titels gevonden)'
+          hide-details
+        )
+    v-row(dense)
+      v-col
+        span Artiest
+      v-col
+        admin-artist-select(v-model='fullSongData.artistId')
+    v-row(dense)
+      v-col
+        span Tweede artiest
+      v-col
+        admin-artist-select(v-model='fullSongData.secondArtistId' :required='false')
+    v-row(dense)
+      v-col
+        span Album
+      v-col
+        admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
+    v-row(dense)
+      v-col
+        admin-language-input(v-model='fullSongData.languageId')
+    v-row(dense)
+      v-col
+        admin-lead-vocals-input(v-model='fullSongData.leadVocals')
+    v-row(dense)
+      v-col
+        v-textarea(v-model='fullSongData.notes' label="Opmerkingen" rows="2" auto-grow hide-details)
+    v-row(dense)
+      v-col
+        v-textarea(v-model='fullSongData.lyrics' label="Lyrics" rows="5" hide-details)
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.fullName}`')
+    v-row(dense)
+      v-col
+        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.fullName}`')
+    v-row(dense)
+      v-col
+        v-text-field(v-model='fullSongData.spotifyId' label="Spotify ID")
+      v-col
+        div(v-if='fullSongData.spotifyId')
+          spotify(:spotify-id='fullSongData.spotifyId')
+    v-row
+      v-col
+        admin-delete-btn(@click='submitDelete' :disabled='processing')
+        v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
 <script>
@@ -102,13 +98,13 @@ div
       async submit() {
         this.processing = true;
         await useApiFetchPut(`song/${this.fullSongData.id}`, this.fullSongData)
-        await useRouter.push(`/nummer/${this.fullSongData.id}`)
+        await navigateTo(`/nummer/${this.fullSongData.id}`)
       },
       async submitDelete() {
         if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
           this.processing = true;
           await useApiFetchDelete(`song/${this.fullSongData.id}`)
-          await useRouter().push(`/database`)
+          await navigateTo(`/database`)
         }
       }
     },
@@ -121,17 +117,3 @@ div
     }
   })
 </script>
-
-<style lang="scss" scoped>
-  .deleteButton {
-    float: right;
-  }
-
-  textarea.lyrics {
-    height: 200px;
-  }
-
-  textarea.notes {
-    height: 60px;
-  }
-</style>

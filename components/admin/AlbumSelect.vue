@@ -2,12 +2,10 @@
 div
   div(v-if='album') {{album.title}} ({{album.releaseYear}})
   div(v-if='editing')
-    select(v-model='albumId')
-      option(v-for='album in candidateAlbums' :key='album.id' :value='album.id')
-        | {{album.title}} ({{album.releaseYear}})
-    button(@click='submit()') Bevestigen
+    select(v-model='albumId' :items="candidateAlbums")
+    v-btn(@click='submit()') Bevestigen
   div(v-else)
-    button(@click='editing = true') Wijzigen
+    v-btn(@click='editing = true') Wijzigen
 </template>
 
 <script>
@@ -39,7 +37,12 @@ div
           return _.sortBy(
             artist.albums,
             [album => album.releaseYear, album => album.title]
-          )
+          ).map(album => {
+            return {
+              value: album.id,
+              title: `${album.title} (${album.releaseYear})`
+            }
+          })
         } else {
           return [];
         }
