@@ -22,15 +22,17 @@ div
           th.r Decennium
           th(v-for='year in years') {{year._yy}}
           th.r Tot.
-        tr(v-for='{decade, total, perYear} in counts')
-          td.r
-            | {{decade.name}}
-          td(v-for='{count} in perYear')
-            | {{count}}
-          td.r
-            | {{total}}
-  .graph(v-for='{decade, dataPoints} in graphData' v-if="dataPoints.length")
-    d3-distribution-graph(:title='decade.name' :points='dataPoints')
+        template(v-for='{decade, total, perYear} in counts' :key="decade.name")
+          tr(v-if="total > 0")
+            td.r
+              | {{decade.name}}
+            td(v-for='{count} in perYear')
+              | {{count}}
+            td.r
+              | {{total}}
+  template(v-for='{decade, dataPoints} in graphData' :key="decade.name")
+    .graph(v-if="dataPoints.length")
+      d3-distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 
 <script>
@@ -38,7 +40,7 @@ div
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
-  export default {
+  export default defineNuxtComponent({
     computed: {
       years() {
         return useRootStore().years;
@@ -47,7 +49,7 @@ div
         return useRootStore().currentYear;
       },
       decades() {
-        const startYear = useRepo(Album).query().min('releaseYear');
+        const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));
         const endYear = this.currentYear.yyyy;
         const decades = [];
         for (let decadeYear = this.decadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {
@@ -98,5 +100,5 @@ div
         return yyyy - yyyy % 10;
       }
     }
-  }
+  })
 </script>

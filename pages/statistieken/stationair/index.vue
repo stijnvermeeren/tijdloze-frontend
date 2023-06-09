@@ -4,7 +4,7 @@ table.lijst.perEen
     tr
       th.r Jaar
       th Aantal
-      th.l Nieuwkomers
+      th.l Stationaire nummers
     tr(v-for='{year, entries} in listData')
       td.r
         year-link(:year='year')

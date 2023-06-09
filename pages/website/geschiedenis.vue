@@ -18,5 +18,4 @@ div
       li Geleidelijke overgang naar een modernere &quot;responsive&quot; layout voor de website.
       li Meer interactieve elementen in de grafieken.
       li Betere integratie van de chatbox in de website.
-      li Upgrade van Vue 2 naar Vue 3.
 </template>

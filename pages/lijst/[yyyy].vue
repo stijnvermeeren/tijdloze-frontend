@@ -168,7 +168,7 @@ div
       if (yyyyParam === useRootStore().currentYear.yyyy.toString()) {
         const {data: analysisCurrentYearResponse} = await useApiFetch(`text/analysis_${yyyyParam}`);
         return {
-          analysisCurrentYear: analysisCurrentYearResponse?.value ?? ''
+          analysisCurrentYear: analysisCurrentYearResponse.value?.value ?? ''
         }
       } else {
         return {

@@ -32,7 +32,8 @@ module.exports = defineNuxtConfig({
   build: {
     transpile: [
       'vuetify',
-      'd3-scale' // see https://github.com/nuxt/nuxt.js/issues/9223
+      'd3-scale', // see https://github.com/nuxt/nuxt.js/issues/9223
+      'pinia', 'pinia-orm' // see https://github.com/nuxt/nuxt/issues/20128
     ]
   },
   modules: [
