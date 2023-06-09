@@ -1,11 +1,11 @@
 <template lang="pug">
-  span
-    tijdloze-artist(:artist="song.artist")
-    template(v-if='song.secondArtist')
-      |
-      | en
-      |
-      tijdloze-artist(:artist='song.secondArtist')
+span
+  artist-link(:artist="song.artist")
+  template(v-if='song.secondArtist')
+    |
+    | en
+    |
+    artist-link(:artist='song.secondArtist')
 </template>
 
 <script>

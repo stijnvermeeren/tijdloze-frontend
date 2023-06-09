@@ -1,23 +1,23 @@
 <template lang="pug">
-  div
-    div.search
-      el-input(v-model='query' @change='search' placeholder='Titel en/of artiest')
-      el-button(@click='search' type="primary" :disabled='processing')
-        | Zoeken op Spotify
-    div(v-if="spotifyError")
-      el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
-        div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
-    template(v-if="showingResults")
-      div(v-if='!spotifyTracks.length')
-        | Geen resultaten van Spotify. Controlleer de query.
-      div(v-else)
-        table
-          tbody
-            tr(
-              v-for='track in spotifyTracks'
-              v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
-              :key='track.spotifyId'
-            )
+div
+  div.d-flex
+    v-text-field.mr-4(v-model='query' @change='search' label='Titel en/of artiest' hide-details)
+    v-btn(@click='search' :disabled='processing')
+      | Zoeken op Spotify
+  div(v-if="spotifyError")
+    ui-alert(type="error" title="Fout bij het zoeken op Spotify")
+      div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
+  template(v-if="showingResults")
+    div(v-if='!spotifyTracks.length')
+      | Geen resultaten van Spotify. Controlleer de query.
+    div(v-else)
+      table
+        tbody
+          template(
+            v-for='track in spotifyTracks'
+            :key='track.spotifyId'
+          )
+            tr(v-if="!selectedTrackId || selectedTrackId === track.spotifyId")
               td.spotify
                 spotify(:spotify-id='track.spotifyId')
               td.details
@@ -36,20 +36,16 @@
                   |
                   |({{track.year}}).
               td
-                el-button(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
-      el-alert.alert(title="Let op bij Spotify" :closable="false" show-icon)
-        ul
-          li Het eerste zoekresultaat is niet altijd de originele album-versie.
-          li De jaartallen van de albums kloppen niet altijd.
-          li Het gebruik van hoofdletters volgt niet altijd de #[nuxt-link(to="/website/methodologie" target="_blank") conventies].
+                v-btn(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
+    ui-alert(title="Let op bij Spotify")
+      ul
+        li Het eerste zoekresultaat is niet altijd de originele album-versie.
+        li De jaartallen van de albums kloppen niet altijd.
+        li Het gebruik van hoofdletters volgt niet altijd de #[nuxt-link(to="/website/methodologie" target="_blank") conventies].
 </template>
 
 <script>
-  import Spotify from '../Spotify'
-
-  export default {
-    name: 'SpotifySearch',
-    components: {Spotify},
+  export default defineNuxtComponent({
     props: {
       initialQuery: {
         type: String,
@@ -79,7 +75,7 @@
       }
     },
     methods: {
-      search() {
+      async search() {
         this.spotifyTracks = [];
         this.selectedTrackId = undefined;
         this.showingResults = false;
@@ -87,33 +83,28 @@
 
         const cleanQuery = this.query.replace(/[^\p{L}0-9 ]/u, "")
 
-        this.$axios.$get('/spotify/find', {params: {query: cleanQuery, limit: 3}}).then(result => {
-          this.spotifyTracks = result;
+        const {data: result, error} = await useApiFetch('/spotify/find', {params: {query: cleanQuery, limit: 3}})
+
+        if (result.value) {
+          this.spotifyTracks = result.value;
           this.processing = false;
           this.spotifyError = false;
           this.showingResults = true;
-        }).catch(error => {
+        }
+        if (error.value) {
           this.spotifyError = true;
           this.processing = false;
-        })
+        }
       },
       select(track) {
         this.$emit('selectSpotifyTrack', track);
         this.selectedTrackId = track.spotifyId;
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>
-  .search{
-    display: flex;
-
-    .el-input {
-      margin-right: 20px;
-    }
-  }
-
   table {
     margin: 10px auto 10px 0;
 

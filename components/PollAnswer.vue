@@ -1,13 +1,13 @@
 <template lang="pug">
-  .answer(v-if='isAdmin && editing')
-    input(v-model='answerEdit')
-    button(@click='send()') Opslaan
-    button(@click='cancel()') Terug
-  div(v-else)
-    .answer
-      | {{answerEdit}}
-      |
-      button(v-if='isAdmin' @click='editing = true') Aanpassen
+.answer(v-if='isAdmin && editing')
+  v-text-field(v-model='answerEdit' density="compact" hide-details)
+  v-btn(@click='send()') Opslaan
+  v-btn(@click='cancel()') Terug
+div(v-else)
+  .answer
+    | {{answerEdit}}
+    |
+    v-btn(v-if='isAdmin' size="x-small" @click='editing = true') Aanpassen
 </template>
 
 <script>
@@ -37,7 +37,7 @@
         const data = {
           answer: this.answerEdit
         };
-        await this.$axios.$put(`poll/${this.pollId}/${this.pollAnswerId}`, data);
+        await useApiFetchPut(`poll/${this.pollId}/${this.pollAnswerId}`, data);
         this.submitting = false;
         this.editing = false;
       },
@@ -48,9 +48,3 @@
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  input {
-    width: 100%;
-  }
-</style>

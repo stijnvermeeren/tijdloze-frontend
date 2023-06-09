@@ -1,24 +1,26 @@
 <template lang="pug">
-  div
-    h2 Stationaire nummers in de Tijdloze
-    tijdloze-tabs(:tabs="[\
-      { to: '/statistieken/stationair', title: 'Per jaar' },\
-      { to: '/statistieken/stationair/meerderejaren', title: 'Meerdere jaren op rij' },\
-      { to: '/statistieken/stationair/grafiek', title: 'Op grafiek' }\
-    ]")
-      nuxt-child(:data='data' :years='years')
+Title Stationaire nummers
+div
+  h2 Stationaire nummers in de Tijdloze
+  ui-tabs(:tabs="[\
+    { to: '/statistieken/stationair', title: 'Per jaar' },\
+    { to: '/statistieken/stationair/meerderejaren', title: 'Meerdere jaren op rij' },\
+    { to: '/statistieken/stationair/grafiek', title: 'Op grafiek' }\
+  ]")
+    nuxt-page(:data='data' :years='years')
 </template>
 
 <script>
-    import _ from 'lodash';
+import _ from 'lodash';
+import {useRootStore} from "~/stores/root";
 
   export default {
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       },
       data() {
         const dataPoints = [];
@@ -34,10 +36,6 @@
         });
         return dataPoints;
       }
-    },
-    head: {
-      title: 'Stationaire nummers'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>

@@ -1,75 +1,69 @@
 <template lang="pug">
-  div
-    h2 De Tijdloze chatbox
-    template(v-if='chatEnabled')
-      div(v-if='isAuthenticated')
-        div(v-if='displayName')
-          chat
-            .note
-              em
-                | Hou het spannend voor iedereen alsjeblieft. Wie in de chat informatie lekt over noteringen in de Tijdloze die nog niet op de radio zijn uitgezonden, kan onmiddellijk en zonder waarschuwing geblokkeerd worden.
-        div(v-else)
-          .displayName
-            div
-              | Kies een gebruikersnaam:
-              input(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()')
-              button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
-                | Naar de chatbox
+Title Chatbox
+div
+  h2 De Tijdloze chatbox
+  template(v-if='chatEnabled')
+    div(v-if='isAuthenticated')
+      div(v-if='displayName')
+        chat
+        ui-alert.mt-4
+          div Hou het spannend voor iedereen alsjeblieft. Wie in de chat informatie lekt over noteringen in de Tijdloze die nog niet op de radio zijn uitgezonden, kan onmiddellijk en zonder waarschuwing geblokkeerd worden.
       div(v-else)
-        | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
-    template(v-else)
-      div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
+        .displayName
+          div
+            | Kies een gebruikersnaam:
+            v-text-field(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()' hide-details)
+            v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+              | Naar de chatbox
+    div(v-else)
+      | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
+  template(v-else)
+    div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
 </template>
 
 <script>
-  import Chat from '../components/Chat'
+  import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    components: { Chat },
+  export default defineNuxtComponent({
     data() {
       return {
-        name: this.$store.getters['auth/displayName'],
+        name: useAuthStore().displayName,
         submittingDisplayName: false
       }
     },
     computed: {
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       displayName() {
-        return this.$store.getters['auth/displayName'];
+        return useAuthStore().displayName;
       },
       invalidDisplayName() {
         return !this.name || this.name.length === 0;
       }
     },
     methods: {
-      submitDisplayName() {
+      async submitDisplayName() {
         this.submittingDisplayName = true;
 
         const data = {
           displayName: this.name
         };
-        this.$axios.$post(`user/display-name`, data).then(user => {
-          this.submittingDisplayName = false;
-          this.$store.commit('auth/setUser', user);
-        });
+        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        this.submittingDisplayName = false;
+        useAuthStore().setUser(user.value);
       },
       login() {
-        this.$auth.login(this.$route.path);
+        this.$auth.login(useRoute().path);
       }
     },
-    async asyncData({ app }) {
-      const modeResponse = await app.$axios.$get(`text/chatOn`);
+    async asyncData() {
+      const {data: modeResponse} = await useApiFetch(`text/chatOn`);
       return {
-        chatEnabled: modeResponse.value === 'on'
+        chatEnabled: modeResponse.value.value === 'on'
       }
-    },
-    head: {
-      title: 'Chatbox'
-    },
-    ssrComputedCache: true
-  }
+    }
+  })
 </script>
 
 <style lang="scss" scoped>

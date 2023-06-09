@@ -1,10 +1,13 @@
-import Vue from "vue";
 import VueGtag from "vue-gtag";
 
-export default ({ app, $config }) => {
-  if ($config.googleAnalyticsId) {
-    Vue.use(VueGtag, {
-      config: {id: $config.googleAnalyticsId},
-    }, app.router);
+export default defineNuxtPlugin((nuxtApp) => {
+  const config = useRuntimeConfig()
+  if (config.googleAnalyticsId) {
+    nuxtApp.vueApp.use(VueGtag, {
+      property: {
+        id: $config.googleAnalyticsId
+      }
+    })
+    trackRouter(useRouter())
   }
-}
+})

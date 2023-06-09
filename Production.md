@@ -6,12 +6,16 @@ With [npm](https://www.npmjs.com/):
 ```
 npm ci
 npm run build
-npm run start
 ```
 
-Optionally, run as a [pm2](https://pm2.keymetrics.io/) job:
+To preview locally:
 ```
-pm2 start npm --name tijdloze-frontend -- start
+npm run preview
+```
+
+To run in production as a [pm2](https://pm2.keymetrics.io/) job:
+```
+pm2 start
 ```
 
 ## Example nginx proxy configuration with cache

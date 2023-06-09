@@ -1,85 +1,88 @@
 <template lang="pug">
+div
   div
-    div
-      div.heading Artiest
-      div.indent
-        el-radio-group(v-model="artistType" size="small")
-          el-radio-button(label="existing") Artiest uit de database
-          el-radio-button(label="new") Nieuwe artiest
-        div(v-if="artistType === 'existing'")
-          artist-select(v-model='artistId')
-        div(v-else)
-          div.flex
-            div.hint Voornaam
-            div.input
-              el-input(v-model='artistDetails.namePrefix' placeholder='The / Bob / ...' size="medium")
-          div.flex
-            div.hint Naam
-            div.input
-              el-input(v-model='artistDetails.name' placeholder='Beatles / Dylan / ...' size="medium")
-          div.flex
-            div.hint Land
-            div.input
-              country-input(v-model='artistDetails.countryId')
-    div(v-if='artistValid')
-      div.heading Album
-      div.indent
-        label.flex(v-for="album in candidateAlbums" :for="`album-${album.id}`")
-          input(:id="`album-${album.id}`" type='radio' v-model='albumId' :value="album.id")
-          div.flex
-            div {{album.title}} ({{album.releaseYear}})
-        label.flex(for="album-new")
-          input#album-new(type='radio' v-model='albumId' :value="undefined")
-          div.flex.flexGrow
-            div Nieuw album
-            div.flex
-              div.hint Titel
-              el-input(v-model='albumDetails.title' placeholder="Titel" :disabled="!!albumId" size="medium")
-            div.flex
-              div.hint Jaar
-              el-input-number(v-model='albumDetails.releaseYear' :disabled="!!albumId" size="medium")
-    div.heading Nummer
+    div.heading Artiest
     div.indent
-      div(v-if='artistValid && albumValid')
-        div.flex
-          div.hint Titel
-          div.input
-            el-input(v-model='songDetails.title' placeholder="Titel" size="medium")
-        div.flex
-          div.hint Taal
-          div.input
-            language-input(v-model='songDetails.languageId')
-        div.flex
-          div.hint Lead vocals
-          div.input
-            lead-vocals-input(v-model='songDetails.leadVocals')
-      div.otherArtistSongs(v-if="otherArtistSongs.length")
+      v-btn-toggle(v-model="artistType" color="blue" density="compact")
+        v-btn(value="existing") Artiest uit de database
+        v-btn(value="new") Nieuwe artiest
+      div(v-if="artistType === 'existing'")
+        admin-artist-select(v-model='artistId')
+      div(v-else)
+        v-container
+          v-row(dense)
+            v-col
+              v-text-field(
+                v-model='artistDetails.namePrefix'
+                label="Voornaam / prefix"
+                placeholder='The / Bob / ...'
+                hide-details
+              )
+            v-col
+              v-text-field(
+                v-model='artistDetails.name'
+                label="Naam"
+                placeholder='Beatles / Dylan / ...'
+                hide-details
+              )
+          v-row(dense)
+            v-col
+              admin-country-input(v-model='artistDetails.countryId')
+
+  div(v-if='artistValid')
+    div.heading Album
+    div.indent
+      v-radio-group(v-model="albumId" density="compact")
+        v-radio(v-for="album in candidateAlbums" :key="album.id" :value="album.id" :label="`${album.title} (${album.releaseYear})`")
+        v-radio(:value="0" label="Nieuw album")
+        div.d-flex(v-if="albumId === 0")
+          v-text-field.mr-4(
+            v-model='albumDetails.title'
+            label="Titel"
+            :disabled="!!albumId"
+            hide-details
+          )
+          v-text-field.releaseYear(
+            v-model.number='albumDetails.releaseYear'
+            label="Jaar"
+            type="number"
+            :disabled="!!albumId"
+            hide-details
+          )
+
+  div.heading Nummer
+  v-container
+    v-row(dense)
+      v-col
+        v-text-field(v-model='songDetails.title' label="Titel" hide-details)
+    v-row(dense)
+      v-col
+        admin-language-input(v-model='songDetails.languageId')
+    v-row(dense)
+      v-col
+        admin-lead-vocals-input(v-model='songDetails.leadVocals')
+    v-row(dense)
+      v-col.otherArtistSongs(v-if="otherArtistSongs.length")
         | Opgelet! Reeds gekende nummers van deze artist:
         span(v-for="song in otherArtistSongs")
           | {{song.title}}
-    div
-      el-button(
-        type="primary"
-        round
-        :disabled='!(artistValid && albumValid && songValid) || submitting'
-        @click='submit()'
-      ) {{buttonLabel}}
+  div
+    v-btn(
+      color="blue"
+      rounded
+      :disabled='!(artistValid && albumValid && songValid) || submitting'
+      @click='submit()'
+    ) {{buttonLabel}}
 </template>
 
 <script>
-  import CountryInput from './CountryInput'
-  import ArtistSelect from './ArtistSelect'
-  import AlbumSelect from './AlbumSelect'
-  import LanguageInput from './LanguageInput'
-  import LeadVocalsInput from './LeadVocalsInput'
   import _ from "lodash";
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
   import {normalize} from "@/utils/string";
+  import {useRepo} from "pinia-orm";
 
   export default {
-    name: 'NewSongWizard',
-    components: {LeadVocalsInput, LanguageInput, AlbumSelect, ArtistSelect, CountryInput},
     props: {
       preset: {
         type: Object
@@ -100,7 +103,7 @@
         if (this.artistNew || !this.artistId) {
           return []
         }
-        const artist = Artist.query().withAll().find(this.artistId)
+        const artist = useRepo(Artist).withAll().find(this.artistId)
         if (!artist) {
           return []
         }
@@ -108,7 +111,7 @@
         return artist.songs
       },
       album() {
-        return Album.find(this.albumId);
+        return useRepo(Album).find(this.albumId);
       },
       artistValid() {
         if (this.artistNew) {
@@ -132,7 +135,7 @@
           return [];
         }
 
-        const artist = Artist.query().with('albums').find(this.artistId);
+        const artist = useRepo(Artist).with('albums').find(this.artistId);
         if (artist) {
           return _.sortBy(
               artist.albums,
@@ -156,7 +159,7 @@
     },
     methods: {
       checkAlbum() {
-        if (this.albumId && this.album.artistId !== this.artistId) {
+        if (this.albumId && this.album?.artistId !== this.artistId) {
           this.albumId = undefined;
         }
       },
@@ -219,7 +222,7 @@
         if (artistName) {
           const query = this.preProcessArtistName(artistName);
 
-          return Artist.all().find(artist => {
+          return useRepo(Artist).all().find(artist => {
             const matchName = this.preProcessArtistName(artist.fullName);
             return query === matchName;
           })
@@ -245,7 +248,7 @@
         if (artistId && albumName && releaseYear) {
           const queryTokens = tokenize(albumName);
 
-          return Album.all().find(album => {
+          return useRepo(Album).all().find(album => {
             const matchTokens = tokenize(album.title);
             const minLength = Math.min(queryTokens.length, matchTokens.length);
             return album.artistId === artistId &&
@@ -280,8 +283,8 @@
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
-          const artist = await this.$axios.$post('/artist', artistData);
-          artistId = artist.id;
+          const {data: artist} = await useApiFetchPost('/artist', artistData);
+          artistId = artist.value.id;
         } else {
           artistId = this.artistId;
         }
@@ -293,8 +296,8 @@
             title: this.albumDetails.title,
             releaseYear: this.albumDetails.releaseYear
           }
-          const album = await this.$axios.$post('/album', albumData);
-          albumId = album.id;
+          const {data: album} = await useApiFetchPost('/album', albumData);
+          albumId = album.value.id;
         }
 
         const songData = {
@@ -305,11 +308,11 @@
           leadVocals: this.songDetails.leadVocals,
           spotifyId: this.songDetails.spotifyId
         }
-        const song = await this.$axios.$post('/song', songData);
+        const {data: song} = await useApiFetchPost('/song', songData);
 
         this.submitting = false;
         Object.assign(this.$data, this.initialData());
-        this.$emit('newSong', song);
+        this.$emit('newSong', song.value);
       }
     }
   }
@@ -327,43 +330,9 @@
     margin-bottom: 20px;
   }
 
-  input[type="radio"]:not(:checked) + * {
-    color: #aaaaaa;
-  }
-
-  .flex {
-    display: flex;
-    margin:  5px 0;
-
-    > div.hint {
-      flex-basis: 20%;
-      font-weight: bold;
-    }
-
-    > div.input {
-      flex-basis: 80%;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    >div {
-      margin: 0 5px;
-
-      &.flexGrow {
-        flex-grow: 1;
-      }
-
-      div.hint {
-        font-size: 60%;
-        color: grey;
-      }
-
-      input {
-        width: 100%;
-      }
-    }
+  .releaseYear{
+    width: 100px;
+    flex-grow: 0.2;
   }
 
   .otherArtistSongs {

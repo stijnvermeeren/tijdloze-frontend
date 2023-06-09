@@ -1,24 +1,24 @@
 <template lang="pug">
-  table.lijst.perVijf
-    tbody
-      tr
-        th.r Jaar
-        th Aantal
-        th.l(colspan='4') Grootste stijger
-      tr(v-for='{year, entries, topEntry} in listData')
-        td.r
-          tijdloze-year(:year='year')
-        td {{entries.length}}
-        td(v-if='topEntry')
-          | {{topEntry.oldPosition - topEntry.newPosition}} posities
-        td.i(v-if='topEntry')
-          | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
-        td.a(v-if='topEntry')
-          tijdloze-song-artist(:song='topEntry.song')
-        td(v-if='topEntry')
-          tijdloze-song(:song='topEntry.song')
-        td.l(v-if='!topEntry' colspan='4')
-          | /
+table.lijst.perVijf
+  tbody
+    tr
+      th.r Jaar
+      th Aantal
+      th.l(colspan='4') Grootste stijger
+    tr(v-for='{year, entries, topEntry} in listData')
+      td.r
+        year-link(:year='year')
+      td {{entries.length}}
+      td(v-if='topEntry')
+        | {{topEntry.oldPosition - topEntry.newPosition}} posities
+      td.i(v-if='topEntry')
+        | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
+      td.a(v-if='topEntry')
+        song-artist-link(:song='topEntry.song')
+      td(v-if='topEntry')
+        song-link(:song='topEntry.song')
+      td.l(v-if='!topEntry' colspan='4')
+        | /
 </template>
 
 <script>

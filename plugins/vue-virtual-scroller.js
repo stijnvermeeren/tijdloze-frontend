@@ -1,6 +1,5 @@
-import Vue from "vue";
-import { RecycleScroller } from 'vue-virtual-scroller'
+import {RecycleScroller} from "vue-virtual-scroller";
 
-export default ({ app }) => {
-  Vue.component('RecycleScroller', RecycleScroller)
-}
+export default defineNuxtPlugin((nuxtApp) => {
+  nuxtApp.vueApp.component('RecycleScroller', RecycleScroller)
+})

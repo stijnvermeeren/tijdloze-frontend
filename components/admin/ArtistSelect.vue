@@ -1,28 +1,28 @@
 <template lang="pug">
-  div
-    div(v-if='artist') {{artist.fullName}}
-    div(v-if='editing')
-      search-box(
-        :song-filter='song => false'
-        :album-filter='album => false'
-        placeholder='Zoek artiest...'
-        @selectSearchResult='selectArtist($event.item)'
-        :disabled="disabled"
-      )
-      button(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
-    div(v-else)
-      button(@click='editing = true' :disabled="disabled") Wijzigen
-      button(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
+div.d-flex.py-2
+  div(v-if='artist') {{artist.fullName}}
+  template(v-if='editing')
+    search-box.flex-grow-1(
+      :song-filter='song => false'
+      :album-filter='album => false'
+      placeholder='Zoek artiest...'
+      @selectSearchResult='selectArtist($event.item)'
+      :disabled="disabled"
+    )
+    v-btn(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
+  template(v-else)
+    v-btn(@click='editing = true' :disabled="disabled") Wijzigen
+    v-btn(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
 </template>
 
 <script>
   import SearchBox from '../SearchBox'
   import Artist from "@/orm/Artist";
+  import {useRepo} from "pinia-orm";
   export default {
-    name: 'ArtistSelect',
     components: {SearchBox},
     props: {
-      value: {
+      modelValue: {
         type: Number
       },
       required: {
@@ -34,38 +34,45 @@
         default: false
       }
     },
+    emits: ['update:modelValue'],
     data() {
       return {
-        editing: !this.value
+        editing: !this.modelValue
       }
     },
     computed: {
       artist() {
-        if (this.value) {
-          return Artist.find(this.value);
+        if (this.modelValue) {
+          return useRepo(Artist).find(this.modelValue);
         } else {
           return undefined;
         }
       }
     },
     watch: {
-      value() {
-        this.editing = !this.value;
+      modelValue() {
+        this.editing = !this.modelValue;
       }
     },
     methods: {
       clear() {
-        this.value = undefined;
-        this.$emit('input', undefined);
+        this.modelValue = undefined;
+        this.$emit('update:modelValue', undefined);
       },
       selectArtist(artist) {
-        this.$emit('input', artist.id);
+        this.$emit('update:modelValue', artist.id);
         this.editing = false;
       }
     }
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.d-flex {
+  align-items: center;
 
+  > * {
+    margin-right: 10px;
+  }
+}
 </style>

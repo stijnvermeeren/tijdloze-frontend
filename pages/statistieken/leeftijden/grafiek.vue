@@ -1,22 +1,11 @@
 <template lang="pug">
-  div
-    tijdloze-ages-graph
-    .legende
-      ul
-        li
-          | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
+div
+  d3-ages-graph
+  .legende
+    ul
+      li
+        | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
 </template>
-
-<script>
-  import AgesGraph from "../../../components/d3/AgesGraph"
-
-  export default {
-    components: {
-      TijdlozeAgesGraph: AgesGraph
-    }
-  }
-</script>
-
 
 <style lang="scss" scoped>
   @use "../../../assets/styleConfig";

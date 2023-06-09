@@ -1,42 +1,44 @@
 <template lang="pug">
-  div
+Title Admin: Gebruikers
+div
+  div.flexTitle
     h2 Gebruikers
-    div
-      div {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
-      div
-        el-button(@click='refresh()' :disabled='refreshing') Opnieuw laden
-    div
-      | Sorteren op:
-      input#sort-displayName(type='radio' v-model='sortProperty' value='displayName')
-      label(for='sort-displayName') Gebruikersnaam
-      input#sort-lastSeen(type='radio' v-model='sortProperty' value='lastSeen')
-      label(for='sort-lastSeen') Laatste login
-      input#sort-created(type='radio' v-model='sortProperty' value='created')
-      label(for='sort-created') Laatst geregistreerd
-    ul
-      li(v-for='user in usersSorted')
-        .displayName(v-if='user.displayName') {{user.displayName}}
-        .anonymous(v-else) Geen gebruikernaam
-        .admin(v-if='user.isAdmin') Admin
-        .details
-          div(v-if='user.id !== currentUser.id')
-            .blocked(v-if='user.isBlocked')
-              | Geblokkeerd -
-              |
-              button(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
-            div(v-else)
-              button(@click='block(user.id)', :disabled='refreshing') blokkeren
-          div Naam: #[strong {{user.name}}]
-          div ID: {{user.id}}
-          div Registratie: {{user.created}}
-          div Laatste login: {{user.lastSeen}}
+    v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
+  p {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
+  div
+    v-radio-group(inline label="Sorteren op" v-model='sortProperty' hide-details)
+      v-radio(value='displayName' label="Gebruikersnaam")
+      v-radio(value='lastSeen' label="Laatste login")
+      v-radio(value='created' label="Laatst geregistreerd")
+  ul
+    li(v-for='user in usersSorted')
+      .displayName(v-if='user.displayName') {{user.displayName}}
+      .anonymous(v-else) Geen gebruikernaam
+      .admin(v-if='user.isAdmin') Admin
+      .details
+        div(v-if='user.id !== currentUser.id')
+          .blocked(v-if='user.isBlocked')
+            | Geblokkeerd -
+            |
+            v-btn(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
+          div(v-else)
+            v-btn(@click='block(user.id)', :disabled='refreshing') blokkeren
+        div Naam: #[strong {{user.name}}]
+        div ID: {{user.id}}
+        div Registratie: {{user.created}}
+        div Laatste login: {{user.lastSeen}}
 </template>
 
 <script>
   import _ from 'lodash'
+  import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    name: 'users',
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     data() {
       return {
         refreshing: false,
@@ -45,7 +47,7 @@
     },
     computed: {
       currentUser() {
-        return this.$store.state.auth.user;
+        return useAuthStore().user;
       },
       userCount() {
         return this.users.length;
@@ -80,42 +82,40 @@
     methods: {
       parseDate(dateString) {
         return new Date(
-          parseInt(dateString.substr(6, 4)),
-          parseInt(dateString.substr(3, 2)) - 1,
-          parseInt(dateString.substr(0, 2)),
-          parseInt(dateString.substr(11, 2)),
-          parseInt(dateString.substr(14, 2)),
-          parseInt(dateString.substr(17, 2))
+          parseInt(dateString.substring(6, 10)),
+          parseInt(dateString.substring(3, 5)) - 1,
+          parseInt(dateString.substring(0, 2)),
+          parseInt(dateString.substring(11, 13)),
+          parseInt(dateString.substring(14, 16)),
+          parseInt(dateString.substring(17, 19))
         )
       },
       async block(userId) {
         this.refreshing = true;
-        await this.$axios.$post(`/user/${userId}/block`);
-        this.users = await this.$axios.$get(`user/list`);
+        await useApiFetchPost(`/user/${userId}/block`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       },
       async unblock(userId) {
         this.refreshing = true;
-        await this.$axios.$delete(`/user/${userId}/block`);
-        this.users = await this.$axios.$get(`user/list`);
+        await useApiFetchDelete(`/user/${userId}/block`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       },
       async refresh() {
         this.refreshing = true;
-        this.users = await this.$axios.$get(`user/list`);
+        const {data: usersData} = await useApiFetch(`user/list`);
+        this.users = usersData
         this.refreshing = false;
       }
     },
-    async asyncData({ params, app }) {
-      return {
-        users: await app.$axios.$get(`user/list`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Gebruikers'
+    async asyncData() {
+      const {data: users} = await useApiFetch(`user/list`);
+      return {users};
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

@@ -1,156 +1,83 @@
 <template lang="pug">
-  .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
-    .tooltip(v-if="tooltipSong" :style="tooltipStyle")
-      .year
-        | {{hoverYear.yyyy}}
-      .entry
-        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}} ({{hoverYear.yyyy - tooltipSong.album.releaseYear}} jaar oud)
-    svg(
-      :viewBox='`0 0 ${fullWidth} ${fullHeight}`'
-      xmlns='http://www.w3.org/2000/svg'
-    )
-      g(:transform='`translate(${margin.left},${margin.top})`')
-        tijdloze-axes(
-          :x-scale='xScale'
-          :y-scale='yScale'
-          :years='years'
-          :hover-year='hoverYear'
+.graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+  .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+    .year
+      | {{hoverYear.yyyy}}
+    .entry
+      | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}} ({{hoverYear.yyyy - tooltipSong.album.releaseYear}} jaar oud)
+  svg(
+    :viewBox='`0 0 ${fullWidth} ${fullHeight}`'
+    xmlns='http://www.w3.org/2000/svg'
+  )
+    g(:transform='`translate(${margin.left},${margin.top})`')
+      d3-axes(
+        :x-scale='xScale'
+        :y-scale='yScale'
+        :years='years'
+        :hover-year='hoverYear'
+      )
+      line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+      g.color-1
+        rect.rect.coloredRect(
+          v-for='point in points'
+          :x='xScale(point.year._yy) - lineWidth(point.age) / 2'
+          :y='yScale(point.position) - yStep / 2'
+          :width='lineWidth(point.age)'
+          :height='yStep'
         )
-        line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
-        g.color-1
-          rect.rect.coloredRect(
-            v-for='point in points'
-            :x='xScale(point.year._yy) - lineWidth(point.age) / 2'
-            :y='yScale(point.position) - yStep / 2'
-            :width='lineWidth(point.age)'
-            :height='yStep'
-          )
-        rect.overlay(
-          :x="0"
-          :y="0"
-          :width="width"
-          :height="height"
-          @mousemove="onHover($event)"
-          @touchmove="onHover($event)"
-          :opacity="0"
-        )
+      rect.overlay(
+        :x="0"
+        :y="0"
+        :width="width"
+        :height="height"
+        @mousemove="onHover($event)"
+        @touchmove="onHover($event)"
+        :opacity="0"
+      )
 </template>
 
-<script>
-    import BaseGraph from './BaseGraph';
-    import BaseGraphAxes from './BaseGraphAxes';
-    import {bisect} from "d3-array";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-    export default {
-      extends: BaseGraph,
-      components: {
-        TijdlozeAxes: BaseGraphAxes
-      },
-      data() {
-        return {
-          hoverYear: undefined,
-          hoverPosition: undefined,
-          overlayScreenWidth: undefined,
-          overlayScreenHeight: undefined
-        }
-      },
-      computed: {
-        yStep() {
-          return this.yScale(1) - this.yScale(0);
-        },
-        points() {
-          const years = this.$store.getters.years;
-          const songs = this.$store.getters.songs;
-          const points = [];
-          years.forEach(year => {
-            songs.forEach(song => {
-              if (song.position(year)) {
-                points.push({
-                  year: year,
-                  position: song.position(year),
-                  age: year.yyyy - song.album.releaseYear
-                });
-              }
-            })
-          });
+const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
+const {years, xScale, yScale} = useGraph()
 
-          return points;
-        },
-        hoverLineX() {
-          if (this.hoverYear) {
-            return this.xScale(this.hoverYear._yy);
-          } else {
-            return this.xScale.range()[1];
-          }
-        },
-        tooltipStyle() {
-          if (!!this.hoverYear && !!this.hoverPosition && !!this.overlayScreenWidth && !!this.overlayScreenHeight) {
-            const tooltipTop = (this.margin.top + this.yScale(this.hoverPosition));
-            const tooltipTopScreen = (tooltipTop * this.overlayScreenHeight / this.height) + "px";
+const yStep = computed(() => {
+  return yScale.value(1) - yScale.value(0);
+})
 
-            if (this.hoverLineX > this.width - 200) {
-              const tooltipRight = (this.margin.right + this.width - this.hoverLineX + this.xScale.step() * 4/5);
-              const tooltipRightScreen = (tooltipRight * this.overlayScreenWidth / this.width) + "px";
-              return {right: tooltipRightScreen, top: tooltipTopScreen};
-            } else {
-              const tooltipLeft = (this.margin.left + this.hoverLineX + this.xScale.step() * 2/3);
-              const tooltipLeftScreen = (tooltipLeft * this.overlayScreenWidth / this.width) + "px";
-              return {left: tooltipLeftScreen, top: tooltipTopScreen};
-            }
-          } else {
-            return {};
-          }
-        },
-        tooltipSong() {
-          if (!!this.hoverYear && !!this.hoverPosition) {
-            return this.$store.getters.listTop100(this.hoverYear).find(song => {
-              return song.position(this.hoverYear) === this.hoverPosition;
-            })
-          }
-          return undefined;
-        }
-      },
-      methods: {
-        lineWidth(age) {
-          return 1 + age / 3;
-        },
-        onHover(event) {
-          let offsetX;
-          let offsetY;
-          let boundingClientRect;
-
-          if (event.offsetX) {
-            // mouse event
-            boundingClientRect = event.target.getBoundingClientRect();
-            offsetX = event.offsetX;
-            offsetY = event.offsetY;
-          } else if (event.touches) {
-            // touch event
-            boundingClientRect = event.touches[0].target.getBoundingClientRect();
-            offsetX = event.touches[0].pageX - boundingClientRect.x;
-            offsetY = event.touches[0].pageY - boundingClientRect.y;
-          } else {
-            return;
-          }
-
-          this.overlayScreenWidth = boundingClientRect.width;
-          this.overlayScreenHeight = boundingClientRect.height;
-
-          const starts = this.years.map(year => this.xScale(year._yy) - this.xScale.step() / 2);
-          const lookup = this.width / this.overlayScreenWidth * offsetX - this.margin.left;
-          const hoverYear = this.years[bisect(starts, lookup) - 1];
-          if (hoverYear) {
-            this.hoverYear = hoverYear;
-          }
-
-          const positionLookup = this.height / this.overlayScreenHeight * offsetY - this.margin.top;
-          const hoverPosition = Math.round(this.yScale.invert(positionLookup));
-          if (hoverPosition) {
-            this.hoverPosition = hoverPosition;
-          }
-        }
+const points = computed(() => {
+  const songs = useRootStore().songs;
+  const points = [];
+  years.value.forEach(year => {
+    songs.forEach(song => {
+      if (song.position(year)) {
+        points.push({
+          year: year,
+          position: song.position(year),
+          age: year.yyyy - song.album.releaseYear
+        });
       }
-    }
+    })
+  });
+
+  return points;
+})
+
+const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(xScale, yScale, years)
+
+const tooltipSong = computed(() => {
+  if (!!hoverYear.value && !!hoverPosition.value) {
+    return useRootStore().listTop100(hoverYear.value).find(song => {
+      return song.position(hoverYear.value) === hoverPosition.value;
+    })
+  }
+  return undefined;
+})
+
+function lineWidth(age) {
+  return 1 + age / 3;
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,29 +1,28 @@
 <template lang="pug">
-  div
-    h2 Verwijderde reacties terugzetten
+Title Admin: verwijderde reacties terugzetten
+div
+  h2 Verwijderde reacties terugzetten
 
-    comment(v-for='comment in comments' :key='comment.id' :comment='comment' @restored="reload()")
-    div(v-if="!comments.length") Geen verwijderde reacties
+  comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @restored="reload()")
+  div(v-if="!comments.length") Geen verwijderde reacties
 </template>
 
 <script>
-  import Comment from '~/components/comments/Comment'
-
-  export default {
-    components: {Comment},
+  export default defineNuxtComponent({
+    setup() {
+      definePageMeta({
+        middleware: 'admin'
+      })
+    },
     methods: {
       async reload() {
-        this.comments = await this.$axios.$get(`comments/deleted`)
+        const { data: comments } = await useApiFetch(`comments/deleted`)
+        this.comments = comments
       }
     },
-    async asyncData({ app }) {
-      return {
-        comments: await app.$axios.$get(`comments/deleted`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: verwijderde reacties terugzetten'
+    async asyncData() {
+      const { data: comments } = await useApiFetch(`comments/deleted`)
+      return {comments};
     }
-  }
+  })
 </script>

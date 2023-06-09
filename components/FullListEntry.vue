@@ -1,18 +1,18 @@
 <template lang="pug">
-  div.entry(:class='{lineAfter: song.position(year, true) % 5 === 0}')
-    div.n(v-if='year.previous()')
-      tijdloze-position(:song='song' :year='year.previous()')
-    div.r
-      tijdloze-position-change(:song='song' :year='year')
-      tijdloze-position(:song='song' :year='year')
-    div.n(v-if='year.next()')
-      tijdloze-position(:song='song' :year='year.next()')
-    div.a
-      tijdloze-song-artist(:song='song')
-    div.s
-      tijdloze-song(:song='song')
-    div.releaseYear
-      | {{song.album.releaseYear}}
+div.entry(:class='{lineAfter: song.position(year, true) % 5 === 0}')
+  div.n(v-if='year.previous()')
+    position(:song='song' :year='year.previous()')
+  div.r
+    position-change(:song='song' :year='year')
+    position(:song='song' :year='year')
+  div.n(v-if='year.next()')
+    position(:song='song' :year='year.next()')
+  div.a
+    song-artist-link(:song='song')
+  div.s
+    song-link(:song='song')
+  div.releaseYear
+    | {{song.album.releaseYear}}
 </template>
 
 <script>

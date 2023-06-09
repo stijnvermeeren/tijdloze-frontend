@@ -1,117 +1,120 @@
 <template lang="pug">
-  div
-    div.flexTitle
-      h2 Admin: nummers toevoegen
-      div
-        nuxt-link(to="/admin/lijst")
-          el-button(type="warning" round size="small") Nummers verwijderen uit de lijst
+Title Admin: nummers toevoegen
+div
+  div.flexTitle
+    h2 Admin: nummers toevoegen
+    div
+      nuxt-link(to="/admin/lijst")
+        v-btn(color="amber" rounded size="small") Nummers verwijderen uit de lijst
 
-    el-alert(v-if='previousSong'
-      show-icon
-      type="success"
-      :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
-      :closable="false"
-    )
-      div
-        | {{ previousSong.artist.fullName }}
-        template(v-if='previousSong.secondArtist')
-          |
-          | en {{previousSong.secondArtist.fullName}}
+  ui-alert(v-if='previousSong'
+    type="success"
+    :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
+  )
+    div
+      | {{ previousSong.artist.fullName }}
+      template(v-if='previousSong.secondArtist')
         |
-        | - {{ previousSong.title }}
-        |
-        el-button(@click='undo()' :disabled='processing' round size="mini") Ongedaan maken
+        | en {{previousSong.secondArtist.fullName}}
+      |
+      | - {{ previousSong.title }}
+      |
+      v-btn(@click='undo()' :disabled='processing' rounded size="small") Ongedaan maken
 
-    el-button(v-if='!lastSong' @click='deleteYear' round type="warning")
-      | Jaar {{currentYear.yyyy}} starten ongedaan maken
+  v-btn(v-if='!lastSong' @click='deleteYear' rounded color="warning")
+    | Jaar {{currentYear.yyyy}} starten ongedaan maken
 
-    el-button(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' round type="primary")
-      | Jaar {{nextYearYyyy}} starten
+  v-btn(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' rounded color="blue")
+    | Jaar {{nextYearYyyy}} starten
 
-    el-card
-      div.header(slot="header")
-        div.title Volgend nummer
-      div
-        strong Positie
-          =" "
-          el-input-number(v-model="nextPosition" size="small")
-          |  in {{currentYear.yyyy}}
+  ui-card(title="Volgend nummer")
+    div
+      v-text-field.d-inline-block(
+        v-model.number="nextPosition"
+        :label="`Positie in ${currentYear.yyyy}`"
+        type="number"
+        hide-details
+      )
 
-      div.query(v-if="importQuery")
-        | Importeren van "{{importQuery}}".
-        =" "
-        a(:href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`" target="_blank")
-          el-button(size="mini" round icon="el-icon-link") Zoek op Google
+    div.query(v-if="importQuery")
+      | Importeren van "{{importQuery}}".
+      =" "
+      v-btn(
+        size="small"
+        rounded
+        :prepend-icon="mdiSearchWeb"
+        :href="`https://www.google.com/search?q=${encodeURIComponent(importQuery)}`"
+        target="_blank"
+      ) Zoek info op Google
 
-      div(v-show="nextPosition > 0")
-        el-radio-group.nextSongTab(v-model="nextSongTab")
-          el-radio-button(label="existing") Nummer uit de database
-          el-radio-button(label="spotify") Nieuw nummer (via Spotify)
-          el-radio-button(label="manual") Nieuw nummer (manueel)
+    div(v-show="nextPosition > 0")
+      v-btn-toggle.mt-2.mb-3(v-model="nextSongTab" color="blue")
+        v-btn(value="existing") Nummer uit de database
+        v-btn(value="spotify") Nieuw nummer (via Spotify)
+        v-btn(value="manual") Nieuw nummer (manueel)
 
-        div(v-show="nextSongTab === 'existing'")
-          search-box(
-            placeholder='Zoek nummer...'
-            :artist-filter='artist => false'
-            :album-filter='album => false'
-            :song-filter='possibleSong'
-            :songs-year='previousYear'
-            :initial-query='importQuery'
-            @selectSearchResult='selectSearchResult($event)'
-            @initialResultCount="initialResultCount($event)"
-          )
+      div(v-show="nextSongTab === 'existing'")
+        search-box(
+          placeholder='Zoek nummer...'
+          :artist-filter='artist => false'
+          :album-filter='album => false'
+          :song-filter='possibleSong'
+          :songs-year='previousYear'
+          :initial-query='importQuery'
+          @selectSearchResult='selectSearchResult($event)'
+          @initialResultCount="initialResultCount($event)"
+        )
 
-          div(v-if="nextSong")
-            div
-              strong {{nextSong.artist.fullName}} - {{nextSong.title}}
-              |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
-            div(v-if='nextSongFullData && nextSongFullData.spotifyId')
-              spotify(:spotify-id='nextSongFullData.spotifyId')
-            div
-              el-button(@click='add(nextSong.id)' type="primary" :disabled='!nextValid' round)
-                | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
+        div(v-if="nextSong")
+          div
+            strong {{nextSong.artist.fullName}} - {{nextSong.title}}
+            |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
+          div(v-if='nextSongFullData && nextSongFullData.spotifyId')
+            spotify(:spotify-id='nextSongFullData.spotifyId')
+          div
+            v-btn(@click='add(nextSong.id)' :disabled='!nextValid' rounded)
+              | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
-        div(v-show="nextSongTab === 'spotify'")
-          spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
-          div(v-if='spotifyData')
-            hr
-            new-song-wizard(
-              :preset='spotifyData'
-              :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
-              @newSong='add($event.id)'
-            )
-
-        div(v-show="nextSongTab === 'manual'")
-          new-song-wizard(
+      div(v-show="nextSongTab === 'spotify'")
+        admin-spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
+        div(v-if='spotifyData')
+          hr
+          admin-new-song-wizard(
+            :preset='spotifyData'
             :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
             @newSong='add($event.id)'
           )
 
-    el-card
-      div.header(slot="header")
-        div.title Tijdloze {{this.currentYear.yyyy}}: import
-        el-button(v-if="importSongs.length" @click="cancelImport" type="warning" round size="small") Import annuleren
-      div(v-if="importSongs.length")
-        div In de wachtrij om geïmporteerd te worden...
-        div(v-for="{overridePosition, query} in importSongs")
-          strong {{overridePosition}}.
-          =" "
-          span {{query}}
-      div(v-else)
-        import-form(:startPosition="nextPosition" @startImport="startImport")
+      div(v-show="nextSongTab === 'manual'")
+        admin-new-song-wizard(
+          :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
+          @newSong='add($event.id)'
+        )
+
+  ui-card(:title="`Tijdloze ${currentYear.yyyy}: import`")
+    template(#buttons)
+      v-btn(v-if="importSongs.length" @click="cancelImport" color="amber" rounded size="small") Import annuleren
+    div(v-if="importSongs.length")
+      div In de wachtrij om geïmporteerd te worden...
+      div(v-for="{overridePosition, query} in importSongs")
+        strong {{overridePosition}}.
+        =" "
+        span {{query}}
+    div(v-else)
+      admin-import-form(:startPosition="nextPosition" @startImport="startImport")
 </template>
 
-<script>
-  import SearchBox from '../../components/SearchBox'
-  import Position from '../../components/Position'
-  import Spotify from '../../components/Spotify'
-  import SpotifySearch from '../../components/admin/SpotifySearch'
-  import NewSongWizard from '../../components/admin/NewSongWizard'
-  import ImportForm from '../../components/admin/ImportForm'
-  import Song from "@/orm/Song";
+<script setup>
+definePageMeta({ middleware: 'admin' })
+</script>
 
-  export default {
-    components: {ImportForm, NewSongWizard, SpotifySearch, Spotify, Position, SearchBox},
+<script>
+  import Song from "@/orm/Song";
+  import {useRootStore} from "~/stores/root";
+  import {mdiSearchWeb} from "@mdi/js";
+  import {useRepo} from "pinia-orm";
+
+  export default defineNuxtComponent({
     data() {
       return {
         nextSongTab: 'existing',
@@ -121,22 +124,23 @@
         spotifyData: undefined,
         importQuery: '',
         importSongs: [],
-        nextPosition: this.$store.getters.lastPosition ? this.$store.getters.lastPosition - 1 : 100,
-        previousPosition: undefined
+        nextPosition: useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100,
+        previousPosition: undefined,
+        mdiSearchWeb
       }
     },
     computed: {
       currentYear() {
-        return this.$store.getters.currentYear;
+        return useRootStore().currentYear;
       },
       previousYear() {
         return this.currentYear.previous();
       },
       lastSong() {
-        return this.$store.getters.lastSong;
+        return useRootStore().lastSong;
       },
       lastPosition() {
-        return this.$store.getters.lastPosition
+        return useRootStore().lastPosition
       },
       nextYearYyyy() {
         return (new Date()).getFullYear();
@@ -146,7 +150,7 @@
       },
       previousSong() {
         if (this.previousPosition) {
-          return Song.query().withAll().all().find(song => song.position(this.currentYear, true) === this.previousPosition)
+          return useRepo(Song).withAll().get().find(song => song.position(this.currentYear, true) === this.previousPosition)
         } else {
           return undefined
         }
@@ -175,7 +179,7 @@
         let nextImport = this.importSongs.shift();
         while (!canBeImported && nextImport) {
           const {overridePosition, query} = nextImport;
-          if (!overridePosition || !this.$store.getters.songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
+          if (!overridePosition || !useRootStore().songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
             this.importQuery = query;
             this.nextPosition = overridePosition;
             canBeImported = true;
@@ -198,7 +202,8 @@
       async selectSearchResult(result) {
         this.nextSong = result.item;
         this.nextSongFullData = undefined;
-        this.nextSongFullData = await this.$axios.$get(`song/${this.nextSong.id}`);
+        const { data } = await useApiFetch(`song/${this.nextSong.id}`)
+        this.nextSongFullData = data;
       },
       selectSpotifyTrack(track) {
         this.spotifyData = {
@@ -211,18 +216,18 @@
       },
       async undo() {
         this.processing = true;
-        await this.$axios.$delete(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`)
+        await useApiFetchDelete(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`)
         this.previousPosition = undefined;
         this.processing = false;
       },
       async startYear() {
         this.processing = true;
-        await this.$axios.$post(`year/${this.nextYearYyyy}`)
+        await useApiFetchPost(`year/${this.nextYearYyyy}`)
         this.processing = false;
       },
       async deleteYear() {
         this.processing = true;
-        await this.$axios.$delete(`year/${this.currentYear.yyyy}`)
+        await useApiFetchDelete(`year/${this.currentYear.yyyy}`)
         this.processing = false;
       },
       async add(songId) {
@@ -231,7 +236,7 @@
         const data = {
           songId
         }
-        await this.$axios.$post(`list-entry/${this.currentYear.yyyy}/${position}`, data)
+        await useApiFetchPost(`list-entry/${this.currentYear.yyyy}/${position}`, data)
         this.previousPosition = position;
         this.nextSongTab = 'existing';
         this.nextSong = undefined;
@@ -250,32 +255,6 @@
       possibleSong(song) {
         return !song.position(this.currentYear, true) && (this.nextPosition > 100 || !song.markedAsExit());
       }
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: nummers toevoegen'
     }
-  }
+  })
 </script>
-
-<style scoped>
-  .el-card {
-    overflow: visible;
-  }
-
-  .nextSongTab {
-    margin-bottom: 20px;
-  }
-
-  textarea {
-    width: 100%;
-  }
-
-  .importStart {
-    width: 120px;
-  }
-
-  .importStep {
-    width: 240px;
-  }
-</style>

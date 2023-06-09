@@ -1,15 +1,17 @@
 <template lang="pug">
-  span(:class='{bold: isBold}')
-    tijdloze-song(v-if='song' :song='song')
-    tijdloze-artist(v-else-if='artist' :artist='artist' :text='input')
-    tijdloze-year(v-else-if='year' :year='year')
-    tijdloze-year(v-else-if='yearShort' :year='yearShort' short)
-    span(v-else) {{input}}
+span(:class='{bold: isBold}')
+  song-link(v-if='song' :song='song')
+  artist-link(v-else-if='artist' :artist='artist' :text='input')
+  year-link(v-else-if='year' :year='year')
+  year-link(v-else-if='yearShort' :year='yearShort' short)
+  span(v-else) {{input}}
 </template>
 
 <script>
   import Artist from "../orm/Artist";
   import Song from "../orm/Song";
+  import {useRootStore} from "~/stores/root";
+  import {useRepo} from "pinia-orm";
 
   export default {
     props: {
@@ -17,11 +19,11 @@
     },
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       song() {
         const songId = this.findSongId(this.input)
-        return songId ? Song.find(songId) : undefined
+        return songId ? useRepo(Song).find(songId) : undefined
       },
       year() {
         return this.findYear(this.input);
@@ -31,7 +33,7 @@
       },
       artist() {
         const artistId = this.findArtistId(this.input)
-        return artistId ? Artist.find(artistId) : undefined
+        return artistId ? useRepo(Artist).find(artistId) : undefined
       },
       isBold() {
         return this.to.startsWith("*");
@@ -52,14 +54,14 @@
         return this.years.find(year => year._yy === input);
       },
       findArtistId(input) {
-        const fullNameMatches = this.$store.state.artistIdsByFullName[input.toLowerCase()];
+        const fullNameMatches = useRootStore().artistIdsByFullName[input.toLowerCase()];
         if (fullNameMatches && fullNameMatches.length === 1) {
           return fullNameMatches[0];
         } else if (fullNameMatches && fullNameMatches.length > 1) {
           return null;
         }
 
-        const lastNameMatches = this.$store.state.artistIdsByName[input.toLowerCase()];
+        const lastNameMatches = useRootStore().artistIdsByName[input.toLowerCase()];
         if (lastNameMatches && lastNameMatches.length === 1) {
           return lastNameMatches[0];
         }
@@ -67,7 +69,7 @@
         return null;
       },
       findSongId(input) {
-        const titleMatches = this.$store.state.songIdsByTitle[input.toLowerCase()];
+        const titleMatches = useRootStore().songIdsByTitle[input.toLowerCase()];
         if (titleMatches && titleMatches.length === 1) {
           return titleMatches[0];
         }
@@ -78,11 +80,10 @@
           const title = split[0].trim();
           const artistName = split[1].trim();
 
-          const titleMatches = this.$store.state.songIdsByTitle[title.toLowerCase()];
-          console.log(title, artistName, titleMatches)
+          const titleMatches = useRootStore().songIdsByTitle[title.toLowerCase()];
           if (titleMatches) {
             const combinedMatches = titleMatches.filter(songId => {
-              const foundSong = Song.find(songId);
+              const foundSong = useRepo(Song).find(songId);
               const foundArtistId = this.findArtistId(artistName);
               return foundSong && foundArtistId && foundArtistId === foundSong.artistId;
             });

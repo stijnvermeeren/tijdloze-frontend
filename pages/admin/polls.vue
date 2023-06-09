@@ -1,100 +1,77 @@
 <template lang="pug">
-  div
-    div.flexTitle
-      h2 Admin: polls
-      el-button(@click='refresh()' :disabled='refreshing' size="small" round) Opnieuw laden
-    el-card
-      div.header(slot="header")
-        div.title Maak een nieuwe poll ({{currentYear.yyyy}})
+Title Admin: Polls
+div
+  div.flexTitle
+    h2 Admin: polls
+    v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
+  ui-card(:title="`Maak een nieuwe poll (${currentYear.yyyy})`")
+    div
+      h4 Vraag
       div
-        h4 Vraag
-        div
-          input(v-model='question')
-        h4 Antwoorden
-          |
-          el-button(@click="answers.push({text: ''})" size="mini") Nog een antwoord
-          el-button(v-if='answers.length > 2' @click='answers.pop()' size="mini") Laatste antwoord verwijderen
-        ul(v-for='answer in answers')
-          li
-            input(v-model='answer.text')
-        div
-          el-button(@click='submit()' :disabled='!formValid' type="primary") Opslaan
+        v-text-field(v-model='question' hide-details density="compact")
+      h4.mt-4
+        span.mr-4 Antwoorden
+        v-btn(@click="answers.push({text: ''})" size="x-small") Nog een antwoord
+        v-btn(v-if='answers.length > 2' @click='answers.pop()' size="small") Laatste antwoord verwijderen
+      ul(v-for='answer in answers')
+        li
+          v-text-field(v-model='answer.text' hide-details density="compact")
+      div
+        v-btn(@click='submit()' :disabled='!formValid' type="primary") Opslaan
 
-    el-card(v-for='{year, polls} in groupedPolls' :key="year")
-      div.header(slot="header")
-        div.title {{year}}
-      div(v-for='poll in polls', :key='poll.id')
-        poll(:poll='poll', :is-admin='true')
+  ui-card(v-for='{year, polls} in groupedPolls' :key="year" :title="`${year}`")
+    div(v-for='poll in polls', :key='poll.id')
+      poll(:poll='poll', :is-admin='true')
 </template>
 
-<script>
-  import Poll from '~/components/Poll'
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    components: {Poll},
-    data() {
-      return {
-        refreshing: false,
-        question: '',
-        answers: [{text: ''}, {text: ''}],
-        submitting: false
-      }
-    },
-    computed: {
-      currentYear() {
-        return this.$store.getters.currentYear;
-      },
-      groupedPolls() {
-        const pollYears = this.$store.getters.years.filter(year => year.yyyy >= 2015);
-        return pollYears.reverse().map(year => {
-          return {
-            year: year.yyyy,
-            polls: this.polls.filter(poll => poll.year === year.yyyy)
-          }
-        })
-      },
-      formValid() {
-        return !this.submitting && this.question && this.answers.every(answer => answer.text);
-      }
-    },
-    methods: {
-      async refresh() {
-        this.refreshing = true;
-        this.polls = await this.$axios.$get(`poll/list`);
-        this.refreshing = false;
-      },
-      async submit() {
-        this.submitting = true;
-        const data = {
-          question: this.question,
-          answers: this.answers.map(answer => answer.text),
-          year: this.currentYear.yyyy
-        };
-        await this.$axios.$post('poll', data);
-        await this.refresh();
-        this.question = '';
-        this.answers = [{text: ''}, {text: ''}];
-        this.submitting = false;
-      }
-    },
-    async asyncData({ app }) {
-      return {
-        polls: await app.$axios.$get(`poll/list`)
-      };
-    },
-    middleware: 'admin',
-    head: {
-      title: 'Admin: Polls'
+definePageMeta({ middleware: 'admin' })
+
+const refreshing = ref(false)
+const question = ref('')
+const answers = ref([{text: ''}, {text: ''}])
+const submitting = ref(false)
+
+const {data: polls} = await useApiFetch(`poll/list`)
+
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+
+const groupedPolls = computed(() => {
+  const pollYears = useRootStore().years.filter(year => parseInt(year.yyyy) >= 2015);
+  return pollYears.reverse().map(year => {
+    return {
+      year: year.yyyy,
+      polls: polls.value.filter(poll => poll.year === year.yyyy)
     }
-  }
+  })
+})
+
+const formValid = computed (() => {
+  return !submitting.value && question.value && answers.value.every(answer => answer.text);
+})
+
+async function refresh() {
+  refreshing.value = true;
+  const {data} = await useApiFetch(`poll/list`);
+  polls.value = data.value;
+  refreshing.value = false;
+}
+
+async  function submit() {
+  submitting.value = true;
+  const data = {
+    question: question.value,
+    answers: answers.value.map(answer => answer.text),
+    year: currentYear.value.yyyy
+  };
+  await useApiFetchPost('poll', data);
+  await this.refresh();
+  question.value = '';
+  answers.value = [{text: ''}, {text: ''}];
+  submitting.value = false;
+}
 </script>
-
-<style lang="scss" scoped>
-  input {
-    width: 100%;
-  }
-
-  button {
-    margin: 0 10px;
-  }
-</style>

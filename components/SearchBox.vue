@@ -1,30 +1,49 @@
 <template lang="pug">
-  #searchBox
-    span.fa.fa-search
-    input(type='text' :placeholder='placeholder' autocomplete='off' spellcheck='false' v-model='query' @keyup.down='move(1)' @keyup.up='move(-1)' @keyup.enter='go(selectedIndex)' @keydown.up.prevent='() => true' @keydown.down.prevent='() => true' ref="input")
-    #searchResults(v-if='query.length > 0')
-      .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
-        div(v-if="result.type === 'artist'")
-          | {{result.item.fullName}}
-        div(v-if="result.type === 'song'")
-          | {{result.item.title}}
-          span.info
-            | (nummer van #[span.artiest {{result.item.artist.fullName}}]
-            template(v-if='result.item.secondArtist')
-              |
-              | en #[span.artiest {{result.item.secondArtist.fullName}}]
-            template(v-if='songsYear && result.item.position(songsYear, true)')
-              | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
-            | )
-        div(v-if="result.type === 'album'")
-          | {{result.item.title}}
-          span.info
-            | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
-      .more-suggestions(v-if='resultsCount > resultsLimit')
-        | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
-      .more-suggestions(v-if='resultsCount === 0')
-        | Geen resultaten gevonden.
+#searchBox
+  v-text-field(
+    :label='placeholder'
+    persistent-placeholder
+    autocomplete='off'
+    spellcheck='false'
+    v-model='query'
+    @keyup.down='move(1)'
+    @keyup.up='move(-1)'
+    @keyup.enter='go(selectedIndex)'
+    @keydown.up.prevent='() => true'
+    @keydown.down.prevent='() => true'
+    ref="input"
+    hide-details
+    density="compact"
+  )
+    template(#prepend-inner)
+      v-icon(:icon="mdiMagnify")
+  #searchResults(v-if='query.length > 0')
+    .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
+      div(v-if="result.type === 'artist'")
+        | {{result.item.fullName}}
+      div(v-if="result.type === 'song'")
+        | {{result.item.title}}
+        span.info
+          | (nummer van #[span.artiest {{result.item.artist.fullName}}]
+          template(v-if='result.item.secondArtist')
+            |
+            | en #[span.artiest {{result.item.secondArtist.fullName}}]
+          template(v-if='songsYear && result.item.position(songsYear, true)')
+            | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
+          | )
+      div(v-if="result.type === 'album'")
+        | {{result.item.title}}
+        span.info
+          | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
+    .more-suggestions(v-if='resultsCount > resultsLimit')
+      | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
+    .more-suggestions(v-if='resultsCount === 0')
+      | Geen resultaten gevonden.
 </template>
+
+<script setup>
+  import {mdiMagnify} from "@mdi/js";
+</script>
 
 <script>
   import _ from 'lodash';
@@ -32,12 +51,13 @@
   import Song from "@/orm/Song";
   import Album from "@/orm/Album";
   import {normalize} from "@/utils/string";
+  import {useRepo} from "pinia-orm";
 
   export default {
     props: {
       placeholder: {
         type: String,
-        default: 'Zoek artiest, album of nummer...'
+        default: 'Zoek artiest, album of nummer'
       },
       songFilter: {
         type: Function,
@@ -88,13 +108,13 @@
         return tokens;
       },
       allArtists() {
-        return Artist.all().filter(this.artistFilter);
+        return useRepo(Artist).all().filter(this.artistFilter);
       },
       allSongs() {
-        return Song.query().with('artist').with('secondArtist').all().filter(this.songFilter);
+        return useRepo(Song).with('artist').with('secondArtist').get().filter(this.songFilter);
       },
       allAlbums() {
-        return Album.query().with('artist').all().filter(this.albumFilter);
+        return useRepo(Album).with('artist').get().filter(this.albumFilter);
       },
       results() {
         if (!this.query) {
@@ -232,18 +252,12 @@
     position: relative;
     margin: 10px 0;
     font-size: 16px;
-
-    .fa-search {
-      position: absolute;
-      top: 8px;
-      left: 10px;
-      z-index: 1;
-    }
+    overflow: visible;
 
     input {
       width: 100%;
       height: 28px;
-      text-indent: 32px;
+      text-indent: 30px;
 
       background: styleConfig.$inputBackgroundColor;
       border: 1px solid #aaa;

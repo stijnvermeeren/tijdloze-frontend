@@ -1,12 +1,16 @@
 <template lang="pug">
-  #snackbar(v-if='song' :class='{isHidden: isHidden}')
-    .snackbarHeader
-      | Positie {{position}} in de Tijdloze van #[tijdloze-year(:year='year')]
-    .song
-      | #[tijdloze-song-artist(:song='song')] - #[tijdloze-song(:song='song')]
+#snackbar(v-if='song' :class='{isHidden: isHidden}')
+  .snackbarHeader
+    | Positie {{position}} in de Tijdloze van #[year-link(:year='year')]
+  .song
+    | #[song-artist-link(:song='song')] - #[song-link(:song='song')]
 </template>
 
 <script>
+  import {useRootStore} from "~/stores/root";
+
+  const rootStore = useRootStore()
+
   export default {
     name: "Snackbar",
     data() {
@@ -17,10 +21,10 @@
     },
     computed: {
       song() {
-        return this.$store.getters.lastSong;
+        return rootStore.lastSong;
       },
       year() {
-        return this.$store.getters.currentYear;
+        return rootStore.currentYear;
       },
       position() {
         if (this.song) {

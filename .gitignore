@@ -1,9 +1,10 @@
 .idea/
 .nuxt/
+.output/
 .DS_Store
 node_modules/
 dist/
 npm-debug.log
 yarn-error.log
 .env
-static/data/
+public/data/

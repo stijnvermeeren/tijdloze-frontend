@@ -1,22 +1,23 @@
 <template lang="pug">
-  .scrollbox
-    table.lijst
-      tbody
-        tr
-          th.r
-          th(v-for='year in years') {{year._yy}}
-          th.r Algemeen
-        tr(v-for='{cutoff, cutoffData, overallSum, overallSize} in data')
-          td.r
-            | Top {{cutoff}}
-          td(v-for='{sum, size} in cutoffData')
-            | {{displayAverage(sum, size)}}
-          td.r
-            | {{displayAverage(overallSum, overallSize)}}
+.scrollbox
+  table.lijst
+    tbody
+      tr
+        th.r
+        th(v-for='year in years') {{year._yy}}
+        th.r Algemeen
+      tr(v-for='{cutoff, cutoffData, overallSum, overallSize} in data')
+        td.r
+          | Top {{cutoff}}
+        td(v-for='{sum, size} in cutoffData')
+          | {{displayAverage(sum, size)}}
+        td.r
+          | {{displayAverage(overallSum, overallSize)}}
 </template>
 
 <script>
   import _ from 'lodash'
+  import {useRootStore} from "~/stores/root";
 
   export default {
     data() {
@@ -26,11 +27,11 @@
     },
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       data() {
         const years = this.years;
-        const songs = this.$store.getters.songs;
+        const songs = useRootStore().songs;
 
         return this.cutoffs.map(cutoff => {
           const cutoffData = years.map(year => {

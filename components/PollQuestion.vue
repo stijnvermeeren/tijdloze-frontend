@@ -1,13 +1,13 @@
 <template lang="pug">
-  div(v-if='isAdmin && editing')
-    input(v-model='questionEdit')
-    button(@click='send()') Opslaan
-    button(@click='cancel()') Terug
-  div(v-else)
-    .question
-      | {{questionEdit}}
-      |
-      button(v-if='isAdmin' @click='editing = true') Aanpassen
+div.d-flex(v-if='isAdmin && editing')
+  v-text-field(v-model='questionEdit' density="compact" hide-details)
+  v-btn(@click='send()') Opslaan
+  v-btn(@click='cancel()') Terug
+div(v-else)
+  .question
+    | {{questionEdit}}
+    |
+    v-btn(v-if='isAdmin' @click='editing = true' size="x-small") Aanpassen
 </template>
 
 <script>
@@ -51,9 +51,5 @@
 <style lang="scss" scoped>
   div.question {
     font-weight: bold;
-  }
-
-  input {
-    width: 100%;
   }
 </style>

@@ -1,65 +1,57 @@
 <template lang="pug">
-  div
-    el-radio-group(v-model='liveValue' size="small")
-      el-radio-button(label="us")
-        tijdloze-country-icon(country-id="us")
-      el-radio-button(label="gb")
-        tijdloze-country-icon(country-id="gb")
-      el-radio-button(label="be")
-        tijdloze-country-icon(country-id="be")
-    el-select(v-model='liveValue' clearable filterable placeholder="Geen land geselecteerd")
-      el-option(
-        v-for='countryId in sortedCountryIds'
-        :key='countryId'
-        :value='countryId'
-        :label="countries[countryId]"
-      )
+div.d-flex
+  v-autocomplete(
+    :model-value='modelValue'
+    @update:model-value='update'
+    clearable
+    label="Land"
+    placeholder="Geen land geselecteerd"
+    :items="countryOptions"
+    hide-details
+  )
+  v-btn-toggle.ml-4(
+    :model-value='modelValue'
+    @update:model-value='update'
+    color="blue"
+  )
+    v-btn(value="us")
+      country-icon(country-id="us")
+    v-btn(value="gb")
+      country-icon(country-id="gb")
+    v-btn(value="be")
+      country-icon(country-id="be")
 </template>
 
-<script>
-  import countries from '~/utils/country'
-  import _ from 'lodash';
+<script setup>
+import countries from '~/utils/country'
+import _ from 'lodash';
 
-  export default {
-    name: 'CountryInput',
-    props: {
-      value: {
-        type: String
-      },
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    data() {
-      return {
-        liveValue: this.value
-      }
-    },
-    computed: {
-      countries() {
-        return countries;
-      },
-      sortedCountryIds() {
-        return _.sortBy(Object.keys(this.countries), countryId => countries[countryId])
-      }
-    },
-    watch: {
-      value(newValue) {
-        this.liveValue = newValue;
-      },
-      liveValue(newValue, oldValue) {
-        if (newValue !== oldValue) {
-          this.$emit('input', newValue);
-        }
-      }
-    }
+defineProps({
+  modelValue: {
+    type: String
   }
+})
+
+const emit = defineEmits(['update:modelValue'])
+
+const countryOptions = _.sortBy(
+  Object.keys(countries),
+  countryId => countries[countryId]
+).map(countryId => {
+  return {
+    value: countryId,
+    title: countries[countryId]
+  }
+})
+
+function update(newValue) {
+  emit('update:modelValue', newValue)
+}
 </script>
 
 <style lang="scss" scoped>
-  .el-radio-group {
-    margin-right: 10px;
-  }
+div.d-flex {
+  align-items: center;
+}
 </style>
 

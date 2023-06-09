@@ -1,16 +1,25 @@
 <template lang="pug">
-  el-select(:value='value' @input='input' :disabled="disabled" placeholder="Nationaliteit van artiest" clearable size="small")
-    el-option(v-for='countryId in usedCountryIds' :key='countryId' :value='countryId' :label="countries[countryId]")
+v-select(
+  :model-value='modelValue'
+  @update:model-value='input'
+  :items="items"
+  :disabled="disabled"
+  label="Nationaliteit van artiest"
+  clearable
+  density="compact"
+  :hide-details="true"
+)
 </template>
 
 <script>
   import countries from '~/utils/country'
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
+  import languages from "~/utils/language";
 
   export default {
-    name: 'CountryInput',
     props: {
-      value: {
+      modelValue: {
         type: String,
         default: ''
       },
@@ -19,20 +28,26 @@
         default: false
       }
     },
+    emits: ['update:modelValue'],
     computed: {
-      countries() {
-        return countries;
-      },
       sortedCountryIds() {
-        return _.sortBy(Object.keys(this.countries), countryId => countries[countryId])
+        return _.sortBy(Object.keys(countries), countryId => countries[countryId])
       },
       usedCountryIds() {
-        return this.sortedCountryIds.filter(countryId => this.$store.getters.usedCountryIds.has(countryId));
+        return this.sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId));
+      },
+      items() {
+        return this.usedCountryIds.map(countryId => {
+          return {
+            title: countries[countryId],
+            value: countryId,
+          }
+        })
       }
     },
     methods: {
       input(value) {
-        this.$emit('input', value);
+        this.$emit('update:modelValue', value);
       }
     }
   }

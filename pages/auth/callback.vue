@@ -1,5 +1,5 @@
 <template lang="pug">
-  p Je wordt aangemeld...
+p Je wordt aangemeld...
 </template>
 
 <script>
@@ -10,7 +10,7 @@
       const sessionRedirectPath = sessionStorage.getItem("redirectPath");
       sessionStorage.removeItem("redirectPath");
       const redirectPath = sessionRedirectPath ? sessionRedirectPath : '/';
-      this.$router.replace(redirectPath);
+      await useRouter().replace(redirectPath);
     }
   }
 </script>

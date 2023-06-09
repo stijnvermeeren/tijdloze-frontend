@@ -1,55 +1,62 @@
 <template lang="pug">
-  div
-    h2 Nieuwe artiest
-    div.flex
-      div
-        div.hint Voornaam
-        input(v-model='fullArtistData.namePrefix' placeholder='The / Bob / ...')
-      div.flexGrow
-        div.hint Naam
-        input(v-model='fullArtistData.name' placeholder='Beatles / Dylan / ...')
-      div
-        div.hint Land
-        country-input(v-model='fullArtistData.countryId')
-    div
-      button(@click='submit' :disabled='disabled') Toevoegen
+Title Admin: nieuwe artiest
+div
+  h2 Nieuwe artiest
+  v-container
+    v-row(dense)
+      v-col
+        v-text-field(
+          v-model='fullArtistData.namePrefix'
+          placeholder='The / Bob / ...'
+          label="Naam (prefix)"
+          hide-details
+        )
+      v-col
+        v-text-field(
+          v-model='fullArtistData.name'
+          placeholder='Beatles / Dylan / ...'
+          label="Naam"
+          hide-details
+        )
+    v-row(dense)
+      v-col
+        admin-country-input(v-model='fullArtistData.countryId')
+    v-row
+      v-col
+       v-btn(@click='submit' :disabled='disabled' color="blue") Toevoegen
 </template>
 
 <script>
-  import CountryInput from '../../../components/admin/CountryInput'
 
-  export default {
-    components: {CountryInput},
-    data() {
-      return {
-        processing: false,
-        fullArtistData: {
-          namePrefix: '',
-          name: '',
-          countryId: undefined
-        }
-      }
-    },
-    computed: {
-      disabled() {
-        return this.processing || !this.fullArtistData.name
-      }
-    },
-    methods: {
-      submit() {
-        this.processing = true;
-        this.$axios.$post(`artist`, this.fullArtistData).then(result => {
-          this.$router.push(`/artiest/${result.id}`);
-        })
-      }
-    },
-    middleware: 'admin',
-    head() {
-      return {
-        title: `Admin: nieuwe artiest`
+export default defineNuxtComponent({
+  setup() {
+    definePageMeta({
+      middleware: 'admin'
+    })
+  },
+  data() {
+    return {
+      processing: false,
+      fullArtistData: {
+        namePrefix: '',
+        name: '',
+        countryId: undefined
       }
     }
+  },
+  computed: {
+    disabled() {
+      return this.processing || !this.fullArtistData.name
+    }
+  },
+  methods: {
+    async submit() {
+      this.processing = true;
+      const {data} = await useApiFetchPost(`artist`, this.fullArtistData)
+      await useRouter().push(`/artiest/${data.value.id}`)
+    }
   }
+})
 </script>
 
 <style lang="scss" scoped>

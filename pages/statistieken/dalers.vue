@@ -1,24 +1,25 @@
 <template lang="pug">
-  div
-    h2 Tijdloze dalers
-    tijdloze-tabs(:tabs="[\
-      { to: '/statistieken/dalers', title: 'Per jaar' },\
-      { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }\
-    ]")
-      nuxt-child(:data='data' :years='years')
-
+Title Dalers
+div
+  h2 Tijdloze dalers
+  ui-tabs(:tabs="[\
+    { to: '/statistieken/dalers', title: 'Per jaar' },\
+    { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }\
+  ]")
+    nuxt-page(:data='data' :years='years')
 </template>
 
 <script>
   import _ from 'lodash';
+  import {useRootStore} from "~/stores/root";
 
   export default {
     computed: {
       years() {
-        return this.$store.getters.years;
+        return useRootStore().years;
       },
       songs() {
-        return this.$store.getters.songs;
+        return useRootStore().songs;
       },
       data() {
         const dataPoints = [];
@@ -38,10 +39,6 @@
         });
         return dataPoints;
       }
-    },
-    head: {
-      title: 'Dalers'
-    },
-    ssrComputedCache: true
+    }
   }
 </script>
