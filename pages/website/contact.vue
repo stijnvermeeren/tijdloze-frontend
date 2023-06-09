@@ -10,10 +10,10 @@ div
   p Hier kan je Stijn Vermeeren, de hoofd-ontwikkelaar van tijdloze.rocks, contacteren.
   p Alle suggesties, verbeteringen of andere berichten omtrent deze website zijn van harte welkom!
 
-  el-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!" :closable="false" show-icon)
+  ui-alert(v-if='error' type="error" title="Probleem met het verzenden van je bericht!")
     | {{error}}
   div(v-if='success')
-    el-alert(type="success" title="Bedankt voor je mail!" :closable="false" show-icon)
+    ui-alert(type="success" title="Bedankt voor je mail!")
       a(@click='reset()') Verzend een nieuw bericht
     ui-card(title="Verzonden bericht" :subtitle="cardSubtitle")
       p.message {{message}}
@@ -22,20 +22,19 @@ div
 
   div(v-if='!success && !inProgress')
     v-container
-      v-row
+      v-row(dense)
         v-col
           v-text-field.formtext(label="Naam *" type='text' v-model='name' hide-details)
-      v-row
+      v-row(dense)
         v-col
           v-text-field.formtext(label="E-mailadres" @blur='emailTouched = true' name='email' v-model='email' hide-details)
-          el-alert(
+          ui-alert(
             v-if='emailTouched && email.trim() && !validateEmail(email.trim())'
             type="warning"
             title="Ongeldig e-mailadres."
-            :closable="false"
           )
             | Voer een correct e-mailadres in, of laat het veld leeg om anoniem te mailen.
-      v-row
+      v-row(dense)
         v-col
           v-textarea(label="Bericht *" cols='30' rows='4' v-model='message' hide-details)
       v-row
@@ -82,7 +81,7 @@ div
         this.inProgress = false;
         this.success = false;
       },
-      submit() {
+      async submit() {
         this.inProgress = true;
         this.error = "";
 
@@ -94,13 +93,15 @@ div
           payLoad.email = this.email.trim();
         }
 
-        useFetch('/contact', { method: 'POST', data: payLoad }).then(response => {
+        const {data, error} = await useApiFetchPost('/contact', payLoad)
+        if (data.value) {
           this.inProgress = false;
           this.success = true;
-        }, error => {
+        }
+        if (error.value) {
           this.inProgress = false;
-          this.error = `Foutmelding van de server (${error.message}).`;
-        });
+          this.error = `Foutmelding van de server: ${error.value}.`;
+        }
       },
       validateEmail(email) {
         const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

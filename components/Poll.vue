@@ -11,9 +11,14 @@
       .answerText
         poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
   div(v-else)
-    .answer(v-for='answer in livePoll.answers')
-      input(type='radio' v-model='myVoteEdit' :value='answer.id' :id='`vote-${answer.id}`')
-      label(:for='`vote-${answer.id}`') {{answer.answer}}
+    v-radio-group(v-model='myVoteEdit' hide-details)
+      v-radio.answer(
+        v-for='answer in livePoll.answers'
+        :key='answer.id'
+        :value='answer.id'
+        :label="answer.answer"
+        density="compact"
+      )
     div(v-if='isAuthenticated')
       v-btn(@click='vote()' :disabled='!myVoteEdit || voting') Stem afgeven
     div(v-else)

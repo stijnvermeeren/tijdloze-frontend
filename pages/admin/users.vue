@@ -20,9 +20,9 @@ div
           .blocked(v-if='user.isBlocked')
             | Geblokkeerd -
             |
-            button(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
+            v-btn(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
           div(v-else)
-            button(@click='block(user.id)', :disabled='refreshing') blokkeren
+            v-btn(@click='block(user.id)', :disabled='refreshing') blokkeren
         div Naam: #[strong {{user.name}}]
         div ID: {{user.id}}
         div Registratie: {{user.created}}

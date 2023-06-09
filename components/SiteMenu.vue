@@ -7,7 +7,7 @@ div
       v-list(bg-color="#fadfbb" density="comfortable" :opened="openeds")
         v-list-item(to="/") Home
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
-        v-list-group(v-if='listInProgress' value="/inprogress")
+        v-list-group(v-if='listInProgress' value="inprogress")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze {{currentYear.yyyy}}
           v-list-item(:to="`/lijst/${currentYear.yyyy}`") De lijst

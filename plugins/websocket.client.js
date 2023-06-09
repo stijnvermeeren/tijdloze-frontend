@@ -56,54 +56,47 @@ export default defineNuxtPlugin( nuxtApp => {
             }
           }
 
-          useRepo(List).update({
-            where: response.year,
-            data: list => {
-              const partition = _.partition(
-                list.songIds.filter(songId => songId !== response.songId),
-                partitionFn
-              )
-              list.songIds = [
-                ...partition[0],
-                response.songId,
-                ...partition[1]
-              ];
+          const list = useRepo(List).find(response.year)
+          const partition = _.partition(
+            list.songIds.filter(songId => songId !== response.songId),
+            partitionFn
+          )
+          list.songIds = [
+            ...partition[0],
+            response.songId,
+            ...partition[1]
+          ];
 
-              if (response.position <= 100) {
-                const partition = _.partition(
-                  list.top100SongIds.filter(songId => songId !== response.songId),
-                  partitionFn
-                )
-                list.top100SongIds = [
-                  ...partition[0],
-                  response.songId,
-                  ...partition[1]
-                ];
-              }
-            }
-          })
+          if (response.position <= 100) {
+            const partition = _.partition(
+              list.top100SongIds.filter(songId => songId !== response.songId),
+              partitionFn
+            )
+            list.top100SongIds = [
+              ...partition[0],
+              response.songId,
+              ...partition[1]
+            ];
+          }
+          useRepo(List).save(list)
         } else {
-          useRepo(List).update({
-            where: response.year,
-            data: list => {
-              list.songIds = list.songIds.filter(songId => {
-                return useRepo(Song).find(songId).positions[yearShort] !== response.position
-              })
-              if (response.position <= 100) {
-                list.top100SongIds = list.top100SongIds.filter(songId => {
-                  return useRepo(Song).find(songId).positions[yearShort] !== response.position
-                })
-              }
-            }
+          const list = useRepo(List).find(response.year)
+          list.songIds = list.songIds.filter(songId => {
+            return useRepo(Song).find(songId).positions[yearShort] !== response.position
           })
+          if (response.position <= 100) {
+            list.top100SongIds = list.top100SongIds.filter(songId => {
+              return useRepo(Song).find(songId).positions[yearShort] !== response.position
+            })
+          }
+          useRepo(List).save(list)
 
-          useRepo(Song).update({
-            where: song => {
-              return song.positions[yearShort] === response.position
-            },
-            data: song => {
-              delete song.positions[yearShort]
-            }
+          const songs = useRepo(Song).where(song => {
+            return song.positions[yearShort] === response.position
+          }).get()
+          songs.forEach(song => {
+            delete song.positions[yearShort]
+            useRepo(Song).save(song)
           })
         }
       }

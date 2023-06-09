@@ -18,7 +18,7 @@ module.exports = defineNuxtConfig({
   */
   app: {
     head: {
-      title: 'tijdloze.rocks',
+      title: 'tijdloze.rocks'
     }
   },
   /*
@@ -44,8 +44,6 @@ module.exports = defineNuxtConfig({
         })
       ))
     },
-    '@pinia/nuxt',
-    '@element-plus/nuxt'
-  ],
-  elementPlus: { }
+    '@pinia/nuxt'
+  ]
 });

@@ -41,8 +41,8 @@ div
       },
       onSubmitted() {
         const {data: comments} = useApiFetch(`comments/1`)
-        useRouter().push('/reacties');
-        this.comments = comments;
+        navigateTo('/reacties');
+        this.comments = comments.value;
       }
     },
     async beforeRouteUpdate (to, from, next) {
@@ -53,7 +53,7 @@ div
     },
     async asyncData() {
       const {data: commentsOnResponse} = await useApiFetch(`text/commentsOn`)
-      const commentsOn = commentsOnResponse.value === 'on';
+      const commentsOn = commentsOnResponse.value.value === 'on';
 
       const page = +useRoute().params.page || +useRoute().query.page || 1;
       const {data: comments} = await useApiFetch(`comments/${page}`)

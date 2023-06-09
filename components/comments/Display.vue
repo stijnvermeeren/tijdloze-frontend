@@ -12,7 +12,7 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
       span.delete(v-if="isDeleted && isAdmin")
         a(@click="restoreComment") Terugzetten
   div
-    div.bericht(v-if="!editing") {{message}}
+    div.bericht(v-if="!editing") {{message.trim()}}
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
@@ -90,7 +90,7 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
     margin: 1em 3em;
 
     &.mine {
-      border-width: 3px;
+      border-width: 4px;
     }
 
     div.reacinfo {

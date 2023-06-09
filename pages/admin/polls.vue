@@ -9,9 +9,9 @@ div
       h4 Vraag
       div
         v-text-field(v-model='question' hide-details density="compact")
-      h4.mt-4 Antwoorden
-        |
-        v-btn(@click="answers.push({text: ''})" size="small") Nog een antwoord
+      h4.mt-4
+        span.mr-4 Antwoorden
+        v-btn(@click="answers.push({text: ''})" size="x-small") Nog een antwoord
         v-btn(v-if='answers.length > 2' @click='answers.pop()' size="small") Laatste antwoord verwijderen
       ul(v-for='answer in answers')
         li
@@ -75,13 +75,3 @@ async  function submit() {
   submitting.value = false;
 }
 </script>
-
-<style lang="scss" scoped>
-  input {
-    width: 100%;
-  }
-
-  button {
-    margin: 0 10px;
-  }
-</style>

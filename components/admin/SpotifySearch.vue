@@ -1,11 +1,11 @@
 <template lang="pug">
 div
-  div.search
-    v-text-field(v-model='query' @change='search' label='Titel en/of artiest' hide-details)
+  div.d-flex
+    v-text-field.mr-4(v-model='query' @change='search' label='Titel en/of artiest' hide-details)
     v-btn(@click='search' :disabled='processing')
       | Zoeken op Spotify
   div(v-if="spotifyError")
-    el-alert.alert(title="Fout bij het zoeken op Spotify" type="error" :closable="false" show-icon)
+    ui-alert(type="error" title="Fout bij het zoeken op Spotify")
       div Probeer het nog eens, of voer de gegevens van het nummer manueel in.
   template(v-if="showingResults")
     div(v-if='!spotifyTracks.length')
@@ -13,30 +13,30 @@ div
     div(v-else)
       table
         tbody
-          tr(
+          template(
             v-for='track in spotifyTracks'
-            v-if="!selectedTrackId || selectedTrackId === track.spotifyId"
             :key='track.spotifyId'
           )
-            td.spotify
-              spotify(:spotify-id='track.spotifyId')
-            td.details
-              div
-                | Artist:
-                |
-                strong {{track.artist}}
-              div
-                | Titel:
-                |
-                strong {{track.title}}
-              div
-                | Album:
-                |
-                em {{track.album}}
-                |
-                |({{track.year}}).
-            td
-              v-btn(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
+            tr(v-if="!selectedTrackId || selectedTrackId === track.spotifyId")
+              td.spotify
+                spotify(:spotify-id='track.spotifyId')
+              td.details
+                div
+                  | Artist:
+                  |
+                  strong {{track.artist}}
+                div
+                  | Titel:
+                  |
+                  strong {{track.title}}
+                div
+                  | Album:
+                  |
+                  em {{track.album}}
+                  |
+                  |({{track.year}}).
+              td
+                v-btn(@click='select(track)' v-if="!selectedTrackId" type="primary") Selecteren
     ui-alert(title="Let op bij Spotify")
       ul
         li Het eerste zoekresultaat is niet altijd de originele album-versie.
@@ -45,10 +45,7 @@ div
 </template>
 
 <script>
-  import Spotify from '../Spotify'
-
-  export default {
-    components: {Spotify},
+  export default defineNuxtComponent({
     props: {
       initialQuery: {
         type: String,
@@ -88,13 +85,13 @@ div
 
         const {data: result, error} = await useApiFetch('/spotify/find', {params: {query: cleanQuery, limit: 3}})
 
-        if (result) {
-          this.spotifyTracks = result;
+        if (result.value) {
+          this.spotifyTracks = result.value;
           this.processing = false;
           this.spotifyError = false;
           this.showingResults = true;
         }
-        if (error) {
+        if (error.value) {
           this.spotifyError = true;
           this.processing = false;
         }
@@ -104,18 +101,10 @@ div
         this.selectedTrackId = track.spotifyId;
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>
-  .search{
-    display: flex;
-
-    .el-input {
-      margin-right: 20px;
-    }
-  }
-
   table {
     margin: 10px auto 10px 0;
 

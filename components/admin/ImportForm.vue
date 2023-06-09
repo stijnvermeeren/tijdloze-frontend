@@ -4,29 +4,28 @@ div
     ul
       li Eén nummer (artiest + titel) per lijn
       li Lege lijnen en posities die al gedefinieerd zijn in de lijst worden genegeerd
+  v-radio-group(v-model="importMode")
+    v-radio(v-model="importMode" value="manual" label="Expliciete positie in het begin van elke lijn")
+    v-radio(v-model="importMode" value="auto" label="Automatische telling")
+    div.d-flex(v-if="importMode === 'auto'")
+      v-text-field(
+        v-model="importStart"
+        :min="1"
+        type="number"
+        label="Bovenaan is positie"
+        hide-details
+      )
+      =" "
+      span en dan
+      =" "
+      v-select(
+        v-model="importStep"
+        :items="[{value: -1, title: 'stijgend (e.g. van 100 naar 1)'}, {value: 1, title: 'dalend (e.g. van 1 naar 100)'}]"
+        hide-details
+      )
+  v-textarea(v-model="importText" :rows="8" :placeholder="importPlaceholder")
   div
-    el-radio(v-model="importMode" label="manual") Positie in het begin van elke lijn
-  div
-    el-radio(v-model="importMode" label="auto") Automatisch:
-    =" "
-    span bovenaan is positie
-    =" "
-    el-input-number.importStart(
-      v-model="importStart"
-      :min="1"
-      size="small"
-      controls-position="right"
-      :disabled="importMode !== 'auto'"
-    )
-    =" "
-    span en dan
-    =" "
-    el-select.importStep(v-model="importStep" :disabled="importMode !== 'auto'")
-      el-option(:value="-1" label="stijgend (e.g. van 100 naar 1)")
-      el-option(:value="1" label="dalend (e.g. van 1 naar 100)")
-  el-input(type="textarea" v-model="importText" :rows="10" :placeholder="importPlaceholder")
-  div
-    el-button(@click="startImport") Import beginnen
+    v-btn(@click="startImport") Import beginnen
 </template>
 
 <script>

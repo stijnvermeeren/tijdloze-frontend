@@ -1,9 +1,15 @@
 <template lang="pug">
 div
   div
-    textarea(:disabled='submitting' cols='60' placeholder='Schrijf een nieuwe reactie...' rows='4' v-model='editMessage')
+    v-textarea(
+      :disabled='submitting'
+      label='Reactie'
+      rows='4'
+      v-model='editMessage'
+      hide-details
+    )
   div
-    button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+    v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
       | Bericht wijzigen
 </template>
 
@@ -25,26 +31,16 @@ div
       }
     },
     methods: {
-      submit() {
+      async submit() {
         this.submitting = true;
 
         const data = {
           message: this.editMessage
         };
-        this.$axios.$put(`comment/${this.commentId}`, data).then(response => {
-          this.submitting = false;
-          this.$emit('submitted', this.editMessage);
-        });
+        await useApiFetchPut(`comment/${this.commentId}`, data)
+        this.submitting = false;
+        this.$emit('submitted', this.editMessage)
       }
     }
   }
 </script>
-
-<style lang="scss" scoped>
-  textarea {
-    width: 100%;
-    font-size: 100%;
-    padding: 4px 8px;
-    box-sizing: border-box;
-  }
-</style>

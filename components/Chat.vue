@@ -2,9 +2,9 @@
 .chat
   .header
     span(v-if='changeName')
-      input(v-model='displayNameEdit' placeholder='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()')
-      button(@click='saveDisplayName()' :disabled='!displayNameValid || savingDisplayName') Wijzigen
-      button(@click='cancelDisplayName()') Terug
+      v-text-field(v-model='displayNameEdit' placeholder='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()' hide-details)
+      v-btn(@click='saveDisplayName()' :disabled='!displayNameValid || savingDisplayName') Wijzigen
+      v-btn(@click='cancelDisplayName()') Terug
       | .
     span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
     |
@@ -21,7 +21,7 @@
     | :
     div(v-for='onlineUser in onlineSorted' :class="['user', {isAdmin: onlineUser.isAdmin}]")
       user(:user='onlineUser')
-  .messages(ref='messages')
+  .messages(ref='messagesContainer')
     .messagesContainer
       template(v-for='message in messages')
         div(v-if='message.userId' :title='message.created' :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}')
@@ -31,8 +31,8 @@
         .systemMessage(v-else)
           | {{message.message}}
   .input
-    input(v-model='message' @keypress.enter='send()' placeholder='Schrijf je berichtje...' maxlength='500')
-    button(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
+    v-text-field(v-model='message' @keypress.enter='send()' label='Schrijf je berichtje...' maxlength='500' hide-details)
+    v-btn(@click='send()' :disabled='sendDisabled') {{sendButtonMessage}}
   .belowInputMessage
     div(v-if='error')
       | De verbinding met de chat werd verbroken. Even geduld. Zodra de chat weer bereikbaar is, verbinden we je automatisch opnieuw.
@@ -43,13 +43,11 @@
 </template>
 
 <script>
-  import Vue from 'vue'
   import _ from 'lodash'
-  import User from "./User";
   import Sockette from 'sockette';
+  import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    components: {User},
+  export default defineNuxtComponent({
     data() {
       return {
         messages: [],
@@ -63,7 +61,7 @@
         message: '',
         showAllOnline: false,
         changeName: false,
-        displayNameEdit: this.$store.state.auth.user.displayName,
+        displayNameEdit: useAuthStore().user.displayName,
         savingDisplayName: false
       }
     },
@@ -87,7 +85,7 @@
         )
       },
       currentUser() {
-        return this.$store.state.auth.user;
+        return useAuthStore().user;
       }
     },
     watch: {
@@ -107,8 +105,8 @@
         const data = {
           displayName: this.displayNameEdit.trim()
         };
-        const user = await this.$axios.$post(`user/display-name`, data);
-        this.$store.commit('auth/setUser', user);
+        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        useAuthStore().setUser(user.value);
         // TODO replace this
         // await this.loadOnlineOnce();
         this.savingDisplayName = false;
@@ -148,11 +146,11 @@
         this.autoScroll();
       },
       autoScroll() {
-        const elem = this.$refs['messages'];
+        const elem = this.$refs.messagesContainer;
 
         // auto-scroll if within 100px from bottom
         if (elem.scrollHeight - elem.clientHeight - elem.scrollTop < 50) {
-          Vue.nextTick(() => {
+          nextTick(() => {
             elem.scrollTop = elem.scrollHeight;
           });
         }
@@ -220,47 +218,49 @@
           this.ws.close()
         }
 
-        this.$axios.$get('chat/ticket').then(ticketResponse => {
-          if (!this.closing) {
-            this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.ticket}`), {
-              timeout: 5e3,
-              maxAttempts: 1,
-              onopen: e => {
-                this.error = false
-                this.connected = true
-              },
-              onmessage: e => {
-                const data = JSON.parse(e.data)
-                if (data.message) {
-                  this.addMessage(data)
-                } else {
-                  this.loadOnline(data)
-                }
-              },
-              onreconnect: e => {
-                // properly reconnect with a new ticket
-                this.ws.close()
-                this.reconnect()
-              },
-              onmaximum: e => {},
-              onclose: e => {
-                this.connected = false
+        const {data: ticketResponse, error} = await useApiFetch('chat/ticket')
 
-                if (!this.closing) {
-                  // Unless we are leaving the page, try to reconnect after the websocket is closed
-                  this.reconnect()
-                }
-              },
-              onerror: e => {
-                this.error = true
-              }
-            });
-          }
-        }).catch(error => {
+        if (error.value) {
           console.log("Unable to obtain ticket for chat.")
           this.error = true;
           setTimeout(this.reconnect, 5000)
-        })
+        }
+
+        if (!this.closing && ticketResponse.value) {
+          this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.value.ticket}`), {
+            timeout: 5e3,
+            maxAttempts: 1,
+            onopen: e => {
+              this.error = false
+              this.connected = true
+            },
+            onmessage: e => {
+              const data = JSON.parse(e.data)
+              if (data.message) {
+                this.addMessage(data)
+              } else {
+                this.loadOnline(data)
+              }
+            },
+            onreconnect: e => {
+              // properly reconnect with a new ticket
+              this.ws.close()
+              this.reconnect()
+            },
+            onmaximum: e => {},
+            onclose: e => {
+              this.connected = false
+
+              if (!this.closing) {
+                // Unless we are leaving the page, try to reconnect after the websocket is closed
+                this.reconnect()
+              }
+            },
+            onerror: e => {
+              this.error = true
+            }
+          });
+        }
       }
     },
     async created() {
@@ -270,7 +270,7 @@
       this.closing = true
       this.ws.close()
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

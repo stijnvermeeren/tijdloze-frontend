@@ -9,8 +9,8 @@ div
       .displayName
         div
           | Kies een gebruikersnaam:
-          input(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()')
-          button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+          v-text-field(:disabled='submittingDisplayName' type='text' v-model='name' @keypress.enter='submitDisplayName()' hide-details)
+          v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
             | Naar de chatbox
   div(v-else)
     | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
@@ -19,7 +19,7 @@ div
 <script>
   import {useAuthStore} from "~/stores/auth";
 
-  export default {
+  export default defineNuxtComponent({
     data() {
       return {
         name: useAuthStore().displayName,
@@ -38,22 +38,21 @@ div
       }
     },
     methods: {
-      submitDisplayName() {
+      async submitDisplayName() {
         this.submittingDisplayName = true;
 
         const data = {
           displayName: this.name
         };
-        this.$axios.$post(`user/display-name`, data).then(user => {
-          this.submittingDisplayName = false;
-          useAuthStore().setUser(user);
-        });
+        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        this.submittingDisplayName = false;
+        useAuthStore().setUser(user.value);
       },
       login() {
         this.$auth.login(useRoute().path);
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>

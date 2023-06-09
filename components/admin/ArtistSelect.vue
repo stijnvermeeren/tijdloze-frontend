@@ -1,8 +1,8 @@
 <template lang="pug">
-div
+div.d-flex.py-2
   div(v-if='artist') {{artist.fullName}}
-  div(v-if='editing')
-    search-box(
+  template(v-if='editing')
+    search-box.flex-grow-1(
       :song-filter='song => false'
       :album-filter='album => false'
       placeholder='Zoek artiest...'
@@ -10,7 +10,7 @@ div
       :disabled="disabled"
     )
     v-btn(v-if='artist' @click='editing = false' :disabled="disabled") Annuleren
-  div(v-else)
+  template(v-else)
     v-btn(@click='editing = true' :disabled="disabled") Wijzigen
     v-btn(v-if="!required" @click='clear()' :disabled="disabled") Verwijderen
 </template>
@@ -67,6 +67,12 @@ div
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.d-flex {
+  align-items: center;
 
+  > * {
+    margin-right: 10px;
+  }
+}
 </style>

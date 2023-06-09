@@ -22,9 +22,9 @@ div
             | en {{song.secondArtist.fullName}}
           |
           | - {{song.title}}
-          button(@click='unmarkExit(song)') Terugzetten
+          v-btn(@click='unmarkExit(song)') Terugzetten
       div
-        button(@click='unmarkAll()') Alle exits terugzetten
+        v-btn(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
 <script setup>

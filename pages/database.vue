@@ -35,7 +35,7 @@ div
           label="Jaar van release"
         )
 
-  el-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning" :closable="false" show-icon)
+  ui-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning")
     | De statistieken kunnen nog veranderen.
 
   div.list

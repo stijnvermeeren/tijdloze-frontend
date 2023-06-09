@@ -20,8 +20,6 @@
 </template>
 
 <script>
-  import 'element-plus/theme-chalk/index.css';
-
   export default defineNuxtComponent({
     mounted() {
       this.$auth.loginSilently()
@@ -39,7 +37,9 @@
   }
 
   p, ul {
-    margin-bottom: 0.8em;
+    &:not(:last-child) {
+      margin-bottom: 0.8em;
+    }
   }
 
   ul {

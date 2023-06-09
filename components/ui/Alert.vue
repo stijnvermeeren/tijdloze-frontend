@@ -2,7 +2,8 @@
 v-alert.mb-5(
   :title="title"
   variant="tonal"
-  :icon="mdiInformationVariantCircleOutline"
+  :icon="icon"
+  :color="color"
   density="compact"
   color="#888"
 )
@@ -10,12 +11,31 @@ v-alert.mb-5(
 </template>
 
 <script setup>
-import { mdiInformationVariantCircleOutline } from '@mdi/js'
+import { mdiInformationVariantCircleOutline, mdiSailBoatSink, mdiAlertOutline, mdiBalloon } from '@mdi/js'
 
-defineProps({
-  icon: Object,
-  title: String
+const props = defineProps({
+  title: String,
+  type: String
 })
+
+let icon = mdiInformationVariantCircleOutline
+let color = 'grey-darken-1'
+
+switch(props.type) {
+  case "error":
+    icon = mdiSailBoatSink
+    color = 'red'
+    break
+  case "warning":
+    icon = mdiAlertOutline
+    color = 'amber'
+    break
+  case "success":
+    icon = mdiBalloon
+    color = 'green'
+    break
+}
+
 </script>
 
 <style scoped lang="scss">

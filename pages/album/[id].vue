@@ -85,18 +85,11 @@ div
 
 <style lang="scss" scoped>
   .links {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
     margin-top: 10px;
     margin-bottom: 20px;
 
     a {
       margin: 0 5px;
     }
-  }
-
-  .el-radio-group {
-    text-align: right;
   }
 </style>

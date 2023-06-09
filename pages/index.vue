@@ -34,11 +34,11 @@ div
             | {{song.album.releaseYear}}
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
-      nuxt-link(v-if='top5.length' :to='`lijst/${tableYear.yyyy}`')
+      nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
         v-btn De volledige lijst van {{tableYear.yyyy}}
-      nuxt-link(v-if='listInProgress' to='lijst/opkomst')
+      nuxt-link(v-if='listInProgress' to='/lijst/opkomst')
         v-btn Nog op komst
-      nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `lijst/${tableYear.yyyy}`, hash: "#exits" }')
+      nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `/lijst/${tableYear.yyyy}`, hash: "#exits" }')
         v-btn Uit de lijst verdwenen
 
   ui-card(v-if="chatOn" title="Chatbox")
@@ -96,8 +96,8 @@ div
     },
     methods: {
       async reloadComments() {
-        const comments = await useApiFetch(`comments/1`);
-        this.comments = _.take(comments, 5);
+        const {data} = await useApiFetch(`comments/1`);
+        this.comments = _.take(data.value, 5);
       }
     },
     async asyncData() {
@@ -105,26 +105,26 @@ div
         useApiFetch(`text/chatOn`),
         useApiFetch(`text/commentsOn`)
       ])
-      const chatOn = chatOnResponse.value === 'on';
-      const commentsOn = commentsOnResponse.value === 'on';
+      const chatOn = chatOnResponse.value.value === 'on';
+      const commentsOn = commentsOnResponse.value.value === 'on';
 
       let comments = [];
       if (commentsOn) {
-        comments = await useApiFetch(`comments/1`);
-        comments = _.take(comments, 5);
+        const {data} = await useApiFetch(`comments/1`);
+        comments = _.take(data.value, 5);
       }
 
       return {
         chatOn,
         commentsOn,
-        comments: comments
+        comments
       };
     },
     async mounted() {
       if (this.commentsOn) {
         // refresh on client side to avoid a stale cache on the server-side
-        const comments = await useApiFetch(`comments/1`);
-        this.comments = _.take(comments, 5);
+        const {data} = await useApiFetch(`comments/1`);
+        this.comments = _.take(data.value, 5);
       }
     }
   })

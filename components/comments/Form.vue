@@ -2,10 +2,9 @@
 div.commentForm(:class="{expanded: isExpanded}")
   div(v-if='isAuthenticated')
     .displayName(v-if='!displayName || editingDisplayName')
-      div.changeDisplayName
-        | Kies een gebruikersnaam:
-        input(:disabled='submittingDisplayName' type='text' v-model='name')
-        button(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+      div.d-flex
+        v-text-field.mr-4(:disabled='submittingDisplayName' v-model='name' label="Kies een gebruikersnaam" hide-details)
+        v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
           | Ok
       div.changeDisplayNameInfo(v-if='editingDisplayName')
         | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
@@ -18,22 +17,24 @@ div.commentForm(:class="{expanded: isExpanded}")
             a(@click='editDisplayName') Gebruikersnaam aanpassen
             | )
         div
-          textarea(
+          v-textarea(
             :disabled='submitting'
-            cols='60'
-            placeholder='Schrijf een nieuwe reactie...'
+            label='Schrijf een nieuwe reactie...'
             :rows='isExpanded ? 4 : 1'
             v-model='message'
             @click.once="onFocus($event)"
+            hide-details
           )
         div(v-if="isExpanded")
-          button.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+          v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
             | Verzenden
   .message(v-if='!isAuthenticated')
     | Om reacties the plaatsen, moet je je #[a(@click='login()') aanmelden/registeren].
 </template>
 
 <script>
+  import {useAuthStore} from "~/stores/auth";
+
   export default {
     props: {
       "expanded": {
@@ -53,10 +54,10 @@ div.commentForm(:class="{expanded: isExpanded}")
     },
     computed: {
       isAuthenticated() {
-        return this.$store.getters['auth/isAuthenticated'];
+        return useAuthStore().isAuthenticated;
       },
       displayName() {
-        return this.$store.getters['auth/displayName'];
+        return useAuthStore().displayName;
       },
       invalidDisplayName() {
         return this.name.length === 0;
@@ -73,36 +74,34 @@ div.commentForm(:class="{expanded: isExpanded}")
         });
       },
       editDisplayName() {
-        this.name = this.$store.getters['auth/displayNameWithFallback'];
+        this.name = useAuthStore().displayNameWithFallback;
         this.editingDisplayName = true;
       },
-      submitDisplayName() {
+      async submitDisplayName() {
         this.submittingDisplayName = true;
 
         const data = {
           displayName: this.name
         };
-        this.$axios.$post(`user/display-name`, data).then(user => {
-          this.editingDisplayName = false;
-          this.submittingDisplayName = false;
-          this.$store.commit('auth/setUser', user);
-          this.$emit('displayNameChanged');
-        });
+        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        this.editingDisplayName = false;
+        this.submittingDisplayName = false;
+        useAuthStore().setUser(user.value);
+        this.$emit('displayNameChanged');
       },
-      submit() {
+      async submit() {
         this.submitting = true;
 
         const data = {
           message: this.message
         };
-        this.$axios.$post(`comment`, data).then(response => {
-          this.submitting = false;
-          this.message = '';
-          this.$emit('submitted');
-        });
+        await useApiFetchPost(`comment`, data)
+        this.submitting = false;
+        this.message = '';
+        this.$emit('submitted');
       },
       login() {
-        this.$auth.login(this.$route.path);
+        this.$auth.login(useRoute().path);
       }
     }
   }
@@ -111,14 +110,13 @@ div.commentForm(:class="{expanded: isExpanded}")
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
+  .d-flex {
+    align-items: center;
+  }
+
   div.commentForm {
     padding: 0.3em 1em;
     margin: 0.7em 3em;
-
-    &.expanded {
-      border: 3px solid styleConfig.$inputBorderColor;
-      border-radius: 4px;
-    }
 
     div.commentHeader {
       margin-bottom: 0.2em;
@@ -131,19 +129,6 @@ div.commentForm(:class="{expanded: isExpanded}")
         margin-left: 1em;
         color: #888;
         font-size: 80%;
-      }
-    }
-
-    textarea {
-      width: 100%;
-      font-size: 100%;
-      padding: 4px 8px;
-      box-sizing: border-box;
-    }
-
-    div.changeDisplayName {
-      input {
-        margin: 0 3px 0 6px;
       }
     }
 
