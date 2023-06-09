@@ -94,13 +94,12 @@ div
         }
 
         const {data, error} = await useApiFetchPost('/contact', payLoad)
-        if (data.value) {
-          this.inProgress = false;
-          this.success = true;
-        }
         if (error.value) {
           this.inProgress = false;
           this.error = `Foutmelding van de server: ${error.value}.`;
+        } else {
+          this.inProgress = false;
+          this.success = true;
         }
       },
       validateEmail(email) {

@@ -1,5 +1,6 @@
 <template lang="pug">
-div(ref='lyrics' :class="['container', {open: isOpen, closed: !isOpen}]")
+div(:class="['container', {open: isOpen, closed: !isOpen}]")
+  span(ref='lyrics')
   ui-card(title="Lyrics")
     .lyricsContainer
       slot
@@ -10,8 +11,7 @@ div(ref='lyrics' :class="['container', {open: isOpen, closed: !isOpen}]")
 </template>
 
 <script>
-  export default {
-    name: 'Lyrics',
+  export default defineNuxtComponent({
     data() {
       return {
         isOpen: false
@@ -21,12 +21,12 @@ div(ref='lyrics' :class="['container', {open: isOpen, closed: !isOpen}]")
       toggle() {
         this.isOpen = !this.isOpen;
         if (!this.isOpen) {
-          const element = this.$refs['lyrics'];
-          element.scrollIntoView({block: "nearest"});
+          const element = this.$refs.lyrics;
+          element.scrollIntoView({ behavior: "smooth" });
         }
       }
     }
-  }
+  })
 </script>
 
 <style lang="scss" scoped>
