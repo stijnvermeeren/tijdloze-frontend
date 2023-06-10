@@ -126,8 +126,8 @@ div
       console.log("mounted commentsOn", this.commentsOn)
       if (this.commentsOn) {
         // refresh on client side to avoid a stale cache on the server-side
-        const {data} = await useApiFetch(`comments/1`);
-        console.log("mounted value", data.value.length)
+        const {data, error} = await useApiFetch(`comments/1`);
+        console.log("mounted value", data.value.length, error.value)
         this.comments = _.take(data.value, 5);
       }
     }
