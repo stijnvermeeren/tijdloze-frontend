@@ -109,8 +109,10 @@ div
       const commentsOn = commentsOnResponse.value.value === 'on';
 
       let comments = [];
+      console.log("asyncData commentsOn", commentsOn)
       if (commentsOn) {
         const {data} = await useApiFetch(`comments/1`);
+        console.log("asyncData value", data.value.length)
         comments = _.take(data.value, 5);
       }
 
@@ -121,9 +123,11 @@ div
       };
     },
     async mounted() {
+      console.log("mounted commentsOn", this.commentsOn)
       if (this.commentsOn) {
         // refresh on client side to avoid a stale cache on the server-side
         const {data} = await useApiFetch(`comments/1`);
+        console.log("mounted value", data.value.length)
         this.comments = _.take(data.value, 5);
       }
     }

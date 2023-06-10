@@ -60,7 +60,9 @@ export default defineNuxtPlugin(async nuxtApp => {
     logout() {
       unsetAccessToken()
       auth.logout({
-        returnTo: config.public.auth0LogoutUri
+        logoutParams: {
+          returnTo: config.public.auth0LogoutUri
+        }
       });
     },
     unsetAccessToken() {
