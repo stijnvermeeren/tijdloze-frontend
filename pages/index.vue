@@ -123,12 +123,14 @@ div
       };
     },
     async mounted() {
-      console.log("mounted commentsOn", this.commentsOn)
+      console.log("mounted commentsOn", this.commentsOn, useApiUri())
       if (this.commentsOn) {
         // refresh on client side to avoid a stale cache on the server-side
         const {data, error} = await useApiFetch(`comments/1`);
         console.log("mounted value", data.value, error.value)
-        this.comments = _.take(data.value, 5);
+        if (data.value) {
+          this.comments = _.take(data.value, 5);
+        }
       }
     }
   })
