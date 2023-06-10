@@ -126,6 +126,7 @@ div
       if (this.commentsOn) {
         // I'm not sure why nextTick is needed, but I'm not the first one to run into this:
         // https://stackoverflow.com/questions/71609027
+        // Maybe the root issue is this: https://github.com/nuxt/nuxt/issues/13471
         await nextTick(async () => {
           // refresh on client side to avoid a stale cache on the server-side
           const {data} = await useApiFetch(`comments/1`);
