@@ -123,14 +123,16 @@ div
       };
     },
     async mounted() {
-      console.log("mounted commentsOn", this.commentsOn, useApiUri())
       if (this.commentsOn) {
-        // refresh on client side to avoid a stale cache on the server-side
-        const {data, error} = await useApiFetch(`comments/1`);
-        console.log("mounted value", data.value, error.value)
-        if (data.value) {
-          this.comments = _.take(data.value, 5);
-        }
+        // I'm not sure why nextTick is needed, but I'm not the first one to run into this:
+        // https://stackoverflow.com/questions/71609027
+        await nextTick(async () => {
+          // refresh on client side to avoid a stale cache on the server-side
+          const {data} = await useApiFetch(`comments/1`);
+          if (data.value) {
+            this.comments = _.take(data.value, 5);
+          }
+        })
       }
     }
   })
