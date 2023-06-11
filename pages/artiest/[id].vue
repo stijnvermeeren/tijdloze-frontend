@@ -45,6 +45,7 @@ div
   import {useRepo} from "pinia-orm";
   import { mdiLink } from '@mdi/js'
   import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
+  import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
     components: {ExternalLinkBtn},
@@ -95,7 +96,10 @@ div
       }
     },
     async asyncData() {
-      const {data: fullArtistData} = await useApiFetch(`artist/${idFromSlug(useRoute().params.id)}`)
+      const {data: fullArtistData, error} = await useApiFetch(`artist/${idFromSlug(useRoute().params.id)}`)
+      if (error.value) {
+        create404Error()
+      }
       return {fullArtistData}
     }
   })

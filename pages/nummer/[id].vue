@@ -56,6 +56,7 @@ Title {{song.title}} ({{song.artist.fullName}})
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
+  import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
     computed: {
@@ -88,7 +89,11 @@ Title {{song.title}} ({{song.artist.fullName}})
       }
     },
     async asyncData() {
-      const {data: fullSongData} = await useApiFetch(`song/${idFromSlug(useRoute().params.id)}`)
+      const {data: fullSongData, error} = await useApiFetch(`song/${idFromSlug(useRoute().params.id)}`)
+      console.log(error.value)
+      if (error.value) {
+        create404Error()
+      }
       return {fullSongData}
     }
   })

@@ -39,6 +39,7 @@ div
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
+  import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
     data() {
@@ -77,7 +78,10 @@ div
       }
     },
     async asyncData() {
-      const {data: fullAlbumData} = await useApiFetch(`album/${idFromSlug(useRoute().params.id)}`)
+      const {data: fullAlbumData, error} = await useApiFetch(`album/${idFromSlug(useRoute().params.id)}`)
+      if (error.value) {
+        create404Error()
+      }
       return {fullAlbumData};
     }
   })
