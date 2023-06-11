@@ -10,7 +10,7 @@ div
         v-btn(rounded variant="tonal" size="small")
           span Download #[strong tijdloze.sql]
       br
-      span(v-if='lastUpdateSql') Laatst gewijzigd op {{formatDate(lastUpdateSql)}}
+      span.lastUpdate(v-if='lastUpdateSql') Laatst gewijzigd op {{formatDate(lastUpdateSql)}}
     p De MySQL-export bevat de structuur en de gegevens van vier tabellen:
     ul
       li #[em artist]: alle artiesten.
@@ -36,18 +36,30 @@ function formatDate(date) {
   return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
 }
 
-onMounted(() => {
-  // TODO does this work?
-  fetch('/images/favicon.png', { method: 'HEAD' }).then(result => {
-    if (result?.headers?.['last-modified']) {
-      lastUpdateSql = new Date(result.headers['last-modified']);
-    }
-  })
+onMounted(async () => {
+  // I'm not sure why nextTick is needed, but I'm not the first one to run into this:
+  // https://stackoverflow.com/questions/71609027
+  // Maybe the root issue is this: https://github.com/nuxt/nuxt/issues/13471
+  await nextTick(async () => {
+    fetch('/data/tijdloze.sql', {method: 'HEAD'}).then(result => {
+      const lastModified = result?.headers?.get('last-modified')
+      if (lastModified) {
+        lastUpdateSql.value = new Date(lastModified);
+      }
+    })
 
-  fetch('/data/tijdloze.tsv', { method: 'HEAD' }).then(result => {
-    if (result?.headers?.['last-modified']) {
-      lastUpdateTsv = new Date(result.headers['last-modified']);
-    }
+    fetch('/data/tijdloze.tsv', {method: 'HEAD'}).then(result => {
+      const lastModified = result?.headers?.get('last-modified')
+      if (lastModified) {
+        lastUpdateTsv.value = new Date(lastModified);
+      }
+    })
   })
 })
 </script>
+
+<style lang="scss" scoped>
+.lastUpdate {
+  font-size: 12px;
+}
+</style>

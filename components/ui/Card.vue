@@ -8,7 +8,7 @@ v-card.my-5
         v-card-subtitle
           slot(name="subtitle") {{subtitle}}
       div
-        div
+        div.buttons
           slot(name="buttons")
   v-card-text
     slot
@@ -25,5 +25,9 @@ defineProps({
 .cardTitle {
   display: flex;
   justify-content: space-between;
+}
+
+.buttons {
+  text-align: center;
 }
 </style>
