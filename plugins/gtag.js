@@ -2,12 +2,12 @@ import VueGtag from "vue-gtag";
 
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
-  if (config.googleAnalyticsId) {
+  if (config.public.googleAnalyticsId) {
     nuxtApp.vueApp.use(
       VueGtag,
       {
         config: {
-          id: $config.googleAnalyticsId
+          id: config.public.googleAnalyticsId
         }
       },
       useRouter()

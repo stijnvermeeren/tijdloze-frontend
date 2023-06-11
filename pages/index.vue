@@ -109,10 +109,8 @@ div
       const commentsOn = commentsOnResponse.value.value === 'on';
 
       let comments = [];
-      console.log("asyncData commentsOn", commentsOn)
       if (commentsOn) {
         const {data} = await useApiFetch(`comments/1`);
-        console.log("asyncData value", data.value.length)
         comments = _.take(data.value, 5);
       }
 
