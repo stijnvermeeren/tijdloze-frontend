@@ -11,13 +11,28 @@ export const useRootStore = defineStore('root', {
   state: () => ({
     yearsRaw: [],
     exitSongIds: [],
-    songIdsByTitle: {},
-    artistIdsByName: {},
-    artistIdsByFullName: {},
     commentsOn: true,
     chatOn: false
   }),
   getters: {
+    songIdsByTitle(state) {
+      return _.mapValues(
+        _.groupBy(useRepo(Song).all(), song => song.title.toLowerCase()),
+        songs => songs.map(song => song.id)
+      )
+    },
+    artistIdsByFullName(state) {
+      return _.mapValues(
+        _.groupBy(useRepo(Artist).all(), artist => artist.fullName.toLowerCase()),
+        artists => artists.map(artist => artist.id)
+      )
+    },
+    artistIdsByName(state) {
+      return _.mapValues(
+        _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
+        artists => artists.map(artist => artist.id)
+      )
+    },
     songs(state) {
       return _.sortBy(
         useRepo(Song).withAll().get(),
@@ -91,22 +106,6 @@ export const useRootStore = defineStore('root', {
     },
     setChatOn(chatOn) {
       this.chatOn = chatOn
-    },
-    songsForLinks(songs) {
-      this.songIdsByTitle = _.mapValues(
-        _.groupBy(songs, song => song.title.toLowerCase()),
-        songs => songs.map(song => song.id)
-      )
-    },
-    artistsForLinks(artists) {
-      this.artistIdsByFullName = _.mapValues(
-        _.groupBy(artists, artist => artist.fullName.toLowerCase()),
-        artists => artists.map(artist => artist.id)
-      )
-      this.artistIdsByName = _.mapValues(
-        _.groupBy(artists, artist => artist.name.toLowerCase()),
-        artists => artists.map(artist => artist.id)
-      )
     },
     updateCoreData(json) {
       this.yearsRaw = json.years;

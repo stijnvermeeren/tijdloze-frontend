@@ -40,7 +40,4 @@ export default defineNuxtPlugin(async nuxtApp => {
   })
 
   useRepo(List).insert(lists);
-
-  rootStore.songsForLinks(useRepo(Song).all())
-  rootStore.artistsForLinks(useRepo(Artist).all())
 });
