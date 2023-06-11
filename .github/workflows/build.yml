@@ -25,9 +25,9 @@ jobs:
           known_hosts: 'unnecessary'
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-      - name: Deploy with rsync
+      - name: Copy files to server with rsync
         run: rsync -avz --delete-after .output/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/tijdloze-frontend/.output/
-      - name: npm ci on server
+      - name: Deploy on server with pm2
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.SSH_HOST }}
