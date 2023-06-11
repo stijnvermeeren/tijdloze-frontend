@@ -14,7 +14,6 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.2.0",
     "@pinia/nuxt": "^0.4.11",
-    "babel-runtime": "^6.26.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
     "lodash": "^4.17.21",
@@ -29,7 +28,6 @@
   },
   "devDependencies": {
     "@mdi/js": "^7.2.96",
-    "babel-plugin-component": "^1.1.1",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^6.2.2",
     "nuxt": "^3.5.1",
