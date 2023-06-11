@@ -90,7 +90,6 @@ Title {{song.title}} ({{song.artist.fullName}})
     },
     async asyncData() {
       const {data: fullSongData, error} = await useApiFetch(`song/${idFromSlug(useRoute().params.id)}`)
-      console.log(error.value)
       if (error.value) {
         create404Error()
       }
