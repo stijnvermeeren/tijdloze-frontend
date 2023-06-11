@@ -5,7 +5,7 @@ div
   client-only(placeholder="Loading...")
     full-list(:songs='songsExtended' :year='year')
 
-  ui-card(v-if='year.previous()')
+  ui-card(v-if='year.previous')
     template(#title) {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
     table.list-summary
       tbody
@@ -29,12 +29,12 @@ div
         tr
           th Grootste stijger
           td
-            span(v-if='biggestUp') #[song-link(:song='biggestUp')] - #[song-artist-link(:song='biggestUp')] (#[position(:song='biggestUp' :year='year.previous()')] &rarr; #[position(:song='biggestUp' :year='year')])
+            span(v-if='biggestUp') #[song-link(:song='biggestUp')] - #[song-artist-link(:song='biggestUp')] (#[position(:song='biggestUp' :year='year.previous')] &rarr; #[position(:song='biggestUp' :year='year')])
             span(v-else) /
         tr
           th Grootste daler
           td
-            span(v-if='biggestDown') #[song-link(:song='biggestDown')] - #[song-artist-link(:song='biggestDown')] (#[position(:song='biggestDown' :year='year.previous()')] &rarr; #[position(:song='biggestDown' :year='year')])
+            span(v-if='biggestDown') #[song-link(:song='biggestDown')] - #[song-artist-link(:song='biggestDown')] (#[position(:song='biggestDown' :year='year.previous')] &rarr; #[position(:song='biggestDown' :year='year')])
             span(v-else) /
 
   div(id="exits")
@@ -44,14 +44,14 @@ div
       tbody
         tr
           th.r
-            | {{year.previous().yyyy}}
+            | {{year.previous.yyyy}}
           th.a Artiest
           th Titel
           th.releaseYear
             | Jaar
         tr(v-for='song in exits')
           td.r
-            position(:song='song' :year='year.previous()')
+            position(:song='song' :year='year.previous')
           td.a
             song-artist-link(:song='song')
           td
@@ -109,19 +109,19 @@ div
         return useRootStore().list(this.year);
       },
       newSongs() {
-        if (this.year.previous()) {
-          return this.songs.filter(song => !song.position(this.year.previous()));
+        if (this.year.previous) {
+          return this.songs.filter(song => !song.position(this.year.previous));
         } else {
           return [];
         }
       },
       exits() {
-        if (this.year.previous()) {
+        if (this.year.previous) {
           return _.sortBy(
-            useRootStore().listTop100(this.year.previous()).filter(song => {
+            useRootStore().listTop100(this.year.previous).filter(song => {
               return song.notInList(this.year);
             }),
-            song => song.position(this.year.previous())
+            song => song.position(this.year.previous)
           );
         } else {
           return [];
@@ -146,9 +146,9 @@ div
         return _.last(
           _.sortBy(
             this.songs.filter(song => {
-              return song.position(this.year.previous()) && song.position(this.year) < song.position(this.year.previous());
+              return song.position(this.year.previous) && song.position(this.year) < song.position(this.year.previous);
             }),
-            [song => song.position(this.year.previous()) - song.position(this.year), song => -song.position(this.year)]
+            [song => song.position(this.year.previous) - song.position(this.year), song => -song.position(this.year)]
           )
         );
       },
@@ -156,9 +156,9 @@ div
         return _.last(
           _.sortBy(
             this.songs.filter(song => {
-              return song.position(this.year.previous()) && song.position(this.year) > song.position(this.year.previous());
+              return song.position(this.year.previous) && song.position(this.year) > song.position(this.year.previous);
             }),
-            [song => song.position(this.year) - song.position(this.year.previous()), song => -song.position(this.year)]
+            [song => song.position(this.year) - song.position(this.year.previous), song => -song.position(this.year)]
           )
         );
       }

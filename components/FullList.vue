@@ -2,11 +2,11 @@
 div
   div.fullList(v-if='songs.length > 0')
     div.entry.header
-      div.n(v-if='year.previous()')
-        nuxt-link(:to='`/lijst/${year.previous().yyyy}`') {{year.previous()._yy}}
+      div.n(v-if='year.previous')
+        nuxt-link(:to='`/lijst/${year.previous.yyyy}`') {{year.previous._yy}}
       div.r {{year.yyyy}}
-      div.n(v-if='year.next()')
-        nuxt-link(:to='`/lijst/${year.next().yyyy}`') {{year.next()._yy}}
+      div.n(v-if='year.next')
+        nuxt-link(:to='`/lijst/${year.next.yyyy}`') {{year.next._yy}}
       div.a Artiest
       div.s Titel
       div.releaseYear

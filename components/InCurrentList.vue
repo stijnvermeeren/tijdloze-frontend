@@ -36,7 +36,7 @@ div.container
         return useRootStore().currentYear;
       },
       previousYear() {
-        return this.currentYear.previous();
+        return this.currentYear.previous;
       },
       filteredAndSorted() {
         const filtered = this.songs.filter(song => song.position(this.currentYear, true) || song.position(this.previousYear, true));

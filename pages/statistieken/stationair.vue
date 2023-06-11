@@ -26,7 +26,7 @@ import {useRootStore} from "~/stores/root";
         const dataPoints = [];
         this.songs.forEach(song => {
           _.drop(this.years, 1).forEach(year => {
-            if (song.position(year) && song.position(year) === song.position(year.previous())) {
+            if (song.position(year) && song.position(year) === song.position(year.previous)) {
               dataPoints.push({
                 song: song,
                 year: year

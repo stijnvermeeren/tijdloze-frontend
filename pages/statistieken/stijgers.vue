@@ -25,7 +25,7 @@ div
         const dataPoints = [];
         this.songs.forEach(song => {
           _.drop(this.years, 1).forEach(year => {
-            const oldPosition = song.position(year.previous());
+            const oldPosition = song.position(year.previous);
             const newPosition = song.position(year);
             if (oldPosition && newPosition && oldPosition > newPosition) {
               dataPoints.push({

@@ -8,12 +8,8 @@ span
     artist-link(:artist='song.secondArtist')
 </template>
 
-<script>
-  import Song from "../orm/Song";
-
-  export default {
-    props: {
-      song: Song
-    }
-  }
+<script setup>
+defineProps({
+  song: Object
+})
 </script>

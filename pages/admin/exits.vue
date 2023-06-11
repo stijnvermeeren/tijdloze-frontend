@@ -48,7 +48,7 @@ definePageMeta({ middleware: 'admin' })
         });
       },
       previousYear() {
-        return this.currentYear.previous();
+        return this.currentYear.previous;
       },
       currentYear() {
         return useRootStore().currentYear;

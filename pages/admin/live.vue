@@ -134,7 +134,7 @@ definePageMeta({ middleware: 'admin' })
         return useRootStore().currentYear;
       },
       previousYear() {
-        return this.currentYear.previous();
+        return this.currentYear.previous;
       },
       lastSong() {
         return useRootStore().lastSong;

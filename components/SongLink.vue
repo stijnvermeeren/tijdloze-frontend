@@ -2,14 +2,10 @@
 nuxt-link(:to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
 </template>
 
-<script>
-  import Song from "../orm/Song";
-
-  export default {
-    props: {
-      song: Song
-    }
-  }
+<script setup>
+defineProps({
+  song: Object
+})
 </script>
 
 <style lang="scss" scoped>

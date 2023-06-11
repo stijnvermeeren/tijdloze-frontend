@@ -6,12 +6,11 @@ span
 </template>
 
 <script>
-  import Song from "../orm/Song";
   import Year from "../orm/Year";
 
   export default {
     props: {
-      song: Song,
+      song: Object,
       year: Year
     }
   }

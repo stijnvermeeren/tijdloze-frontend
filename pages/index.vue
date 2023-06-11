@@ -12,8 +12,8 @@ div
     table.lijst(v-if="top5.length")
       tbody
         tr
-          th.n(v-if='tableYear.previous()')
-            nuxt-link(:to='`/lijst/${tableYear.previous().yyyy}`') {{tableYear.previous()._yy}}
+          th.n(v-if='tableYear.previous')
+            nuxt-link(:to='`/lijst/${tableYear.previous.yyyy}`') {{tableYear.previous._yy}}
           th.r
             nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
           th.a Artiest
@@ -21,8 +21,8 @@ div
           th.releaseYear
             | Jaar
         tr(v-for='song in top5')
-          td.n(v-if='tableYear.previous()')
-            position(:song='song' :year='tableYear.previous()')
+          td.n(v-if='tableYear.previous')
+            position(:song='song' :year='tableYear.previous')
           td.r
             position-change(:song='song' :year='tableYear')
             position(:song='song' :year='tableYear')
@@ -80,7 +80,7 @@ div
         return _.take(useRootStore().list(this.tableYear), 5);
       },
       exitsKnown() {
-        return !! useRootStore().listTop100(this.tableYear?.previous()).find(song => {
+        return !! useRootStore().listTop100(this.tableYear?.previous).find(song => {
           return song.notInList(this.tableYear);
         })
       },
@@ -88,8 +88,8 @@ div
         return useRootStore().currentYear;
       },
       tableYear() {
-        if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous()) {
-          return this.year.previous();
+        if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous) {
+          return this.year.previous;
         } else {
           return this.year;
         }

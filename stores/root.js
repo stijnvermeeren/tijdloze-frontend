@@ -1,13 +1,11 @@
-import { defineStore, createPinia } from 'pinia'
-import {createORM, useRepo} from 'pinia-orm'
+import { defineStore } from 'pinia'
+import { useRepo } from 'pinia-orm'
 import _ from 'lodash';
 
 import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
 import Year from '~/orm/Year';
 import List from '~/orm/List';
-
-const pinia = createPinia().use(createORM())
 
 export const useRootStore = defineStore('root', {
   state: () => ({
@@ -27,10 +25,12 @@ export const useRootStore = defineStore('root', {
       );
     },
     years(state) {
-      return state.yearsRaw?.map(yyyy => new Year(yyyy, state.yearsRaw)) ?? []
-    },
-    year(state) {
-      return (yyyy) => new Year(yyyy, state.yearsRaw)
+      const years = state.yearsRaw?.map(yyyy => new Year(yyyy)) ?? []
+      years.forEach((year, i) => {
+        year.previous = years?.[i - 1]
+        year.next = years?.[i + 1]
+      })
+      return years ?? []
     },
     currentYear(state) {
       return _.last(this.years)
@@ -79,7 +79,7 @@ export const useRootStore = defineStore('root', {
     },
     lastCompleteYear(state) {
       if (this.listInProgress) {
-        return this.currentYear.previous()
+        return this.currentYear.previous
       } else {
         return this.currentYear
       }

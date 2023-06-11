@@ -58,8 +58,8 @@ g
       },
       isNextToHoverYear(year) {
         return !!this.hoverYear && (
-            (year.previous()?.yyyy === this.hoverYear.yyyy) ||
-            (year.next()?.yyyy === this.hoverYear.yyyy)
+            (year.previous?.yyyy === this.hoverYear.yyyy) ||
+            (year.next?.yyyy === this.hoverYear.yyyy)
         );
       }
     }

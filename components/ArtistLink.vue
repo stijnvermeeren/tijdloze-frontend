@@ -2,19 +2,13 @@
 nuxt-link(:to='`/artiest/${artist.id}-${artist.slug}`') {{content}}
 </template>
 
-<script>
-  import Artist from "../orm/Artist";
+<script setup>
+const props = defineProps({
+  artist: Object,
+  text: String
+})
 
-  export default {
-    name: 'ArtistLink',
-    props: {
-      artist: Artist,
-      text: String
-    },
-    computed: {
-      content() {
-        return this.text ? this.text : this.artist.fullName;
-      }
-    }
-  }
+const content = computed(() => {
+  return props.text ? props.text : props.artist.fullName;
+})
 </script>

@@ -2,14 +2,10 @@
 nuxt-link(:to='`/album/${album.id}-${album.slug}`') {{album.title}}
 </template>
 
-<script>
-  import Album from "../orm/Album";
-
-  export default {
-    props: {
-      album: Album
-    }
-  }
+<script setup>
+defineProps({
+  album: Object
+})
 </script>
 
 <style lang="scss" scoped>

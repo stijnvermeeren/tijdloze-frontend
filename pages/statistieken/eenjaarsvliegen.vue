@@ -38,10 +38,10 @@ div
       data() {
         const dataPoints = [];
         useRepo(List).with('top100Songs', query => query.with('artist')).get().forEach(list => {
-          const year = useRootStore().year(list.year)
-          if (year.previous() && year.next()) {
+          const year = this.years.find(year => year.yyyy === list.year)
+          if (year.previous && year.next) {
             list.top100Songs.forEach(song => {
-              if (song.notInList(year.previous()) && song.notInList(year.next())) {
+              if (song.notInList(year.previous) && song.notInList(year.next)) {
                 dataPoints.push({
                   song: song,
                   year: year,

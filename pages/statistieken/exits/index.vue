@@ -43,7 +43,7 @@ table.lijst.perEen
     methods: {
       entriesPerYear(year) {
         return _.sortBy(
-          this.data.filter(entry => entry.year.equals(year.previous())),
+          this.data.filter(entry => entry.year.equals(year.previous)),
           entry => entry.song.position(entry.year)
         );
       }

@@ -6,12 +6,11 @@ span(v-if='position')
 </template>
 
 <script>
-  import Song from "../orm/Song";
   import Year from "../orm/Year";
 
   export default {
     props: {
-      song: Song,
+      song: Object,
       year: Year
     },
     computed: {
@@ -19,20 +18,20 @@ span(v-if='position')
         return this.song.position(this.year, true);
       },
       previousPosition() {
-        if (this.year.previous()) {
-          return this.song.position(this.year.previous(), true);
+        if (this.year.previous) {
+          return this.song.position(this.year.previous, true);
         } else {
           return null;
         }
       },
       equal() {
-        return this.year.previous() && this.position && this.position === this.previousPosition;
+        return this.year.previous && this.position && this.position === this.previousPosition;
       },
       up() {
-        return this.year.previous() && this.position && (!this.previousPosition || this.position < this.previousPosition);
+        return this.year.previous && this.position && (!this.previousPosition || this.position < this.previousPosition);
       },
       down() {
-        return this.year.previous() && this.previousPosition && (!this.position || this.position > this.previousPosition);
+        return this.year.previous && this.previousPosition && (!this.position || this.position > this.previousPosition);
       }
     }
   }

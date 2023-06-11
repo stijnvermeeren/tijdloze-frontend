@@ -380,7 +380,7 @@ div
         } else if (this.filter === FILTER_NO_EXIT) {
           result = result.filter(song =>
               selectedYears.slice(1).every(year =>
-                  !song.position(year.previous(), this.extended) || !!song.position(year, this.extended)
+                  !song.position(year.previous, this.extended) || !!song.position(year, this.extended)
               )
           );
         } else if (this.filter === FILTER_ANY) {

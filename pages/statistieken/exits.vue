@@ -29,7 +29,7 @@ div
             if (inPreviousList && song.notInList(year)) {
               dataPoints.push({
                 song: song,
-                year: year.previous()
+                year: year.previous
               });
             }
 

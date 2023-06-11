@@ -9,19 +9,19 @@ div
     tbody
       tr
         th.n
-          nuxt-link(:to='`/lijst/${year.previous().previous().yyyy}`')
-            | {{year.previous().previous()._yy}}
+          nuxt-link(:to='`/lijst/${year.previous.previous.yyyy}`')
+            | {{year.previous.previous._yy}}
         th.r
-          nuxt-link(:to='`/lijst/${year.previous().yyyy}`')
-            | {{year.previous()._yy}}
+          nuxt-link(:to='`/lijst/${year.previous.yyyy}`')
+            | {{year.previous._yy}}
         th.a Artiest
         th Nummer
       tr(v-for='song in upcomingSongs')
         td.n
-          position(:song='song' :year='year.previous().previous()')
+          position(:song='song' :year='year.previous.previous')
         td.r
-          position-change(:song='song' :year='year.previous()')
-          position(:song='song' :year='year.previous()')
+          position-change(:song='song' :year='year.previous')
+          position(:song='song' :year='year.previous')
         td.a
           song-artist-link(:song='song')
         td
@@ -38,7 +38,7 @@ div
         return useRootStore().currentYear;
       },
       upcomingSongs() {
-        const previousYear = useRootStore().listTop100(this.year.previous())
+        const previousYear = useRootStore().listTop100(this.year.previous)
         return _.reverse(
           previousYear.filter(song => !song.position(this.year) && song.probablyInList(this.year))
         );
