@@ -63,7 +63,8 @@ export const useRootStore = defineStore('root', {
       }
     },
     lastSong(state) {
-      return _.first(this.list(this.currentYear));
+      const list = useRepo(List).find(this.currentYear?.yyyy)
+      return useRepo(Song).with('album').with('artist').find(_.first(list?.songIds));
     },
     lastPosition(state) {
       const lastSong = this.lastSong

@@ -65,6 +65,8 @@ div
   import _ from 'lodash';
   import {useRootStore} from "~/stores/root";
   import {usePollStore} from "~/stores/poll";
+  import List from "~/orm/List";
+  import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({
     computed: {
@@ -78,16 +80,15 @@ div
         return _.take(useRootStore().list(this.tableYear), 5);
       },
       exitsKnown() {
-        // TODO create getter in store
-        return useRootStore().songs.filter(song => {
-          return song.position(this.year?.previous()) && song.notInList(this.year);
-        }).length > 0
+        return !! useRootStore().listTop100(this.tableYear?.previous()).find(song => {
+          return song.notInList(this.tableYear);
+        })
       },
       year() {
         return useRootStore().currentYear;
       },
       tableYear() {
-        if (useRootStore().list(this.year).length === 0 && this.year?.previous()) {
+        if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous()) {
           return this.year.previous();
         } else {
           return this.year;
