@@ -18,7 +18,7 @@ useHead({
     },
     meta: [
         { charset: 'utf-8' },
-        { name: 'viewport', content: 'width=480, initial-scale=1'},
+        { name: 'viewport', content: 'width=480, maximum-scale=1'},
         { name: 'author', content: 'Stijn Vermeeren - contact: www.stijnvermeeren.be/contact' },
         { name: 'keywords', content: 'Tijdloze, Tijdloze 100, De Tijdloze Website, tijdloze.rocks, Tijdloos, Tijdloze100, StuBru, Studio Brussel, muziek, aller tijden, allertijden, beste' },
         { name: 'description', content: 'Statistieken en informatie over de Tijdloze 100, de allertijden-lijst van Studio Brussel' },

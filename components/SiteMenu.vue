@@ -139,7 +139,7 @@ div
         }
       },
       menuClick(event) {
-        if (event.target.tagName.toLowerCase() === 'a') {
+        if (event.target.parentElement.tagName.toLowerCase() === 'a') {
           this.isOpen = false;
         }
       }
