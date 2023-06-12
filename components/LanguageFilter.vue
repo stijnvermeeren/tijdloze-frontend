@@ -6,7 +6,7 @@ v-select(
   label="Taal"
   clearable
   density="compact"
-  :hide-details="true"
+  hide-details
 )
 </template>
 
@@ -14,7 +14,6 @@ v-select(
   import languages from '~/utils/language'
 
   export default {
-    name: 'LanguageInput',
     props: {
       modelValue: String
     },

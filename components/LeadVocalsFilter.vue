@@ -6,7 +6,7 @@ v-select(
   clearable
   density="compact"
   :items="items"
-  :hide-details="true"
+  hide-details
 )
 </template>
 
@@ -15,7 +15,6 @@ v-select(
   import languages from "~/utils/language";
 
   export default {
-    name: 'LeadVocalsInput',
     props: {
       modelValue: String
     },

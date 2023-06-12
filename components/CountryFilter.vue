@@ -7,7 +7,7 @@ v-select(
   label="Nationaliteit van artiest"
   clearable
   density="compact"
-  :hide-details="true"
+  hide-details
 )
 </template>
 
@@ -15,14 +15,10 @@ v-select(
   import countries from '~/utils/country'
   import _ from 'lodash';
   import {useRootStore} from "~/stores/root";
-  import languages from "~/utils/language";
 
   export default {
     props: {
-      modelValue: {
-        type: String,
-        default: ''
-      },
+      modelValue: String,
       disabled: {
         type: Boolean,
         default: false
