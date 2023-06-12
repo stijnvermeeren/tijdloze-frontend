@@ -14,7 +14,7 @@ div
           v-list-item(to="/lijst/opkomst") Nog op komst...
           v-list-item(v-if="chatOn" to="/chat") Chatbox
           v-list-item(to="/polls") Polls
-        v-list-group(value="/lijst")
+        v-list-group.lists(value="/lijst")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze van ...
           v-list-item(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`') {{year.yyyy}}
@@ -182,6 +182,16 @@ div
 
       .v-list-item {
         min-height: unset;
+      }
+    }
+
+    .lists :deep(.v-list-group__items) {
+      padding: 0 16px;
+      .v-list-item {
+        display: inline-block;
+        padding-inline-start: 0;
+        margin-right: 5px;
+        padding: 4px 8px;
       }
     }
 

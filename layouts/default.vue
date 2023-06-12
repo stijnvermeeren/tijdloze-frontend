@@ -31,6 +31,11 @@
   @use "../assets/globalStyles";
   @use "../assets/styleConfig";
 
+  body {
+    width: 100%;
+    min-width: 480px;
+  }
+
   .v-btn {
     text-transform: unset !important;
     letter-spacing: unset !important;
@@ -48,6 +53,8 @@
 
   #container {
     position: relative;
+    min-width: 480px;
+    width: 100%;
 
     #container2 {
       @media (min-width: 800px) {
@@ -81,7 +88,6 @@
     box-sizing: border-box;
     padding: 10px 10px 20px 10px;
     margin: 0 auto;
-    min-width: 480px;
     max-width: 840px;
 
     @media (min-width: 1200px) {
