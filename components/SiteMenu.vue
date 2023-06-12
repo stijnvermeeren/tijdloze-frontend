@@ -189,7 +189,7 @@ div
       padding: 0 16px;
       .v-list-item {
         display: inline-block;
-        padding-inline-start: 0;
+        padding-inline-start: 0 !important;
         margin-right: 5px;
         padding: 4px 8px;
       }
