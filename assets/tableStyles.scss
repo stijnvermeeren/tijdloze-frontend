@@ -127,10 +127,13 @@ table.lijst {
     margin: 0.3em 0;
 
     td:first-child, th:first-child {
-      width: 3em;
+      width: 10%;
     }
     td:nth-child(2), th:nth-child(2) {
-      width: 17em;
+      width: 40%;
+    }
+    td:nth-child(3), th:nth-child(3) {
+      width: 50%;
     }
     td {
       border: none !important;
@@ -141,13 +144,16 @@ table.lijst {
     margin: 0.3em 0;
 
     td:first-child, th:first-child {
-      width: 6em;
+      width: 25%;
     }
     td:nth-child(2), th:nth-child(2) {
-      width: 4em;
+      width: 5%;
     }
     td:nth-child(3), th:nth-child(3) {
-      width: 40%;
+      width: 35%;
+    }
+    td:nth-child(4), th:nth-child(4) {
+      width: 35%;
     }
     td {
       border: none !important;
@@ -158,13 +164,16 @@ table.lijst {
     margin: 0.3em 0;
 
     td:first-child, th:first-child {
-      width: 4em;
+      width: 15%;
+    }
+    td:nth-child(2), th:nth-child(2) {
+      width: 35%;
     }
     td:nth-child(2), th:nth-child(2) {
       width: 35%;
     }
     td:nth-child(4), th:nth-child(4) {
-      width: 4em;
+      width: 15%;
     }
     td {
       border: none !important;
