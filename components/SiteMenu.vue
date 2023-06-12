@@ -187,11 +187,13 @@ div
 
     .lists :deep(.v-list-group__items) {
       padding: 0 16px;
+
       .v-list-item {
         display: inline-block;
         padding-inline-start: 0 !important;
+        padding-inline-end: 0 !important;
+        padding: 4px 8px !important;
         margin-right: 5px;
-        padding: 4px 8px;
       }
     }
 
