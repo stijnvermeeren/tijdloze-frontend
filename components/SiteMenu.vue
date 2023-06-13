@@ -7,13 +7,11 @@ div
       v-list(bg-color="#fadfbb" density="comfortable" :opened="openeds")
         v-list-item(to="/") Home
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
-        v-list-group(v-if='listInProgress' value="inprogress")
-          template(#activator="{ props }")
-            v-list-item(v-bind="props") De Tijdloze {{currentYear.yyyy}}
-          v-list-item(:to="`/lijst/${currentYear.yyyy}`") De lijst
-          v-list-item(to="/lijst/opkomst") Nog op komst...
-          v-list-item(v-if="chatOn" to="/chat") Chatbox
-          v-list-item(to="/polls") Polls
+        template(v-if='listInProgress')
+          v-list-item(:to="`/lijst/${currentYear.yyyy}`") De Tijdloze {{currentYear.yyyy}}
+          v-list-item.subItem(to="/lijst/opkomst") Nog op komst...
+          v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
+          v-list-item.subItem(to="/polls") Polls
         v-list-group.lists(value="/lijst")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze van ...
@@ -65,6 +63,7 @@ div
     v-btn.cross-button(@click='isOpen = false' circle size="small" variant="text" :icon="mdiClose")
 
   v-app-bar-nav-icon.burger-button(variant="text" @click.stop="isOpen = !isOpen")
+  div.overlay(v-if="isOpen")
 </template>
 
 <script>
@@ -176,13 +175,12 @@ div
       margin-bottom: unset;
     }
 
-    :deep(.v-list-group__items) {
+    :deep(.v-list-group__items) .v-list-item, .v-list-item.subItem {
+      padding-inline-start: 32px !important;
       font-size: 14px;
       font-weight: normal;
-
-      .v-list-item {
-        min-height: unset;
-      }
+      padding: 4px 16px;
+      min-height: unset;
     }
 
     .lists :deep(.v-list-group__items) {
@@ -258,8 +256,18 @@ div
       display: none;
     }
   }
-  .bm-overlay {
+  .overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
     background: rgba(0, 0, 0, 0.3);
+
+    @media (min-width: 1200px) {
+      display: none;
+    }
   }
 
 </style>
