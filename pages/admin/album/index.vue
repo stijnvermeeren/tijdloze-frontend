@@ -1,31 +1,22 @@
 <template lang="pug">
-Title Admin: nieuwe artiest
+Title Admin: nieuw album
 div
-  h2 Nieuwe artiest
+  h2 Nieuw album
   v-container
     v-row(dense)
       v-col
-        v-text-field(
-          v-model='fullArtistData.namePrefix'
-          placeholder='The / Bob / ...'
-          label="Naam (prefix)"
-          hide-details
-        )
+        v-text-field(v-model='fullAlbumData.title' label="Title" hide-details)
+    v-row(dense)
+      v-col Artist
       v-col
-        v-text-field(
-          v-model='fullArtistData.name'
-          placeholder='Beatles / Dylan / ...'
-          label="Naam"
-          hide-details
-        )
+        admin-artist-select(v-model='fullAlbumData.artistId')
     v-row(dense)
       v-col
-        admin-country-input(v-model='fullArtistData.countryId')
+        v-text-field(v-model.number='fullAlbumData.releaseYear' type='number' label="Jaar" hide-details)
     v-row
       v-col
        v-btn(@click='submit' :disabled='disabled' color="blue") Toevoegen
 </template>
-
 
 <script setup>
 definePageMeta({
@@ -33,20 +24,20 @@ definePageMeta({
 })
 
 const processing = ref(false)
-const fullArtistData = ref({
-  namePrefix: '',
-  name: '',
-  countryId: undefined
+const fullAlbumData = ref({
+  title: '',
+  artistId: undefined,
+  releaseYear: undefined
 })
 
 const disabled = computed(() => {
-  return processing.value || !fullArtistData.value.name
+  return processing.value || !fullAlbumData.value.title || !fullAlbumData.value.artistId || !fullAlbumData.value.releaseYear
 })
 
 async function submit() {
   processing.value = true;
-  const {data} = await useApiFetchPost(`artist`, fullArtistData.value)
-  await useRouter().push(`/artist/${data.value.id}`)
+  const {data} = await useApiFetchPost(`album`, fullAlbumData.value)
+  await useRouter().push(`/album/${data.value.id}`)
 }
 </script>
 

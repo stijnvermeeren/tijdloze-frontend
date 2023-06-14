@@ -2,7 +2,7 @@
 div
   div(v-if='album') {{album.title}} ({{album.releaseYear}})
   div(v-if='editing')
-    select(v-model='albumId' :items="candidateAlbums")
+    v-select(v-model='albumId' :items="candidateAlbums")
     v-btn(@click='submit()') Bevestigen
   div(v-else)
     v-btn(@click='editing = true') Wijzigen
