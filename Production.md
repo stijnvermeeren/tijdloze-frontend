@@ -63,13 +63,14 @@ server {
 
   location /data/ {
     access_log /var/log/nginx/tijdloze-data.access.log log_time;
-    
     alias /srv/tijdloze-data/;
   }
 
   location /_nuxt/ {
     access_log /var/log/nginx/tijdloze.static.access.log rt_cache;
     alias /srv/tijdloze-static/;
+    expires 1y;
+    add_header Cache-Control "public"; 
   }
 
   location / {
