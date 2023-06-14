@@ -97,9 +97,9 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
       margin-bottom: 0.2em;
 
       span.created, span.updated, span.edit, span.delete {
-        margin-left: 1em;
-        color: #888;
-        font-size: 80%;
+        margin-left: 2em;
+        color: #444;
+        font-size: 65%;
       }
     }
 

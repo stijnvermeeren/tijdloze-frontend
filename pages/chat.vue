@@ -1,8 +1,8 @@
 <template lang="pug">
 Title Chatbox
 div
-  h2 De Tijdloze chatbox
-  template(v-if='chatEnabled')
+  h2 De Tijdloze chatbox {{chatEnabled}} {{skipSettingsCheck}}
+  template(v-if='chatEnabled || skipSettingsCheck')
     div(v-if='isAuthenticated')
       div(v-if='displayName')
         chat
@@ -40,6 +40,9 @@ div
       },
       invalidDisplayName() {
         return !this.name || this.name.length === 0;
+      },
+      skipSettingsCheck() {
+        return 'skipSettingsCheck' in useRoute().query
       }
     },
     methods: {
