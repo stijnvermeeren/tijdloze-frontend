@@ -44,6 +44,9 @@ div
     v-row(dense)
       v-col
         admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
+    v-row(dense)
+      v-col
+        admin-artist-spotify-input(v-model='fullArtistData.spotifyId')
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')

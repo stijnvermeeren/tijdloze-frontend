@@ -103,17 +103,14 @@ export default defineNuxtPlugin( nuxtApp => {
 
       if (response.artist) {
         useRepo(Artist).save(response.artist)
-        rootStore.artistsForLinks(useRepo(Artist).all())
       }
 
       if (response.deletedArtistId) {
         useRepo(Song).where(song => song.artistId === response.deletedArtistId).delete()
-        rootStore.songsForLinks(useRepo(Song).all())
 
         useRepo(Album).where(album => album.artistId === response.deletedArtistId).delete()
 
         useRepo(Artist).destroy(response.deletedArtistId)
-        rootStore.artistsForLinks(useRepo(Artist).all())
       }
 
       if (response.album) {
@@ -122,7 +119,6 @@ export default defineNuxtPlugin( nuxtApp => {
 
       if (response.deletedAlbumId) {
         useRepo(Song).where(song => song.albumId === response.deletedAlbumId).delete()
-        rootStore.songsForLinks(useRepo(Song).all())
 
         useRepo(Album).destroy(response.deletedAlbumId)
       }
@@ -130,12 +126,10 @@ export default defineNuxtPlugin( nuxtApp => {
       if (response.song) {
         response.song.secondArtistId = response.song.secondArtistId || undefined
         useRepo(Song).save(response.song)
-        rootStore.songsForLinks(useRepo(Song).all())
       }
 
       if (response.deletedSongId) {
         useRepo(Song).destroy(response.deletedSongId)
-        rootStore.songsForLinks(useRepo(Song).all())
       }
 
       if (response.poll) {

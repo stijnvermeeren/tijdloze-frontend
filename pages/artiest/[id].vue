@@ -79,10 +79,14 @@ div
       },
       links() {
         const links = [];
-        const addLink = (property, title) => {
+        const addLink = (property, title, fn) => {
+          if (!fn) {
+            fn = x => x
+          }
+
           if (this.fullArtistData[property]) {
             links.push({
-              href: this.fullArtistData[property],
+              href: fn(this.fullArtistData[property]),
               title: title
             })
           }
@@ -92,6 +96,7 @@ div
         addLink('urlWikiEn', 'Wikipedia (Engels)');
         addLink('urlWikiNl', 'Wikipedia (Nederlands)');
         addLink('urlAllMusic', 'AllMusic');
+        addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
         return links;
       }
     },
