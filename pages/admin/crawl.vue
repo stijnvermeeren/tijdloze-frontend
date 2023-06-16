@@ -16,19 +16,19 @@ div
       v-btn(@click="reject(crawl.id)" color="amber" :disabled="submitting") Afwijzen
     div
       div
-        span Huidige waarde:
-        admin-link-with-preview(
-          v-if="artist[crawl.field]"
-          :field="crawl.field"
-          :value="artist[crawl.field]"
-        )
-        span(v-else) (Geen waarde)
-      div
-        span Nieuwe waarde
+        h4 Nieuwe waarde
         admin-link-with-preview(
           v-if="crawl.value"
           :field="crawl.field"
           :value="crawl.value"
+        )
+        span(v-else) (Geen waarde)
+      div
+        h4 Huidige waarde
+        admin-link-with-preview(
+          v-if="currentValue"
+          :field="crawl.field"
+          :value="currentValue"
         )
         span(v-else) (Geen waarde)
 
@@ -44,14 +44,15 @@ definePageMeta({ middleware: 'admin' })
 const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(`crawl-artist`)
+const artistFetchPath = computed(() => {
+  return `artist/${crawl?.value?.artistId}`
+})
+const {data: artist} = await useApiFetch(artistFetchPath, {
+  watch: [crawl]
+})
 
-const artist = computed(async () => {
-  if (crawl.value) {
-    const {data} = await useApiFetch(`artist/${crawl.value.artistId}`)
-    return data.value
-  } else {
-    return undefined
-  }
+const currentValue = computed(() => {
+  return artist?.value[crawl?.value?.field]
 })
 
 const storeArtist = computed(() => {
@@ -62,17 +63,21 @@ const storeArtist = computed(() => {
   }
 })
 
+async function refresh() {
+  await refreshCrawl()
+}
+
 async function accept(id) {
   submitting.value = true
   await useApiFetchPost(`crawl-artist/${id}`)
-  await refreshCrawl()
+  refresh()
   submitting.value = false
 }
 
 async function reject(id) {
   submitting.value = true
   await useApiFetchDelete(`crawl-artist/${id}`)
-  await refreshCrawl()
+  refresh()
   submitting.value = false
 }
 </script>

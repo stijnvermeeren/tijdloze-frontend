@@ -1,15 +1,13 @@
 <template lang="pug">
-v-menu(open-on-hover)
-  template(#activator="{ props }")
-    v-btn(:href="href" target="_blank" v-bind="props") {{ value }}
-  div.iframecontainer
-    iframe(
-      :src="iFrameSrc"
-      frameBorder="0"
-      allowfullscreen=""
-      allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-      loading="lazy"
-    )
+div {{ value }}
+div.iframecontainer
+  iframe(
+    :src="iFrameSrc"
+    frameBorder="0"
+    allowfullscreen=""
+    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+    loading="lazy"
+  )
 </template>
 
 <script setup>
@@ -44,8 +42,8 @@ const iFrameSrc = computed(() => {
 }
 
 iframe {
-  min-width: 500px;
-  min-height: 400px;
+  width: 100%;
+  height: 152px;
   border-radius: 12px;
 }
 </style>
