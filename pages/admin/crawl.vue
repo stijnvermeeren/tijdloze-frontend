@@ -6,14 +6,14 @@ div
 
   h3 Volgende voorstel van crawler
 
-  ui-card
+  ui-card(v-if="crawl")
     template(#title) #[artist-link(:artist="storeArtist")]: {{crawl.field}}
     template(#subtitle)
       div Gecrawled: {{crawl.crawlDate}}
       div Kommentaar: {{crawl.comment}}
     template(#buttons)
-      v-btn(@click="accept(crawl.id)" color="green") Accepteren
-      v-btn(@click="reject(crawl.id)" color="amber") Afwijzen
+      v-btn(@click="accept(crawl.id)" color="green" :disabled="submitting") Accepteren
+      v-btn(@click="reject(crawl.id)" color="amber" :disabled="submitting") Afwijzen
     div
       div
         span Huidige waarde:
@@ -31,6 +31,8 @@ div
           :value="crawl.value"
         )
         span(v-else) (Geen waarde)
+
+  div(v-else) Niets meer gevonden...
 </template>
 
 <script setup>
@@ -39,7 +41,6 @@ import Artist from "~/orm/Artist";
 
 definePageMeta({ middleware: 'admin' })
 
-const refreshing = ref(false)
 const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(`crawl-artist`)
@@ -61,23 +62,17 @@ const storeArtist = computed(() => {
   }
 })
 
-async function refresh() {
-  refreshing.value = true
-  await refreshCrawl()
-  refreshing.value = false
-}
-
 async function accept(id) {
   submitting.value = true
   await useApiFetchPost(`crawl-artist/${id}`)
-  await this.refresh()
+  await refreshCrawl()
   submitting.value = false
 }
 
 async function reject(id) {
   submitting.value = true
   await useApiFetchDelete(`crawl-artist/${id}`)
-  await this.refresh()
+  await refreshCrawl()
   submitting.value = false
 }
 </script>
