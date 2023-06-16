@@ -57,6 +57,7 @@ div
           v-list-item(to="/admin/analysis") Interessante feiten
           v-list-item(to="/admin/artist") Nieuwe artiest
           v-list-item(to="/admin/album") Nieuw album
+          v-list-item(to="/admin/crawl") Crawler output
           v-list-item(to="/admin/users") Gebruikers
           v-list-item(to="/admin/settings") Instellingen
 
