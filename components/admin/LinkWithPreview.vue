@@ -24,6 +24,8 @@ const href = computed(() => {
       return `https://open.spotify.com/artist/${props.value}`
     case "wikidataId":
       return `https://wikidata.org/wiki/${props.value}`
+    case "musicbrainzId":
+      return `https://musicbrainz.org/artist/${props.value}`
     case "countryId":
       return undefined
     default:
