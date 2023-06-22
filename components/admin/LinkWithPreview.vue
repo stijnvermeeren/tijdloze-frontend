@@ -22,6 +22,8 @@ const href = computed(() => {
   switch (props.field) {
     case "spotifyId":
       return `https://open.spotify.com/artist/${props.value}`
+    case "wikidataId":
+      return `https://wikidata.org/wiki/${props.value}`
     case "countryId":
       return undefined
     default:
