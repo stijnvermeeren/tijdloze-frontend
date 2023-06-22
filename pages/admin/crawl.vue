@@ -45,7 +45,8 @@ const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(`crawl-artist`)
 const artistFetchPath = computed(() => {
-  return `artist/${crawl?.value?.artistId}`
+  const artistId = crawl?.value?.artistId
+  return artistId ? `artist/${artistId}` : undefined
 })
 const {data: artist} = await useApiFetch(artistFetchPath, {
   watch: [crawl]

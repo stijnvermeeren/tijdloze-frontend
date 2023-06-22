@@ -1,6 +1,8 @@
 <template lang="pug">
-div {{ value }}
-div.iframecontainer
+div(v-if="href")
+  a(:href="href") {{ value }}
+div(v-else) {{ value }}
+div.iframecontainer(v-if="iFrameSrc")
   iframe(
     :src="iFrameSrc"
     frameBorder="0"
@@ -20,8 +22,10 @@ const href = computed(() => {
   switch (props.field) {
     case "spotifyId":
       return `https://open.spotify.com/artist/${props.value}`
-    default:
+    case "countryId":
       return undefined
+    default:
+      return props.value
   }
 })
 
@@ -29,8 +33,10 @@ const iFrameSrc = computed(() => {
   switch (props.field) {
     case "spotifyId":
       return `https://open.spotify.com/embed/artist/${props.value}`
-    default:
+    case "urlAllMusic":
       return undefined
+    default:
+      return href.value
   }
 })
 </script>
