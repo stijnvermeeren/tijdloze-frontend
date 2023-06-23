@@ -5,8 +5,8 @@ div(v-else) {{ value }}
 div.iframecontainer(v-if="iFrameSrc" :class="field")
   iframe(
     :src="iFrameSrc"
-    :v-if="showIFrame"
-    onload="showIFrame = true"
+    :class="{isHidden: !showIFrame}"
+    :onload="onload"
     frameBorder="0"
     allowfullscreen=""
     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -20,7 +20,7 @@ const props = defineProps({
   value: String
 })
 
-const showIFrame = ref(true)
+const showIFrame = ref(false)
 
 const href = computed(() => {
   switch (props.field) {
@@ -48,9 +48,15 @@ const iFrameSrc = computed(() => {
   }
 })
 
-watch(iFrameSrc, newValue => {
+watch(iFrameSrc, (newValue) => {
   showIFrame.value = false
 })
+
+function onload() {
+  nextTick(() => {
+    showIFrame.value = true
+  })
+}
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +68,10 @@ watch(iFrameSrc, newValue => {
     width: 100%;
     height: 256px;
     border-radius: 12px;
+
+    &.isHidden {
+      height: 0;
+    }
   }
 
   &.spotifyId iframe {
