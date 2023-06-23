@@ -9,29 +9,8 @@ div
     ui-alert(v-else title="Officiële informatie / stemmen")
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') StuBru]. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je #[a(href='https://stubru.be/rubriek/de-tijdloze/') op de website van StuBru] zijn.
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
-    table.lijst(v-if="top5.length")
-      tbody
-        tr
-          th.n(v-if='tableYear.previous')
-            nuxt-link(:to='`/lijst/${tableYear.previous.yyyy}`') {{tableYear.previous._yy}}
-          th.r
-            nuxt-link(:to='`/lijst/${tableYear.yyyy}`') {{tableYear._yy}}
-          th.a Artiest
-          th Titel
-          th.releaseYear
-            | Jaar
-        tr(v-for='song in top5')
-          td.n(v-if='tableYear.previous')
-            position(:song='song' :year='tableYear.previous')
-          td.r
-            position-change(:song='song' :year='tableYear')
-            position(:song='song' :year='tableYear')
-          td.a
-            song-artist-link(:song='song')
-          td
-            song-link(:song='song')
-          td.releaseYear
-            | {{song.album.releaseYear}}
+    template(v-if="top5.length")
+      full-list-entry(v-for='song in top5' :song='song' :year="tableYear")
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')

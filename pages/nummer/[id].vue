@@ -43,7 +43,6 @@ Title {{song.title}} ({{song.artist.fullName}})
             year-link(:year='year' short)
           div
             position-change(:song='song' :year='year')
-            position(:song='song' :year='year')
 
 
   ui-card(v-if='song.listCount(years) > 0' title="Grafiek")

@@ -1,55 +1,81 @@
 <template lang="pug">
-span(v-if='position')
-  span.equal(v-if='equal') =
-  span.down(v-if='down') &searr;&#xFE0E;
-  span.up(v-if='up') &nearr;&#xFE0E;
+div(v-if='position' :class="{singleLine: singleLine}")
+  div.position {{position}}
+  div.change
+    span.equal(v-if='equal') =
+    span.down(v-if='down') -{{diff}}
+    span.up(v-if='up') +{{diff}}
+    span.up(v-if='isNew') nieuw
 </template>
 
-<script>
-  import Year from "../orm/Year";
+<script setup>
+import Year from "../orm/Year";
 
-  export default {
-    props: {
-      song: Object,
-      year: Year
-    },
-    computed: {
-      position() {
-        return this.song.position(this.year, true);
-      },
-      previousPosition() {
-        if (this.year.previous) {
-          return this.song.position(this.year.previous, true);
-        } else {
-          return null;
-        }
-      },
-      equal() {
-        return this.year.previous && this.position && this.position === this.previousPosition;
-      },
-      up() {
-        return this.year.previous && this.position && (!this.previousPosition || this.position < this.previousPosition);
-      },
-      down() {
-        return this.year.previous && this.previousPosition && (!this.position || this.position > this.previousPosition);
-      }
-    }
+const props = defineProps({
+  song: Object,
+  year: Year,
+  singleLine: {
+    type: Boolean,
+    default: false
   }
+})
+
+const position = computed(() => {
+  return props.song.position(props.year, true);
+})
+
+const previousPosition = computed(() => {
+  if (props.year.previous) {
+    return props.song.position(props.year.previous, true);
+  } else {
+    return null;
+  }
+})
+const diff = computed(() => {
+  return Math.abs(position.value - previousPosition.value)
+})
+const equal = computed(() => {
+  return props.year.previous && position.value && position.value === previousPosition.value
+})
+const up = computed(() => {
+  return props.year.previous && position.value && previousPosition.value && position.value < previousPosition.value
+})
+const isNew = computed(() => {
+  return props.year.previous && position.value && !previousPosition.value
+})
+const down = computed(() => {
+  return props.year.previous && previousPosition.value && (!position.value || position.value > previousPosition.value)
+})
 </script>
 
 <style lang="scss" scoped>
-  @mixin movement($color) {
-    padding-right: 0.6em;
-    color: $color;
+div.singleLine {
+  display: flex;
+  justify-content: space-evenly;
+  div.position {
+    width: 40%;
   }
+  div.change {
+    width: 40%;
+  }
+}
+
+div.position {
+  font-size: 110%;
+  font-weight: bold;
+}
+
+div.change {
+  font-size: 80%;
 
   span.up {
-    @include movement(#007700);
+    color: #007700;
   }
   span.down {
-    @include movement(#aa0000);
+    color: #aa0000;
   }
   span.equal {
-    @include movement(#444444);
+    color: #777;
   }
+}
 </style>

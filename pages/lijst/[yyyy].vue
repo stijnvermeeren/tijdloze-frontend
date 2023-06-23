@@ -6,7 +6,7 @@ div
     full-list(:songs='songsExtended' :year='year')
 
   ui-card(v-if='year.previous')
-    template(#title) {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten" : "Voorlopige hoogtepunten"}}
+    template(#title) {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten (top 100)" : "Voorlopige hoogtepunten (top 100)"}}
     table.list-summary
       tbody
         tr

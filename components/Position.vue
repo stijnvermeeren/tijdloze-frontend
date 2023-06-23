@@ -5,13 +5,11 @@ span
   span(v-else) -
 </template>
 
-<script>
-  import Year from "../orm/Year";
+<script setup>
+import Year from "../orm/Year";
 
-  export default {
-    props: {
-      song: Object,
-      year: Year
-    }
-  }
+defineProps({
+  song: Object,
+  year: Year
+})
 </script>

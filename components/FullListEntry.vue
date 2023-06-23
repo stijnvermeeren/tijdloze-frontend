@@ -1,41 +1,34 @@
 <template lang="pug">
 div.entry(:class='{lineAfter: song.position(year, true) % 5 === 0}')
-  div.n(v-if='year.previous')
-    position(:song='song' :year='year.previous')
-  div.r
+  div.position
     position-change(:song='song' :year='year')
-    position(:song='song' :year='year')
-  div.n(v-if='year.next')
-    position(:song='song' :year='year.next')
-  div.a
-    song-artist-link(:song='song')
-  div.s
-    song-link(:song='song')
-  div.releaseYear
-    | {{song.album.releaseYear}}
+  div.n
+    album-cover(:cover="song.album.cover")
+  div
+    div.title
+      song-link(:song='song')
+    div.artist van #[song-artist-link(:song='song')] uit {{song.album.releaseYear}}
 </template>
 
-<script>
-  import Song from "../orm/Song";
-  import Year from "../orm/Year";
+<script setup>
+import Song from "../orm/Song";
+import Year from "../orm/Year";
 
-  export default {
-    name: 'FullList',
-    props: {
-      song: {
-        type: Song
-      },
-      year: {
-        type: Year
-      }
-    }
+defineProps({
+  song: {
+    type: Song
+  },
+  year: {
+    type: Year
   }
+})
 </script>
 
-<style lang="scss">
-  div.fullList div.entry {
+<style lang="scss" scoped>
+  div.entry {
     display: flex;
-    height: 24px;
+    height: 64px;
+    align-items: center;
 
     &.header {
       font-weight: bold;
@@ -44,52 +37,20 @@ div.entry(:class='{lineAfter: song.position(year, true) % 5 === 0}')
       scrollbar-gutter: stable;
     }
 
-    &.lineAfter {
-      border-bottom: 1px #888888 dotted;
-    }
-
-    div {
+    > div {
       padding: 1px 7px;
     }
-    .n {
-      width: 30px;
-      flex-grow: 1;
-      text-align: center;
-      color: #555555;
-      font-size: 80%;
-    }
 
-    .r {
-      width: 60px;
-      flex-grow: 1;
+    .position {
+      width: 80px;
       text-align: center;
+    }
+    .title {
       font-weight: bold;
     }
-    .a {
-      text-align: right;
-      width: 125px;
-      flex-grow: 8;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-    .s {
-      width: 150px;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-      flex-grow: 8;
-    }
-
-    .releaseYear {
-      width: 50px;
-      flex-grow: 1;
-      color: #555555;
-      font-size: 80%;
-
-      @media (max-width: 660px) {
-        display: none;
-      }
+    .artist {
+      font-size: 85%;
+      color: #777;
     }
   }
 </style>

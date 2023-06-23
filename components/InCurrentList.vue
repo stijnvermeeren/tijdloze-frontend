@@ -10,10 +10,9 @@ div.container
         th.song
       tr(v-for='song in filteredAndSorted' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
         td.previous
-          position(:year='previousYear' :song='song')
+          position-change(:year='currentYear.previous' :song='song' single-line)
         td.current
-          position-change(:year='currentYear' :song='song')
-          position(:year='currentYear' :song='song')
+          position-change(:year='currentYear' :song='song' single-line)
         td.song
           song-with-second-artist-link(:song='song' :artist='artist')
   div(v-else)
@@ -77,19 +76,17 @@ div.container
 
   table {
     table-layout: fixed;
-    margin: 0 10% 10px;
+    margin: 0 20px;
 
     td, th {
       &.previous {
-        font-weight: normal;
-        font-size: 14px;
         text-align: center;
-        width: 50px;
+        width: 120px;
       }
 
       &.current {
         text-align: center;
-        width: 80px;
+        width: 120px;
       }
 
       &.song {
