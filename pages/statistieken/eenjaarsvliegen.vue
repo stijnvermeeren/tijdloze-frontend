@@ -37,7 +37,7 @@ div
       },
       data() {
         const dataPoints = [];
-        useRepo(List).with('top100Songs', query => query.with('artist')).get().forEach(list => {
+        useRepo(List).with('top100Songs', query => query.with('artist').with('album')).get().forEach(list => {
           const year = this.years.find(year => year.yyyy === list.year)
           if (year.previous && year.next) {
             list.top100Songs.forEach(song => {

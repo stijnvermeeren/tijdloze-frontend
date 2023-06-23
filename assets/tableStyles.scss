@@ -111,69 +111,47 @@ table.lijst {
     }
   }
 
-  table.valueData {
-    margin: 0.3em 0;
-
-    td:first-child, th:first-child {
-      width: 3em;
-      font-weight: bold;
-    }
-    td {
-      border: none !important;
-    }
-  }
-
-  table.valueDataData {
-    margin: 0.3em 0;
-
-    td:first-child, th:first-child {
-      width: 10%;
-    }
-    td:nth-child(2), th:nth-child(2) {
-      width: 40%;
-    }
-    td:nth-child(3), th:nth-child(3) {
-      width: 50%;
-    }
-    td {
-      border: none !important;
-    }
-  }
-
-  table.valueValueDataData {
-    margin: 0.3em 0;
-
-    td:first-child, th:first-child {
-      width: 25%;
-    }
-    td:nth-child(2), th:nth-child(2) {
-      width: 5%;
-    }
-    td:nth-child(3), th:nth-child(3) {
-      width: 35%;
-    }
-    td:nth-child(4), th:nth-child(4) {
-      width: 35%;
-    }
-    td {
-      border: none !important;
-    }
-  }
-
-  table.valueDataDataValue {
+  table.valueSongValue {
     margin: 0.3em 0;
 
     td:first-child, th:first-child {
       width: 15%;
     }
     td:nth-child(2), th:nth-child(2) {
-      width: 35%;
+      width: 70%;
+    }
+    td:nth-child(3), th:nth-child(3) {
+      width: 15%;
+    }
+    td {
+      border: none !important;
+    }
+  }
+  table.valueSong {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
+      width: 15%;
     }
     td:nth-child(2), th:nth-child(2) {
-      width: 35%;
+      width: 85%;
     }
-    td:nth-child(4), th:nth-child(4) {
+    td {
+      border: none !important;
+    }
+  }
+
+  table.valueValueSong {
+    margin: 0.3em 0;
+
+    td:first-child, th:first-child {
       width: 15%;
+    }
+    td:nth-child(2), th:nth-child(2) {
+      width: 15%;
+    }
+    td:nth-child(3), th:nth-child(3) {
+      width: 85%;
     }
     td {
       border: none !important;

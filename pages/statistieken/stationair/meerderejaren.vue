@@ -4,26 +4,23 @@ table.lijst.perEen
     tr
       th.r Aantal jaren
       th
-        table.valueValueDataData
+        table.valueValueSong
           tr
             th.i Jaren
             th.i Positie
-            th.a Artiest
-            th Nummer
+            th.l Nummer
     tr(v-for='data in byNumberOfYears')
       td.r {{data.numberOfYears}}
       td
-        table.valueValueDataData
+        table.valueValueSong
           tbody
             tr(v-for='entry in data.entries')
               td.i
                 | {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
               td.i
                 | {{entry.song.position(entry.years[0])}}
-              td.a
-                song-artist-link(:song='entry.song')
-              td
-                song-link(:song='entry.song')
+              td.l
+                song-with-cover(:song='entry.song')
 </template>
 
 <script>

@@ -4,7 +4,7 @@ table.lijst.perVijf
     tr
       th.r Jaar
       th Aantal
-      th.l(colspan='4') Grootste stijger
+      th.l(colspan='3') Grootste stijger
     tr(v-for='{year, entries, topEntry} in listData')
       td.r
         year-link(:year='year')
@@ -13,10 +13,8 @@ table.lijst.perVijf
         | {{topEntry.oldPosition - topEntry.newPosition}} posities
       td.i(v-if='topEntry')
         | {{topEntry.oldPosition}} &rarr; {{topEntry.newPosition}}
-      td.a(v-if='topEntry')
-        song-artist-link(:song='topEntry.song')
-      td(v-if='topEntry')
-        song-link(:song='topEntry.song')
+      td.l(v-if='topEntry')
+        song-with-cover(:song='topEntry.song')
       td.l(v-if='!topEntry' colspan='4')
         | /
 </template>

@@ -4,18 +4,15 @@ table.lijst.perVijf
     tr
       th
       th Jaar
-      th.a Artiest
-      th Nummer
+      th.l Nummer
       th Plaats
       th Definitief
     tr(v-for='{entry, position} in ranking')
       td.r {{position}}
       td
         year-link(:year='entry.year')
-      td.a
-        song-artist-link(:song='entry.song')
-      td
-        song-link(:song='entry.song')
+      td.l
+        song-with-cover(:song='entry.song')
       td {{entry.song.position(entry.year)}}
       td
         template(v-if='entry.isFinal') *

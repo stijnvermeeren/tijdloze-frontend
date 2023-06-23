@@ -5,26 +5,23 @@ table.lijst.perEen
       th.r Jaar
       th Aantal
       th.l
-        table.valueDataDataValue
+        table.valueSongValue
           tbody
             tr
               th Pos.
-              th.a Artiest
-              th Nummer
+              th.l Nummer
               th Afwezigheid
     tr(v-for='{year, entries} in listData')
       td.r
         year-link(:year='year')
       td {{entries.length}}
       td
-        table.valueDataDataValue(v-if='entries.length')
+        table.valueSongValue(v-if='entries.length')
           tbody
             tr(v-for='entry in entries')
               td {{entry.song.position(entry.year)}}
-              td.a
-                song-artist-link(:song='entry.song')
-              td
-                song-link(:song='entry.song')
+              td.l
+                song-with-cover(:song='entry.song')
               td.text-no-wrap
                 | {{entry.absenceYears}} jaar
         div(v-else) /

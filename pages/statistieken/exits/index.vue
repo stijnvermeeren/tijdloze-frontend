@@ -10,14 +10,12 @@ table.lijst.perEen
         year-link(:year='year')
       td {{entries.length}}
       td
-        table.valueDataData(v-if='entries.length')
+        table.valueSong(v-if='entries.length')
           tbody
             tr(v-for='entry in entries')
               td {{entry.song.position(entry.year)}}
-              td.a
-                song-artist-link(:song='entry.song')
-              td
-                song-link(:song='entry.song')
+              td.l
+                song-with-cover(:song='entry.song')
         div(v-else) /
 </template>
 

@@ -9,7 +9,7 @@ div
       tr
         th.r Jaar
         th
-          table.valueData
+          table.valueSong
             tbody
               tr
                 th Not.
@@ -18,7 +18,7 @@ div
         td.r
           year-link(:year='year')
         td
-          table.valueData
+          table.valueSong
             tbody
               tr(v-for='{count, artists} in counts')
                 td {{count}}

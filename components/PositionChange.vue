@@ -1,7 +1,10 @@
 <template lang="pug">
-div(v-if='position' :class="{singleLine: singleLine}")
-  div.position {{position}}
-  div.change
+div(:class="{singleLine: singleLine}")
+  div
+    span.position(v-if='position') {{position}}
+    span(v-else-if="song.probablyInList(year, true)") ?
+    span(v-else) -
+  div.change(v-if="position")
     span.equal(v-if='equal') =
     span.down(v-if='down') -{{diff}}
     span.up(v-if='up') +{{diff}}
@@ -60,7 +63,7 @@ div.singleLine {
   }
 }
 
-div.position {
+span.position {
   font-size: 110%;
   font-weight: bold;
 }

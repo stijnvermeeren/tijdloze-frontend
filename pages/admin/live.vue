@@ -27,7 +27,7 @@ div
   v-btn(v-if='lastPosition === 1 && nextYearYyyy !== currentYear.yyyy' @click='startYear' rounded color="blue")
     | Jaar {{nextYearYyyy}} starten
 
-  ui-card(title="Volgend nummer")
+  ui-card.overflow-visible(title="Volgend nummer")
     div
       v-text-field.d-inline-block(
         v-model.number="nextPosition"
