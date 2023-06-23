@@ -1,10 +1,12 @@
 <template lang="pug">
 div(v-if="href")
-  a(:href="href") {{ value }}
+  a(:href="href" target="_blank") {{ value }}
 div(v-else) {{ value }}
-div.iframecontainer(v-if="iFrameSrc")
+div.iframecontainer(v-if="iFrameSrc" :class="field")
   iframe(
     :src="iFrameSrc"
+    :v-if="showIFrame"
+    onload="showIFrame = true"
     frameBorder="0"
     allowfullscreen=""
     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
@@ -17,6 +19,8 @@ const props = defineProps({
   field: String,
   value: String
 })
+
+const showIFrame = ref(true)
 
 const href = computed(() => {
   switch (props.field) {
@@ -43,17 +47,25 @@ const iFrameSrc = computed(() => {
       return href.value
   }
 })
+
+watch(iFrameSrc, newValue => {
+  showIFrame.value = false
+})
 </script>
 
 <style lang="scss" scoped>
 .iframecontainer {
   border-radius: 12px;
   background-color: #eee;
-}
 
-iframe {
-  width: 100%;
-  height: 152px;
-  border-radius: 12px;
+  iframe {
+    width: 100%;
+    height: 256px;
+    border-radius: 12px;
+  }
+
+  &.spotifyId iframe {
+    height: 152px;
+  }
 }
 </style>
