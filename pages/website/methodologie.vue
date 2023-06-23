@@ -32,6 +32,8 @@ div
       make-links(text="De nationaliteit van de artiest en/of van de bandleden geeft niet altijd een eenduidig antwoord. Enerzijds hebben sommige mensen meerdere nationaliteiten. Anderzijds kan een band uit leden met verschillende nationaliteit zijn samengesteld. In geval van twijfel houden we daarom ook rekening met het land waar be band is opgericht, of met het land waar de artiest de eerste doorbraak heeft gemaakt. Bijvoorbeeld:")
       ul
         li
+          make-links(text="[Fleetwood Mac] wordt op deze website als Britse artiest geklasseerd, omdat de groep in Londen werd opgericht en oorspronkelijk alleen maar uit Britse muzikanten bestond, ook al kwamen er later twee heel bekende Amerikaanse leden bij (Lindsey Buckingham en Stevie Nicks).")
+        li
           make-links(text="[Gabriel Ríos] wordt op deze website als Belgische artiest geteld, niet als Amerikaans of Puerto Ricaans, omdat hij in België is doorgebroken.")
         li
           make-links(text="[Joe Dassin] had een dubbele Frans-Amerikaanse nationaliteit en is vooral in de Verenigde Staten opgegroeid, maar omdat hij in Frankrijk een grotere bekendheid geniet, wordt hij op deze website als Frans geteld.")
@@ -40,9 +42,9 @@ div
         li
           make-links(text="[Grinderman] had Australische en Amerikaanse bandleden, terwijl de groep zelf in Londen werd gevormd. Hier wordt de band als Australisch geteld, omdat de meeste bandleden (waaronder frontman [Nick Cave]) de Australische nationaliteit hebben.")
         li
-          make-links(text="[Buffalo Springfield] was een band met Amerikaanse en Canadese leden. Omdat de band in de Verenigde Staten is opgericht, is hier voor dat land van herkomst gekozen. Een gelijkaardig argument is van toepassing op [Foreigner] (Verenigde Staten, niet Verenigd Koninkrijk)")
+          make-links(text="[Buffalo Springfield] was een band met Amerikaanse en Canadese leden. Omdat de band in de Verenigde Staten is opgericht, is hier voor dat land van herkomst gekozen. Een gelijkaardig argument is onder andere van toepassing op [Foreigner], [Traveling Wilburys], [Steppenwolf] en [The Pogues].")
         li
-          make-links(text="De [Bee Gees] worden hier als Britse band geteld, want de bandleden, de drie broers Gibbs, zijn in het Verenigd Koninkrijk geboren en hebben de Britse nationaliteit. De band is echter doorgebroken in Australië terwijl de familie Gibbs daar woonde, en wordt daarom ook soms als Australische band beschouwd.")
+          make-links(text="De [Bee Gees] worden hier als Britse band geteld, want de bandleden, de drie broers Gibbs, zijn in het Verenigd Koninkrijk geboren en hebben de Britse nationaliteit. De band is echter doorgebroken in Australië terwijl de familie Gibbs daar woonde, en wordt daarom ook soms als Australische band beschouwd. Een gelijkaardige situatie vinden we bij [America].")
 
   ui-card(title="Talen")
     p
@@ -60,7 +62,7 @@ div
   ui-card(title="Lead vocals")
     p De Tijdloze werd altijd al gedomineerd door mannen. Misschien wel daarom is er ook altijd al speciale aandacht geweest voor het kleinere aantal vrouwen in de Tijdloze. In 2018 was er zelfs een grootschalige campagne om meer vrouwen in de top 100 te krijgen.
     p
-      make-links(text="Maar hoe tel je nu het aantal vrouwen en mannen in de Tijdloze? De band [Massive Attack] bijvoorbeeld bestaat alleen maar uit mannen, maar hun bekendste nummer [Unfinished Sympathy] heeft wel een tekst die door een vrouw is gezongen. Daarom leek het ons logischer om niet naar de geslachten van alle bandleden te kijken, maar wel naar de <em>lead vocals</em> van elk nummer. We hebben hierbij vier categoriën gedefinieerd: <em>man</em>, <em>vrouw</em>, <em>duet</em> (voor nummers waarbij mannelijke en vrouwelijke stemmen een min of meer evenwaardige rol spelen) en <em>instrumentaal</em>. Dit is natuurlijk een abstractie, en niet elk nummer past even goed in deze categorieën. Een voorbeeld waar dit waarschijnlijk tamelijk gevoelig ligt, is [K's Choice]. Het lijkt ons het meest logisch om nummers zoals [Not an Addict] nog bij de vrouwelijke lead vocals te tellen, ook al gaat zanger Sam Bettens (vroeger gekend als Sarah Bettens) tegenwoordig door het leven als man.")
+      make-links(text="Maar hoe tel je nu het aantal vrouwen en mannen in de Tijdloze? De band [Massive Attack] bijvoorbeeld bestaat alleen maar uit mannen, maar hun bekendste nummer [Unfinished Sympathy] heeft wel een tekst die door een vrouw is gezongen. Daarom leek het ons logischer om niet naar de geslachten van alle bandleden te kijken, maar wel naar de <em>lead vocals</em> van elk nummer. We hebben hierbij vier categoriën gedefinieerd: <em>man</em>, <em>vrouw</em>, <em>duet</em> (voor nummers waarbij mannelijke en vrouwelijke stemmen een min of meer evenwaardige rol spelen) en <em>instrumentaal</em>. Dit is natuurlijk een abstractie, en niet elk nummer past even goed in deze categorieën. Een voorbeeld waar dit waarschijnlijk tamelijk gevoelig ligt, is [K's Choice]. Het lijkt ons het meest logisch om nummers zoals [Not an Addict] nog bij de vrouwelijke lead vocals te tellen, ook al gaat zanger Sam Bettens (vroeger gekend als Sarah Bettens) tegenwoordig door het leven als man. Een gelijkaardig geval vinden we ook bij [Christine and the Queens].")
     p
       make-links(text="De lead vocals zijn dus een eigenschap van elk nummer, en die is niet altijd hetzelfde voor de nummers van eenzelfde artist. Zo heeft [Fleetwoord Mac] bijvoorbeeld nummers in alle vier categorieën: <em>man</em> (bijvoorbeeld [Go Your Own Way]), <em>vrouw</em> (bijvoorbeeld [Dreams]), <em>duet</em> (bijvoorbeeld [The Chain]) en instrumentaal ([Albatross]).")
     p
