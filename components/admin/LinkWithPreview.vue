@@ -16,6 +16,7 @@ div.iframecontainer(v-if="iFrameSrc" :class="field")
 
 <script setup>
 const props = defineProps({
+  type: String,
   field: String,
   value: String
 })
@@ -25,11 +26,17 @@ const showIFrame = ref(false)
 const href = computed(() => {
   switch (props.field) {
     case "spotifyId":
-      return `https://open.spotify.com/artist/${props.value}`
+      return `https://open.spotify.com/${props.type}/${props.value}`
     case "wikidataId":
       return `https://wikidata.org/wiki/${props.value}`
     case "musicbrainzId":
-      return `https://musicbrainz.org/artist/${props.value}`
+      if (props.type === "artist") {
+        return `https://musicbrainz.org/artist/${props.value}`
+      }
+      if (props.type === "album") {
+        return `https://musicbrainz.org/release-group/${props.value}`
+      }
+      return undefined
     case "countryId":
       return undefined
     default:
