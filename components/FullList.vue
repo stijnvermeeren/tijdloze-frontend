@@ -1,27 +1,25 @@
 <template lang="pug">
-ui-card
-  template(#title) De lijst
-  template(#buttons)
-    v-text-field.filter(
-      v-model="filterQuery"
-      label="Zoeken in de lijst"
-      persistent-placeholder
-      hide-details
-      clearable
-      density="compact"
-    )
-      template(#prepend-inner)
-        v-icon(:icon="mdiMagnify")
-  div.fullList(v-if='filteredSongs.length > 0')
-    div.content(v-if='filteredSongs.length > 20')
-      div.wrapper
-        RecycleScroller.scroller(:items="filteredSongs" :item-size="60" key-field="id" :buffer="40")
-          template(#default="{item}")
-            full-list-entry(:song="item" :year="year")
-    div(v-else)
-      full-list-entry(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
+div
+  v-text-field(
+    v-model="filterQuery"
+    label="Zoeken in de lijst"
+    persistent-placeholder
+    hide-details
+    clearable
+    density="compact"
+  )
+    template(#prepend-inner)
+      v-icon(:icon="mdiMagnify")
+div.fullList(v-if='filteredSongs.length > 0')
+  div.content(v-if='filteredSongs.length > 20')
+    div.wrapper
+      RecycleScroller.scroller(:items="filteredSongs" :item-size="60" key-field="id" :buffer="40")
+        template(#default="{item}")
+          full-list-entry(:song="item" :year="year")
+  div(v-else)
+    full-list-entry(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
 
-  p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
+p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script setup>
@@ -46,11 +44,6 @@ const filteredSongs = computed(() => {
 </script>
 
 <style lang="scss">
-.filter {
-  width: 320px;
-  max-width: 50vw;
-}
-
 div.content {
   flex: 100% 1 1;
   position: relative;

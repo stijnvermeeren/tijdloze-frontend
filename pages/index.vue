@@ -17,8 +17,8 @@ div
         v-btn De volledige lijst van {{tableYear.yyyy}}
       nuxt-link(v-if='listInProgress' to='/lijst/opkomst')
         v-btn Nog op komst
-      nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `/lijst/${tableYear.yyyy}`, hash: "#exits" }')
-        v-btn Uit de lijst verdwenen
+      nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `/lijst/${tableYear.yyyy}/exits` }')
+        v-btn Uit de top 100 verdwenen
 
   ui-card(v-if="chatOn" title="Chatbox")
     div.link

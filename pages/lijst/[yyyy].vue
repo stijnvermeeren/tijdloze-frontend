@@ -2,90 +2,9 @@
 Title {{year.yyyy}}
 div
   h2 De Tijdloze van {{year.yyyy}}
-  client-only(placeholder="Loading...")
-    full-list(:songs='songsExtended' :year='year')
 
-  ui-card(v-if='year.previous')
-    template(#title) {{songs.length && songs[0].position(year) === 1 ? "Hoogtepunten (top 100)" : "Voorlopige hoogtepunten (top 100)"}}
-    table.list-summary
-      tbody
-        tr
-          th Hoogste nieuwkomer
-          td
-            span(v-if='highestNew')
-              song-link(:song='highestNew')
-              |
-              | -
-              |
-              song-artist-link(:song='highestNew')
-              |
-              | (
-              position(:song='highestNew' :year='year')
-              | )
-              span(v-if='highestNew.isReEntry(years, year)')
-                |
-                | (re-entry)
-            span(v-else) /
-        tr
-          th Grootste stijger
-          td
-            span(v-if='biggestUp') #[song-link(:song='biggestUp')] - #[song-artist-link(:song='biggestUp')] (#[position(:song='biggestUp' :year='year.previous')] &rarr; #[position(:song='biggestUp' :year='year')])
-            span(v-else) /
-        tr
-          th Grootste daler
-          td
-            span(v-if='biggestDown') #[song-link(:song='biggestDown')] - #[song-artist-link(:song='biggestDown')] (#[position(:song='biggestDown' :year='year.previous')] &rarr; #[position(:song='biggestDown' :year='year')])
-            span(v-else) /
-
-  div(id="exits")
-
-  ui-card(v-if='exits.length' title="Exits")
-    table.lijst.perVijf
-      tbody
-        tr
-          th.r
-            | {{year.previous.yyyy}}
-          th.a Artiest
-          th Titel
-          th.releaseYear
-            | Jaar
-        tr(v-for='song in exits')
-          td.r
-            position(:song='song' :year='year.previous')
-          td.a
-            song-artist-link(:song='song')
-          td
-            song-link(:song='song')
-          td.releaseYear
-            | {{song.album.releaseYear}}
-
-  ui-card(v-if='newSongs.length' title="Nieuwkomers")
-    table.lijst.perVijf
-      tbody
-        tr
-          th.r
-            | {{year.yyyy}}
-          th.a Artiest
-          th Titel
-          th
-          th.releaseYear
-            | Jaar
-        tr(v-for='song in newSongs')
-          td.r
-            position(:song='song' :year='year')
-          td.a
-            song-artist-link(:song='song')
-          td
-            song-link(:song='song')
-          td
-            span(v-if='song.isReEntry(years, year)') Re-entry
-          td.releaseYear
-            | {{song.album.releaseYear}}
-
-  ui-card(v-if='analysis' title="Interessante feiten")
-    .analysis
-      div(v-for='text in analysis')
-        make-links(:text='text')
+  ui-tabs(:tabs="tabs")
+    nuxt-page(:songs='songs' :year='year' :analysis='analysis' :exits="exits" :newSongs="newSongs")
 </template>
 
 <script>
@@ -96,6 +15,19 @@ div
 
   export default defineNuxtComponent({
     computed: {
+      tabs() {
+        const tabs = [{ to: `/lijst/${this.year.yyyy}`, title: 'De lijst' }]
+        if (this.exits.length) {
+          tabs.push({ to: `/lijst/${this.year.yyyy}/exits`, title: 'Exits', subtitle: "top 100" })
+        }
+        if (this.newSongs.length) {
+          tabs.push({ to: `/lijst/${this.year.yyyy}/nieuw`, title: 'Nieuwkomers', subtitle: "top 100" })
+        }
+        if (this.analysis) {
+          tabs.push({ to: `/lijst/${this.year.yyyy}/analyse`, title: 'Analyse' })
+        }
+        return tabs
+      },
       years() {
         return useRootStore().years;
       },
@@ -104,9 +36,6 @@ div
       },
       songs() {
         return useRootStore().listTop100(this.year);
-      },
-      songsExtended() {
-        return useRootStore().list(this.year);
       },
       newSongs() {
         if (this.year.previous) {
@@ -138,29 +67,6 @@ div
             return null;
           }
         }
-      },
-      highestNew() {
-        return _.first(this.newSongs);
-      },
-      biggestUp() {
-        return _.last(
-          _.sortBy(
-            this.songs.filter(song => {
-              return song.position(this.year.previous) && song.position(this.year) < song.position(this.year.previous);
-            }),
-            [song => song.position(this.year.previous) - song.position(this.year), song => -song.position(this.year)]
-          )
-        );
-      },
-      biggestDown() {
-        return _.last(
-          _.sortBy(
-            this.songs.filter(song => {
-              return song.position(this.year.previous) && song.position(this.year) > song.position(this.year.previous);
-            }),
-            [song => song.position(this.year) - song.position(this.year.previous), song => -song.position(this.year)]
-          )
-        );
       }
     },
     async asyncData() {
@@ -183,20 +89,9 @@ div
 </script>
 
 <style lang="scss" scoped>
-  div.analysis {
-    font-size: 14px;
-
-    div {
-      padding-bottom: 6px;
-      margin-bottom: 6px;
-      border-bottom: 1px dotted #ddd;
-    }
-  }
-
   .releaseYear {
     @media (max-width: 660px) {
       display: none;
     }
   }
-
 </style>

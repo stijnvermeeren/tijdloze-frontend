@@ -97,10 +97,10 @@ export default class Song extends Model {
     return years.filter(year => this.position(year)).length;
   }
 
-  isReEntry(years, year) {
+  isReEntry(year) {
     return this.position(year) &&
       year.previous &&
       !this.position(year.previous) &&
-      !years.find(year => this.position(year)).equals(year);
+      !useRootStore().years.find(year => this.position(year)).equals(year);
   }
 }

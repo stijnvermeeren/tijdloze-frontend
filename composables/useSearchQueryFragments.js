@@ -1,7 +1,6 @@
 import {normalize} from "~/utils/string";
 
 export const useSearchQueryFragments = (query) => {
-  console.log(query)
   if (!query) {
     return []
   }
