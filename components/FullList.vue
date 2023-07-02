@@ -1,22 +1,34 @@
 <template lang="pug">
 ui-card
   template(#title) De lijst
-  div.fullList(v-if='songs.length > 0')
-    div.content(v-if='songs.length > 20')
+  template(#buttons)
+    v-text-field.filter(
+      v-model="filterQuery"
+      label="Zoeken in de lijst"
+      persistent-placeholder
+      hide-details
+      clearable
+      density="compact"
+    )
+      template(#prepend-inner)
+        v-icon(:icon="mdiMagnify")
+  div.fullList(v-if='filteredSongs.length > 0')
+    div.content(v-if='filteredSongs.length > 20')
       div.wrapper
-        RecycleScroller.scroller(:items="songs" :item-size="60" key-field="id" :buffer="40")
+        RecycleScroller.scroller(:items="filteredSongs" :item-size="60" key-field="id" :buffer="40")
           template(#default="{item}")
             full-list-entry(:song="item" :year="year")
     div(v-else)
-      full-list-entry(v-for="song in songs" :key="song.id" :song="song" :year="year")
+      full-list-entry(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
 
   p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script setup>
 import Year from "../orm/Year";
+import {mdiMagnify} from "@mdi/js";
 
-defineProps({
+const props = defineProps({
   year: {
     type: Year
   },
@@ -24,26 +36,38 @@ defineProps({
     type: Array
   }
 })
+
+const filterQuery = ref("")
+
+const filteredSongs = computed(() => {
+  const queryFragments = useSearchQueryFragments(filterQuery.value)
+  return useSearchFilter(queryFragments, props.songs, useSearchSongContent)
+})
 </script>
 
 <style lang="scss">
-  div.content {
-    flex: 100% 1 1;
-    position: relative;
-    height: 400px;
+.filter {
+  width: 320px;
+  max-width: 50vw;
+}
 
-    .wrapper {
-      overflow: hidden;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
+div.content {
+  flex: 100% 1 1;
+  position: relative;
+  height: 400px;
 
-      .scroller {
-        width: 100%;
-        height: 100%;
-      }
+  .wrapper {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .scroller {
+      width: 100%;
+      height: 100%;
     }
   }
+}
 </style>

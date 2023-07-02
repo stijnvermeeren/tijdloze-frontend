@@ -52,6 +52,8 @@
   import Album from "@/orm/Album";
   import {normalize} from "@/utils/string";
   import {useRepo} from "pinia-orm";
+  import {useSearchArtistContent} from "~/composables/useSearchArtistContent";
+  import {useSearchQueryFragments} from "~/composables/useSearchQueryFragments";
 
   export default {
     props: {
@@ -87,26 +89,6 @@
       }
     },
     computed: {
-      queryFragments() {
-        const ignoredWords = new Set(["feat", "ft", "and", "en"]);
-        // Don't always ignore "live", otherwise we can't find the band "Live"
-        const ignoredWordsAtEnd = new Set(["live", "unplugged"]);
-        // Don't always ignore "the", otherwise we can't find the band "The The"
-        const ignoredWordsAtBeginning = new Set(["the"]);
-
-        let tokens = this.query
-            .split(/[ .,&\-\/']+/)
-            .map(normalize)
-            .filter(fragment => !ignoredWords.has(fragment));
-
-        if (tokens.length > 1 && ignoredWordsAtEnd.has(tokens.at(-1))) {
-          tokens = tokens.slice(0, -1);
-        }
-        if (tokens.length > 1 && ignoredWordsAtBeginning.has(tokens.at(0))) {
-          tokens = tokens.slice(1);
-        }
-        return tokens;
-      },
       allArtists() {
         return useRepo(Artist).all().filter(this.artistFilter);
       },
@@ -121,9 +103,10 @@
           return []
         }
 
-        const artists = this.search(this.allArtists, this.artistMatchAttribute, 'artist');
-        const songs = this.search(this.allSongs, this.songMatchAttribute, 'song');
-        const albums = this.search(this.allAlbums, this.albumMatchAttribute, 'album');
+        const queryFragments = useSearchQueryFragments(this.query)
+        const artists = this.search(queryFragments, this.allArtists, useSearchArtistContent, 'artist');
+        const songs = this.search(queryFragments, this.allSongs, useSearchSongContent, 'song');
+        const albums = this.search(queryFragments, this.allAlbums, useSearchAlbumContent, 'album');
 
         const sortedResults = _.sortBy(
           _.concat(artists, songs, albums),
@@ -149,33 +132,8 @@
       }
     },
     methods: {
-      artistMatchAttribute(artist) {
-        let matchData = artist.fullName;
-        if (artist.aliases) {
-          matchData += ` ${artist.aliases}`
-        }
-        return matchData
-      },
-      songMatchAttribute(song) {
-        let matchData = `${song.title} ${this.artistMatchAttribute(song.artist)}`;
-        if (song.aliases) {
-          matchData += ` ${song.aliases}`
-        }
-        if (song.secondArtist) {
-          matchData += ` ${this.artistMatchAttribute(song.secondArtist)}`
-        }
-        return matchData;
-      },
-      albumMatchAttribute(album) {
-        return `${album.title} ${album.artist.fullName}`;
-      },
-      search(data, matchAttribute, type) {
-        return data.filter(item => {
-          return _.every(
-            this.queryFragments,
-            fragment => !fragment || normalize(matchAttribute(item)).indexOf(fragment) > -1
-          )
-        }).map(item => {
+      search(queryFragments, data, matchAttribute, type) {
+        return useSearchFilter(queryFragments, data, matchAttribute).map(item => {
           let score = this.score(this.query, matchAttribute(item));
           if (this.songsYear && type === 'song') {
             score = score / 100 + item.position(this.songsYear);
