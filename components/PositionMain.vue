@@ -1,6 +1,6 @@
 <template lang="pug">
-span
-  span(v-if='song.position(year, true)') {{song.position(year, true)}}
+div
+  span.position(v-if='song.position(year, true)') {{song.position(year, true)}}
   span(v-else-if="song.probablyInList(year, true)") ?
   span(v-else) -
 </template>
@@ -13,3 +13,10 @@ defineProps({
   year: Year
 })
 </script>
+
+<style lang="scss" scoped>
+span.position {
+  font-size: 110%;
+  font-weight: bold;
+}
+</style>

@@ -7,7 +7,7 @@ div
   ui-card
     template(#title) Tijdloze van {{year.previous.yyyy}}
     div
-      full-list-entry(v-for='song in upcomingSongs' :song='song' :year='year.previous')
+      song-with-position(v-for='song in upcomingSongs' :song='song' :year='year.previous')
 </template>
 
 <script>

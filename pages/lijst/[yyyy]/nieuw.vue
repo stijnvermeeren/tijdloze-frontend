@@ -1,25 +1,8 @@
 <template lang="pug">
-table.lijst.perVijf
-  tbody
-    tr
-      th.r
-        | {{year.yyyy}}
-      th.a Artiest
-      th Titel
-      th
-      th.releaseYear
-        | Jaar
-    tr(v-for='song in newSongs')
-      td.r
-        position(:song='song' :year='year')
-      td.a
-        song-artist-link(:song='song')
-      td
-        song-link(:song='song')
-      td
-        span(v-if='song.isReEntry(year)') Re-entry
-      td.releaseYear
-        | {{song.album.releaseYear}}
+div(v-for='song in newSongs')
+  song-with-position(:song="song")
+    position-main(:song='song' :year='year')
+    position-annotation(v-if='song.isReEntry(year)') re-entry
 </template>
 
 <script setup>

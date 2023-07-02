@@ -10,7 +10,6 @@ div
 <script>
   import _ from 'lodash';
   import analyse from '~/utils/analyse';
-  import FullList from '../../components/FullList'
   import {useRootStore} from "~/stores/root";
 
   export default defineNuxtComponent({
@@ -28,11 +27,8 @@ div
         }
         return tabs
       },
-      years() {
-        return useRootStore().years;
-      },
       year() {
-        return this.years.find(year => year.yyyy.toString() === useRoute().params.yyyy);
+        return useRootStore().years.find(year => year.yyyy.toString() === useRoute().params.yyyy);
       },
       songs() {
         return useRootStore().listTop100(this.year);
@@ -87,11 +83,3 @@ div
     }
   })
 </script>
-
-<style lang="scss" scoped>
-  .releaseYear {
-    @media (max-width: 660px) {
-      display: none;
-    }
-  }
-</style>

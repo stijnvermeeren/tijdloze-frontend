@@ -1,7 +1,8 @@
 <template lang="pug">
-div.entry(:class='{lineAfter: song.position(year, true) % 5 === 0}')
+div.entry
   div.position
-    position-change(:song='song' :year='year')
+    slot
+      position-change(:song='song' :year='year')
   song-with-cover(:song="song")
 </template>
 

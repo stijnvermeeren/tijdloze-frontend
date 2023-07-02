@@ -15,7 +15,7 @@ div.fullList(v-if='filteredSongs.length > 0')
     div.wrapper
       RecycleScroller.scroller(:items="filteredSongs" :item-size="60" key-field="id" :buffer="40")
         template(#default="{item}")
-          full-list-entry(:song="item" :year="year")
+          song-with-position(:song="item" :year="year")
   div(v-else)
     full-list-entry(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
 
@@ -47,7 +47,7 @@ const filteredSongs = computed(() => {
 div.content {
   flex: 100% 1 1;
   position: relative;
-  height: 400px;
+  height: 560px;
 
   .wrapper {
     overflow: hidden;

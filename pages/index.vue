@@ -10,7 +10,7 @@ div
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') StuBru]. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je #[a(href='https://stubru.be/rubriek/de-tijdloze/') op de website van StuBru] zijn.
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
     template(v-if="top5.length")
-      full-list-entry(v-for='song in top5' :song='song' :year="tableYear")
+      song-with-position(v-for='song in top5' :song='song' :year="tableYear")
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')

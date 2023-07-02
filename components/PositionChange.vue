@@ -1,14 +1,10 @@
 <template lang="pug">
 div(:class="{singleLine: singleLine}")
-  div
-    span.position(v-if='position') {{position}}
-    span(v-else-if="song.probablyInList(year, true)") ?
-    span(v-else) -
-  div.change(v-if="position")
-    span.equal(v-if='equal') =
-    span.down(v-if='down') -{{diff}}
-    span.up(v-if='up') +{{diff}}
-    span.up(v-if='isNew') nieuw
+  position-main(:song="song" :year="year")
+  position-annotation(v-if='position && equal' type="equal") =
+  position-annotation(v-if='position && down' type="down") -{{diff}}
+  position-annotation(v-if='position && up' type="up") +{{diff}}
+  position-annotation(v-if='position && isNew' type="up") nieuw
 </template>
 
 <script setup>
@@ -55,30 +51,9 @@ const down = computed(() => {
 div.singleLine {
   display: flex;
   justify-content: space-evenly;
-  div.position {
+
+  > * {
     width: 40%;
-  }
-  div.change {
-    width: 40%;
-  }
-}
-
-span.position {
-  font-size: 110%;
-  font-weight: bold;
-}
-
-div.change {
-  font-size: 80%;
-
-  span.up {
-    color: #007700;
-  }
-  span.down {
-    color: #aa0000;
-  }
-  span.equal {
-    color: #777;
   }
 }
 </style>
