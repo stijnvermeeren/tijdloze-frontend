@@ -17,9 +17,11 @@ div.fullList(v-if='filteredSongs.length > 0')
         template(#default="{item}")
           song-with-position(:song="item" :year="year")
   div(v-else)
-    full-list-entry(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
+    song-with-position(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
 
-p(v-else) Nog geen nummers in de Tijdloze van {{year.yyyy}}.
+p(v-else)
+  template(v-if="filterQuery") Geen passende nummers gevonden in de Tijdloze van {{year.yyyy}}.
+  template(v-else="filterQuery") Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
 <script setup>
