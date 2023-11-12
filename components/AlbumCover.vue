@@ -1,5 +1,5 @@
 <template lang="pug">
-v-img.cover(v-if="cover" :src="`/data/covers/${cover}.jpg`")
+img.cover(v-if="cover" :src="`/data/covers/${cover}.jpg`")
 v-icon.cover(v-else :icon="mdiMusicBoxOutline" color="grey")
 </template>
 
