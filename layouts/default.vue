@@ -22,7 +22,6 @@
 <script>
   export default defineNuxtComponent({
     mounted() {
-      console.log("mounted")
       this.$auth.loginSilently()
     }
   })

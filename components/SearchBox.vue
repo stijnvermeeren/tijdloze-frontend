@@ -90,15 +90,12 @@
     },
     computed: {
       allArtists() {
-        console.log("allArtists")
         return useRepo(Artist).all().filter(this.artistFilter);
       },
       allSongs() {
-        console.log("allSongs")
         return useRepo(Song).with('artist').with('secondArtist').get().filter(this.songFilter);
       },
       allAlbums() {
-        console.log("allAlbums")
         return useRepo(Album).with('artist').get().filter(this.albumFilter);
       },
       results() {
