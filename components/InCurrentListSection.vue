@@ -73,4 +73,17 @@ tr.album {
     }
   }
 }
+
+tr.top100 > td {
+  &.current {
+    font-weight: bold;
+    text-align: center;
+    width: 80px;
+  }
+
+  &.song {
+    font-weight: bold;
+    text-align: left;
+  }
+}
 </style>
