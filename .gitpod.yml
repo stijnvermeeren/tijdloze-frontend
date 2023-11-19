@@ -1,0 +1,15 @@
+image:
+  file: .gitpod.Dockerfile
+
+additionalRepositories:
+  - url: https://github.com/stijnvermeeren/tijdloze-api
+    checkoutLocation: tijdloze-api
+
+tasks:
+  - name: backend
+    before: cd ../tijdloze-api
+    command: sbt run
+
+  - name: frontend
+    init: npm install && npm run build
+    command: npm run dev
