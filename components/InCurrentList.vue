@@ -1,6 +1,6 @@
 <template lang="pug">
 div.container
-  table(v-if='filteredAndSorted.length')
+  table(v-if='(songs && songs.length) || (albums && albums.length)')
     tbody
       tr
         th.previous
@@ -8,15 +8,13 @@ div.container
         th.current
           year-link(:year='currentYear')
         th.song
-      tr(v-for='song in filteredAndSorted' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
-        td.previous
-          position-change(:year='currentYear.previous' :song='song' single-line)
-        td.current
-          position-change(:year='currentYear' :song='song' single-line)
-        td.song
-          song-with-second-artist-link(:song='song' :artist='artist')
+      template(v-if="albums")
+        template(v-for="album in albums")
+          in-current-list-section(:album='album' :songs="album.songs" :artist="artist")
+      template(v-if="songs")
+        in-current-list-section(:songs='songs' :artist="artist")
   div(v-else)
-    | Geen nummers in de top 100 van #[year-link(:year='currentYear')].
+    | Nog geen nummers in de Tijdloze.
 </template>
 
 <script>
@@ -28,6 +26,7 @@ div.container
     name: 'InCurrentList',
     props: {
       songs: Array,
+      albums: Array,
       artist: Artist
     },
     computed: {
@@ -36,37 +35,6 @@ div.container
       },
       previousYear() {
         return this.currentYear.previous;
-      },
-      filteredAndSorted() {
-        const filtered = this.songs.filter(song => song.position(this.currentYear, true) || song.position(this.previousYear, true));
-        return _.sortBy(
-          filtered,
-          [
-            song => this.sortBlock(song),
-            song => song.position(this.currentYear, true),
-            song => song.position(this.previousYear, true)
-          ]
-        )
-      }
-    },
-    methods: {
-      sortBlock(song) {
-        const yearPosition = song.position(this.currentYear, true);
-        const previousYearPosition = song.position(this.previousYear, true)
-
-        if (!yearPosition && previousYearPosition && previousYearPosition <= 100) {
-          // songs that are probably still in the top 100
-          return 1;
-        } else if (yearPosition) {
-          // songs that are already in the list
-          return 2;
-        } else {
-          return 3;
-        }
-      },
-      sortPosition(song, year, defaultValue) {
-        const position = song.position(year, true);
-        return position > 0 ? position : defaultValue;
       }
     }
   }
@@ -78,10 +46,16 @@ div.container
     table-layout: fixed;
     margin: 0 20px;
 
-    td, th {
+    :deep(td), th {
       &.previous {
         text-align: center;
-        width: 120px;
+        width: 80px;
+
+        span.position {
+          font-weight: normal;
+          color: #444;
+          font-size: 80%;
+        }
       }
 
       &.current {

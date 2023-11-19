@@ -19,16 +19,8 @@ div
   ui-card(title="In de Tijdloze")
     template(#subtitle)
       entry-count(:songs='album.songs')
-    template(#buttons)
-      v-btn-toggle(v-model="tab" density="compact" color="blue" variant="outlined")
-        v-btn(value='tijdloze') Tijdloze {{currentYear.yyyy}}
-        v-btn(value='all') Alle Tijdloze nummers
-    div(v-if="tab === 'tijdloze'")
+    div
       in-current-list(:songs='album.songs')
-    div(v-if="tab === 'all'")
-      ul(v-if='album.songsSorted')
-        li(v-for='song in album.songsSorted')
-          song-with-second-artist-link(:song='song')
 
   ui-card(v-if='top100Songs.length' title="Grafiek")
     d3-graph(:songs='top100Songs')
@@ -42,11 +34,6 @@ div
   import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
-    data() {
-      return {
-        tab: 'tijdloze'
-      }
-    },
     computed: {
       album() {
         return useRepo(Album)

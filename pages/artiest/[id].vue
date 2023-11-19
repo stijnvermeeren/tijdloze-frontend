@@ -19,20 +19,11 @@ div
     template(#subtitle)
       entry-count(:songs='artist.allSongs')
     template(#buttons)
-      v-btn-toggle(v-model="tab" density="compact" color="blue" variant="outlined")
-        v-btn(value='tijdloze') Tijdloze {{currentYear.yyyy}}
-        v-btn(value='album') Per album
-    div(v-if="tab === 'tijdloze'")
+      v-checkbox(v-model="byAlbum" density="compact" color="blue" variant="outlined" label="Per album")
+    div(v-if="!byAlbum")
       in-current-list(:songs='artist.allSongs' :artist='artist')
-    div(v-if="tab === 'album'")
-      ul(v-if='artist.allAlbums')
-        li(v-for='album in artist.allAlbums')
-          album-link(:album='album')
-          |  ({{album.releaseYear}})
-          ul(v-if='album.songsSorted.length')
-            template(v-for='song in album.songsSorted' key='song.id')
-              li(v-if="song.artistId === artist.id || song.secondArtistId === artist.id")
-                song-with-second-artist-link(:song='song' :artist="artist")
+    div(v-else)
+      in-current-list(:albums='artist.allAlbums' :artist='artist')
 
   ui-card(v-if='top100Songs.length' title="Grafiek")
     d3-graph(:songs='top100Songs')
@@ -51,7 +42,7 @@ div
     components: {ExternalLinkBtn},
     data() {
       return {
-        tab: 'tijdloze',
+        byAlbum: false,
         mdiLinkIcon: mdiLink
       }
     },

@@ -50,7 +50,7 @@ Title {{song.title}} ({{song.artist.fullName}})
 </template>
 
 <script>
-  import {probablyInListIntervals} from '~/utils/intervals'
+import {allEntriesIntervals, probablyInListIntervals} from '~/utils/intervals'
   import { idFromSlug } from '~/utils/slug'
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
@@ -84,7 +84,7 @@ Title {{song.title}} ({{song.artist.fullName}})
         return links;
       },
       intervals() {
-        return probablyInListIntervals([this.song], this.years, true);
+        return allEntriesIntervals([this.song], this.years, true);
       }
     },
     async asyncData() {
