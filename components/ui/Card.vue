@@ -22,6 +22,10 @@ defineProps({
 </script>
 
 <style lang="scss" scoped>
+.v-card {
+  z-index: auto; // avoiding a new "stacking context" for the v-card, so that search results can overflow correctly
+}
+
 .cardTitle {
   display: flex;
   justify-content: space-between;
