@@ -2,12 +2,12 @@
 div
   .description
     ui-alert.alert(v-if="listInProgress")
-      | De #[strong Tijdloze] van {{year.yyyy}} wordt momenteel uitgezonden door #[a(href='https://stubru.be/') StuBru].
+      | De Tijdloze is een radioprogramma van Studio Brussel. Officiële informatie vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
       br
-      | Op deze website kan je de lijst en alle bijhorende statistieken volgen.
+      | De Tijdloze van {{year.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
 
     ui-alert(v-else title="Officiële informatie / stemmen")
-      | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') StuBru]. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je #[a(href='https://stubru.be/rubriek/de-tijdloze/') op de website van StuBru] zijn.
+      | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') StuBru]. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX] zijn.
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
     template(v-if="top5.length")
       song-with-position(v-for='song in top5' :song='song' :year="tableYear")

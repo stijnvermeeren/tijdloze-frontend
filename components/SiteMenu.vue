@@ -9,9 +9,9 @@ div
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
         template(v-if='listInProgress')
           v-list-item(:to="`/lijst/${currentYear.yyyy}`") De Tijdloze {{currentYear.yyyy}}
-          v-list-item.subItem(to="/lijst/opkomst") Nog op komst...
+          v-list-item.subItem(v-if="top100InProgress" to="/lijst/opkomst") Nog op komst...
           v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
-          v-list-item.subItem(to="/polls") Polls
+          v-list-item.subItem(v-if="top100InProgress" to="/polls") Polls
         v-list-group.lists(value="/lijst")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze van ...
@@ -92,6 +92,9 @@ div
       },
       listInProgress() {
         return useRootStore().listInProgress;
+      },
+      top100InProgress() {
+        return this.listInProgress() && useRootStore().lastPosition <= 100;
       },
       currentYear() {
         return useRootStore().currentYear;
