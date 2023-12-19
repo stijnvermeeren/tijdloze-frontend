@@ -94,7 +94,7 @@ div
         return useRootStore().listInProgress;
       },
       top100InProgress() {
-        return this.listInProgress() && useRootStore().lastPosition <= 100;
+        return this.listInProgress && useRootStore().lastPosition <= 100;
       },
       currentYear() {
         return useRootStore().currentYear;
