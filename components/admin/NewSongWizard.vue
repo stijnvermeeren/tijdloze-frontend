@@ -160,7 +160,7 @@ div
     methods: {
       checkAlbum() {
         if (this.albumId && this.album?.artistId !== this.artistId) {
-          this.albumId = undefined;
+          this.albumId = 0;
         }
       },
       initialData(preset) {
@@ -172,7 +172,7 @@ div
             name: '',
             countryId: undefined
           },
-          albumId: undefined,
+          albumId: 0,
           albumDetails: {
             title: '',
             releaseYear: undefined
@@ -203,6 +203,8 @@ div
           data.albumDetails.releaseYear = preset.albumYear;
           if (album) {
             data.albumId = album.id;
+          } else {
+            data.albumId = 0;
           }
 
           data.songDetails.title = preset.songTitle;

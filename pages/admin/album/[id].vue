@@ -37,6 +37,12 @@ div
           v-model='fullAlbumData.urlAllMusic'
           :query='`${fullAlbumData.title} ${artist.fullName}`'
         )
+    v-row(dense)
+      v-col
+        admin-musicbrainz-input(
+          v-model='fullAlbumData.musicbrainzId'
+          musicbrainz-category="release-group"
+        )
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')

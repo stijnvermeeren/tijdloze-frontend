@@ -47,6 +47,12 @@ div
     v-row(dense)
       v-col
         admin-artist-spotify-input(v-model='fullArtistData.spotifyId')
+    v-row(dense)
+      v-col
+        admin-musicbrainz-input(
+          v-model='fullArtistData.musicbrainzId'
+          musicbrainz-category="artist"
+        )
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')
