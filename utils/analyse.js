@@ -389,5 +389,22 @@ export default [
       `[*November Rain] stond 28 jaar op rij in de top 100, maar verdwijnt dit jaar. Ook [*Whole Lotta Rosie] had al 27 top 100-noteringen in de geschiedenis van de Tijdloze. De andere drie exits zijn [Fix You], [I Say a Little Prayer] en [My Hero].`,
       `De Tijdloze Countdown werd dit jaar uitgebreid naar 2021 nummers.`
     ]
+  },
+  {
+    yyyy: 2022,
+    analyse: [
+      `[*The Chain] van [Fleetwood Mac] staat voor het tweede jaar op 1 in de Tijdloze. Ook alle andere nummers van Fleetwood Mac stijgen, niet alleen in de top 100, maar zelfs in de hele countdown! [*Black] van [Pearl Jam] blijft op 2.`,
+      `[*Wish You Were Here] van [Pink Floyd] stijgt van 4 naar 3, de hoogste positie ooit voor dit nummer. Pink Floyd heeft ook voor het eerst vier noteringen in de Tijdloze, dankzij [Time;Pink Floyd], dat voor de eerste keer in de top 100 staat.`,
+      `[*A Forest] van [The Cure] stijgt van 8 naar 4. Het nummer stond al in iedere editie van de Tijdloze  in de top 20 (iets wat voor de rest enkel [Stairway to Heaven] kan zeggen), maar nog nooit zo hoog als dit jaar (op plaats 4).`,
+      `Voor [*Thinking of a Place] van [The War on Drugs] is het nog maar het derde jaar in de Tijdloze, zij stijgen van 14 naar 8. Ook [*Mr. Brightside] van [The Killers] staat voor het eerst in de top 10,  zij stijgen van 12 naar 9.`,
+      `Onder meer dankzij de populaire Netflix-serie Stranger Things, is [*Running Up That Hill (A Deal with God)] van [Kate Bush] de hoogste nieuwkomer. Vorig jaar stond de plaat nog op 274, dit jaar komt ze nieuw binnen op 37.`,
+      `De [*Foo Fighters] zien [The Pretender] uit de top 100 wegvallen, maar kunnen voor de rest niet klagen. [Everlong] komt na drie jaar weer de top 20 binnen en [My Hero] is de hoogste re-entry op 58.`,
+      `[*Meat Loaf], dit jaar nog overleden, heeft een re-entry met [Paradise by the Dashboard Light], die stijgt van 180 naar 98. Ook [*Arno] van [T.C. Matic] stierf dit jaar, hij komt opnieuw binnen met [O La La La] op 76, [Les yeux de ma mère] komt zelfs helemaal nieuw binnen op 54. [Losing My Religion] van [R.E.M.] staat na vijf jaar afwezigheid opnieuw in de top 100 (plaats 97), voor [Yellow] van [Coldplay] (plaats 87) is het zelfs 15 jaar geleden dat het nog in de Tijdloze stond. Tenslotte is ook [November Rain] van [Guns n' Roses] terug van weggeweest: vorig jaar stond het nog op 256, dit jaar komt het nummer opnieuw binnen op 75.`,
+      `[Paolo Nutini] is met [*Iron Sky] de sterkste stijger. Vorig jaar kwam hij nieuw binnen op 88, dit jaar stijgt hij meteen 56 plaatsen, naar 32.`,
+      `De sterkste daler in de top 100 is [Red Zebra] met [*I Can't Live in a Living Room]. Het nummer heeft er een hobbelig parcour op zitten: in 2013 was het de sterkste stijger, waarna het in 2014 uit de top 100 viel. Vorig jaar stond het nog op plaats 58, dit jaar zakt het 37 plaatsen, naar 95.`,
+      `Het is een minder jaar voor [*dEUS]: [Instant Street] daalt 14 plaatsen, [Suds & Soda] valt net uit de lijst, en ook in de countdown waren bijna alle nummers gedaald.`,
+      `Ook voor [*Arcade Fire] is het geen goede editie: [Rebellion (Lies)] daalt 24 plaatsen, net zoals op één na al hun noteringen in de countdown.`,
+      `Tien nummers zijn uit de Tijdloze gevallen, daar zitten nog een aantal vaste waarden bij. [Karma Police] van [Radiohead] stond tot nu 25 jaar onafgebroken in De Tijdloze, [Jeremy] van [Pearl Jam] stond 24 jaar na elkaar in de lijst, en [Thunderstruck] van [AC/DC] staat er na 20 jaar niet meer in. Ook [Papillon;Editors] van [Editors] (na twaalf jaar) en [The Pretender] van [Foo Fighters] (na elf jaar) komen niet meer in De Tijdloze voor.`
+    ]
   }
 ]

@@ -32,7 +32,7 @@ div
         |
         | wordt
         |
-        make-links(text="<strong>vet</strong> <em>scheef</em>")
+        make-links(:text="textExample")
     div
       v-textarea(v-model='analysis' :rows="10")
     div(v-if="outOfDate")
@@ -49,6 +49,10 @@ div
           li(v-for='text in analysisPreview')
             make-links(:text='text')
 </template>
+
+<script setup>
+const textExample = "<strong>vet</strong> <em>scheef</em>"
+</script>
 
 <script>
   import {useRootStore} from "~/stores/root";
