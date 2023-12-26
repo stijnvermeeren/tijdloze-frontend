@@ -39,5 +39,8 @@ export default defineNuxtPlugin(async nuxtApp => {
     return list
   })
 
+  // without a flush, on the server-side, we sometimes get old data back even after inserting the new data... :'(
+  useRepo(List).flush()
+
   useRepo(List).insert(lists);
 });
