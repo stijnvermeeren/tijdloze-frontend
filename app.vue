@@ -7,8 +7,8 @@
 <script setup lang="ts">
 useHead({
     titleTemplate: title => {
-        if (title === 'tijdloze.rocks') {
-            return title
+        if (!title || title === 'tijdloze.rocks') {
+            return 'tijdloze.rocks'
         } else {
             return `${title} - tijdloze.rocks`
         }
