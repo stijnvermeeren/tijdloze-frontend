@@ -1,6 +1,7 @@
 import vuetify from 'vite-plugin-vuetify';
 
 module.exports = defineNuxtConfig({
+  ssr: false,
   runtimeConfig: {
     public: {
       apiUriClient: "http://localhost:9000/",
