@@ -68,7 +68,7 @@ div
         div(v-if="nextSong")
           div
             strong {{nextSong.artist.fullName}} - {{nextSong.title}}
-            |  (in {{previousYear.yyyy}} op positie #[position(:year='previousYear', :song='nextSong')])
+            |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
           div(v-if='nextSongFullData && nextSongFullData.spotifyId')
             spotify(:spotify-id='nextSongFullData.spotifyId')
           div
