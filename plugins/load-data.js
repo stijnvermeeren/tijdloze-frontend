@@ -23,13 +23,6 @@ export default defineNuxtPlugin(async nuxtApp => {
   rootStore.setCommentsOn(commentsOnResponse.value.value === 'on')
   rootStore.updateCoreData(coreDataResponse.value)
 
-  if (rootStore.listInProgress) {
-    const poll = await useApiFetch('poll/latest');
-    if (poll.year === rootStore.currentYear.yyyy) {
-      usePollStore().setCurrentPoll(poll);
-    }
-  }
-
   useRepo(Artist).insert(coreDataResponse.value.artists);
   useRepo(Album).insert(coreDataResponse.value.albums);
   useRepo(Song).insert(coreDataResponse.value.songs);
@@ -43,4 +36,11 @@ export default defineNuxtPlugin(async nuxtApp => {
   useRepo(List).flush()
 
   useRepo(List).insert(lists);
+
+  if (rootStore.listInProgress) {
+    const poll = await useApiFetch('poll/latest');
+    if (poll.year === rootStore.currentYear.yyyy) {
+      usePollStore().setCurrentPoll(poll);
+    }
+  }
 });
