@@ -50,10 +50,6 @@ div
             make-links(:text='text')
 </template>
 
-<script setup>
-const textExample = "<strong>vet</strong> <em>scheef</em>"
-</script>
-
 <script>
   import {useRootStore} from "~/stores/root";
 
@@ -62,6 +58,10 @@ const textExample = "<strong>vet</strong> <em>scheef</em>"
       definePageMeta({
         middleware: 'admin'
       })
+
+      return {
+        textExample: "<strong>vet</strong> <em>scheef</em>"
+      }
     },
     data() {
       return {
