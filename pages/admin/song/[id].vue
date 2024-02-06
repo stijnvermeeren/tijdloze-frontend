@@ -104,7 +104,7 @@ div
         if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
           this.processing = true;
           await useApiFetchDelete(`song/${this.fullSongData.id}`)
-          await navigateTo(`/database`)
+          await useRouter().push(`/artiest/${this.fullSongData.artistId}`);
         }
       }
     },

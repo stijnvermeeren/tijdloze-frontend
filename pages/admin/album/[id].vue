@@ -83,7 +83,7 @@ div
         if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
           this.processing = true;
           await useApiFetchDelete(`album/${this.fullAlbumData.id}`)
-          await useRouter().push(`/database`);
+          await useRouter().push(`/artiest/${this.fullAlbumData.artistId}`);
         }
       }
     },
