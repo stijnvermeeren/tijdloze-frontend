@@ -32,8 +32,11 @@ tr(v-for='song in sortedSongs' :key='song.id' :class="{ top100: song.probablyInL
       },
       sortedSongs() {
         // Only show songs linked to the current artist (in case this album is actually from a different artist)
+        const songs = this.artist ? (
+            this.songs.filter(song => song.artistId === this.artist.id || song.secondArtistId === this.artist.id)
+        ) : this.songs
         return _.sortBy(
-          this.songs.filter(song => song.artistId === this.artist.id || song.secondArtistId === this.artist.id),
+          songs,
           [
             song => this.sortBlock(song),
             song => song.position(this.currentYear, true),
