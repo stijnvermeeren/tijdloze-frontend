@@ -1,5 +1,7 @@
 # Tijdloze Website frontend
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N4N5UCZQG)
+
 This project contains the frontend of the [Tijdloze Website](https://tijdloze.stijnshome.be/). It is built as a single page application with [Vue.js](https://vuejs.org/) and the [Nuxt framework](https://nuxtjs.org/). There is a separate [API project](https://github.com/stijnvermeeren/tijdloze-api) that provides the backend.
 
 The Tijdloze Website is maintained by [Stijn Vermeeren](https://github.com/stijnvermeeren). Other contributions to improve the functionality and/or the layout of the website are very welcome. Please reach out if you are interested in contributing.

@@ -63,6 +63,12 @@ div
           v-list-item(to="/admin/settings") Instellingen
 
     login
+
+    div.kofi
+      v-btn(rounded href='https://ko-fi.com/tijdloze_rocks' size="small" color="brown" variant="tonal")
+        img(src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofiimg")
+        | Steun ons op Kofi
+
     v-btn.cross-button(@click='isOpen = false' circle size="small" variant="text" :icon="mdiClose")
 
   v-app-bar-nav-icon.burger-button(variant="text" @click.stop="isOpen = !isOpen")
@@ -167,6 +173,15 @@ div
 
 <style lang="scss" scoped>
   @use "../assets/styleConfig";
+
+  .kofi {
+    margin-top: 30px;
+    text-align: center;
+    img.kofiimg {
+      width: 24px;
+      margin-right: 5px;
+    }
+  }
 
   .v-list {
     color: styleConfig.$hoverLinkColor;
