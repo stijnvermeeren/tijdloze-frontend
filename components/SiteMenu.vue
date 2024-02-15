@@ -67,7 +67,7 @@ div
     div.kofi
       v-btn(rounded href='https://ko-fi.com/tijdloze_rocks' size="small" color="brown" variant="tonal")
         img(src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofiimg")
-        | Steun ons op Kofi
+        | Steun ons op Ko-fi
 
     v-btn.cross-button(@click='isOpen = false' circle size="small" variant="text" :icon="mdiClose")
 
