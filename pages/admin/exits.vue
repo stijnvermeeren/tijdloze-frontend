@@ -16,10 +16,10 @@ div
     div
       ul
         li(v-for='song in exits', :key='song.id')
-          | {{song.artist.fullName}}
+          | {{song.artist.name}}
           template(v-if='song.secondArtist')
             |
-            | en {{song.secondArtist.fullName}}
+            | en {{song.secondArtist.name}}
           |
           | - {{song.title}}
           v-btn(@click='unmarkExit(song)') Terugzetten

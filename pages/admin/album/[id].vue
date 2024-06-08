@@ -22,20 +22,20 @@ div
         admin-wiki-url-input(
           v-model='fullAlbumData.urlWikiNl'
           lang='nl'
-          :query='`${fullAlbumData.title} ${artist.fullName}`'
+          :query='`${fullAlbumData.title} ${artist.name}`'
         )
     v-row(dense)
       v-col
         admin-wiki-url-input(
           v-model='fullAlbumData.urlWikiEn'
           lang='en'
-          :query='`${fullAlbumData.title} ${artist.fullName}`'
+          :query='`${fullAlbumData.title} ${artist.name}`'
         )
     v-row(dense)
       v-col
         admin-all-music-url-input(
           v-model='fullAlbumData.urlAllMusic'
-          :query='`${fullAlbumData.title} ${artist.fullName}`'
+          :query='`${fullAlbumData.title} ${artist.name}`'
         )
     v-row(dense)
       v-col

@@ -20,21 +20,21 @@
   #searchResults(v-if='query.length > 0')
     .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
       div(v-if="result.type === 'artist'")
-        | {{result.item.fullName}}
+        | {{result.item.name}}
       div(v-if="result.type === 'song'")
         | {{result.item.title}}
         span.info
-          | (nummer van #[span.artiest {{result.item.artist.fullName}}]
+          | (nummer van #[span.artiest {{result.item.artist.name}}]
           template(v-if='result.item.secondArtist')
             |
-            | en #[span.artiest {{result.item.secondArtist.fullName}}]
+            | en #[span.artiest {{result.item.secondArtist.name}}]
           template(v-if='songsYear && result.item.position(songsYear, true)')
             | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
           | )
       div(v-if="result.type === 'album'")
         | {{result.item.title}}
         span.info
-          | (album van #[span.artiest {{result.item.artist.fullName}}] uit {{result.item.releaseYear}})
+          | (album van #[span.artiest {{result.item.artist.name}}] uit {{result.item.releaseYear}})
     .more-suggestions(v-if='resultsCount > resultsLimit')
       | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
     .more-suggestions(v-if='resultsCount === 0')

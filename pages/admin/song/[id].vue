@@ -42,10 +42,10 @@ div
         v-textarea(v-model='fullSongData.lyrics' label="Lyrics" rows="5" hide-details)
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.fullName}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.name}`')
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.fullName}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.name}`')
     v-row(dense)
       v-col
         v-text-field(v-model='fullSongData.spotifyId' label="Spotify ID")

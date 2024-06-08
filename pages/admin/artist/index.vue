@@ -6,15 +6,8 @@ div
     v-row(dense)
       v-col
         v-text-field(
-          v-model='fullArtistData.namePrefix'
-          placeholder='The / Bob / ...'
-          label="Naam (prefix)"
-          hide-details
-        )
-      v-col
-        v-text-field(
           v-model='fullArtistData.name'
-          placeholder='Beatles / Dylan / ...'
+          placeholder='The Beatles / Bob Dylan / ...'
           label="Naam"
           hide-details
         )
@@ -34,7 +27,6 @@ definePageMeta({
 
 const processing = ref(false)
 const fullArtistData = ref({
-  namePrefix: '',
   name: '',
   countryId: undefined
 })

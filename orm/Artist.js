@@ -12,7 +12,6 @@ export default class Artist extends Model {
   static fields() {
     return {
       id: this.attr(null),
-      namePrefix: this.attr(null),
       name: this.attr(null),
       aliases: this.attr(null),
       countryId: this.attr(null),
@@ -24,11 +23,7 @@ export default class Artist extends Model {
   }
 
   get slug() {
-    return createSlug(this.fullName)
-  }
-
-  get fullName() {
-    return this.namePrefix ? `${this.namePrefix} ${this.name}` : this.name;
+    return createSlug(this.name)
   }
 
   get songsSorted() {

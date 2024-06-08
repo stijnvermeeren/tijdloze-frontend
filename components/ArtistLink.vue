@@ -9,6 +9,6 @@ const props = defineProps({
 })
 
 const content = computed(() => {
-  return props.text ? props.text : props.artist.fullName;
+  return props.text ? props.text : props.artist.name;
 })
 </script>

@@ -12,10 +12,10 @@ div
     :title="`Net toegevoegd op positie ${previousPosition} in ${currentYear.yyyy}`"
   )
     div
-      | {{ previousSong.artist.fullName }}
+      | {{ previousSong.artist.name }}
       template(v-if='previousSong.secondArtist')
         |
-        | en {{previousSong.secondArtist.fullName}}
+        | en {{previousSong.secondArtist.name}}
       |
       | - {{ previousSong.title }}
       |
@@ -67,7 +67,7 @@ div
 
         div(v-if="nextSong")
           div
-            strong {{nextSong.artist.fullName}} - {{nextSong.title}}
+            strong {{nextSong.artist.name}} - {{nextSong.title}}
             |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
           div(v-if='nextSongFullData && nextSongFullData.spotifyId')
             spotify(:spotify-id='nextSongFullData.spotifyId')

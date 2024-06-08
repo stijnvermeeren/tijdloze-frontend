@@ -4,7 +4,7 @@
     .year
       | {{hoverYear.yyyy}}
     .entry
-      | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}} ({{hoverYear.yyyy - tooltipSong.album.releaseYear}} jaar oud)
+      | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}} ({{hoverYear.yyyy - tooltipSong.album.releaseYear}} jaar oud)
   svg(
     :viewBox='`0 0 ${fullWidth} ${fullHeight}`'
     xmlns='http://www.w3.org/2000/svg'

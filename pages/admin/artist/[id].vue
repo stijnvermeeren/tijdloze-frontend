@@ -1,5 +1,5 @@
 <template lang="pug">
-Title Admin: Artist: {{this.fullName}}
+Title Admin: Artist: {{this.fullArtistData.name}}
 div
   h2 Artiest aanpassen
 
@@ -7,15 +7,8 @@ div
     v-row(dense)
       v-col
         v-text-field(
-          v-model='fullArtistData.namePrefix'
-          placeholder='The / Bob / ...'
-          label="Naam (prefix)"
-          hide-details
-        )
-      v-col
-        v-text-field(
           v-model='fullArtistData.name'
-          placeholder='Beatles / Dylan / ...'
+          placeholder='The Beatles / Bob Dylan / ...'
           label="Naam"
           hide-details
         )
@@ -34,16 +27,16 @@ div
         v-textarea(v-model='fullArtistData.notes' label="Opmerkingen" rows="2" auto-grow hide-details)
     v-row(dense)
       v-col
-        admin-official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullName} official`')
+        admin-official-url-input(v-model='fullArtistData.urlOfficial' :query='`${fullArtistData.name} official`')
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullName')
+        admin-wiki-url-input(v-model='fullArtistData.urlWikiNl' lang='nl' :query='fullArtistData.name')
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullName')
+        admin-wiki-url-input(v-model='fullArtistData.urlWikiEn' lang='en' :query='fullArtistData.name')
     v-row(dense)
       v-col
-        admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullName')
+        admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullArtistData.name')
     v-row(dense)
       v-col
         admin-artist-spotify-input(v-model='fullArtistData.spotifyId')
@@ -76,13 +69,6 @@ div
     computed: {
       disabled() {
         return this.processing || !this.fullArtistData.name
-      },
-      fullName() {
-        if (this.fullArtistData.namePrefix) {
-          return `${this.fullArtistData.namePrefix} ${this.fullArtistData.name}`
-        } else {
-          return this.fullArtistData.name;
-        }
       }
     },
     methods: {

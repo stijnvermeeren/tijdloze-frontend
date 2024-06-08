@@ -1,9 +1,9 @@
 <template lang="pug">
-Title {{artist.fullName}}
+Title {{artist.name}}
 div
   div.flexTitle
     page-title(icon='artist' icon-alt='Artiest')
-      h2 {{artist.fullName}}
+      h2 {{artist.name}}
     ui-admin-link-btn(:to="`/admin/artist/${artist.id}`") Admin: artist aanpassen
 
   div.links

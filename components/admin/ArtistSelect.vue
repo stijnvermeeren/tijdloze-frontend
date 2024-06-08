@@ -1,6 +1,6 @@
 <template lang="pug">
 div.d-flex.py-2
-  div(v-if='artist') {{artist.fullName}}
+  div(v-if='artist') {{artist.name}}
   template(v-if='editing')
     search-box.flex-grow-1(
       :song-filter='song => false'

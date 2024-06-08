@@ -73,10 +73,12 @@ div
         return useRootStore().currentYear;
       },
       tableYear() {
-        if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous) {
-          return this.year.previous;
-        } else {
-          return this.year;
+        if (this.year) {
+          if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous) {
+            return this.year.previous;
+          } else {
+            return this.year;
+          }
         }
       }
     },

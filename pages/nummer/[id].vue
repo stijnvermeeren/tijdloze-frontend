@@ -1,5 +1,5 @@
 <template lang="pug">
-Title {{song.title}} ({{song.artist.fullName}})
+Title {{song.title}} ({{song.artist.name}})
 .container
   div.flexTitle
     page-title(icon='song' icon-alt='Nummer')

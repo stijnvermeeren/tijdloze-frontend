@@ -7,7 +7,7 @@ div
       .year
         | {{hoverYear.yyyy}}
       .entry
-        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.fullName}} - {{tooltipSong.title}}
+        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}}
     svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
       g(:transform='`translate(${margin.left},${margin.top})`')
         d3-axes(

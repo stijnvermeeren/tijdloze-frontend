@@ -23,7 +23,7 @@ export const useRootStore = defineStore('root', {
     },
     artistIdsByFullName(state) {
       return _.mapValues(
-        _.groupBy(useRepo(Artist).all(), artist => artist.fullName.toLowerCase()),
+        _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
         artists => artists.map(artist => artist.id)
       )
     },

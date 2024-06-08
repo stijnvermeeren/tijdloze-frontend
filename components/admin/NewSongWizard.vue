@@ -13,16 +13,9 @@ div
           v-row(dense)
             v-col
               v-text-field(
-                v-model='artistDetails.namePrefix'
-                label="Voornaam / prefix"
-                placeholder='The / Bob / ...'
-                hide-details
-              )
-            v-col
-              v-text-field(
                 v-model='artistDetails.name'
                 label="Naam"
-                placeholder='Beatles / Dylan / ...'
+                placeholder='The Beatles / Bob Dylan / ...'
                 hide-details
               )
           v-row(dense)
@@ -168,7 +161,6 @@ div
           artistType: 'new',
           artistId: undefined,
           artistDetails: {
-            namePrefix: '',
             name: '',
             countryId: undefined
           },
@@ -192,8 +184,7 @@ div
             ? this.albumMatch(artist.id, preset.albumTitle, preset.albumYear)
             : undefined;
 
-          data.artistDetails.namePrefix = this.namePrefix(preset.artistName);
-          data.artistDetails.name = this.name(preset.artistName);
+          data.artistDetails.name = preset.artistName;
           if (artist) {
             data.artistType = 'existing';
             data.artistId = artist.id;
@@ -225,7 +216,7 @@ div
           const query = this.preProcessArtistName(artistName);
 
           return useRepo(Artist).all().find(artist => {
-            const matchName = this.preProcessArtistName(artist.fullName);
+            const matchName = this.preProcessArtistName(artist.name);
             return query === matchName;
           })
         } else {
@@ -261,27 +252,12 @@ div
           return undefined;
         }
       },
-      namePrefix(fullName) {
-        if (fullName && fullName.substring(0,4) === "The ") {
-          return "The";
-        } else {
-          return "";
-        }
-      },
-      name(fullName) {
-        if (fullName && fullName.substring(0,4) === "The ") {
-          return fullName.substring(4);
-        } else {
-          return fullName;
-        }
-      },
       async submit() {
         this.submitting = true;
 
         let artistId = undefined;
         if (this.artistNew) {
           const artistData = {
-            namePrefix: this.artistDetails.namePrefix,
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
