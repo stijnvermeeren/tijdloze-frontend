@@ -47,5 +47,8 @@ module.exports = defineNuxtConfig({
       ))
     },
     '@pinia/nuxt'
-  ]
+  ],
+  devtools: {
+    componentInspector: false  // https://github.com/nuxt/devtools/issues/259
+  },
 });

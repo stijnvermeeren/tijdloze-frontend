@@ -57,12 +57,16 @@ div
         return usePollStore().currentPoll;
       },
       top5() {
-        const list = _.take(useRepo(List).find(this.tableYear?.yyyy).songIds, 5)
-        const songs = list.map(songId => {
-          return useRepo(Song).find(songId)
-        })
-        useRepo(Song).withAll().load(songs)
-        return songs
+        const list = useRepo(List).find(this.tableYear?.yyyy)
+        if (list) {
+          const songs = _.take(list.songIds, 5).map(songId => {
+            return useRepo(Song).find(songId)
+          })
+          useRepo(Song).withAll().load(songs)
+          return songs
+        } else {
+          return []
+        }
       },
       exitsKnown() {
         return !! useRootStore().listTop100(this.tableYear?.previous).find(song => {
