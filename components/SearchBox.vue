@@ -50,10 +50,7 @@
   import Artist from "@/orm/Artist";
   import Song from "@/orm/Song";
   import Album from "@/orm/Album";
-  import {normalize} from "@/utils/string";
   import {useRepo} from "pinia-orm";
-  import {useSearchArtistContent} from "~/composables/useSearchArtistContent";
-  import {useSearchQueryFragments} from "~/composables/useSearchQueryFragments";
 
   export default {
     props: {
@@ -134,24 +131,13 @@
     methods: {
       search(queryFragments, data, matchAttribute, type) {
         return useSearchFilter(queryFragments, data, matchAttribute).map(item => {
-          let score = this.score(this.query, matchAttribute(item));
+          let score = useSearchScore(this.query, matchAttribute(item));
           if (this.songsYear && type === 'song') {
             score = score / 100 + item.position(this.songsYear);
           }
 
           return {type, item, score}
         });
-      },
-      score(query, match) {
-        query = normalize(query);
-        match = normalize(match);
-        if (query === match) {
-          return 3;
-        } else if (match.startsWith(query)) {
-          return 2;
-        } else {
-          return 1;
-        }
       },
       move(offset) {
         if (this.selectedIndex === undefined) {

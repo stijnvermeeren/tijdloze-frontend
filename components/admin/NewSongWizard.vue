@@ -93,7 +93,6 @@ div
   import _ from "lodash";
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
-  import {normalize} from "@/utils/string";
   import {useRepo} from "pinia-orm";
 
   const initialData = {
@@ -247,7 +246,7 @@ div
         )
       },
       preProcessArtistName(artistName) {
-        let query = normalize(artistName.toLowerCase());
+        let query = useSearchNormalize(artistName.toLowerCase());
         if (query.substring(0,4) === 'the') {
           query = artistName.substring(4);
         }

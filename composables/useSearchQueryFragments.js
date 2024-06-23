@@ -1,4 +1,3 @@
-import {normalize} from "~/utils/string";
 
 export const useSearchQueryFragments = (query) => {
   if (!query) {
@@ -13,7 +12,7 @@ export const useSearchQueryFragments = (query) => {
 
   let tokens = query
     .split(/[ .,&\-\/']+/)
-    .map(normalize)
+    .map(useSearchNormalize)
     .filter(fragment => !ignoredWords.has(fragment));
 
   if (tokens.length > 1 && ignoredWordsAtEnd.has(tokens.at(-1))) {

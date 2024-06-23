@@ -1,5 +1,5 @@
 
-export function normalize(input) {
+export const useSearchScore = (input) => {
   return input
     .toLowerCase()
     .normalize("NFD")

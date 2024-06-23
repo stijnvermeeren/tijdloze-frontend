@@ -25,8 +25,6 @@ div
         admin-artist-select(v-model='fullSongData.secondArtistId' :required='false')
     v-row(dense)
       v-col
-        span Album
-      v-col
         admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
     v-row(dense)
       v-col
