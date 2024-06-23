@@ -48,10 +48,7 @@ div
         admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.name}`')
     v-row(dense)
       v-col
-        v-text-field(v-model='fullSongData.spotifyId' label="Spotify ID")
-      v-col
-        div(v-if='fullSongData.spotifyId')
-          spotify(:spotify-id='fullSongData.spotifyId')
+        song-spotify-input(v-model='fullSongData.spotifyId' :artist="artist.name" :album="album.title" :title="fullSongData.title")
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')
@@ -62,8 +59,10 @@ div
   import Artist from "@/orm/Artist";
   import Album from "@/orm/Album";
   import {useRepo} from "pinia-orm";
+  import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
 
   export default defineNuxtComponent({
+    components: {SongSpotifyInput},
     setup() {
       definePageMeta({
         middleware: 'admin'

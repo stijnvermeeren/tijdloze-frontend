@@ -21,6 +21,12 @@ div
           v-row(dense)
             v-col
               admin-country-input(v-model='artistDetails.countryId')
+          v-row(dense)
+            v-col
+              admin-musicbrainz-input(
+                v-model='artistDetails.musicbrainzId'
+                musicbrainz-category="artist"
+              )
 
   div(v-if='artistValid')
     div.heading Album
@@ -28,20 +34,26 @@ div
       v-radio-group(v-model="albumId" density="compact")
         v-radio(v-for="album in candidateAlbums" :key="album.id" :value="album.id" :label="`${album.title} (${album.releaseYear})`")
         v-radio(:value="0" label="Nieuw album")
-        div.d-flex(v-if="albumId === 0")
-          v-text-field.mr-4(
-            v-model='albumDetails.title'
-            label="Titel"
-            :disabled="!!albumId"
-            hide-details
-          )
-          v-text-field.releaseYear(
-            v-model.number='albumDetails.releaseYear'
-            label="Jaar"
-            type="number"
-            :disabled="!!albumId"
-            hide-details
-          )
+        div(v-if="albumId === 0")
+          div.d-flex
+            v-text-field.mr-4(
+              v-model='albumDetails.title'
+              label="Titel"
+              :disabled="!!albumId"
+              hide-details
+            )
+            v-text-field.releaseYear(
+              v-model.number='albumDetails.releaseYear'
+              label="Jaar"
+              type="number"
+              :disabled="!!albumId"
+              hide-details
+            )
+          div
+            admin-musicbrainz-input(
+              v-model='albumDetails.musicbrainzId'
+              musicbrainz-category="release-group"
+            )
 
   div.heading Nummer
   v-container
@@ -54,6 +66,15 @@ div
     v-row(dense)
       v-col
         admin-lead-vocals-input(v-model='songDetails.leadVocals')
+    v-row(dense)
+      v-col
+        admin-song-spotify-input(
+          v-model="songDetails.spotifyId"
+          :artist="artistName"
+          :album="albumTitle"
+          :title="songDetails.title"
+          ref="spotify"
+        )
     v-row(dense)
       v-col.otherArtistSongs(v-if="otherArtistSongs.length")
         | Opgelet! Reeds gekende nummers van deze artist:
@@ -75,6 +96,29 @@ div
   import {normalize} from "@/utils/string";
   import {useRepo} from "pinia-orm";
 
+  const initialData = {
+    artistType: 'new',
+    artistId: undefined,
+    artistDetails: {
+      name: '',
+      musicbrainzId: undefined,
+      countryId: undefined
+    },
+    albumId: 0,
+    albumDetails: {
+      title: '',
+      musicbrainzId: undefined,
+      releaseYear: undefined
+    },
+    songDetails: {
+      title: '',
+      languageId: undefined,
+      leadVocals: undefined,
+      spotifyId: undefined
+    },
+    submitting: false
+  }
+
   export default {
     props: {
       preset: {
@@ -86,9 +130,23 @@ div
       }
     },
     data() {
-      return this.initialData(this.preset);
+      return initialData
     },
     computed: {
+      artistName() {
+        if (this.artistId) {
+          return this.artist.name;
+        } else {
+          return this.artistDetails.name;
+        }
+      },
+      albumTitle() {
+        if (this.albumId) {
+          return this.album.title;
+        } else {
+          return this.albumDetails.title
+        }
+      },
       artistNew() {
         return this.artistType === 'new';
       },
@@ -105,6 +163,9 @@ div
       },
       album() {
         return useRepo(Album).find(this.albumId);
+      },
+      artist() {
+        return useRepo(Artist).find(this.artistId);
       },
       artistValid() {
         if (this.artistNew) {
@@ -145,9 +206,6 @@ div
       },
       artistType() {
         this.checkAlbum();
-      },
-      preset() {
-        Object.assign(this.$data, this.initialData(this.preset));
       }
     },
     methods: {
@@ -156,53 +214,37 @@ div
           this.albumId = 0;
         }
       },
-      initialData(preset) {
-        const data = {
-          artistType: 'new',
-          artistId: undefined,
-          artistDetails: {
-            name: '',
-            countryId: undefined
-          },
-          albumId: 0,
-          albumDetails: {
-            title: '',
-            releaseYear: undefined
-          },
-          songDetails: {
-            title: '',
-            languageId: undefined,
-            leadVocals: undefined,
-            spotifyId: undefined
-          },
-          submitting: false
-        };
+      async loadPreset(preset) {
+        const artist = await this.artistMatch(preset.artistName, preset.artistMBId);
+        const album = artist
+          ? await this.albumMatch(artist.id, preset.albumTitle, preset.albumYear, preset.albumMBId)
+          : undefined;
 
-        if (preset) {
-          const artist = this.artistMatch(preset.artistName);
-          const album = artist
-            ? this.albumMatch(artist.id, preset.albumTitle, preset.albumYear)
-            : undefined;
-
-          data.artistDetails.name = preset.artistName;
-          if (artist) {
-            data.artistType = 'existing';
-            data.artistId = artist.id;
-          }
-
-          data.albumDetails.title = preset.albumTitle;
-          data.albumDetails.releaseYear = preset.albumYear;
-          if (album) {
-            data.albumId = album.id;
-          } else {
-            data.albumId = 0;
-          }
-
-          data.songDetails.title = preset.songTitle;
-          data.songDetails.spotifyId = preset.spotifyId;
+        this.artistDetails.name = preset.artistName;
+        this.artistDetails.musicbrainzId = preset.artistMBId;
+        this.artistDetails.countryId = preset.artistCountryId;
+        if (artist) {
+          this.artistType = 'existing';
+          this.artistId = artist.id;
+        } else {
+          this.artistType = 'new';
+          this.artistId = 0;
         }
 
-        return data;
+        this.albumDetails.title = preset.albumTitle;
+        this.albumDetails.musicbrainzId = preset.albumMBId;
+        this.albumDetails.releaseYear = preset.albumYear;
+        if (album) {
+          this.albumId = album.id;
+        } else {
+          this.albumId = 0;
+        }
+
+        this.songDetails.title = preset.songTitle;
+
+        nextTick(() =>
+            this.$refs.spotify.search()
+        )
       },
       preProcessArtistName(artistName) {
         let query = normalize(artistName.toLowerCase());
@@ -211,7 +253,12 @@ div
         }
         return query;
       },
-      artistMatch(artistName) {
+      async artistMatch(artistName, artistMBId) {
+        const {data: artist} = await useApiFetch(`/artist/musicbrainz/${artistMBId}`);
+        if (artist.value)  {
+          return useRepo(Artist).find(artist.value.id)
+        }
+
         if (artistName) {
           const query = this.preProcessArtistName(artistName);
 
@@ -224,7 +271,7 @@ div
         }
       },
       /*
-       * An album matches if
+       * An album matches if the MusicBrainz id matches, or
        * - The artist matches
        * - The release year matches
        * - The titles match (case-insensitive) where one title is allowed to have some extra words. Punctuation is
@@ -233,7 +280,12 @@ div
        *        "Sign 'O' the Times" matches with "Sign "O" the Times"
        *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
        */
-      albumMatch(artistId, albumName, releaseYear) {
+      async albumMatch(artistId, albumName, releaseYear, albumMBId) {
+        const {data: album} = await useApiFetch(`/album/musicbrainz/${albumMBId}`);
+        if (album.value)  {
+          return useRepo(Album).find(album.value.id)
+        }
+
         function tokenize(title) {
           return [...title.toLowerCase().matchAll(/\w+/g)];
         }
@@ -289,7 +341,7 @@ div
         const {data: song} = await useApiFetchPost('/song', songData);
 
         this.submitting = false;
-        Object.assign(this.$data, this.initialData());
+        Object.assign(this.$data, initialData);
         this.$emit('newSong', song.value);
       }
     }

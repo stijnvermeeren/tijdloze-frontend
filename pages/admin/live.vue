@@ -50,8 +50,7 @@ div
     div(v-show="nextPosition > 0")
       v-btn-toggle.mt-2.mb-3(v-model="nextSongTab" color="blue")
         v-btn(value="existing") Nummer uit de database
-        v-btn(value="spotify") Nieuw nummer (via Spotify)
-        v-btn(value="manual") Nieuw nummer (manueel)
+        v-btn(value="new") Nieuw nummer
 
       div(v-show="nextSongTab === 'existing'")
         search-box(
@@ -75,20 +74,13 @@ div
             v-btn(@click='add(nextSong.id)' :disabled='!nextValid' rounded)
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
-      div(v-show="nextSongTab === 'spotify'")
-        admin-spotify-search(:initialQuery='importQuery' @selectSpotifyTrack='selectSpotifyTrack($event)')
-        div(v-if='spotifyData')
-          hr
-          admin-new-song-wizard(
-            :preset='spotifyData'
-            :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
-            @newSong='add($event.id)'
-          )
-
-      div(v-show="nextSongTab === 'manual'")
+      div(v-show="nextSongTab === 'new'")
+        admin-m-b-dataset-search(:initialQuery='importQuery' @mbHit='fillMBData($event)')
+        hr
         admin-new-song-wizard(
           :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
           @newSong='add($event.id)'
+          ref="wizard"
         )
 
   ui-card(:title="`Tijdloze ${currentYear.yyyy}: import`")
@@ -121,7 +113,6 @@ definePageMeta({ middleware: 'admin' })
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
-        spotifyData: undefined,
         importQuery: '',
         importSongs: [],
         nextPosition: useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100,
@@ -172,7 +163,7 @@ definePageMeta({ middleware: 'admin' })
     },
     methods: {
       initialResultCount(count) {
-        this.nextSongTab = (this.importQuery && count === 0) ? 'spotify' : 'existing';
+        this.nextSongTab = (this.importQuery && count === 0) ? 'new' : 'existing';
       },
       loadNextFromImport() {
         let canBeImported = false;
@@ -205,14 +196,16 @@ definePageMeta({ middleware: 'admin' })
         const { data } = await useApiFetch(`song/${this.nextSong.id}`)
         this.nextSongFullData = data;
       },
-      selectSpotifyTrack(track) {
-        this.spotifyData = {
-          songTitle: this.clean(track.title),
-          artistName: track.artist,
-          albumTitle: this.clean(track.album),
-          albumYear: track.year,
-          spotifyId: track.spotifyId
-        };
+      fillMBData(data) {
+        this.$refs.wizard.loadPreset({
+          songTitle: data.title,
+          artistName: data.name,
+          artistMBId: data.artistMBId,
+          artistCountryId: data.countryId,
+          albumTitle: data.albumTitle,
+          albumMBId: data.albumMBId,
+          albumYear: data.releaseYear
+        });
       },
       async undo() {
         this.processing = true;
@@ -241,16 +234,10 @@ definePageMeta({ middleware: 'admin' })
         this.nextSongTab = 'existing';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
-        this.spotifyData = undefined;
+        this.mbData = undefined;
         this.processing = false;
 
         this.loadNextFromImport();
-      },
-      clean(input) {
-        return input
-            .trim()
-            .replace(/[-–(][^-–(]*\b(feat|bonus|edition|expanded|version|remaster|mix|deluxe|edit).*[)]?$/gi, "")
-            .trim()
       },
       possibleSong(song) {
         return !song.position(this.currentYear, true) && (this.nextPosition > 100 || !song.markedAsExit());
