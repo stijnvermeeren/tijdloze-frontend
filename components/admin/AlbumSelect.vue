@@ -5,6 +5,7 @@ div
     @update:model-value='update'
     :items="candidateAlbums"
     label="Album"
+    hide-details
   )
 </template>
 
@@ -45,4 +46,3 @@ function update(newValue) {
   emit('update:modelValue', newValue);
 }
 </script>
-

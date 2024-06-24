@@ -12,17 +12,14 @@ div
           v-model='fullSongData.aliases'
           label='Aliases (het nummer wordt ook onder deze titels gevonden)'
           hide-details
+          density="compact"
         )
     v-row(dense)
-      v-col
-        span Artiest
       v-col
         admin-artist-select(v-model='fullSongData.artistId')
     v-row(dense)
       v-col
-        span Tweede artiest
-      v-col
-        admin-artist-select(v-model='fullSongData.secondArtistId' :required='false')
+        admin-artist-select(v-model='fullSongData.secondArtistId' :required='false' label="Tweede artiest" density="compact")
     v-row(dense)
       v-col
         admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
