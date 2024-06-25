@@ -1,4 +1,4 @@
-export const useGraphConstants = () => {
+export default function () {
   const fullWidth = 760
   const fullHeight = 400
   const margin = {top: 40, right: 50, bottom: 10, left: 20}
@@ -8,5 +8,3 @@ export const useGraphConstants = () => {
 
   return {fullWidth, fullHeight, width, height, margin}
 }
-
-

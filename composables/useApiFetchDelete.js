@@ -1,4 +1,4 @@
-export const useApiFetchDelete = (request, opts = {}) => {
+export default function (request, opts = {}) {
   return useApiFetch(request, {
     method: 'DELETE',
     ...opts

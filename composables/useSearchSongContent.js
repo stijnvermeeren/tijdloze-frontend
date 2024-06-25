@@ -1,5 +1,5 @@
 
-export const useSearchSongContent = (song) => {
+export default function (song) {
   let matchData = `${song.title} ${useSearchArtistContent(song.artist)}`;
   if (song.aliases) {
     matchData += ` ${song.aliases}`

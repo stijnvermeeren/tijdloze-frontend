@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-export const useSearchFilter = (queryFragments, data, matchAttribute) => {
+export default function (queryFragments, data, matchAttribute) {
   return data.filter(item => {
     return _.every(
       queryFragments,

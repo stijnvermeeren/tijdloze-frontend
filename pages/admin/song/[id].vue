@@ -43,7 +43,12 @@ div
         admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.name}`')
     v-row(dense)
       v-col
-        song-spotify-input(v-model='fullSongData.spotifyId' :artist="artist.name" :album="album.title" :title="fullSongData.title")
+        song-spotify-input(
+          v-model='fullSongData.spotifyId'
+          :artist="artist?.name"
+          :album="album?.title"
+          :title="fullSongData.title"
+        )
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')

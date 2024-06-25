@@ -31,7 +31,6 @@ div
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
-  import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
     computed: {

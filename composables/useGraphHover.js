@@ -1,7 +1,7 @@
 
 import {bisect} from "d3-array";
 
-export const useGraphHover = (xScale, yScale, years) => {
+export default function (xScale, yScale, years) {
   const {width, height, margin} = useGraphConstants()
 
   const hoverYear = ref(undefined)

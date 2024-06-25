@@ -1,5 +1,5 @@
 
-export const useSearchQueryFragments = (query) => {
+export default function (query) {
   if (!query) {
     return []
   }

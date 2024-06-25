@@ -6,6 +6,7 @@ div
     :items="candidateAlbums"
     label="Album"
     hide-details
+    :error="!modelValue"
   )
 </template>
 

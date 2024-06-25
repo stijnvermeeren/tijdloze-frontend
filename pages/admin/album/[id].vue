@@ -51,7 +51,6 @@ div
 
 <script>
   import Artist from "@/orm/Artist";
-  import {useApiFetchPut} from "~/composables/useApiFetchPut";
   import {useRepo} from "pinia-orm";
 
   export default defineNuxtComponent({

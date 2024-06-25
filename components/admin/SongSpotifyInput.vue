@@ -33,7 +33,17 @@ function update(newValue) {
 }
 
 async function search() {
-  const query = `artist:${props.artist} album:${props.album} track:${props.title}`
+  const queryParts = []
+  if (props.artist) {
+    queryParts.push(`artist:${props.artist}`)
+  }
+  if (props.album) {
+    queryParts.push(`album:${props.album}`)
+  }
+  if (props.title) {
+    queryParts.push(`track:${props.title}`)
+  }
+  const query = queryParts.join(" ")
   processing.value = true
   const {data: result, error} = await useApiFetch('/spotify/find', {params: {query: query}})
   spotifyMessage.value = ""

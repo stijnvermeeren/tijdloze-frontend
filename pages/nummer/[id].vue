@@ -55,7 +55,6 @@ import {allEntriesIntervals, probablyInListIntervals} from '~/utils/intervals'
   import Song from "@/orm/Song";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
-  import {create404Error} from "~/composables/create404Error";
 
   export default defineNuxtComponent({
     computed: {

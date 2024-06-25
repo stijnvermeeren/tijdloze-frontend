@@ -1,4 +1,4 @@
-export const useApiUri = () => {
+export default function () {
   const config = useRuntimeConfig()
 
   if (process.server) {

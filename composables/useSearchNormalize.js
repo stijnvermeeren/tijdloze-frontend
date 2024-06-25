@@ -1,5 +1,5 @@
 
-export const useSearchNormalize = (input) => {
+export default function (input) {
   return input
     .toLowerCase()
     .normalize("NFD")

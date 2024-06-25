@@ -1,11 +1,10 @@
 
 import {scaleLinear, scaleBand} from "d3-scale";
 import {useRootStore} from "~/stores/root";
-import {useGraphConstants} from "~/composables/useGraphConstants";
 import _ from "lodash";
 import {line} from "d3-shape";
 
-export const useGraph = () => {
+export default function () {
 
   const {width, height} = useGraphConstants()
 

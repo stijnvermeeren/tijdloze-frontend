@@ -1,5 +1,6 @@
 <template lang="pug">
 v-autocomplete(
+  v-model:search="keyword"
   :model-value="modelValue"
   @update:model-value='update'
   :items="candidateArtists"
@@ -8,6 +9,7 @@ v-autocomplete(
   :clearable="!required"
   :persistent-clear="!required"
   hide-details
+  no-filter
 )
 </template>
 
@@ -34,10 +36,13 @@ const props = defineProps({
   }
 })
 
+const keyword = ref('');
+
 const candidateArtists = computed(() => {
+  const queryFragments = useSearchQueryFragments(keyword.value)
   return _.sortBy(
-      useRepo(Artist).all(),
-      artist => artist.name
+      useSearchFilter(queryFragments, useRepo(Artist).all(), useSearchArtistContent),
+      artist => -useSearchScore(keyword.value, useSearchArtistContent(artist))
   ).map(artist => {
     return {
       value: artist.id,
@@ -49,6 +54,8 @@ const candidateArtists = computed(() => {
 const emit = defineEmits(['update:modelValue'])
 
 function update(newValue) {
-  emit('update:modelValue', newValue);
+  if (newValue) {
+    emit('update:modelValue', newValue);
+  }
 }
 </script>

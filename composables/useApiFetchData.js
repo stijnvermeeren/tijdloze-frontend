@@ -1,4 +1,4 @@
-export const useApiFetchData = (request, method, data, opts = {}) => {
+export default function (request, method, data, opts = {}) {
   if (!! data) {
     opts.headers = {
       'Accept': 'application/json',

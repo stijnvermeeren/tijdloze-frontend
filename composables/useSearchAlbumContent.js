@@ -1,4 +1,4 @@
 
-export const useSearchAlbumContent = (album) => {
+export default function (album) {
   return `${album.title} ${useSearchArtistContent(album.artist)}`;
 }

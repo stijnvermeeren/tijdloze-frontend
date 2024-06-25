@@ -53,8 +53,6 @@ div
 </template>
 
 <script>
-  import {useApiFetchPut} from "~/composables/useApiFetchPut";
-
   export default defineNuxtComponent({
     setup() {
       definePageMeta({
