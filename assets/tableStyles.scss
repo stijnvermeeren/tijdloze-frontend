@@ -41,22 +41,22 @@ table.lijst {
   td.r, th.r {
     white-space: nowrap;
     font-weight: bold;
+    width: 2.5em;
     &:not(:first-child) {
       border-left: 1px solid black;
     }
     &:not(:last-child) {
       border-right: 1px solid black;
     }
-    width: 2.5em;
   }
   td.y, th.y {
+    width: 3em;
     &:not(:first-child) {
       border-left: 1px solid black;
     }
     &:not(:last-child) {
       border-right: 1px solid black;
     }
-    width: 3em;
   }
   td.n, th.n {
     color: #555555;

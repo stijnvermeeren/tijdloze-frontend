@@ -184,13 +184,13 @@ div
   }
 
   .v-list {
+    font-size: 16px;
+    font-weight: bold;
     color: styleConfig.$hoverLinkColor;
+
     a {
       color: styleConfig.$hoverLinkColor;
     }
-
-    font-size: 16px;
-    font-weight: bold;
 
     .v-list-item:not(:only-child) {
       margin-bottom: unset;

@@ -29,7 +29,9 @@ module.exports = defineNuxtConfig({
   css: [
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
-
+  routeRules: {
+    '**': { swr: true }
+  },
   build: {
     transpile: [
       'vuetify',
