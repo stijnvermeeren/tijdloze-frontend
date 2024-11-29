@@ -1,18 +1,21 @@
 <template lang="pug">
 div.container
-  table(v-if='(songs && songs.length) || (albums && albums.length)')
-    tbody
-      tr
-        th.previous
-          year-link(:year='previousYear')
-        th.current
-          year-link(:year='currentYear')
-        th.song
-      template(v-if="albums")
-        template(v-for="album in albums")
-          in-current-list-section(:album='album' :songs="album.songs" :artist="artist")
-      template(v-if="songs")
-        in-current-list-section(:songs='songs' :artist="artist")
+  div(v-if='(songs && songs.length) || (albums && albums.length)')
+    template(v-if="albums" v-for="album in albums" :key="album.id")
+      div.currentListHeader
+        album-link(:album="album")
+        |  ({{album.releaseYear}})
+      in-current-list-section(:album='album' :songs="album.songs" :artist="artist")
+    template(v-if="songs")
+      template(v-if="top100Songs.length")
+        div.currentListHeader In de top 100
+        in-current-list-section(:songs='top100Songs' :artist="artist")
+      template(v-if="fullListSongs.length")
+        div.currentListHeader In de volledige Tijdloze
+        in-current-list-section(:songs='fullListSongs' :artist="artist")
+      template(v-if="otherSongs.length")
+        div.currentListHeader Vroeger in de Tijdloze
+        in-current-list-section(:songs='otherSongs' :artist="artist")
   div(v-else)
     | Nog geen nummers in de Tijdloze.
 </template>
@@ -35,37 +38,37 @@ div.container
       },
       previousYear() {
         return this.currentYear.previous;
+      },
+      top100Songs() {
+        return this.songs.filter(song => this.sortBlock(song) === 1)
+      },
+      fullListSongs() {
+        return this.songs.filter(song => this.sortBlock(song) === 2)
+      },
+      otherSongs() {
+        return this.songs.filter(song => this.sortBlock(song) === 3)
       }
+    },
+    methods: {
+      sortBlock(song) {
+        if (song.probablyInList(this.currentYear)) {
+          // songs that are probably still in the top 100
+          return 1;
+        } else if (song.probablyInList(this.currentYear, true)) {
+          // songs that are already in the list
+          return 2;
+        } else {
+          return 3;
+        }
+      },
     }
   }
 </script>
 
+
 <style lang="scss" scoped>
-
-  table {
-    table-layout: fixed;
-    margin: 0 20px;
-
-    :deep(td), th {
-      &.previous {
-        text-align: center;
-        width: 80px;
-
-        span.position {
-          font-weight: normal;
-          color: #444;
-          font-size: 80%;
-        }
-      }
-
-      &.current {
-        text-align: center;
-        width: 120px;
-      }
-
-      &.song {
-        text-align: left;
-      }
-    }
-  }
+div.currentListHeader {
+  font-weight: bold;
+  margin: 0.3em 0 0.1em;
+}
 </style>

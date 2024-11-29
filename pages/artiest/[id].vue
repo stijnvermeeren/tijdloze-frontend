@@ -15,7 +15,11 @@ div
   ui-alert(v-if='fullArtistData.notes')
     make-links(:text='fullArtistData.notes')
 
-  ui-card(title="In de Tijdloze")
+  ui-card(
+    :title="`In de Tijdloze van ${currentYear.yyyy}`"
+    :collapse-height="collapseHeight"
+    :collapse-message="`Toon alle ${artist.allSongs.length} nummers`"
+  )
     template(#subtitle)
       entry-count(:songs='artist.allSongs')
     template(#buttons)
@@ -46,13 +50,22 @@ div
       }
     },
     computed: {
+      collapseHeight() {
+        if (this.artist.allSongs.length <= 5) {
+          return undefined
+        } else {
+          const probablyInTop100Songs = this.artist.allSongs.filter(song => song.probablyInList(this.currentYear))
+          return 60 + 70 * Math.max(4, probablyInTop100Songs.length)
+        }
+      },
       artist() {
         return useRepo(Artist)
           .with('albums', q1 => q1
             .with('songs', q2 => q2
-              .with('secondArtist')))
+              .with('secondArtist').with('artist').with('album')))
           .with('songs', q1 => q1
             .with('album')
+            .with('artist')
             .with('secondArtist'))
           .with('secondarySongs', q1 => q1
             .with('artist')

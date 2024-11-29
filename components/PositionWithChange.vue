@@ -1,5 +1,5 @@
 <template lang="pug">
-  div.singleLine
+  div
     position-main(:song="song" :year="year")
     position-annotation(v-if='position && year.previous')
       position-change(:position="position" :previous-position="previousPosition")
@@ -27,8 +27,4 @@ const previousPosition = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-div.singleLine {
-  display: flex;
-  justify-content: space-evenly;
-}
 </style>

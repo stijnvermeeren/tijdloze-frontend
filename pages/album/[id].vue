@@ -37,7 +37,7 @@ div
       album() {
         return useRepo(Album)
           .with('artist')
-          .with('songs', query => query.with("secondArtist").with("album"))
+          .with('songs', query => query.with("artist").with("secondArtist").with("album"))
           .find(this.fullAlbumData.id);
       },
       currentYear() {

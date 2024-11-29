@@ -23,7 +23,7 @@ Title {{song.title}} ({{song.artist.name}})
     div
       spotify(:spotify-id='fullSongData.spotifyId')
 
-  lyrics(v-if='fullSongData.lyrics')
+  ui-card(v-if='fullSongData.lyrics' :collapse-height="80" title="Lyrics")
     .lyrics {{ fullSongData.lyrics }}
 
   ui-card(v-else-if="fullSongData.languageId === 'i'" title="Lyrics")
@@ -42,7 +42,7 @@ Title {{song.title}} ({{song.artist.name}})
           div.year
             year-link(:year='year' short)
           div
-            position-change(:song='song' :year='year')
+            position-with-change(:song='song' :year='year')
 
 
   ui-card(v-if='song.listCount(years) > 0' title="Grafiek")
@@ -124,6 +124,7 @@ import {allEntriesIntervals, probablyInListIntervals} from '~/utils/intervals'
   }
 
   div.lyrics {
+    padding: 0 20px 10px 20px;
     white-space: pre-line;
     font-style: italic;
     font-size: 14px;

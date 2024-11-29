@@ -1,21 +1,10 @@
 <template lang="pug">
-tr.album(v-if="album")
-  td(colspan="3")
-    album-link(:album="album")
-    |  ({{album.releaseYear}})
-tr(v-for='song in sortedSongs' :key='song.id' :class="{ top100: song.probablyInList(currentYear) }")
-  td.previous
-    position-main(:year='currentYear.previous' :song='song' single-line)
-  td.current
-    position-with-change(:year='currentYear' :song='song' single-line)
-  td.song
-    song-with-second-artist-link(:song='song' :artist='artist')
+song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear")
 </template>
 
 <script>
   import _ from 'lodash'
   import {useRootStore} from "~/stores/root";
-  import PositionWithChange from "~/components/PositionWithChange.vue";
 
   export default {
     name: 'InCurrentList',
@@ -39,56 +28,14 @@ tr(v-for='song in sortedSongs' :key='song.id' :class="{ top100: song.probablyInL
         return _.sortBy(
           songs,
           [
-            song => this.sortBlock(song),
             song => song.position(this.currentYear, true),
             song => song.position(this.previousYear, true)
           ]
         )
-      }
-    },
-    methods: {
-      sortBlock(song) {
-        const yearPosition = song.position(this.currentYear, true);
-        const previousYearPosition = song.position(this.previousYear, true)
-
-        if (!yearPosition && previousYearPosition && previousYearPosition <= 100) {
-          // songs that are probably still in the top 100
-          return 1;
-        } else if (yearPosition) {
-          // songs that are already in the list
-          return 2;
-        } else {
-          return 3;
-        }
-      },
-      sortPosition(song, year, defaultValue) {
-        const position = song.position(year, true);
-        return position > 0 ? position : defaultValue;
       }
     }
   }
 </script>
 
 <style lang="scss" scoped>
-tr.album {
-  td {
-    padding-top: 5px;
-    a {
-      font-weight: bold;
-    }
-  }
-}
-
-tr.top100 > td {
-  &.current {
-    font-weight: bold;
-    text-align: center;
-    width: 80px;
-  }
-
-  &.song {
-    font-weight: bold;
-    text-align: left;
-  }
-}
 </style>
