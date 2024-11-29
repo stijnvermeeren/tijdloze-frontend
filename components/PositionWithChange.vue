@@ -1,0 +1,34 @@
+<template lang="pug">
+  div.singleLine
+    position-main(:song="song" :year="year")
+    position-annotation(v-if='position && year.previous')
+      position-change(:position="position" :previous-position="previousPosition")
+</template>
+
+<script setup>
+import Year from "~/orm/Year";
+
+const props = defineProps({
+  song: Object,
+  year: Year
+})
+
+const position = computed(() => {
+  return props.song.position(props.year, true);
+})
+
+const previousPosition = computed(() => {
+  if (props.year.previous) {
+    return props.song.position(props.year.previous, true);
+  } else {
+    return null;
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+div.singleLine {
+  display: flex;
+  justify-content: space-evenly;
+}
+</style>

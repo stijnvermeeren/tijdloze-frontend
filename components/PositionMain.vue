@@ -16,7 +16,6 @@ defineProps({
 
 <style lang="scss" scoped>
 span.position {
-  font-size: 110%;
   font-weight: bold;
 }
 </style>

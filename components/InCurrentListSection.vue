@@ -7,7 +7,7 @@ tr(v-for='song in sortedSongs' :key='song.id' :class="{ top100: song.probablyInL
   td.previous
     position-main(:year='currentYear.previous' :song='song' single-line)
   td.current
-    position-change(:year='currentYear' :song='song' single-line)
+    position-with-change(:year='currentYear' :song='song' single-line)
   td.song
     song-with-second-artist-link(:song='song' :artist='artist')
 </template>
@@ -15,6 +15,7 @@ tr(v-for='song in sortedSongs' :key='song.id' :class="{ top100: song.probablyInL
 <script>
   import _ from 'lodash'
   import {useRootStore} from "~/stores/root";
+  import PositionWithChange from "~/components/PositionWithChange.vue";
 
   export default {
     name: 'InCurrentList',

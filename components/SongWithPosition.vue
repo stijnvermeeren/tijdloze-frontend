@@ -2,7 +2,7 @@
 div.entry
   div.position
     slot
-      position-change(:song='song' :year='year')
+      position-in-list(:song='song' :year='year')
   song-with-cover(:song="song")
 </template>
 
