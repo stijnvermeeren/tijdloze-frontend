@@ -1,9 +1,9 @@
 <template lang="pug">
-#snackbar(v-if='song' :class='{isHidden: isHidden}')
-  .snackbarHeader
-    | Positie {{position}} in de Tijdloze van #[year-link(:year='year')]
-  .song
-    | #[song-artist-link(:song='song')] - #[song-link(:song='song')]
+v-snackbar(:close-on-back="false" v-model="isOpen" :timeout="10000" timer="#f9bc85" v-if='song' color="#fdf0e0")
+  div.snackbarContent
+    .snackbarHeader
+      | Op positie {{position}} in de Tijdloze van #[year-link(:year='year')]
+    song-with-cover(:song="song")
 </template>
 
 <script>
@@ -15,8 +15,7 @@
     name: "Snackbar",
     data() {
       return {
-        isHidden: true,
-        closeTimeout: undefined
+        isOpen: false
       }
     },
     computed: {
@@ -35,21 +34,8 @@
     watch: {
       song(newSong, oldSong) {
         if (newSong && (!oldSong || oldSong.id !== newSong.id) && this.position <= 100) {
-          this.refreshSnackbar()
+          this.isOpen = true
         }
-      }
-    },
-    methods: {
-      refreshSnackbar() {
-        this.isHidden = false;
-        if (this.closeTimeout) {
-          clearTimeout(this.closeTimeout)
-        }
-
-        this.closeTimeout = setTimeout(this.close, 10000)
-      },
-      close() {
-        this.isHidden = true;
       }
     },
     ssrComputedCache: true
@@ -59,28 +45,15 @@
 <style lang="scss" scoped>
   @use "../assets/styleConfig";
 
-  div#snackbar {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-
-    border-radius: 5px;
-    padding: 8px 16px;
-    background-color: styleConfig.$inputBackgroundColor;
-    text-align: center;
-
-    transition: transform 2.0s;
-
-    &.isHidden {
-      transform: translateY(calc(-200% - 20px));
-    }
+  div.snackbarContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     div.snackbarHeader {
-      font-size: 14px;
-    }
-
-    div.song {
-      font-size: 20px;
+      text-align: center;
+      margin-bottom: 0.5em;
+      font-style: italic;
     }
   }
 </style>

@@ -15,8 +15,8 @@
       #main
         #inhoud
           slot
-      snackbar
     #right
+  snackbar
 </template>
 
 <script>
