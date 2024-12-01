@@ -12,20 +12,7 @@ div
     p
       make-links(text='[Samba Pa Ti] van gitarist [Santana] heeft twee noteringen, en was tot in [2006] het enige instrumentale nummer dat ooit in de Tijdloze stond. Sindsdien zijn er echter nog drie nummers bijgekomen in deze categorie: [Housewife] van [Daan], [The Man with the Red Face] van [Laurent Garnier] en [Universal Nation] van [Push].')
 
-  .scrollbox
-    table.lijst
-      tbody
-        tr
-          th.r Land
-          th(v-for='year in years') {{year._yy}}
-          th.r Tot.
-        tr(v-for='{languageId, total, perYear} in counts')
-          td.r
-            | {{languages[languageId]}}
-          td(v-for='{count} in perYear')
-            | {{count}}
-          td.r
-            | {{total}}
+  ui-data-table(:data="counts" property-name="Taal")
 
   .graph(v-for='{languageId, dataPoints} in graphData')
     d3-distribution-graph(:points='dataPoints' :title='languages[languageId]')
@@ -72,14 +59,14 @@ div
       counts() {
         return this.graphData.map(({languageId, dataPoints}) => {
           return {
-            languageId: languageId,
+            entry: languages[languageId],
             total: dataPoints.length,
-            perYear: this.years.map(year => {
-              return {
-                year: year,
-                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              }
-            })
+            perYear: Object.fromEntries(
+              this.years.map(year => [
+                year.yyyy,
+                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+              ])
+            )
           }
         });
       }

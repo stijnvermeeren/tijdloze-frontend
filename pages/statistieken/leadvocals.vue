@@ -9,20 +9,7 @@ div
       make-links(text="Twee artiesten hebben Tijdloze nummers die in verschillende categoriën vallen. [Meat Loaf] zong zelf op [I'd Do Anything For Love (But I Won't Do That)] en zong in duet met Ellen Foley op [Paradise by the Dashboard Light]. De nummers van [Fleetwood Mac] vallen zelfs in drie categorieën: [Go Your Own Way] werd gezongen door een man (Lindsey Buckingham), [Dreams] en [Everywhere] werden gezongen door een vrouw (respectievelijk Stevie Nicks en Christine McVie) en op [The Chain] zingen deze drie zoveel samen, dat het nummer hier als duet geteld word.")
     p
       make-links(text="Naast Meat Loaf en Fleetwood Mac stond er ooit nog een ander duet in de Tijdloze: [Je T'Aime... Moi Non Plus] van [Serge Gainsbourg & Jane Birkin].")
-  .scrollbox
-    table.lijst
-      tbody
-        tr
-          th.r Lead vocals
-          th(v-for='year in years') {{year._yy}}
-          th.r Tot.
-        tr(v-for='{vocalsGenderId, total, perYear} in counts')
-          td.r
-            | {{vocalsGenders[vocalsGenderId]}}
-          td(v-for='{count} in perYear')
-            | {{count}}
-          td.r
-            | {{total}}
+  ui-data-table(:data="counts" property-name="Lead vocals")
   .graph(v-for='{vocalsGenderId, dataPoints} in graphData')
     d3-distribution-graph(:points='dataPoints' :title='vocalsGenders[vocalsGenderId]')
 </template>
@@ -67,14 +54,14 @@ div
       counts() {
         return this.graphData.map(({vocalsGenderId, dataPoints}) => {
           return {
-            vocalsGenderId: vocalsGenderId,
+            entry: vocalsGenders[vocalsGenderId],
             total: dataPoints.length,
-            perYear: this.years.map(year => {
-              return {
-                year: year,
-                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              }
-            })
+            perYear: Object.fromEntries(
+              this.years.map(year => [
+                year.yyyy,
+                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+              ])
+            )
           }
         });
       }

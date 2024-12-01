@@ -9,21 +9,11 @@ div
       make-links(text="Eens kijken naar [*België] dan. Als je naar de cijfers kijkt, dan wordt duidelijk dat [dEUS] enorm veel betekend heeft voor de rockmuziek in België. Bij de eerste editie in [1987] werd België enkel vertegenwoordigd door [O La La La] van [T.C. Matic]. In [1994] bleef het aantal nummers van eigen bodem nog steeds steken op 4. En toen was er [dEUS]. Niet alleen kwamen de songs van de gODen massaal in de Tijdloze (6 nummers in ['99], ['02] en ['03]), maar opeens kregen de Tijdloze stemmers ook aandacht voor eigen bands als [K's Choice], [Zita Swoon], [Novastar], [De Mens] en [Hooverphonic]. En er is ook nog [Mia] van [Gorki] natuurlijk, dat van 2003 tot 2005 de eerste plaats haalde. Ook na het overlijden van Luc De Vos in 2014 stond Mia nog eens bovenaan de lijst.")
     p
       make-links(text="Andere landen met een aantal bands in de Tijdloze zijn [Ierland] ([U2], [Sinéad O'Connor], [The Cranberries]), [Canada] ([Bryan Adams], [Arcade Fire], [Leonard Cohen], [Alanis Morissette], [Steppenwolf], [Neil Young]), [Australië] ([AC/DC], [Nick Cave], [Crowded House]) en [Nederland] ([Golden Earring], [Krezip], [The Scene]). De kruimeltjes worden opgeraapt door [Jamaica] ([Bob Marley & the Wailers]), [Duitsland] ([Guano Apes], [Rammstein], [Scorpions]), [Frankrijk] ([Serge Gainsbourg & Jane Birkin] en [Laurent Garnier]) en [Zweden] ([Abba]).")
-  .scrollbox
-    table.lijst
-      tbody
-        tr
-          th.r Land
-          th(v-for='year in years') {{year._yy}}
-          th.r Tot.
-        tr(v-for='{countryId, total, perYear} in counts')
-          td.r
-            nuxt-link(:to='`/database?type=artiesten&land=${countryId}`')
-              country-icon(:country-id='countryId' :include-name='true')
-          td(v-for='{count} in perYear')
-            | {{count}}
-          td.r
-            | {{total}}
+  ui-data-table(:data="counts" property-name="Land")
+    template(v-slot:itemName="{value}")
+      nuxt-link(:to='`/database?type=artiesten&land=${value}`')
+        country-icon(:country-id='value' :include-name='true')
+
   .graph(v-for='{countryId, dataPoints} in graphData')
     d3-distribution-graph(:points='dataPoints')
       nuxt-link(:to='`/database?type=artiesten&land=${countryId}`')
@@ -77,14 +67,14 @@ div
       counts() {
         return this.graphData.map(({countryId, countryName, dataPoints}) => {
           return {
-            countryId: countryId,
+            entry: countryId,
             total: dataPoints.length,
-            perYear: this.years.map(year => {
-              return {
-                year: year,
-                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              }
-            })
+            perYear: Object.fromEntries(
+              this.years.map(year => [
+                year.yyyy,
+                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+              ])
+            )
           }
         });
       }

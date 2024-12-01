@@ -1,18 +1,5 @@
 <template lang="pug">
-.scrollbox
-  table.lijst
-    tbody
-      tr
-        th.r
-        th(v-for='year in years') {{year._yy}}
-        th.r Algemeen
-      tr(v-for='{cutoff, cutoffData, overallSum, overallSize} in data')
-        td.r
-          | Top {{cutoff}}
-        td(v-for='{sum, size} in cutoffData')
-          | {{displayAverage(sum, size)}}
-        td.r
-          | {{displayAverage(overallSum, overallSize)}}
+ui-data-table(:data="data" total-name="Gemiddeld")
 </template>
 
 <script>
@@ -54,10 +41,14 @@
           const sizeSum = _.sumBy(cutoffData, yearData => yearData.size);
 
           return {
-            cutoff: cutoff,
-            cutoffData: cutoffData,
-            overallSum: agesSum,
-            overallSize: sizeSum
+            entry: `Top ${cutoff}`,
+            total: this.displayAverage(agesSum, sizeSum),
+            perYear: Object.fromEntries(
+              cutoffData.map(yearData => [
+                yearData.year.yyyy,
+                this.displayAverage(yearData.sum, yearData.size)
+              ])
+            )
           }
         });
       }

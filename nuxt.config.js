@@ -1,6 +1,15 @@
 import vuetify from 'vite-plugin-vuetify';
 
 module.exports = defineNuxtConfig({
+  vite: { // https://github.com/nuxt/nuxt/issues/30007
+    css: {
+      preprocessorOptions: {
+        sass: {
+          api: "modern"
+        }
+      }
+    }
+  },
   ssr: true,
   runtimeConfig: {
     public: {

@@ -15,21 +15,7 @@ div
       make-links(text='[They Stood Up For Love] van [Live] en [I Would Stay] van [Krezip] waren in [2000] de eerste nummers uit de <strong>Noughties</strong> in de Tijdloze. Ironisch genoeg zijn beide nummers ondertussen reeds verdwenen uit de lijst. Andere liedjes zijn in de plaats gekomen, maar in mindere mate dan dit met nummers uit de Nineties is gebeurd.')
     p
       make-links(text='De <strong>Twenty-tens</strong> kwamen voor het eerst in [2011] in de Tijdloze met [No Sound But the Wind] van de [Editors].')
-  .scrollbox
-    table.lijst
-      tbody
-        tr
-          th.r Decennium
-          th(v-for='year in years') {{year._yy}}
-          th.r Tot.
-        template(v-for='{decade, total, perYear} in counts' :key="decade.name")
-          tr(v-if="total > 0")
-            td.r
-              | {{decade.name}}
-            td(v-for='{count} in perYear')
-              | {{count}}
-            td.r
-              | {{total}}
+  ui-data-table(:data="counts" property-name="Decennium")
   template(v-for='{decade, dataPoints} in graphData' :key="decade.name")
     .graph(v-if="dataPoints.length")
       d3-distribution-graph(:title='decade.name' :points='dataPoints')
@@ -81,18 +67,19 @@ div
         return result;
       },
       counts() {
-        return this.graphData.map(({decade, dataPoints}) => {
+        const allCounts = this.graphData.map(({decade, dataPoints}) => {
           return {
-            decade: decade,
+            entry: decade.name,
             total: dataPoints.length,
-            perYear: this.years.map(year => {
-              return {
-                year: year,
-                count: dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              }
-            })
+            perYear: Object.fromEntries(
+              this.years.map(year => [
+                year.yyyy,
+                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+              ])
+            )
           }
         });
+        return allCounts.filter(entry => entry.total > 0)
       }
     },
     methods: {
