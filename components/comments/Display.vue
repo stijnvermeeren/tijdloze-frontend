@@ -86,7 +86,7 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
-  div.comment {
+  .comment {
     margin: 1em 3em;
 
     &.mine {

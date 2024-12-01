@@ -1,24 +1,25 @@
 <template lang="pug">
-span(ref='top')
-div(:class="['container', {open: isOpen, closed: !isOpen}]")
-  v-card.my-5
-    v-card-item
-      div.cardTitle
-        div
-          v-card-title
-            slot(name="title") {{title}}
-          v-card-subtitle
-            slot(name="subtitle") {{subtitle}}
-        div
-          div.buttons
-            slot(name="buttons")
-    v-card-text
-      .innerContainer(:style="innerContainerStyle")
-        slot
-        .toggle(v-if="collapseHeight" @click.prevent='toggle()')
+div
+  span(ref='top')
+  div(:class="['container', {open: isOpen, closed: !isOpen}]")
+    v-card.my-5
+      v-card-item
+        div.cardTitle
           div
-            a(v-if='!isOpen') {{collapseMessage}}
-            a(v-else) Minder tonen
+            v-card-title
+              slot(name="title") {{title}}
+            v-card-subtitle
+              slot(name="subtitle") {{subtitle}}
+          div
+            div.buttons
+              slot(name="buttons")
+      v-card-text
+        .innerContainer(:style="innerContainerStyle")
+          slot
+          .toggle(v-if="collapseHeight" @click.prevent='toggle()')
+            div
+              a(v-if='!isOpen') {{collapseMessage}}
+              a(v-else) Minder tonen
 </template>
 
 <script setup>
