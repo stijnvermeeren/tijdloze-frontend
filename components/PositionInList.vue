@@ -1,6 +1,6 @@
-$<template lang="pug">
+<template lang="pug">
 div.container
-  div.previous(v-if="previousPosition" :title="`Positie in ${year.previous.yyyy}`")
+  div.previous(v-if="previousPosition && !hidePreviousNext" :title="`Positie in ${year.previous.yyyy}`")
     nuxt-link(:to="`/lijst/${year.previous.yyyy}`") ←
     |
     | {{previousPosition}}
@@ -8,7 +8,7 @@ div.container
     position-main.position-main(:song="song" :year="year")
     position-annotation(v-if='position && year.previous')
       position-change(:position="position" :previous-position="previousPosition")
-  div.next(v-if="nextPosition" :title="`Positie in ${year.next.yyyy}`")
+  div.next(v-if="nextPosition && !hidePreviousNext" :title="`Positie in ${year.next.yyyy}`")
     | {{nextPosition}}
     |
     nuxt-link(:to="`/lijst/${year.next.yyyy}`") →
@@ -20,7 +20,7 @@ import Year from "../orm/Year";
 const props = defineProps({
   song: Object,
   year: Year,
-  singleLine: {
+  hidePreviousNext: {
     type: Boolean,
     default: false
   }

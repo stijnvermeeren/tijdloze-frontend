@@ -2,7 +2,7 @@
 div.entry
   div.position
     slot
-      position-in-list(:song='song' :year='year')
+      position-in-list(:song='song' :year='year' :hide-previous-next="hidePreviousNext")
   song-with-cover(:song="song")
 </template>
 
@@ -16,6 +16,10 @@ defineProps({
   },
   year: {
     type: Year
+  },
+  hidePreviousNext: {
+    type: Boolean,
+    default: false
   }
 })
 </script>

@@ -9,9 +9,7 @@ song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year
   export default {
     name: 'InCurrentList',
     props: {
-      songs: Array,
-      artist: Object,
-      album: Object
+      songs: Array
     },
     computed: {
       currentYear() {
@@ -21,12 +19,8 @@ song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year
         return this.currentYear.previous;
       },
       sortedSongs() {
-        // Only show songs linked to the current artist (in case this album is actually from a different artist)
-        const songs = this.artist ? (
-            this.songs.filter(song => song.artistId === this.artist.id || song.secondArtistId === this.artist.id)
-        ) : this.songs
         return _.sortBy(
-          songs,
+          this.songs,
           [
             song => song.position(this.currentYear, true),
             song => song.position(this.previousYear, true)

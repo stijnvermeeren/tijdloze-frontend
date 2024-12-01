@@ -69,9 +69,10 @@ div
             .with('secondArtist'))
           .with('secondarySongs', q1 => q1
             .with('artist')
+            .with('secondArtist')
             .with('album', q2 => q2
               .with('songs', q3 => q3
-                .with('artist'))))
+                .with('artist').with('secondArtist').with('album'))))
           .find(this.fullArtistData.id);
       },
       top100Songs() {
