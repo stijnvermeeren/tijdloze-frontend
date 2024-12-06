@@ -4,7 +4,7 @@ module.exports = defineNuxtConfig({
   vite: { // https://github.com/nuxt/nuxt/issues/30007
     css: {
       preprocessorOptions: {
-        sass: {
+        scss: {
           api: "modern"
         }
       }
@@ -39,7 +39,8 @@ module.exports = defineNuxtConfig({
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
   routeRules: {
-    '**': { swr: true }
+    '**': { swr: true },
+    '/admin/**': { ssr: false }
   },
   build: {
     transpile: [

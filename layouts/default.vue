@@ -19,12 +19,14 @@
   snackbar
 </template>
 
-<script>
-  export default defineNuxtComponent({
-    mounted() {
-      this.$auth.loginSilently()
-    }
-  })
+<script setup>
+import useSetUser from "~/composables/useSetUser";
+import {useAuth0} from "@auth0/auth0-vue";
+
+onMounted(() => {
+  const auth0 = useAuth0()
+  watch(auth0.user, () => useSetUser(auth0))
+})
 </script>
 
 <style lang="scss">

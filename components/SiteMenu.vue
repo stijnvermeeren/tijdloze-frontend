@@ -12,12 +12,12 @@ div
           v-list-item.subItem(v-if="top100InProgress" to="/lijst/opkomst") Nog op komst...
           v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
           v-list-item.subItem(v-if="top100InProgress" to="/polls") Polls
-        v-list-group.lists(value="/lijst")
+        v-list-group.lists(value="group-/lijst")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze van ...
           v-list-item(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`') {{year.yyyy}}
         v-list-item(to="/database") Volledige database
-        v-list-group(value="/statistieken")
+        v-list-group(value="group-/statistieken")
           template(#activator="{ props }")
             v-list-item(v-bind="props") Statistieken #[span.addition (top 100)]
           v-list-subheader(title="Verschuivingen")
@@ -36,7 +36,7 @@ div
           v-list-item(to="/statistieken/leadvocals") Lead vocals
           v-list-item(to="/statistieken/decennia") Decennia
           v-list-item(to="/statistieken/leeftijden") Leeftijden
-        v-list-group(value="/website")
+        v-list-group(value="group-/website")
           template(#activator="{ props }")
             v-list-item(v-bind="props") Deze website
           v-list-item(to="/website") Algemene info
@@ -46,7 +46,7 @@ div
           v-list-item(to="/website/opensource") Open source
           v-list-item(to="/website/privacy") Privacybeleid
           v-list-item(to="/website/contact") Contact
-        v-list-group(v-if='isAdmin' value="/admin")
+        v-list-group(v-if='isAdmin' value="group-/admin")
           template(#activator="{ props }")
             v-list-item(v-bind="props")
               v-icon.mr-3(:icon="mdiLockOutline")
@@ -121,7 +121,7 @@ div
           case '/chat':
             return 'inprogress'
           default:
-            return firstPart
+            return `group-${firstPart}`
         }
       },
       selectSearchResult(result) {

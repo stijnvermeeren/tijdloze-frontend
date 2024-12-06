@@ -11,7 +11,7 @@ div.container
         div.currentListHeader In de top 100
         in-current-list-section(:songs='top100Songs')
       template(v-if="fullListSongs.length")
-        div.currentListHeader In de volledige Tijdloze
+        div.currentListHeader In de Tijdloze Countdown
         in-current-list-section(:songs='fullListSongs')
       template(v-if="otherSongs.length")
         div.currentListHeader Vroeger in de Tijdloze
