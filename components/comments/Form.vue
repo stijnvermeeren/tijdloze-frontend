@@ -29,7 +29,7 @@ div.commentForm(:class="{expanded: isExpanded}")
           v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
             | Verzenden
   .message(v-if='!isAuthenticated')
-    | Om reacties the plaatsen, moet je je #[a(@click='login()') aanmelden/registeren].
+    | Om reacties the plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
 <script>
@@ -53,6 +53,9 @@ div.commentForm(:class="{expanded: isExpanded}")
       }
     },
     computed: {
+      route() {
+        return useRoute()
+      },
       isAuthenticated() {
         return useAuthStore().isAuthenticated;
       },
@@ -99,9 +102,6 @@ div.commentForm(:class="{expanded: isExpanded}")
         this.submitting = false;
         this.message = '';
         this.$emit('submitted');
-      },
-      login() {
-        this.$auth.login(useRoute().path);
       }
     }
   }

@@ -4,7 +4,7 @@
     div Aangemeld als {{userName}}
     v-btn(rounded @click='logout()' size="small") Afmelden
   div(v-else)
-    v-btn(rounded to="/auth/login") Aanmelden
+    v-btn(rounded :to="{path: '/auth/login', query: {redirect: route.fullPath}}") Aanmelden
 </template>
 
 <script setup>
@@ -12,6 +12,8 @@
   import {useAuth0} from "@auth0/auth0-vue";
 
   let auth0
+
+  const route = useRoute()
 
   const isAuthenticated = computed(() => {
     return useAuthStore().isAuthenticated;

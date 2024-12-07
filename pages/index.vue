@@ -26,7 +26,7 @@ div
         v-btn Ga naar de chatbox!
 
   ui-card(v-if="commentsOn" title="Reageer en discussieer")
-    comments-form(@submitted="reloadComments" @displayNameChanged="reloadComments")
+    comments-form(@submitted="refreshComments" @displayNameChanged="refreshComments")
     comments-display(v-for='comment in comments' :key='comment.id' :comment='comment')
     .link
       nuxt-link(to='/reacties')
@@ -40,7 +40,7 @@ div
         v-btn Alle polls
 </template>
 
-<script>
+<script setup>
   import _ from 'lodash';
   import {useRootStore} from "~/stores/root";
   import {usePollStore} from "~/stores/poll";
@@ -48,85 +48,70 @@ div
   import {useRepo} from "pinia-orm";
   import Song from "~/orm/Song";
 
-  export default defineNuxtComponent({
-    computed: {
-      listInProgress() {
-        return useRootStore().listInProgress;
-      },
-      poll() {
-        return usePollStore().currentPoll;
-      },
-      top5() {
-        const list = useRepo(List).find(this.tableYear?.yyyy)
-        if (list) {
-          const songs = _.take(list.songIds, 5).map(songId => {
-            return useRepo(Song).find(songId)
-          })
-          useRepo(Song).withAll().load(songs)
-          return songs
-        } else {
-          return []
-        }
-      },
-      exitsKnown() {
-        return !! useRootStore().listTop100(this.tableYear?.previous).find(song => {
-          return song.notInList(this.tableYear);
-        })
-      },
-      year() {
-        return useRootStore().currentYear;
-      },
-      tableYear() {
-        if (this.year) {
-          if (useRepo(List).find(this.year.yyyy)?.songIds?.length === 0 && this.year?.previous) {
-            return this.year.previous;
-          } else {
-            return this.year;
-          }
-        }
-      }
-    },
-    methods: {
-      async reloadComments() {
-        const {data} = await useApiFetch(`comments/1`);
-        this.comments = _.take(data.value, 5);
-      }
-    },
-    async asyncData() {
-      const [{data: chatOnResponse}, {data: commentsOnResponse}] = await Promise.all([
-        useApiFetch(`text/chatOn`),
-        useApiFetch(`text/commentsOn`)
-      ])
-      const chatOn = chatOnResponse.value.value === 'on';
-      const commentsOn = commentsOnResponse.value.value === 'on';
+  const listInProgress = computed(() => {
+    return useRootStore().listInProgress;
+  })
 
-      let comments = [];
-      if (commentsOn) {
-        const {data} = await useApiFetch(`comments/1`);
-        comments = _.take(data.value, 5);
-      }
+  const poll = computed(() => {
+    return usePollStore().currentPoll;
+  })
 
-      return {
-        chatOn,
-        commentsOn,
-        comments
-      };
-    },
-    async mounted() {
-      if (this.commentsOn) {
-        // I'm not sure why nextTick is needed, but I'm not the first one to run into this:
-        // https://stackoverflow.com/questions/71609027
-        // Maybe the root issue is this: https://github.com/nuxt/nuxt/issues/13471
-        await nextTick(async () => {
-          // refresh on client side to avoid a stale cache on the server-side
-          const {data} = await useApiFetch(`comments/1`);
-          if (data.value) {
-            this.comments = _.take(data.value, 5);
-          }
-        })
+  const year = computed(() => {
+    return useRootStore().currentYear;
+  })
+
+  const tableYear = computed(() => {
+    if (year.value) {
+      if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
+        return year.value.previous;
+      } else {
+        return year.value;
       }
     }
   })
+
+  const top5 = computed(() => {
+    const list = useRepo(List).find(tableYear.value?.yyyy)
+    if (list) {
+      const songs = _.take(list.songIds, 5).map(songId => {
+        return useRepo(Song).find(songId)
+      })
+      useRepo(Song).withAll().load(songs)
+      return songs
+    } else {
+      return []
+    }
+  })
+
+  const exitsKnown = computed(() => {
+    return !! useRootStore().listTop100(tableYear.value?.previous).find(song => {
+      return song.notInList(tableYear.value);
+    })
+  })
+
+  const {data: chatOn} = await useAsyncData(
+    () => $fetch(`text/chatOn`, useFetchOpts()),
+    {transform: data => data.value === 'on'}
+  )
+  const {data: commentsOn} = await useAsyncData(
+    () => $fetch(`text/commentsOn`, useFetchOpts()),
+    {transform: data => data.value === 'on'}
+  )
+
+  const {data: comments, refresh: refreshComments} = await useAsyncData(
+    () => $fetch(`comments/1`, useFetchOpts()),
+    {
+      transform: data => {
+        return _.take(data, 5)
+      },
+      immediate: false
+    }
+  )
+
+  if (commentsOn.value) {
+    // Loads on server and client
+    await refreshComments()
+  }
 </script>
 
 <style lang="scss" scoped>

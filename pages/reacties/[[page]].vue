@@ -18,57 +18,52 @@ div
   comments-pager(:page='page' :pages='pages ')
 </template>
 
-<script>
+<script setup>
   const commentsPerPage = 20;
 
-  export default defineNuxtComponent({
-    computed: {
-      pages() {
-        return Math.ceil(this.commentCount / commentsPerPage);
-      }
-    },
-    methods: {
-      async reload() {
-        const {data: comments} = await useApiFetch(`comments/${this.page}`);
-        this.comments = comments
-        const {data: commentCountResponse} = await useApiFetch(`comments/count`)
-        this.commentCount = commentCountResponse.value.commentCount;
-      },
-      onDisplayNameChanged() {
-        const page = useRoute().params.page || 1;
-        const {data: comments} = useApiFetch(`comments/${page}`)
-        this.comments = comments
-      },
-      onSubmitted() {
-        const {data: comments} = useApiFetch(`comments/1`)
-        navigateTo('/reacties');
-        this.comments = comments.value;
-      }
-    },
-    async beforeRouteUpdate (to, from, next) {
-      this.page = +to.query.page || 1;
-      const {data: comments} = await useApiFetch(`comments/${this.page}`)
-      this.comments = comments;
-      next();
-    },
-    async asyncData() {
-      const {data: commentsOnResponse} = await useApiFetch(`text/commentsOn`)
-      const commentsOn = commentsOnResponse.value.value === 'on';
+  const {data: commentsOn} = await useAsyncData(
+      () => $fetch(`text/commentsOn`, useFetchOpts()),
+      {transform: data => data.value === 'on'}
+  )
 
-      const page = +useRoute().params.page || +useRoute().query.page || 1;
-      const {data: comments} = await useApiFetch(`comments/${page}`)
-      const {data: commentCountResponse} = await useApiFetch(`comments/count`)
-      return {
-        page,
-        commentsOn,
-        comments,
-        commentCount: commentCountResponse.value.commentCount,
-      };
-    },
-    async mounted() {
-      // refresh on client side to avoid a stale cache on the server-side
-      this.reload()
-    },
+  const {data: commentCount, refresh: reloadCommentCount} = await useAsyncData(
+      () => $fetch(`comments/count`, useFetchOpts()),
+      {transform: data => data.commentCount}
+  )
+
+  const page = computed(() => {
+    return +useRoute().params.page || +useRoute().query.page || 1;
+  })
+
+  const {data: comments, refresh: reloadComments} = await useAsyncData(
+      () => $fetch(`comments/${page.value}`, useFetchOpts()),
+      {
+        immediate: false
+      }
+  )
+
+  // Loads on server and client
+  await reloadComments()
+
+  const pages = computed(() => {
+    return Math.ceil(commentCount.value / commentsPerPage);
+  })
+
+  async function reload() {
+    await reloadComments()
+    await reloadCommentCount()
+  }
+
+  async function onDisplayNameChanged() {
+    await reloadComments()
+  }
+
+  async function onSubmitted() {
+    await reloadComments()
+    navigateTo('/reacties');
+  }
+
+  definePageMeta({
     scrollToTop: true
   })
 </script>
