@@ -6,32 +6,41 @@ div
     v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
   p {{userCount}} gebruikers ({{adminCount}} admins, {{blockedCount}} geblokkeerd, {{activeCount}} actief in de laatste 24 uren).
   div
-    v-radio-group(inline label="Sorteren op" v-model='sortProperty' hide-details)
-      v-radio(value='displayName' label="Gebruikersnaam")
-      v-radio(value='lastSeen' label="Laatste login")
-      v-radio(value='created' label="Laatst geregistreerd")
-  ul
-    li(v-for='user in usersSorted')
+    v-text-field(
+      v-model="searchQuery"
+      density="compact"
+      label="Zoeken"
+      :prepend-inner-icon="mdiMagnify"
+      flat
+      hide-details
+      single-line
+      clearable
+    )
+
+  v-data-table(
+    :items="users"
+    :headers="tableHeaders"
+    v-model:search="searchQuery"
+    :filter-keys="['name', 'username', 'id']"
+    density="compact"
+  )
+    template(v-slot:item.username="{ item: user }")
       .displayName(v-if='user.displayName') {{user.displayName}}
       .anonymous(v-else) Geen gebruikernaam
       .admin(v-if='user.isAdmin') Admin
-      .details
-        div(v-if='user.id !== currentUser.id')
-          .blocked(v-if='user.isBlocked')
-            | Geblokkeerd -
-            |
-            v-btn(@click='unblock(user.id)', :disabled='refreshing') weer toelaten
-          div(v-else)
-            v-btn(@click='block(user.id)', :disabled='refreshing') blokkeren
-        div Naam: #[strong {{user.name}}]
-        div ID: {{user.id}}
-        div Registratie: {{user.created}}
-        div Laatste login: {{user.lastSeen}}
+    template(v-slot:item.block="{ item: user }")
+      div(v-if='user.id !== currentUser.id')
+        .blocked(v-if='user.isBlocked')
+          div Geblokkeerd
+          v-btn(@click='unblock(user.id)', :disabled='refreshing' density="compact" ) weer toelaten
+        div(v-else)
+          v-btn(@click='block(user.id)', :disabled='refreshing' density="compact") blokkeren
 </template>
 
 <script>
   import _ from 'lodash'
   import {useAuthStore} from "~/stores/auth";
+  import {mdiMagnify} from "@mdi/js";
 
   export default defineNuxtComponent({
     setup() {
@@ -42,10 +51,58 @@ div
     data() {
       return {
         refreshing: false,
-        sortProperty: 'lastSeen'
+        sortProperty: 'lastSeen',
+        searchQuery: ''
       }
     },
     computed: {
+      mdiMagnify() {
+        return mdiMagnify
+      },
+      tableHeaders() {
+        return [
+          {
+            title: 'Gebruikersnaam',
+            key: 'username',
+            value: 'displayName',
+            headerProps: {style: 'font-weight: bold'}
+          },
+          {
+            title: '',
+            key: 'block'
+          },
+          {
+            title: 'Naam',
+            key: 'name',
+            value: 'name',
+            headerProps: { style: 'font-weight: bold'}
+          },
+          {
+            title: 'ID',
+            key: 'id',
+            value: 'id',
+            headerProps: { style: 'font-weight: bold'}
+          },
+          {
+            title: 'Registratie',
+            key: 'created',
+            value: 'created',
+            headerProps: { style: 'font-weight: bold'},
+            sort: (a, b) => {
+              return this.parseDate(a).getTime() - this.parseDate(b).getTime()
+            }
+          },
+          {
+            title: 'Laatste login',
+            key: 'lastSeen',
+            value: 'lastSeen',
+            headerProps: { style: 'font-weight: bold'},
+            sort: (a, b) => {
+              return this.parseDate(a).getTime() - this.parseDate(b).getTime()
+            }
+          }
+        ]
+      },
       currentUser() {
         return useAuthStore().user;
       },
@@ -60,23 +117,8 @@ div
       },
       activeCount() {
         return this.users.filter(user => {
-          return this.parseDate(user.lastSeen) > new Date(Date.now() - 24*3600*1000)
+          return this.parseDate(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
         }).length;
-      },
-      usersSorted() {
-        let sortFn = user => user.displayName;
-        if (this.sortProperty === 'created') {
-          sortFn = user => {
-            return - this.parseDate(user.created).valueOf()
-          }
-        }
-        if (this.sortProperty === 'lastSeen') {
-          sortFn = user => {
-            return - this.parseDate(user.lastSeen).valueOf()
-          }
-        }
-
-        return _.sortBy(this.users, sortFn)
       }
     },
     methods: {

@@ -15,7 +15,7 @@ div
   div
     comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
 
-  comments-pager(:page='page' :pages='pages ')
+  comments-pager(:page='page' :pages='pages')
 </template>
 
 <script setup>
