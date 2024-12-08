@@ -49,51 +49,48 @@ Title {{song.title}} ({{song.artist.name}})
     d3-graph(:songs='[song]' :no-label='true')
 </template>
 
-<script>
+<script setup>
 import {allEntriesIntervals, probablyInListIntervals} from '~/utils/intervals'
-  import { idFromSlug } from '~/utils/slug'
-  import Song from "@/orm/Song";
-  import {useRootStore} from "~/stores/root";
-  import {useRepo} from "pinia-orm";
+import { idFromSlug } from '~/utils/slug'
+import Song from "@/orm/Song";
+import {useRootStore} from "~/stores/root";
+import {useRepo} from "pinia-orm";
 
-  export default defineNuxtComponent({
-    computed: {
-      song() {
-        return useRepo(Song).withAll().find(this.fullSongData.id);
-      },
-      years() {
-        return useRootStore().years;
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      links() {
-        const links = [];
-        const addLink = (property, title) => {
-          if (this.fullSongData[property]) {
-            links.push({
-              href: this.fullSongData[property],
-              title: title
-            })
-          }
-        };
+const {data: fullSongData, error} = await useAsyncData(
+    () => $fetch(`song/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+)
+if (error.value) {
+  create404Error()
+}
 
-        addLink('urlWikiEn', 'Wikipedia (Engels)');
-        addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-        return links;
-      },
-      intervals() {
-        return allEntriesIntervals([this.song], this.years, true);
-      }
-    },
-    async asyncData() {
-      const {data: fullSongData, error} = await useApiFetch(`song/${idFromSlug(useRoute().params.id)}`)
-      if (error.value) {
-        create404Error()
-      }
-      return {fullSongData}
+const song = computed(() => {
+  return useRepo(Song).withAll().find(fullSongData.value.id);
+})
+const years = computed(() => {
+  return useRootStore().years;
+})
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const links = computed(() => {
+  const links = [];
+  const addLink = (property, title) => {
+    if (fullSongData.value[property]) {
+      links.push({
+        href: fullSongData.value[property],
+        title: title
+      })
     }
-  })
+  };
+
+  addLink('urlWikiEn', 'Wikipedia (Engels)');
+  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
+  return links;
+})
+
+const intervals = computed(() => {
+  return allEntriesIntervals([song.value], years.value, true);
+})
 </script>
 
 <style lang="scss" scoped>

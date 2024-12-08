@@ -33,84 +33,78 @@ div
     d3-graph(:songs='top100Songs')
 </template>
 
-<script>
+<script setup>
   import { idFromSlug } from '~/utils/slug'
   import Artist from "@/orm/Artist";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
-  import { mdiLink } from '@mdi/js'
   import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
 
-  export default defineNuxtComponent({
-    components: {ExternalLinkBtn},
-    data() {
-      return {
-        byAlbum: false,
-        mdiLinkIcon: mdiLink
-      }
-    },
-    computed: {
-      collapseHeight() {
-        if (this.artist.allSongs.length <= 5) {
-          return undefined
-        } else {
-          const probablyInTop100Songs = this.artist.allSongs.filter(song => song.probablyInList(this.currentYear))
-          return 60 + 70 * Math.max(4, probablyInTop100Songs.length)
-        }
-      },
-      artist() {
-        return useRepo(Artist)
-          .with('albums', q1 => q1
+  const byAlbum = ref(false)
+
+  const {data: fullArtistData, error} = await useAsyncData(
+      () => $fetch(`artist/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+  )
+  if (error.value) {
+    create404Error()
+  }
+
+  const artist = computed(() => {
+    return useRepo(Artist)
+        .with('albums', q1 => q1
             .with('songs', q2 => q2
-              .with('secondArtist').with('artist').with('album')))
-          .with('songs', q1 => q1
+                .with('secondArtist').with('artist').with('album')))
+        .with('songs', q1 => q1
             .with('album')
             .with('artist')
             .with('secondArtist'))
-          .with('secondarySongs', q1 => q1
+        .with('secondarySongs', q1 => q1
             .with('artist')
             .with('secondArtist')
             .with('album', q2 => q2
-              .with('songs', q3 => q3
-                .with('artist').with('secondArtist').with('album'))))
-          .find(this.fullArtistData.id);
-      },
-      top100Songs() {
-        return this.artist.allSongs.filter(song => song.listCount(useRootStore().years) > 0)
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      links() {
-        const links = [];
-        const addLink = (property, title, fn) => {
-          if (!fn) {
-            fn = x => x
-          }
+                .with('songs', q3 => q3
+                    .with('artist').with('secondArtist').with('album'))))
+        .find(fullArtistData.value.id);
+  })
 
-          if (this.fullArtistData[property]) {
-            links.push({
-              href: fn(this.fullArtistData[property]),
-              title: title
-            })
-          }
-        };
+  const currentYear = computed(() => {
+    return useRootStore().currentYear;
+  })
 
-        addLink('urlOfficial', 'Officiële website');
-        addLink('urlWikiEn', 'Wikipedia (Engels)');
-        addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-        addLink('urlAllMusic', 'AllMusic');
-        addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
-        return links;
-      }
-    },
-    async asyncData() {
-      const {data: fullArtistData, error} = await useApiFetch(`artist/${idFromSlug(useRoute().params.id)}`)
-      if (error.value) {
-        create404Error()
-      }
-      return {fullArtistData}
+  const collapseHeight = computed(() => {
+    if (artist.value.allSongs.length <= 5) {
+      return undefined
+    } else {
+      const probablyInTop100Songs = artist.value.allSongs.filter(song => song.probablyInList(currentYear.value))
+      return 60 + 70 * Math.max(4, probablyInTop100Songs.length)
     }
+  })
+
+  const top100Songs = computed(() => {
+    return artist.value.allSongs.filter(song => song.listCount(useRootStore().years) > 0)
+  })
+
+  const links = computed(() => {
+    const links = [];
+    const addLink = (property, title, fn) => {
+      if (!fn) {
+        fn = x => x
+      }
+
+      if (fullArtistData.value[property]) {
+        links.push({
+          href: fn(fullArtistData.value[property]),
+          title: title
+        })
+      }
+    };
+
+    addLink('urlOfficial', 'Officiële website');
+    addLink('urlWikiEn', 'Wikipedia (Engels)');
+    addLink('urlWikiNl', 'Wikipedia (Nederlands)');
+    addLink('urlAllMusic', 'AllMusic');
+    addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
+    return links;
   })
 </script>
 

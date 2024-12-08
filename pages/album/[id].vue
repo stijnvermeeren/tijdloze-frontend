@@ -26,50 +26,49 @@ div
     d3-graph(:songs='top100Songs')
 </template>
 
-<script>
+<script setup>
   import { idFromSlug } from '~/utils/slug'
   import Album from "@/orm/Album";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
-  export default defineNuxtComponent({
-    computed: {
-      album() {
-        return useRepo(Album)
-          .with('artist')
-          .with('songs', query => query.with("artist").with("secondArtist").with("album"))
-          .find(this.fullAlbumData.id);
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      top100Songs() {
-        return this.album.songsSorted.filter(song => song.listCount(useRootStore().years) > 0)
-      },
-      links() {
-        const links = [];
-        const addLink = (property, title) => {
-          if (this.fullAlbumData[property]) {
-            links.push({
-              href: this.fullAlbumData[property],
-              title: title
-            })
-          }
-        };
+  const {data: fullAlbumData, error} = await useAsyncData(
+      () => $fetch(`album/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+  )
+  if (error.value) {
+    create404Error()
+  }
 
-        addLink('urlWikiEn', 'Wikipedia (Engels)');
-        addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-        addLink('urlAllMusic', 'AllMusic');
-        return links;
+  const album = computed(() => {
+    return useRepo(Album)
+      .with('artist')
+      .with('songs', query => query.with("artist").with("secondArtist").with("album"))
+      .find(fullAlbumData.value.id);
+  })
+
+  const currentYear = computed(() => {
+    return useRootStore().currentYear;
+  })
+
+  const top100Songs = computed(() => {
+    return album.value.songsSorted.filter(song => song.listCount(useRootStore().years) > 0)
+  })
+
+  const links = computed(() => {
+    const links = [];
+    const addLink = (property, title) => {
+      if (fullAlbumData.value[property]) {
+        links.push({
+          href: fullAlbumData.value[property],
+          title: title
+        })
       }
-    },
-    async asyncData() {
-      const {data: fullAlbumData, error} = await useApiFetch(`album/${idFromSlug(useRoute().params.id)}`)
-      if (error.value) {
-        create404Error()
-      }
-      return {fullAlbumData};
-    }
+    };
+
+    addLink('urlWikiEn', 'Wikipedia (Engels)');
+    addLink('urlWikiNl', 'Wikipedia (Nederlands)');
+    addLink('urlAllMusic', 'AllMusic');
+    return links;
   })
 </script>
 
