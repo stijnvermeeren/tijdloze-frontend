@@ -28,13 +28,14 @@ div
     | Jaar {{nextYearYyyy}} starten
 
   ui-card.overflow-visible(title="Volgend nummer")
-    div
-      v-text-field.d-inline-block(
-        v-model.number="nextPosition"
-        :label="`Positie in ${currentYear.yyyy}`"
-        type="number"
-        hide-details
-      )
+    template(#buttons)
+      div
+        v-text-field.d-inline-block(
+          v-model.number="nextPosition"
+          :label="`Positie in ${currentYear.yyyy}`"
+          type="number"
+          hide-details
+        )
 
     div.query(v-if="importQuery")
       | Importeren van "{{importQuery}}".
@@ -48,22 +49,19 @@ div
       ) Zoek info op Google
 
     div(v-show="nextPosition > 0")
-      v-btn-toggle.mt-2.mb-3(v-model="nextSongTab" color="blue")
-        v-btn(value="existing") Nummer uit de database
-        v-btn(value="new") Nieuw nummer
+      admin-m-b-dataset-search(
+        v-model="query"
+        @mbHit='fillMBData($event)'
+        @selectSearchResult="selectSearchResult($event)"
+        ref="search"
+      )
+
+      hr.my-2
+
+      div(v-show="nextSongTab === 'hide'")
+        v-btn(@click="nextSongTab = 'new'") Nieuw nummer manueel toevoegen
 
       div(v-show="nextSongTab === 'existing'")
-        search-box(
-          placeholder='Zoek nummer...'
-          :artist-filter='artist => false'
-          :album-filter='album => false'
-          :song-filter='possibleSong'
-          :songs-year='previousYear'
-          :initial-query='importQuery'
-          @selectSearchResult='selectSearchResult($event)'
-          @initialResultCount="initialResultCount($event)"
-        )
-
         div(v-if="nextSong")
           div
             strong {{nextSong.artist.name}} - {{nextSong.title}}
@@ -75,8 +73,6 @@ div
               | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongTab === 'new'")
-        admin-m-b-dataset-search(:initialQuery='importQuery' @mbHit='fillMBData($event)')
-        hr
         admin-new-song-wizard(
           :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
           @newSong='add($event.id)'
@@ -109,10 +105,11 @@ definePageMeta({ middleware: 'admin' })
   export default defineNuxtComponent({
     data() {
       return {
-        nextSongTab: 'existing',
+        nextSongTab: 'hide',
         nextSong: undefined,
         nextSongFullData: undefined,
         processing: false,
+        query: '',
         importQuery: '',
         importSongs: [],
         nextPosition: useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100,
@@ -162,16 +159,15 @@ definePageMeta({ middleware: 'admin' })
       }
     },
     methods: {
-      initialResultCount(count) {
-        this.nextSongTab = (this.importQuery && count === 0) ? 'new' : 'existing';
-      },
       loadNextFromImport() {
         let canBeImported = false;
         let nextImport = this.importSongs.shift();
         while (!canBeImported && nextImport) {
           const {overridePosition, query} = nextImport;
           if (!overridePosition || !useRootStore().songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
-            this.importQuery = query;
+            this.importQuery = query
+            this.query = query
+            this.$refs.search.setQuery(query)
             this.nextPosition = overridePosition;
             canBeImported = true;
           } else {
@@ -180,6 +176,8 @@ definePageMeta({ middleware: 'admin' })
         }
         if (!canBeImported) {
           this.importQuery = ''
+          this.query = ''
+          this.$refs.search.setQuery('')
           this.nextPosition = this.nextPositionAuto
         }
       },
@@ -191,12 +189,14 @@ definePageMeta({ middleware: 'admin' })
         this.importSongs = []
       },
       async selectSearchResult(result) {
+        this.nextSongTab = 'existing';
         this.nextSong = result.item;
         this.nextSongFullData = undefined;
         const { data } = await useApiFetch(`song/${this.nextSong.id}`)
         this.nextSongFullData = data;
       },
       fillMBData(data) {
+        this.nextSongTab = 'new';
         this.$refs.wizard.loadPreset({
           songTitle: data.title,
           artistName: data.name,
@@ -238,9 +238,6 @@ definePageMeta({ middleware: 'admin' })
         this.processing = false;
 
         this.loadNextFromImport();
-      },
-      possibleSong(song) {
-        return !song.position(this.currentYear, true) && (this.nextPosition > 100 || !song.markedAsExit());
       }
     }
   })

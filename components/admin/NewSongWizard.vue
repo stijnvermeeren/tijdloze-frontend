@@ -95,27 +95,29 @@ div
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
 
-  const initialData = {
-    artistType: 'new',
-    artistId: undefined,
-    artistDetails: {
-      name: '',
-      musicbrainzId: undefined,
-      countryId: undefined
-    },
-    albumId: 0,
-    albumDetails: {
-      title: '',
-      musicbrainzId: undefined,
-      releaseYear: undefined
-    },
-    songDetails: {
-      title: '',
-      languageId: undefined,
-      leadVocals: undefined,
-      spotifyId: undefined
-    },
-    submitting: false
+  function initialData() {
+    return {
+      artistType: 'new',
+      artistId: undefined,
+      artistDetails: {
+        name: '',
+        musicbrainzId: undefined,
+        countryId: undefined
+      },
+      albumId: 0,
+      albumDetails: {
+        title: '',
+        musicbrainzId: undefined,
+        releaseYear: undefined
+      },
+      songDetails: {
+        title: '',
+        languageId: undefined,
+        leadVocals: undefined,
+        spotifyId: undefined
+      },
+      submitting: false
+    }
   }
 
   export default {
@@ -129,7 +131,7 @@ div
       }
     },
     data() {
-      return initialData
+      return initialData()
     },
     computed: {
       artistName() {
@@ -340,7 +342,7 @@ div
         const {data: song} = await useApiFetchPost('/song', songData);
 
         this.submitting = false;
-        Object.assign(this.$data, initialData);
+        Object.assign(this.$data, initialData());
         this.$emit('newSong', song.value);
       }
     }

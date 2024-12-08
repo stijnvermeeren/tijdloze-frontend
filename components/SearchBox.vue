@@ -54,6 +54,10 @@
 
   export default {
     props: {
+      modelValue: {
+        type: String,
+        default: ''
+      },
       placeholder: {
         type: String,
         default: 'Zoek artiest, album of nummer'
@@ -73,14 +77,14 @@
       songsYear: {
         type: Object
       },
-      initialQuery: {
-        type: String,
-        default: ''
+      noAutoClear: {
+        type: Boolean,
+        default: false
       }
     },
     data() {
       return {
-        query: this.initialQuery,
+        query: this.modelValue,
         selectedIndex: undefined,
         resultsLimit: 10
       }
@@ -119,10 +123,11 @@
       }
     },
     watch: {
-      query() {
+      query(newValue) {
         this.selectedIndex = undefined;
+        this.$emit('update:modelValue', newValue);
       },
-      initialQuery(newValue) {
+      modelValue(newValue) {
         this.$refs.input.focus();
         this.query = newValue;
         this.$emit('initialResultCount', this.resultsCount);
@@ -166,11 +171,13 @@
         }
       },
       documentClick (e) {
-        const searchBox = document.querySelector('#searchBox');
-        const searchResults = document.querySelector('#searchResults');
-        const target = e.target;
-        if (this.query && !searchBox.contains(target) && !searchResults.contains(target) && !this.initialQuery) {
-          this.query = '';
+        if (!this.noAutoClear) {
+          const searchBox = document.querySelector('#searchBox');
+          const searchResults = document.querySelector('#searchResults');
+          const target = e.target;
+          if (this.query && !searchBox.contains(target) && !(searchResults && searchResults.contains(target))) {
+            this.query = '';
+          }
         }
       }
     },

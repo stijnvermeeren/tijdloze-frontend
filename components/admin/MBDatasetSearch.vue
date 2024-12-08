@@ -1,8 +1,18 @@
 <template lang="pug">
 div
-  div.d-flex
-    v-text-field.mr-4(v-model='query' @change='search' label='Artiest en titel' hide-details)
-    v-btn(@click='search' :disabled='processing')
+  div.d-flex.align-center
+    search-box.flex-grow-1(
+      v-model="query"
+      placeholder='Artiest en titel'
+      :artist-filter='artist => false'
+      :album-filter='album => false'
+      :song-filter='possibleSong'
+      :songs-year='previousYear'
+      @selectSearchResult='selectSearchResult($event)'
+      @initialResultCount="initialResultCount($event)"
+      no-auto-clear
+    )
+    v-btn(@click='searchMusicbrainz' :disabled='processing' hide-details)
       | Zoeken op MusicBrainz
   div(v-if="requestError")
     ui-alert(type="error" title="Fout bij het zoeken in de MusicBrainz dataset.")
@@ -13,35 +23,41 @@ div
 </template>
 
 <script>
+  import {useRootStore} from "~/stores/root";
+
   export default defineNuxtComponent({
-    props: {
-      initialQuery: {
-        type: String,
-        default: ''
-      }
-    },
     data() {
       return {
-        query: this.initialQuery,
+        query: "",
         processing: false,
         showingResults: false,
         mbHit: undefined,
         requestError: false
       }
     },
-    watch: {
-      initialQuery(newQuery) {
-        this.query = newQuery;
-        if (newQuery) {
-          this.search();
-        } else {
-          this.showingResults = false
-          this.mbHit = undefined
-        }
+    computed: {
+      currentYear() {
+        return useRootStore().currentYear;
+      },
+      previousYear() {
+        return this.currentYear.previous;
       }
     },
     methods: {
-      async search() {
+      initialResultCount(count) {
+        if (this.query && count === 0) {
+          this.searchMusicbrainz()
+        }
+      },
+      setQuery(newQuery) {
+        this.query = newQuery;
+        this.showingResults = false
+        this.mbHit = undefined
+      },
+      async selectSearchResult(result) {
+        this.$emit("selectSearchResult", result)
+      },
+      async searchMusicbrainz() {
         this.mbHit = undefined;
         this.showingResults = false;
         this.processing = true;
@@ -61,6 +77,9 @@ div
           this.requestError = true;
           this.processing = false;
         }
+      },
+      possibleSong(song) {
+        return !song.position(this.currentYear, true);
       }
     }
   })

@@ -2,7 +2,7 @@
 div
   span(ref='top')
   div(:class="['container', {open: isOpen, closed: !isOpen}]")
-    v-card.my-5
+    v-card.overflow-visible.my-5
       v-card-item
         div.cardTitle
           div
@@ -33,7 +33,7 @@ const props = defineProps({
   }
 })
 
-const isOpen = ref(false)
+const isOpen = ref(!props.collapseHeight)
 const top = ref(null);
 
 const innerContainerStyle = computed(() => {
