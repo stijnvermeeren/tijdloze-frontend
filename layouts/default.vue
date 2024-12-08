@@ -38,6 +38,10 @@ onMounted(() => {
     min-width: 480px;
   }
 
+  .router-link-active{
+    cursor: auto;
+  }
+
   .v-btn {
     text-transform: unset !important;
     letter-spacing: unset !important;

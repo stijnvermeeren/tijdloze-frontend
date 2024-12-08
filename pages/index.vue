@@ -7,7 +7,7 @@ div
       | De Tijdloze van {{year.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
 
     ui-alert(v-else title="Officiële informatie / stemmen")
-      | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Voor officiële informatie en de mogelijkheid om te stemmen (meestal eind november / begin december) moet je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX] zijn.
+      | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
     template(v-if="top5.length")
       song-with-position(v-for='song in top5' :key='song.id' :song='song' :year="tableYear" hide-previous-next)
