@@ -406,5 +406,18 @@ export default [
       `Ook voor [*Arcade Fire] is het geen goede editie: [Rebellion (Lies)] daalt 24 plaatsen, net zoals op één na al hun noteringen in de countdown.`,
       `Tien nummers zijn uit de Tijdloze gevallen, daar zitten nog een aantal vaste waarden bij. [Karma Police] van [Radiohead] stond tot nu 25 jaar onafgebroken in De Tijdloze, [Jeremy] van [Pearl Jam] stond 24 jaar na elkaar in de lijst, en [Thunderstruck] van [AC/DC] staat er na 20 jaar niet meer in. Ook [Papillon;Editors] van [Editors] (na twaalf jaar) en [The Pretender] van [Foo Fighters] (na elf jaar) komen niet meer in De Tijdloze voor.`
     ]
+  },
+  {
+    yyyy: 2023,
+    analyse: [
+      `[*Black] van [Pearl Jam] staat, na twee jaar op de tweede plaats, weer op de eerste plek, en dat voor de zevende keer in totaal. [The Chain] van [Fleedwood Mac] daalt naar de tweede plaats.`,
+      `Na het overlijden van [*Sinéad O'Connor] stijgt [Troy] van 27 naar 4. Nog nooit kwam een nummer van zo'n lage positie direct de top vijf binnen.`,
+      `Sinds 1994 stond er telkens minstens één nummer van [*Metallica] in de top 20, in 2017 en 2018 hadden ze zelfs drie noteringen in de top 12. Omdat [Master of Puppets] daalt naar positie 21, staat er dus sinds lang geen [Metallica] meer in de top 20.`,
+      `[*Cold Little Heart] van [Michael Kiwanuka] kwam vorig jaar nieuw binnen op 96 en stijgt dit jaar meteen 72 plaatsen (naar 24), het nummer is daarmee de sterkste stijger van dit jaar. Slechts twee nummers gingen ooit meer omhoog: [The End] van [The Doors] (78 plaatsen) en [Space Oddity] van [David Bowie] (73 plaatsen), allebei in de editie van 1990.`,
+      `Enkele opvallende dalers dit jaar: [The End] van [The Doors] daalt 18 plaatsen en staat zo op 88. Het is van 1988 geleden dat het nummer zo laag stond. [Where Is My Mind?] van [Pixies] daalt 13 plaatsen en staat op de laagste positie sinds 2000. [Temple of Love] van [The Sisters of Mercy] staat op de laagste positie sinds 1990.`,
+      `In 2022 was [Kate Bush] met [*Running Up That Hill (A Deal with God)] nog de hoogste nieuwkomer op 37, in 2023 is ze de sterkste daler: ze daalt 23 plaatsen en staat nu op 60.`,
+      `Acht nieuwkomers, waarvan twee goednieuw. [*Florence + the Machine] staat voor het eerst in De Tijdloze met [Dog Days Are Over] op 93. Voor het eerst sinds 1997 staan ook [*Talking Heads] opnieuw bij de bovenste 100, [This Must Be the Place (Naive Melody)] komt nieuw binnen op 76. De opvallendste re-entry is [Nothing Compares 2 U;Sinéad O'Connor] dat na het overlijden van [*Sinéad O'Connor] 206 plaatsen stijgt, naar 82.`,
+      `Acht nummers vallen uit De Tijdloze. [*Feeling Good;Nina Simone] van [Nina Simone] (vorig jaar nog op 71) en [*Piece of My Heart] van [Big Brother and the Holding Company] vallen na vijf jaar opnieuw uit de lijst. [*Ace of Spades] van [Motörhead] stond zeven jaar in De Tijdloze. Er verdwijnen ook enkele vaste waarden: [*I Can't Live in a Living Room] van [Red Zebra] en [*Losing My Religion] van [R.E.M.] vallen opnieuw weg, [*Wonderwall] van [Oasis] stond 18 jaar onafgebroken in De Tijdloze.`
+    ]
   }
 ]
