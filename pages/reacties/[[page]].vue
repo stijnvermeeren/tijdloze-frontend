@@ -19,31 +19,29 @@ div
 </template>
 
 <script setup>
+  import useClientDataRefresh from "~/composables/useClientDataRefresh";
+
   const commentsPerPage = 20;
 
-  const {data: commentsOn} = await useAsyncData(
-      () => $fetch(`text/commentsOn`, useFetchOpts()),
-      {transform: data => data.value === 'on'}
+  const {data: commentsOn} = await useFetch(
+    `text/commentsOn`,
+    useFetchOpts({transform: data => data.value === 'on'})
   )
 
-  const {data: commentCount, refresh: reloadCommentCount} = await useAsyncData(
-      () => $fetch(`comments/count`, useFetchOpts()),
-      {transform: data => data.commentCount}
+  const {data: commentCount, refresh: reloadCommentCount} = await useFetch(
+    `comments/count`,
+    useFetchOpts({transform: data => data.commentCount})
   )
 
   const page = computed(() => {
     return +useRoute().params.page || +useRoute().query.page || 1;
   })
 
-  const {data: comments, refresh: reloadComments} = await useAsyncData(
-      () => $fetch(`comments/${page.value}`, useFetchOpts()),
-      {
-        immediate: false
-      }
+  const {data: comments, refresh: refreshComments} = await useFetch(
+    `comments/${page.value}`,
+    useFetchOpts()
   )
-
-  // Loads on server and client
-  await reloadComments()
+  useClientDataRefresh(refreshComments)
 
   const pages = computed(() => {
     return Math.ceil(commentCount.value / commentsPerPage);

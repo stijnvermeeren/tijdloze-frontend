@@ -47,6 +47,7 @@ div
   import List from "~/orm/List";
   import {useRepo} from "pinia-orm";
   import Song from "~/orm/Song";
+  import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
   const listInProgress = computed(() => {
     return useRootStore().listInProgress;
@@ -89,29 +90,25 @@ div
     })
   })
 
-  const {data: chatOn} = await useAsyncData(
-    () => $fetch(`text/chatOn`, useFetchOpts()),
-    {transform: data => data.value === 'on'}
+  const {data: chatOn} = await useFetch(
+    `text/chatOn`,
+    useFetchOpts({transform: data => data.value === 'on'})
   )
-  const {data: commentsOn} = await useAsyncData(
-    () => $fetch(`text/commentsOn`, useFetchOpts()),
-    {transform: data => data.value === 'on'}
+  const {data: commentsOn} = await useFetch(
+    `text/commentsOn`,
+    useFetchOpts({transform: data => data.value === 'on'})
   )
 
-  const {data: comments, refresh: refreshComments} = await useAsyncData(
-    () => $fetch(`comments/1`, useFetchOpts()),
-    {
+  const {data: comments, execute: refreshComments} = await useFetch(
+    `comments/1`,
+    useFetchOpts({
       transform: data => {
+        console.log("refresh")
         return _.take(data, 5)
-      },
-      immediate: false
-    }
+      }
+    })
   )
-
-  if (commentsOn.value) {
-    // Loads on server and client
-    await refreshComments()
-  }
+  useClientDataRefresh(refreshComments)
 </script>
 
 <style lang="scss" scoped>

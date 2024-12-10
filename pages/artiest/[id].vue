@@ -42,8 +42,8 @@ div
 
   const byAlbum = ref(false)
 
-  const {data: fullArtistData, error} = await useAsyncData(
-      () => $fetch(`artist/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+  const {data: fullArtistData, error} = await useFetch(
+      `artist/${idFromSlug(useRoute().params.id)}`, useFetchOpts()
   )
   if (error.value) {
     create404Error()

@@ -56,8 +56,8 @@ import Song from "@/orm/Song";
 import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const {data: fullSongData, error} = await useAsyncData(
-    () => $fetch(`song/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+const {data: fullSongData, error} = await useFetch(
+    `song/${idFromSlug(useRoute().params.id)}`, useFetchOpts()
 )
 if (error.value) {
   create404Error()

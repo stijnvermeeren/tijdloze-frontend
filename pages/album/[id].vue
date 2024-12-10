@@ -32,8 +32,8 @@ div
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
-  const {data: fullAlbumData, error} = await useAsyncData(
-      () => $fetch(`album/${idFromSlug(useRoute().params.id)}`, useFetchOpts())
+  const {data: fullAlbumData, error} = await useFetch(
+      `album/${idFromSlug(useRoute().params.id)}`, useFetchOpts()
   )
   if (error.value) {
     create404Error()
