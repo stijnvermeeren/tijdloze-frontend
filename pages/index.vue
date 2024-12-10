@@ -99,14 +99,19 @@ div
     useFetchOpts({transform: data => data.value === 'on'})
   )
 
-  const {data: comments, execute: refreshComments} = await useFetch(
-    `comments/1`,
-    useFetchOpts({
-      transform: data => {
-        console.log("refresh")
-        return _.take(data, 5)
+  const {data: comments, execute: refreshComments} = await useAsyncData(
+    'comments',
+    () => {
+      if (commentsOn.value) {
+        return $fetch(
+            `comments/1`,
+            useFetchOpts({transform: data => _.take(data, 5)})
+        )
+      } else {
+        return Promise.resolve([])
       }
-    })
+    },
+    {watch: [commentsOn]}
   )
   useClientDataRefresh(refreshComments)
 </script>
