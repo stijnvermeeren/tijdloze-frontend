@@ -325,10 +325,7 @@ div
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
-          const artist = await $fetch(
-              '/artist',
-              useFetchOpts(useFetchData(artistData, {method: 'POST'}))
-          );
+          const artist = await $fetch('/artist', useFetchOptsPost(artistData));
           artistId = artist.id;
         } else {
           artistId = this.artistId;
@@ -341,10 +338,7 @@ div
             title: this.albumDetails.title,
             releaseYear: this.albumDetails.releaseYear
           }
-          const album = await $fetch(
-              '/album',
-              useFetchOpts(useFetchData(albumData, {method: 'POST'}))
-          );
+          const album = await $fetch('/album', useFetchOptsPost(albumData));
           albumId = album.id;
         }
 
@@ -356,10 +350,7 @@ div
           leadVocals: this.songDetails.leadVocals,
           spotifyId: this.songDetails.spotifyId
         }
-        const song = await $fetch(
-            '/song',
-            useFetchOpts(useFetchData(songData, {method: 'POST'}))
-        );
+        const song = await $fetch('/song', useFetchOptsPost(songData));
 
         this.submitting = false;
         Object.assign(this.$data, initialData());

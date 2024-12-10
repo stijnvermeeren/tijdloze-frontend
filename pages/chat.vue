@@ -52,10 +52,7 @@ div
         const data = {
           displayName: this.name
         };
-        const user = await $fetch(
-            `user/display-name`,
-            useFetchOpts(useFetchData(data, {method: 'POST'}))
-        )
+        const user = await $fetch(`user/display-name`, useFetchOptsPost(data))
         this.submittingDisplayName = false;
         useAuthStore().setUser(user);
       },

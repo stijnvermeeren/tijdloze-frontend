@@ -75,19 +75,19 @@ div
     methods: {
       async submit() {
         this.processing = true;
-        await useApiFetchPut(`album/${this.fullAlbumData.id}`, this.fullAlbumData)
+        await $fetch(`album/${this.fullAlbumData.id}`, useFetchOptsPut(this.fullAlbumData))
         await useRouter().push(`/album/${this.fullAlbumData.id}`);
       },
       async submitDelete() {
         if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          await useApiFetchDelete(`album/${this.fullAlbumData.id}`)
+          await $fetch(`album/${this.fullAlbumData.id}`, useFetchOptsDelete())
           await useRouter().push(`/artiest/${this.fullAlbumData.artistId}`);
         }
       }
     },
     async asyncData() {
-      const {data: fullAlbumData} = await useApiFetch(`album/${useRoute().params.id}`)
+      const fullAlbumData = await $fetch(`album/${useRoute().params.id}`, useFetchOpts())
       return {
         fullAlbumData,
         title: fullAlbumData.title

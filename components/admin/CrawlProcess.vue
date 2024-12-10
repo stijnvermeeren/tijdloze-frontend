@@ -78,14 +78,14 @@ async function refresh() {
 
 async function accept(id) {
   submitting.value = true
-  await $fetch(`${apiPath}/${id}`, useFetchOpts({method: 'POST'}))
+  await $fetch(`${apiPath}/${id}`, useFetchOptsPost())
   refresh()
   submitting.value = false
 }
 
 async function reject(id) {
   submitting.value = true
-  await $fetch(`${apiPath}/${id}`, useFetchOpts({method: 'DELETE'}))
+  await $fetch(`${apiPath}/${id}`, useFetchOptsDelete())
   refresh()
   submitting.value = false
 }

@@ -34,7 +34,7 @@ definePageMeta({ middleware: 'admin' })
       async remove(song) {
         const position = song.position(this.currentYear, true)
         if (confirm(`"${song.artist.name} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${this.currentYear.yyyy})?`)) {
-          await useApiFetchDelete(`list-entry/${this.currentYear.yyyy}/${position}`)
+          await $fetch(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsDelete())
         }
       }
     }

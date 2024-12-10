@@ -38,6 +38,7 @@ import {mdiRefresh} from "@mdi/js";
 import _ from 'lodash';
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
+import useFetchOptsPost from "~/composables/useFetchOptsPost";
 
 const auth = inject('auth', {}) // provide default value for server-side
 
@@ -98,10 +99,7 @@ async function reload() {
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await $fetch(
-        `poll/${props.poll.id}/${myVoteEdit.value}`,
-        useFetchOpts({method: 'POST'})
-    );
+    await $fetch(`poll/${props.poll.id}/${myVoteEdit.value}`, useFetchOptsPost());
 
     await reload();
     voting.value = false;
@@ -122,14 +120,14 @@ function percentage(answerVotes) {
 
 async function deletePoll() {
   deleting.value = true;
-  await $fetch(`poll/${props.poll.id}/hide`, useFetchOpts({method: 'POST'}));
+  await $fetch(`poll/${props.poll.id}/hide`, useFetchOptsPost());
   isDeleted.value = true;
   deleting.value = false;
 }
 
 async function restore() {
   deleting.value = true;
-  await $fetch(`poll/${props.poll.id}/hide`, useFetchOpts({method: 'DELETE'}));
+  await $fetch(`poll/${props.poll.id}/hide`, useFetchOptsDelete());
   isDeleted.value = false;
   deleting.value = false;
 }

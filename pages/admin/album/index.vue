@@ -36,8 +36,8 @@ const disabled = computed(() => {
 
 async function submit() {
   processing.value = true;
-  const {data} = await useApiFetchPost(`album`, fullAlbumData.value)
-  await useRouter().push(`/album/${data.value.id}`)
+  const data = await $fetch(`album`, useFetchOptsPost(fullAlbumData.value))
+  await useRouter().push(`/album/${data.id}`)
 }
 </script>
 

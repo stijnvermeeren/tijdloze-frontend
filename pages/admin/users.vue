@@ -41,6 +41,7 @@ div
   import _ from 'lodash'
   import {useAuthStore} from "~/stores/auth";
   import {mdiMagnify} from "@mdi/js";
+  import useFetchOptsDelete from "~/composables/useFetchOptsDelete";
 
   export default defineNuxtComponent({
     setup() {
@@ -134,27 +135,24 @@ div
       },
       async block(userId) {
         this.refreshing = true;
-        await useApiFetchPost(`/user/${userId}/block`);
-        const {data: usersData} = await useApiFetch(`user/list`);
-        this.users = usersData
+        await $fetch(`/user/${userId}/block`, useFetchOptsPost());
+        this.users = await $fetch(`user/list`, useFetchOpts());
         this.refreshing = false;
       },
       async unblock(userId) {
         this.refreshing = true;
-        await useApiFetchDelete(`/user/${userId}/block`);
-        const {data: usersData} = await useApiFetch(`user/list`);
-        this.users = usersData
+        await $fetch(`/user/${userId}/block`, useFetchOptsDelete());
+        this.users = await $fetch(`user/list`, useFetchOpts());
         this.refreshing = false;
       },
       async refresh() {
         this.refreshing = true;
-        const {data: usersData} = await useApiFetch(`user/list`);
-        this.users = usersData
+        this.users = await $fetch(`user/list`, useFetchOpts());
         this.refreshing = false;
       }
     },
     async asyncData() {
-      const {data: users} = await useApiFetch(`user/list`);
+      const users = await $fetch(`user/list`, useFetchOpts());
       return {users};
     }
   })

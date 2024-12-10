@@ -12,23 +12,23 @@ export default defineNuxtPlugin(async nuxtApp => {
 
   if (!rootStore.years.length) {
     const [
-      {data: chatOnResponse},
-      {data: commentsOnResponse},
-      {data: coreDataResponse}
+      chatOnResponse,
+      commentsOnResponse,
+      coreDataResponse
     ] = await Promise.all([
-      useApiFetch(`text/chatOn`),
-      useApiFetch(`text/commentsOn`),
-      useApiFetch('core-data')
+      $fetch(`text/chatOn`, useFetchOpts()),
+      $fetch(`text/commentsOn`, useFetchOpts()),
+      $fetch('core-data', useFetchOpts())
     ])
-    rootStore.setChatOn(chatOnResponse.value.value === 'on')
-    rootStore.setCommentsOn(commentsOnResponse.value.value === 'on')
-    rootStore.updateCoreData(coreDataResponse.value)
+    rootStore.setChatOn(chatOnResponse.value === 'on')
+    rootStore.setCommentsOn(commentsOnResponse.value === 'on')
+    rootStore.updateCoreData(coreDataResponse)
 
-    useRepo(Artist).insert(coreDataResponse.value.artists);
-    useRepo(Album).insert(coreDataResponse.value.albums);
-    useRepo(Song).insert(coreDataResponse.value.songs);
+    useRepo(Artist).insert(coreDataResponse.artists);
+    useRepo(Album).insert(coreDataResponse.albums);
+    useRepo(Song).insert(coreDataResponse.songs);
 
-    const lists = coreDataResponse.value.lists.map(list => {
+    const lists = coreDataResponse.lists.map(list => {
       list.top100SongIds = _.take(list.songIds, list.top100SongCount)
       return list
     })
@@ -39,9 +39,9 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(List).insert(lists);
 
     if (rootStore.listInProgress) {
-      const {data: poll} = await useApiFetch('poll/latest');
-      if (poll.value && poll.value.year === rootStore.currentYear.yyyy) {
-        usePollStore().setCurrentPoll(poll.value);
+      const poll = await $fetch('poll/latest', useFetchOpts());
+      if (poll && poll.year === rootStore.currentYear.yyyy) {
+        usePollStore().setCurrentPoll(poll);
       }
     }
   }

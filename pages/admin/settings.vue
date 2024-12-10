@@ -11,7 +11,6 @@ div
 </template>
 
 <script>
-  import SearchBox from '../../components/SearchBox'
   export default defineNuxtComponent({
     setup() {
       definePageMeta({
@@ -23,13 +22,13 @@ div
         const data = {
           text: this.chatOn
         };
-        await $fetch(`text/chatOn`, useFetchOpts(useFetchData(data, {method: 'POST'})));
+        await $fetch(`text/chatOn`, useFetchOptsPost(data));
       },
       async commentsOn() {
         const data = {
           text: this.commentsOn
         };
-        await $fetch(`text/commentsOn`, useFetchOpts(useFetchData(data, {method: 'POST'})));
+        await $fetch(`text/commentsOn`, useFetchOptsPost(data));
       }
     },
     methods: {

@@ -51,13 +51,13 @@ span.container
     methods: {
       async block() {
         this.blocking = true;
-        await $fetch(`/user/${this.user.id}/block`, useFetchOpts({method: 'POST'}));
+        await $fetch(`/user/${this.user.id}/block`, useFetchOptsPost());
         this.isBlocked = true;
         this.blocking = false;
       },
       async unblock() {
         this.blocking = true;
-        await $fetch(`/user/${this.user.id}/block`, useFetchOpts({method: 'DELETE'}));
+        await $fetch(`/user/${this.user.id}/block`, useFetchOptsDelete());
         this.isBlocked = false;
         this.blocking = false;
       }

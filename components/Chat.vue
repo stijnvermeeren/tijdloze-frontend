@@ -105,10 +105,7 @@
         const data = {
           displayName: this.displayNameEdit.trim()
         };
-        const user = await $fetch(
-            `user/display-name`,
-            useFetchOpts(useFetchData(data, {method: 'POST'}))
-        )
+        const user = await $fetch(`user/display-name`, useFetchOptsPost(data))
         useAuthStore().setUser(user);
         // TODO replace this
         // await this.loadOnlineOnce();

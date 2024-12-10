@@ -53,6 +53,8 @@ div
 </template>
 
 <script>
+  import useFetchOptsDelete from "~/composables/useFetchOptsDelete";
+
   export default defineNuxtComponent({
     setup() {
       definePageMeta({
@@ -72,19 +74,19 @@ div
     methods: {
       async submit() {
         this.processing = true;
-        await useApiFetchPut(`artist/${this.fullArtistData.id}`, this.fullArtistData)
+        await $fetch(`artist/${this.fullArtistData.id}`, useFetchOptsPut(this.fullArtistData))
         await navigateTo(`/artiest/${this.fullArtistData.id}`);
       },
       async submitDelete() {
         if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          await useApiFetchDelete(`artist/${this.fullArtistData.id}`)
+          await $fetch(`artist/${this.fullArtistData.id}`, useFetchOptsDelete())
           await navigateTo(`/database`)
         }
       }
     },
     async asyncData() {
-      const {data: fullArtistData} = await useApiFetch(`artist/${useRoute().params.id}`)
+      const fullArtistData = await $fetch(`artist/${useRoute().params.id}`, useFetchOpts())
       return {fullArtistData};
     }
   })

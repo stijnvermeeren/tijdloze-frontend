@@ -15,12 +15,12 @@ export default async function (auth0) {
       email: user.email,
       emailVerified: user.email_verified
     };
-    const {data: userData} = await useApiFetchPost('user', data)
-    useAuthStore().setUser(userData.value);
+    const userData = await $fetch('user', useFetchOptsPost(data))
+    useAuthStore().setUser(userData);
 
     // TODO don't do await, do it in the background instead
-    const {data: pollData} = await useApiFetch('poll/my-votes')
-    usePollStore().setVotes(pollData.value.votes);
+    const pollData = await $fetch('poll/my-votes', useFetchOpts())
+    usePollStore().setVotes(pollData.votes);
   } else {
     useAuthStore().setUser( null);
     useAuthStore().setAccessToken( null);

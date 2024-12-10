@@ -67,7 +67,7 @@ async  function submit() {
     answers: answers.value.map(answer => answer.text),
     year: currentYear.value.yyyy
   };
-  await $fetch('poll', useFetchOpts(useFetchData(data, {method: 'POST'})));
+  await $fetch('poll', useFetchOptsPost(data));
   await this.refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];

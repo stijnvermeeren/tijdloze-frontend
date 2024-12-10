@@ -68,9 +68,12 @@ div
     async asyncData() {
       const yyyyParam = useRoute().params.yyyy
       if (yyyyParam === useRootStore().currentYear.yyyy.toString()) {
-        const {data: analysisCurrentYearResponse} = await useApiFetch(`text/analysis_${yyyyParam}`);
+        const analysisCurrentYearResponse = await $fetch(
+            `text/analysis_${yyyyParam}`,
+            useFetchOpts()
+        ).catch(err => undefined);
         return {
-          analysisCurrentYear: analysisCurrentYearResponse.value?.value ?? ''
+          analysisCurrentYear: analysisCurrentYearResponse?.value ?? ''
         }
       } else {
         return {
