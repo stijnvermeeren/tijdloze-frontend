@@ -194,8 +194,7 @@ definePageMeta({ middleware: 'admin' })
         this.nextSongTab = 'existing';
         this.nextSong = result.item;
         this.nextSongFullData = undefined;
-        const { data } = await useApiFetch(`song/${this.nextSong.id}`)
-        this.nextSongFullData = data;
+        this.nextSongFullData = await $fetch(`song/${this.nextSong.id}`, useFetchOpts());
       },
       fillMBData(data) {
         this.nextSongTab = 'new';
@@ -211,18 +210,21 @@ definePageMeta({ middleware: 'admin' })
       },
       async undo() {
         this.processing = true;
-        await useApiFetchDelete(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`)
+        await $fetch(
+            `list-entry/${this.currentYear.yyyy}/${this.previousPosition}`,
+            useFetchOpts({method: 'DELETE'})
+        )
         this.previousPosition = undefined;
         this.processing = false;
       },
       async startYear() {
         this.processing = true;
-        await useApiFetchPost(`year/${this.nextYearYyyy}`)
+        await $fetch(`year/${this.nextYearYyyy}`, useFetchOpts({method: 'POST'}))
         this.processing = false;
       },
       async deleteYear() {
         this.processing = true;
-        await useApiFetchDelete(`year/${this.currentYear.yyyy}`)
+        await $fetch(`year/${this.currentYear.yyyy}`, useFetchOpts({method: 'DELETE'}))
         this.processing = false;
       },
       async add(songId) {
@@ -231,7 +233,10 @@ definePageMeta({ middleware: 'admin' })
         const data = {
           songId
         }
-        await useApiFetchPost(`list-entry/${this.currentYear.yyyy}/${position}`, data)
+        await $fetch(
+            `list-entry/${this.currentYear.yyyy}/${position}`,
+            useFetchOpts(useFetchData(data, {method: 'POST'}))
+        )
         this.previousPosition = position;
         this.nextSongTab = 'existing';
         this.nextSong = undefined;

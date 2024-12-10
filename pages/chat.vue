@@ -52,18 +52,21 @@ div
         const data = {
           displayName: this.name
         };
-        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        const user = await $fetch(
+            `user/display-name`,
+            useFetchOpts(useFetchData(data, {method: 'POST'}))
+        )
         this.submittingDisplayName = false;
-        useAuthStore().setUser(user.value);
+        useAuthStore().setUser(user);
       },
       login() {
         this.$auth.login(useRoute().path);
       }
     },
     async asyncData() {
-      const {data: modeResponse} = await useApiFetch(`text/chatOn`);
+      const modeResponse = await $fetch(`text/chatOn`, useFetchOpts());
       return {
-        chatEnabled: modeResponse.value.value === 'on'
+        chatEnabled: modeResponse.value === 'on'
       }
     }
   })

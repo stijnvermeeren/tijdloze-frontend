@@ -45,10 +45,10 @@ async function search() {
   }
   const query = queryParts.join(" ")
   processing.value = true
-  const {data: result, error} = await useApiFetch('/spotify/find', {params: {query: query}})
+  const result = await $fetch('/spotify/find', useFetchOpts({params: {query: query}}))
   spotifyMessage.value = ""
 
-  if (result.value) {
+  if (result) {
     processing.value = false
     const spotifyTracks = result.value;
     if (spotifyTracks.length) {

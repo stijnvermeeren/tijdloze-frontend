@@ -94,6 +94,7 @@ div
   import Album from "@/orm/Album";
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
+  import useFetchData from "~/composables/useFetchData";
 
   function initialData() {
     return {
@@ -263,9 +264,11 @@ div
         return query;
       },
       async artistMatch(artistName, artistMBId) {
-        const {data: artist} = await useApiFetch(`/artist/musicbrainz/${artistMBId}`);
-        if (artist.value)  {
-          return useRepo(Artist).find(artist.value.id)
+        const artist = await $fetch(`/artist/musicbrainz/${artistMBId}`, useFetchOpts()).catch(
+            () => undefined
+        );
+        if (artist)  {
+          return useRepo(Artist).find(artist.id)
         }
 
         if (artistName) {
@@ -290,9 +293,9 @@ div
        *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
        */
       async albumMatch(artistId, albumName, releaseYear, albumMBId) {
-        const {data: album} = await useApiFetch(`/album/musicbrainz/${albumMBId}`);
-        if (album.value)  {
-          return useRepo(Album).find(album.value.id)
+        const album = await $fetch(`/album/musicbrainz/${albumMBId}`, useFetchOpts());
+        if (album)  {
+          return useRepo(Album).find(album.id)
         }
 
         function tokenize(title) {
@@ -322,8 +325,11 @@ div
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
-          const {data: artist} = await useApiFetchPost('/artist', artistData);
-          artistId = artist.value.id;
+          const artist = await $fetch(
+              '/artist',
+              useFetchOpts(useFetchData(artistData, {method: 'POST'}))
+          );
+          artistId = artist.id;
         } else {
           artistId = this.artistId;
         }
@@ -335,8 +341,11 @@ div
             title: this.albumDetails.title,
             releaseYear: this.albumDetails.releaseYear
           }
-          const {data: album} = await useApiFetchPost('/album', albumData);
-          albumId = album.value.id;
+          const album = await $fetch(
+              '/album',
+              useFetchOpts(useFetchData(albumData, {method: 'POST'}))
+          );
+          albumId = album.id;
         }
 
         const songData = {
@@ -347,11 +356,14 @@ div
           leadVocals: this.songDetails.leadVocals,
           spotifyId: this.songDetails.spotifyId
         }
-        const {data: song} = await useApiFetchPost('/song', songData);
+        const song = await $fetch(
+            '/song',
+            useFetchOpts(useFetchData(songData, {method: 'POST'}))
+        );
 
         this.submitting = false;
         Object.assign(this.$data, initialData());
-        this.$emit('newSong', song.value);
+        this.$emit('newSong', song);
       }
     }
   }

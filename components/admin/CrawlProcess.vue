@@ -53,14 +53,12 @@ const repoModel = function(){
 
 const submitting = ref(false)
 
-const {data: crawl, refresh: refreshCrawl} = await useApiFetch(apiPath)
+const {data: crawl, refresh: refreshCrawl} = await useFetch(apiPath, useFetchOpts())
 const modelFetchPath = computed(() => {
   const modelId = crawl?.value?.[idSelector]
   return modelId ? `${props.type}/${modelId}` : undefined
 })
-const {data: model} = await useApiFetch(modelFetchPath, {
-  watch: [crawl]
-})
+const {data: model} = await useFetch(modelFetchPath, useFetchOpts())
 
 const currentValue = computed(() => {
   return model?.value?.[crawl?.value?.field]
@@ -80,14 +78,14 @@ async function refresh() {
 
 async function accept(id) {
   submitting.value = true
-  await useApiFetchPost(`${apiPath}/${id}`)
+  await $fetch(`${apiPath}/${id}`, useFetchOpts({method: 'POST'}))
   refresh()
   submitting.value = false
 }
 
 async function reject(id) {
   submitting.value = true
-  await useApiFetchDelete(`${apiPath}/${id}`)
+  await $fetch(`${apiPath}/${id}`, useFetchOpts({method: 'DELETE'}))
   refresh()
   submitting.value = false
 }

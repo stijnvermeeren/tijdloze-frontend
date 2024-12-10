@@ -7,22 +7,10 @@ div
   div(v-if="!comments.length") Geen verwijderde reacties
 </template>
 
-<script>
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    methods: {
-      async reload() {
-        const { data: comments } = await useApiFetch(`comments/deleted`)
-        this.comments = comments
-      }
-    },
-    async asyncData() {
-      const { data: comments } = await useApiFetch(`comments/deleted`)
-      return {comments};
-    }
-  })
+<script setup>
+definePageMeta({
+  middleware: 'admin'
+})
+
+const {data: comments, refresh: reload} = await useFetch(`comments/deleted`, useFetchOpts())
 </script>

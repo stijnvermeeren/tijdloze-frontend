@@ -23,13 +23,13 @@ div
         const data = {
           text: this.chatOn
         };
-        await useApiFetchPost(`text/chatOn`, data);
+        await $fetch(`text/chatOn`, useFetchOpts(useFetchData(data, {method: 'POST'})));
       },
       async commentsOn() {
         const data = {
           text: this.commentsOn
         };
-        await useApiFetchPost(`text/commentsOn`, data);
+        await $fetch(`text/commentsOn`, useFetchOpts(useFetchData(data, {method: 'POST'})));
       }
     },
     methods: {
@@ -48,15 +48,15 @@ div
         }
       },
       async invalidateCache() {
-        await useApiFetch('/cache/invalidate');
+        await $fetch('/cache/invalidate', useFetchOpts());
       }
     },
     async asyncData() {
-      const { data: chatOnResponse } = await useApiFetch(`text/chatOn`);
-      const { data: commentsOnResponse } = await useApiFetch(`text/commentsOn`);
+      const chatOnResponse = await $fetch(`text/chatOn`, useFetchOpts());
+      const commentsOnResponse = await $fetch(`text/commentsOn`, useFetchOpts());
       return {
-        chatOn: chatOnResponse.value.value,
-        commentsOn: commentsOnResponse.value.value
+        chatOn: chatOnResponse.value,
+        commentsOn: commentsOnResponse.value
       };
     }
   })

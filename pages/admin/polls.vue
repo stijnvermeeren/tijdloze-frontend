@@ -34,7 +34,7 @@ const question = ref('')
 const answers = ref([{text: ''}, {text: ''}])
 const submitting = ref(false)
 
-const {data: polls} = await useApiFetch(`poll/list`)
+const {data: polls, refresh: refreshPolls} = await useFetch(`poll/list`, useFetchOpts())
 
 const currentYear = computed(() => {
   return useRootStore().currentYear;
@@ -56,8 +56,7 @@ const formValid = computed (() => {
 
 async function refresh() {
   refreshing.value = true;
-  const {data} = await useApiFetch(`poll/list`);
-  polls.value = data.value;
+  await refreshPolls()
   refreshing.value = false;
 }
 
@@ -68,7 +67,7 @@ async  function submit() {
     answers: answers.value.map(answer => answer.text),
     year: currentYear.value.yyyy
   };
-  await useApiFetchPost('poll', data);
+  await $fetch('poll', useFetchOpts(useFetchData(data, {method: 'POST'})));
   await this.refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];

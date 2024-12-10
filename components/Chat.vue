@@ -105,8 +105,11 @@
         const data = {
           displayName: this.displayNameEdit.trim()
         };
-        const {data: user} = await useApiFetchPost(`user/display-name`, data)
-        useAuthStore().setUser(user.value);
+        const user = await $fetch(
+            `user/display-name`,
+            useFetchOpts(useFetchData(data, {method: 'POST'}))
+        )
+        useAuthStore().setUser(user);
         // TODO replace this
         // await this.loadOnlineOnce();
         this.savingDisplayName = false;
@@ -218,13 +221,11 @@
           this.ws.close()
         }
 
-        const {data: ticketResponse, error} = await useApiFetch('chat/ticket')
-
-        if (error.value) {
+        const ticketResponse = await $fetch('chat/ticket', useFetchOpts()).catch(err => {
           console.log("Unable to obtain ticket for chat.")
           this.error = true;
           setTimeout(this.reconnect, 5000)
-        }
+        })
 
         if (!this.closing && ticketResponse.value) {
           this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.value.ticket}`), {

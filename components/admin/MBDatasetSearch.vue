@@ -70,20 +70,22 @@ div
         this.showingResults = false;
         this.processing = true;
 
-        const {data: result, error} = await useApiFetch('/mbdata/search-query', {params: {query: this.query}})
+        const result = await $fetch(
+            '/mbdata/search-query',
+            useFetchOpts({params: {query: this.query}})
+        ).catch(err => {
+          this.requestError = true;
+          this.processing = false;
+        })
 
-        if (result.value) {
-          this.mbHit = result.value.hit;
+        if (result) {
+          this.mbHit = result.hit;
           if (this.mbHit) {
             this.$emit('mbHit', this.mbHit);
           }
           this.processing = false;
           this.requestError = false;
           this.showingResults = true;
-        }
-        if (error.value) {
-          this.requestError = true;
-          this.processing = false;
         }
       },
       possibleSong(song) {

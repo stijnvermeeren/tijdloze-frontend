@@ -88,18 +88,20 @@ watch(myVote, () => {
 
 async function reload() {
   isLoading.value = true;
-  const {data: result} = await useApiFetch(`poll/my-votes`)
-  usePollStore().setVotes(result.value.votes);
+  const result = await $fetch(`poll/my-votes`, useFetchOpts())
+  usePollStore().setVotes(result.votes);
 
-  const {data: newLivePoll} = await useApiFetch(`poll/${props.poll.id}`)
-  livePoll.value = newLivePoll.value;
+  livePoll.value = await $fetch(`poll/${props.poll.id}`, useFetchOpts())
   isLoading.value = false;
 }
 
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await useApiFetchPost(`poll/${props.poll.id}/${myVoteEdit.value}`);
+    await $fetch(
+        `poll/${props.poll.id}/${myVoteEdit.value}`,
+        useFetchOpts({method: 'POST'})
+    );
 
     await reload();
     voting.value = false;
@@ -120,14 +122,14 @@ function percentage(answerVotes) {
 
 async function deletePoll() {
   deleting.value = true;
-  await useApiFetchPost(`poll/${props.poll.id}/hide`);
+  await $fetch(`poll/${props.poll.id}/hide`, useFetchOpts({method: 'POST'}));
   isDeleted.value = true;
   deleting.value = false;
 }
 
 async function restore() {
   deleting.value = true;
-  await useApiFetchDelete(`poll/${props.poll.id}/hide`);
+  await $fetch(`poll/${props.poll.id}/hide`, useFetchOpts({method: 'DELETE'}));
   isDeleted.value = false;
   deleting.value = false;
 }

@@ -86,10 +86,13 @@ div.commentForm(:class="{expanded: isExpanded}")
         const data = {
           displayName: this.name
         };
-        const {data: user} = await useApiFetchPost(`user/display-name`, data)
+        const user = await $fetch(
+            `user/display-name`,
+            useFetchOpts(useFetchData(data, {method: 'POST'}))
+        )
         this.editingDisplayName = false;
         this.submittingDisplayName = false;
-        useAuthStore().setUser(user.value);
+        useAuthStore().setUser(user);
         this.$emit('displayNameChanged');
       },
       async submit() {
@@ -98,7 +101,10 @@ div.commentForm(:class="{expanded: isExpanded}")
         const data = {
           message: this.message
         };
-        await useApiFetchPost(`comment`, data)
+        await $fetch(
+            `comment`,
+            useFetchOpts(useFetchData(data, {method: 'POST'}))
+        )
         this.submitting = false;
         this.message = '';
         this.$emit('submitted');

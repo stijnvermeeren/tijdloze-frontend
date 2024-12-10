@@ -21,7 +21,7 @@ div
       }
     },
     async asyncData() {
-      const {data: polls} = await useApiFetch(`poll/list`)
+      const polls = await $fetch(`poll/list`, useFetchOpts())
       return {polls}
     }
   })

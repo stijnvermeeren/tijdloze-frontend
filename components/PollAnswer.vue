@@ -37,7 +37,10 @@ div(v-else)
         const data = {
           answer: this.answerEdit
         };
-        await useApiFetchPut(`poll/${this.pollId}/${this.pollAnswerId}`, data);
+        await $fetch(
+            `poll/${this.pollId}/${this.pollAnswerId}`,
+            useFetchOpts(useFetchData(data, {method: 'PUT'}))
+        );
         this.submitting = false;
         this.editing = false;
       },
