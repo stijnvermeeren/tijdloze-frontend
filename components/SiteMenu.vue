@@ -8,7 +8,7 @@ div
         v-list-item(to="/") Home
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
         template(v-if='listInProgress')
-          v-list-item(:to="`/lijst/${currentYear.yyyy}`") De Tijdloze {{currentYear.yyyy}}
+          v-list-item(:to="`/lijst/${currentYear.yyyy}`" value="inProgress") De Tijdloze {{currentYear.yyyy}}
           v-list-item.subItem(v-if="top100InProgress" to="/lijst/opkomst") Nog op komst...
           v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
           v-list-item.subItem(v-if="top100InProgress" to="/polls") Polls
@@ -85,11 +85,13 @@ div
       return {
         isOpen: false,
         mdiLockOutline,
-        mdiClose,
-        openeds: [this.groupMap(useRoute().path)]
+        mdiClose
       };
     },
     computed: {
+      openeds() {
+        return [this.groupMap(useRoute().path)]
+      },
       commentsOn() {
         return useRootStore().commentsOn;
       },

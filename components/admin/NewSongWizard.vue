@@ -76,10 +76,10 @@ div
           ref="spotify"
         )
     v-row(dense)
-      v-col.otherArtistSongs(v-if="otherArtistSongs.length")
+      v-col.otherArtistSongs(v-if="existingSong")
         | Opgelet! Reeds gekende nummers van deze artist:
-        span(v-for="song in otherArtistSongs")
-          | {{song.title}}
+        span
+          | {{existingSong.title}}
   div
     v-btn(
       color="blue"
@@ -116,6 +116,7 @@ div
         leadVocals: undefined,
         spotifyId: undefined
       },
+      existingSong: undefined,
       submitting: false
     }
   }
@@ -150,17 +151,6 @@ div
       },
       artistNew() {
         return this.artistType === 'new';
-      },
-      otherArtistSongs() {
-        if (this.artistNew || !this.artistId) {
-          return []
-        }
-        const artist = useRepo(Artist).withAll().find(this.artistId)
-        if (!artist) {
-          return []
-        }
-
-        return artist.songs
       },
       album() {
         return useRepo(Album).find(this.albumId);
@@ -207,9 +197,27 @@ div
       },
       artistType() {
         this.checkAlbum();
+      },
+      'songDetails.spotifyId': async function() {
+        this.existingSong = await this.loadExistingSong()
       }
     },
     methods: {
+      async loadExistingSong() {
+        if (!this.artistNew && this.artistId && this.songDetails.spotifyId) {
+          const artist = useRepo(Artist).withAll().find(this.artistId)
+          if (artist) {
+            for (const song of artist.songs) {
+              const fullSongData = await $fetch(`song/${song.id}`, useFetchOpts())
+              if (fullSongData) {
+                if (fullSongData.spotifyId === this.songDetails.spotifyId) {
+                  return song
+                }
+              }
+            }
+          }
+        }
+      },
       checkAlbum() {
         if (this.albumId && this.album?.artistId !== this.artistId) {
           this.albumId = 0;

@@ -9,10 +9,10 @@ div
       :song-filter='possibleSong'
       :songs-year='previousYear'
       @selectSearchResult='selectSearchResult($event)'
-      @initialResultCount="initialResultCount($event)"
-      no-auto-clear
+      @initialResults="initialResults($event)"
+      ref="searchBox"
     )
-    v-btn(@click='searchMusicbrainz' :disabled='processing' hide-details)
+    v-btn.ml-2(@click='searchMusicbrainz' :disabled='processing' hide-details)
       | Zoeken op MusicBrainz
   div(v-if="requestError")
     ui-alert(type="error" title="Fout bij het zoeken in de MusicBrainz dataset.")
@@ -28,6 +28,7 @@ div
   export default defineNuxtComponent({
     data() {
       return {
+        waitingForResults: false,
         query: "",
         processing: false,
         showingResults: false,
@@ -44,15 +45,22 @@ div
       }
     },
     methods: {
-      initialResultCount(count) {
-        if (this.query && count === 0) {
-          this.searchMusicbrainz()
+      initialResults(results) {
+        if (this.waitingForResults) {
+          this.waitingForResults = false
+          if (results.length === 0) {
+            this.searchMusicbrainz()
+          } else if (results.length === 1) {
+            this.selectSearchResult(results[0])
+            this.$refs.searchBox.setSearchInactive()
+          }
         }
       },
       setQuery(newQuery) {
         this.query = newQuery;
         this.showingResults = false
         this.mbHit = undefined
+        this.waitingForResults = true
       },
       async selectSearchResult(result) {
         this.$emit("selectSearchResult", result)

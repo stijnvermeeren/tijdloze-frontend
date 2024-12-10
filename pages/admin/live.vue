@@ -59,11 +59,13 @@ div
       hr.my-2
 
       div(v-show="nextSongTab === 'hide'")
-        v-btn(@click="nextSongTab = 'new'") Nieuw nummer manueel toevoegen
+        v-btn(@click="nextSongTab = 'new'" variant="plain" ripple) Nieuw nummer manueel toevoegen
 
       div(v-show="nextSongTab === 'existing'")
         div(v-if="nextSong")
           div
+            | Gevonden in de database:
+            |
             strong {{nextSong.artist.name}} - {{nextSong.title}}
             |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
           div(v-if='nextSongFullData && nextSongFullData.spotifyId')

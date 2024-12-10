@@ -1,5 +1,5 @@
 <template lang="pug">
-#searchBox
+#searchBox(ref="searchBoxContainer")
   v-text-field(
     :label='placeholder'
     persistent-placeholder
@@ -11,14 +11,22 @@
     @keyup.enter='go(selectedIndex)'
     @keydown.up.prevent='() => true'
     @keydown.down.prevent='() => true'
+    @focus="searchActive = true"
+    @blur="onBlur"
     ref="input"
     hide-details
     density="compact"
   )
     template(#prepend-inner)
       v-icon(:icon="mdiMagnify")
-  #searchResults(v-if='query.length > 0')
-    .suggestion(v-for='(result, index) in visibleResults' @click='go(index)' @mousemove='selectedIndex = index' :class='{selected: index === selectedIndex}')
+  #searchResults(v-if='query.length > 0 && searchActive')
+    .suggestion(
+      v-for='(result, index) in visibleResults'
+      @click='go(index)'
+      @mousemove='selectedIndex = index'
+      :class='{selected: index === selectedIndex}'
+      tabindex="-1"
+    )
       div(v-if="result.type === 'artist'")
         | {{result.item.name}}
       div(v-if="result.type === 'song'")
@@ -41,16 +49,13 @@
       | Geen resultaten gevonden.
 </template>
 
-<script setup>
-  import {mdiMagnify} from "@mdi/js";
-</script>
-
 <script>
   import _ from 'lodash';
   import Artist from "@/orm/Artist";
   import Song from "@/orm/Song";
   import Album from "@/orm/Album";
-  import {useRepo} from "pinia-orm";
+  import {useRepo} from "pinia-orm"
+  import {mdiMagnify} from "@mdi/js";
 
   export default {
     props: {
@@ -76,20 +81,20 @@
       },
       songsYear: {
         type: Object
-      },
-      noAutoClear: {
-        type: Boolean,
-        default: false
       }
     },
     data() {
       return {
         query: this.modelValue,
         selectedIndex: undefined,
-        resultsLimit: 10
+        resultsLimit: 10,
+        searchActive: false
       }
     },
     computed: {
+      mdiMagnify() {
+        return mdiMagnify
+      },
       allArtists() {
         return useRepo(Artist).all().filter(this.artistFilter);
       },
@@ -109,11 +114,10 @@
         const songs = this.search(queryFragments, this.allSongs, useSearchSongContent, 'song');
         const albums = this.search(queryFragments, this.allAlbums, useSearchAlbumContent, 'album');
 
-        const sortedResults = _.sortBy(
+        return _.sortBy(
           _.concat(artists, songs, albums),
           result => -result.score
         );
-        return sortedResults
       },
       visibleResults() {
         return _.take(this.results, this.resultsLimit);
@@ -130,10 +134,18 @@
       modelValue(newValue) {
         this.$refs.input.focus();
         this.query = newValue;
-        this.$emit('initialResultCount', this.resultsCount);
+        this.$emit('initialResults', this.results);
       }
     },
     methods: {
+      onBlur(event) {
+        if (!this.$refs.searchBoxContainer.contains(event.relatedTarget)) {
+          this.setSearchInactive()
+        }
+      },
+      setSearchInactive() {
+        this.searchActive = false
+      },
       search(queryFragments, data, matchAttribute, type) {
         return useSearchFilter(queryFragments, data, matchAttribute).map(item => {
           let score = useSearchScore(this.query, matchAttribute(item));
@@ -163,34 +175,23 @@
           result.query = this.query;
           this.$emit('selectSearchResult', result);
           this.query = '';
+          this.searchActive = false;
         }
       },
       escapeKeyListener: function (evt) {
         if (evt.code === "Escape" && this.query) {
           this.query = '';
         }
-      },
-      documentClick (e) {
-        if (!this.noAutoClear) {
-          const searchBox = document.querySelector('#searchBox');
-          const searchResults = document.querySelector('#searchResults');
-          const target = e.target;
-          if (this.query && !searchBox.contains(target) && !(searchResults && searchResults.contains(target))) {
-            this.query = '';
-          }
-        }
       }
     },
     created: function() {
       if (process.client) {
         document.addEventListener('keyup', this.escapeKeyListener);
-        document.addEventListener('click', this.documentClick);
       }
     },
     destroyed: function() {
       if (process.client) {
         document.removeEventListener('keyup', this.escapeKeyListener);
-        document.removeEventListener('click', this.documentClick);
       }
     },
   }
