@@ -45,7 +45,7 @@ div
     return useRepo(Album)
       .with('artist')
       .with('songs', query => query.with("artist").with("secondArtist").with("album"))
-      .find(fullAlbumData.value.id);
+      .find(albumId.value);
   })
 
   const currentYear = computed(() => {

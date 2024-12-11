@@ -66,7 +66,7 @@ if (error.value) {
 }
 
 const song = computed(() => {
-  return useRepo(Song).withAll().find(fullSongData.value.id);
+  return useRepo(Song).withAll().find(songId.value);
 })
 const years = computed(() => {
   return useRootStore().years;
