@@ -39,7 +39,8 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(List).insert(lists);
 
     if (rootStore.listInProgress) {
-      const poll = await $fetch('poll/latest', useFetchOpts());
+      const poll = await $fetch('poll/latest', useFetchOpts())
+          .catch(err => undefined);
       if (poll && poll.year === rootStore.currentYear.yyyy) {
         usePollStore().setCurrentPoll(poll);
       }

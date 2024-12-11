@@ -50,6 +50,7 @@ div
           this.waitingForResults = false
           if (results.length === 0) {
             this.searchMusicbrainz()
+            this.$refs.searchBox.setSearchInactive()
           } else if (results.length === 1) {
             this.selectSearchResult(results[0])
             this.$refs.searchBox.setSearchInactive()
