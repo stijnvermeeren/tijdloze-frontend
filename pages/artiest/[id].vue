@@ -42,11 +42,15 @@ div
 
   const byAlbum = ref(false)
 
-  const artistId = computed(() => idFromSlug(useRoute().params?.id))
+  const artistId = computed(() => idFromSlug(useRouter().currentRoute.value.params?.id))
 
   const {data: fullArtistData, error} = await useFetch(
       `artist/${artistId.value}`, useFetchOpts()
   )
+
+  watch(useRoute(), newValue => console.log("params", newValue.params))
+  watch(fullArtistData, newValue => console.log("artist", newValue.params))
+
   if (error.value) {
     create404Error()
   }
