@@ -50,7 +50,7 @@ div
     data() {
       return {
         name: useAuthStore().isAuthenticated ? useAuthStore().displayNameWithFallback : '',
-        email: useAuthStore().isAuthenticated ? useAuthStore().user.email: '',
+        email: useAuthStore().isAuthenticated ? useAuthStore().user.email || '' : '',
         message: "",
         error: null,
         emailTouched: false,
