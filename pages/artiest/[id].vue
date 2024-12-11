@@ -42,7 +42,7 @@ div
 
   const byAlbum = ref(false)
 
-  const artistId = computed(() => idFromSlug(useRoute().params.id))
+  const artistId = computed(() => idFromSlug(useRoute().params?.id))
 
   const {data: fullArtistData, error} = await useFetch(
       `artist/${artistId.value}`, useFetchOpts()
@@ -52,7 +52,6 @@ div
   }
 
   const artist = computed(() => {
-    console.log(artistId.value)
     return useRepo(Artist)
         .with('albums', q1 => q1
             .with('songs', q2 => q2

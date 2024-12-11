@@ -50,14 +50,16 @@ Title {{song.title}} ({{song.artist.name}})
 </template>
 
 <script setup>
-import {allEntriesIntervals, probablyInListIntervals} from '~/utils/intervals'
+import {allEntriesIntervals} from '~/utils/intervals'
 import { idFromSlug } from '~/utils/slug'
 import Song from "@/orm/Song";
 import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
+const songId = computed(() => idFromSlug(useRoute().params?.id))
+
 const {data: fullSongData, error} = await useFetch(
-    `song/${idFromSlug(useRoute().params.id)}`, useFetchOpts()
+    `song/${songId.value}`, useFetchOpts()
 )
 if (error.value) {
   create404Error()
