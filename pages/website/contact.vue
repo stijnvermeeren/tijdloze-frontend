@@ -95,9 +95,9 @@ div
 
         const result = await $fetch('/contact', useFetchOptsPost(payLoad)).catch(err => {
           this.inProgress = false;
-          this.error = `Foutmelding van de server: ${error.value}.`;
+          this.error = `Foutmelding van de server: ${err}.`;
         })
-        if (result) {
+        if (result !== undefined) {
           this.inProgress = false;
           this.success = true;
         }
