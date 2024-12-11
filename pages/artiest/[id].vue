@@ -42,16 +42,17 @@ div
 
   const byAlbum = ref(false)
 
-  console.log(useRoute().params)
+  const artistId = computed(() => idFromSlug(useRoute().params.id))
+
   const {data: fullArtistData, error} = await useFetch(
-      `artist/${idFromSlug(useRoute().params.id)}`, useFetchOpts()
+      `artist/${artistId.value}`, useFetchOpts()
   )
   if (error.value) {
     create404Error()
   }
 
   const artist = computed(() => {
-    console.log(fullArtistData.value)
+    console.log(artistId.value)
     return useRepo(Artist)
         .with('albums', q1 => q1
             .with('songs', q2 => q2
@@ -66,10 +67,8 @@ div
             .with('album', q2 => q2
                 .with('songs', q3 => q3
                     .with('artist').with('secondArtist').with('album'))))
-        .find(fullArtistData.value.id);
+        .find(artistId.value);
   })
-
-  console.log(artist.value)
 
   const currentYear = computed(() => {
     return useRootStore().currentYear;
