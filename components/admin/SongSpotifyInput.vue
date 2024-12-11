@@ -45,21 +45,19 @@ async function search() {
   }
   const query = queryParts.join(" ")
   processing.value = true
-  const result = await $fetch('/spotify/find', useFetchOpts({params: {query: query}}))
+  const spotifyTracks = await $fetch('/spotify/find', useFetchOpts({params: {query: query}})).catch(err => {
+    processing.value = false
+    spotifyMessage.value = "Probleem bij het zoeken op Spotify";
+  })
   spotifyMessage.value = ""
 
-  if (result) {
+  if (spotifyTracks) {
     processing.value = false
-    const spotifyTracks = result.value;
     if (spotifyTracks.length) {
       update(spotifyTracks[0].spotifyId)
     } else {
       spotifyMessage.value = "Niets gevonden op Spotify"
     }
-  }
-  if (error.value) {
-    processing.value = false
-    this.spotifyError = "Probleem bij het zoeken op Spotify";
   }
 }
 

@@ -52,7 +52,7 @@ div
       admin-m-b-dataset-search(
         v-model="query"
         @mbHit='fillMBData($event)'
-        @selectSearchResult="selectSearchResult($event)"
+        @selectSearchResult="selectExistingSong($event.item)"
         ref="search"
       )
 
@@ -78,6 +78,7 @@ div
         admin-new-song-wizard(
           :button-label='`Toevoegen op positie ${nextPosition} in ${currentYear.yyyy}`'
           @newSong='add($event.id)'
+          @existingSong='selectExistingSong($event)'
           ref="wizard"
         )
 
@@ -184,15 +185,24 @@ definePageMeta({ middleware: 'admin' })
         }
       },
       startImport(songs) {
+        const allSongs = useRepo(Song).withAll().get()
+        for (const song of songs) {
+          const queryFragments = useSearchQueryFragments(song.query)
+          const results = useSearchFilter(queryFragments, allSongs, useSearchSongContent)
+          if (results.length != 1) {
+            console.log(song.query, results.length)
+          }
+        }
+
         this.importSongs = songs
         this.loadNextFromImport();
       },
       cancelImport() {
         this.importSongs = []
       },
-      async selectSearchResult(result) {
+      async selectExistingSong(song) {
         this.nextSongTab = 'existing';
-        this.nextSong = result.item;
+        this.nextSong = song;
         this.nextSongFullData = undefined;
         this.nextSongFullData = await $fetch(`song/${this.nextSong.id}`, useFetchOpts());
       },

@@ -76,10 +76,12 @@ div
           ref="spotify"
         )
     v-row(dense)
-      v-col.otherArtistSongs(v-if="existingSong")
-        | Opgelet! Reeds gekende nummers van deze artist:
-        span
-          | {{existingSong.title}}
+      v-col(v-if="existingSong")
+        ui-alert(type="warning" title="Opgelet! Dit nummer is reeds in de database!")
+          v-btn(@click="selectExisting()")
+            | Selecteer&nbsp;
+            strong {{existingSong.title}}
+            | &nbsp;uit de database
   div
     v-btn(
       color="blue"
@@ -204,9 +206,17 @@ div
       }
     },
     methods: {
+      selectExisting() {
+        this.$emit('existingSong', this.existingSong);
+      },
       async loadExistingSong() {
         if (!this.artistNew && this.artistId && this.songDetails.spotifyId) {
-          const artist = useRepo(Artist).withAll().find(this.artistId)
+          const artist = useRepo(Artist)
+              .withAll()
+              .with('songs', q => q
+                  .with('artist')
+                  .with('secondArtist'))
+              .find(this.artistId)
           if (artist) {
             for (const song of artist.songs) {
               const fullSongData = await $fetch(`song/${song.id}`, useFetchOpts())
@@ -375,15 +385,5 @@ div
   .releaseYear{
     width: 100px;
     flex-grow: 0.2;
-  }
-
-  .otherArtistSongs {
-    font-size: 60%;
-    font-style: italic;
-    margin-left: 5px;
-
-    span {
-      margin: 0 5px;
-    }
   }
 </style>

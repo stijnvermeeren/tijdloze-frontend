@@ -38,7 +38,7 @@ const disabled = computed(() => {
 async function submit() {
   processing.value = true;
   const data = await $fetch(`artist`, useFetchOptsPost(fullArtistData.value))
-  await useRouter().push(`/artist/${data.id}`)
+  await useRouter().push(`/artiest/${data.id}`)
 }
 </script>
 
