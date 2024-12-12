@@ -59,7 +59,7 @@ import {useRepo} from "pinia-orm";
 const songId = computed(() => idFromSlug(useRoute().params?.id))
 
 const {data: fullSongData, error} = await useFetch(
-    `song/${songId.value}`, useFetchOpts()
+    `song/${songId.value}`, useFetchOpts({'key': `song/${songId.value}`})
 )
 if (error.value) {
   create404Error()

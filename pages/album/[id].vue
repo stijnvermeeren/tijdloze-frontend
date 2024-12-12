@@ -35,7 +35,7 @@ div
   const albumId = computed(() => idFromSlug(useRoute().params?.id))
 
   const {data: fullAlbumData, error} = await useFetch(
-      `album/${albumId.value}`, useFetchOpts()
+      `album/${albumId.value}`, useFetchOpts({'key': `album/${albumId.value}`})
   )
   if (error.value) {
     create404Error()

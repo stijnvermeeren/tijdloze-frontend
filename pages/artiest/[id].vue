@@ -45,7 +45,7 @@ div
   const artistId = computed(() => idFromSlug(useRoute().params?.id))
 
   const {data: fullArtistData, error} = await useFetch(
-      `artist/${artistId.value}`, useFetchOpts()
+      `artist/${artistId.value}`, useFetchOpts({key: `artist/${artistId.value}`})
   )
 
   watch(artistId, newValue => console.log("artistId", newValue))
