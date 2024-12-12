@@ -44,12 +44,10 @@ div
 
   const artistId = computed(() => idFromSlug(useRoute().params?.id))
 
+  // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
   const {data: fullArtistData, error} = await useFetch(
       `artist/${artistId.value}`, useFetchOpts({key: `artist/${artistId.value}`})
   )
-
-  watch(artistId, newValue => console.log("artistId", newValue))
-  watch(fullArtistData, newValue => console.log("artist", newValue))
 
   if (error.value) {
     create404Error()

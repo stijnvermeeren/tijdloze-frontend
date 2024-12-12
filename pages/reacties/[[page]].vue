@@ -25,12 +25,12 @@ div
 
   const {data: commentsOn} = await useFetch(
     `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on'})
+    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn}'})
   )
 
   const {data: commentCount, refresh: reloadCommentCount} = await useFetch(
     `comments/count`,
-    useFetchOpts({transform: data => data.commentCount})
+    useFetchOpts({transform: data => data.commentCount, key: `comments/count`})
   )
 
   const page = computed(() => {
@@ -39,7 +39,7 @@ div
 
   const {data: comments, refresh: refreshComments} = await useFetch(
     `comments/${page.value}`,
-    useFetchOpts()
+    useFetchOpts({key: `comments/${page.value}`})
   )
   useClientDataRefresh(refreshComments)
 

@@ -92,11 +92,11 @@ div
 
   const {data: chatOn} = await useFetch(
     `text/chatOn`,
-    useFetchOpts({transform: data => data.value === 'on'})
+    useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
   )
   const {data: commentsOn} = await useFetch(
     `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on'})
+    useFetchOpts({transform: data => data.value === 'on', key: 'text/commentsOn'})
   )
 
   const {data: comments, execute: refreshComments} = await useAsyncData(

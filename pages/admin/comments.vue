@@ -12,5 +12,8 @@ definePageMeta({
   middleware: 'admin'
 })
 
-const {data: comments, refresh: reload} = await useFetch(`comments/deleted`, useFetchOpts())
+const {data: comments, refresh: reload} = await useFetch(
+    `comments/deleted`,
+    useFetchOpts({key: `comments/deleted`})
+)
 </script>
