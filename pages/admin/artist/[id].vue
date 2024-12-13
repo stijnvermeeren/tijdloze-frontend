@@ -45,6 +45,7 @@ div
         admin-musicbrainz-input(
           v-model='fullArtistData.musicbrainzId'
           musicbrainz-category="artist"
+          :query='fullArtistData.name'
         )
     v-row
       v-col

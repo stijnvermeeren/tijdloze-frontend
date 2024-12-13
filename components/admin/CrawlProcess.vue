@@ -2,7 +2,9 @@
 ui-card(v-if="crawl")
   template(#title)
     artist-link(v-if="type === 'artist'" :artist="storeModel")
-    album-link(v-if="type === 'album'" :album="storeModel")
+    span(v-if="type === 'album'")
+      album-link(:album="storeModel")
+      |  ({{storeModel.releaseYear}})
     span : {{crawl.field}}
   template(#subtitle)
     div Gecrawled: {{crawl.crawlDate}}

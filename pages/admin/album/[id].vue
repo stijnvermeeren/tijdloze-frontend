@@ -42,6 +42,7 @@ div
         admin-musicbrainz-input(
           v-model='fullAlbumData.musicbrainzId'
           musicbrainz-category="release-group"
+          :query='`${fullAlbumData.title} ${artist.name}`'
         )
     v-row
       v-col

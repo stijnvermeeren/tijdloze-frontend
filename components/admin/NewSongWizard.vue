@@ -28,31 +28,30 @@ div
                 musicbrainz-category="artist"
               )
 
-  div(v-if='artistValid')
-    div.heading Album
-    div.indent
-      v-radio-group(v-model="albumId" density="compact")
-        v-radio(v-for="album in candidateAlbums" :key="album.id" :value="album.id" :label="`${album.title} (${album.releaseYear})`")
-        v-radio(:value="0" label="Nieuw album")
-        div(v-if="albumId === 0")
-          div.d-flex
-            v-text-field.mr-4(
-              v-model='albumDetails.title'
-              label="Titel"
-              :disabled="!!albumId"
-              hide-details
-            )
-            v-text-field.releaseYear(
-              v-model.number='albumDetails.releaseYear'
-              label="Jaar"
-              type="number"
-              :disabled="!!albumId"
-              hide-details
-            )
-          div
-            admin-musicbrainz-input(
-              v-model='albumDetails.musicbrainzId'
-              musicbrainz-category="release-group"
+  div.heading Album
+  div.indent
+    v-radio-group(v-model="albumId" density="compact")
+      v-radio(v-for="album in candidateAlbums" :key="album.id" :value="album.id" :label="`${album.title} (${album.releaseYear})`")
+      v-radio(:value="0" label="Nieuw album")
+      div(v-if="albumId === 0")
+        div.d-flex
+          v-text-field.mr-4(
+            v-model='albumDetails.title'
+            label="Titel"
+            :disabled="!!albumId"
+            hide-details
+          )
+          v-text-field.releaseYear(
+            v-model.number='albumDetails.releaseYear'
+            label="Jaar"
+            type="number"
+            :disabled="!!albumId"
+            hide-details
+          )
+        div
+          admin-musicbrainz-input(
+            v-model='albumDetails.musicbrainzId'
+            musicbrainz-category="release-group"
             )
 
   div.heading Nummer
