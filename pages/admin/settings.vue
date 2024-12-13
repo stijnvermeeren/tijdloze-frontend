@@ -50,9 +50,9 @@ div
         await this.$api('/cache/invalidate');
       }
     },
-    async asyncData() {
-      const chatOnResponse = await this.$api(`text/chatOn`);
-      const commentsOnResponse = await this.$api(`text/commentsOn`);
+    async asyncData({$api}) {
+      const chatOnResponse = await $api(`text/chatOn`);
+      const commentsOnResponse = await $api(`text/commentsOn`);
       return {
         chatOn: chatOnResponse.value,
         commentsOn: commentsOnResponse.value

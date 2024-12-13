@@ -86,8 +86,8 @@ div
         }
       }
     },
-    async asyncData() {
-      const fullAlbumData = await this.$api(`album/${useRoute().params.id}`)
+    async asyncData({$api}) {
+      const fullAlbumData = await $api(`album/${useRoute().params.id}`)
       return {
         fullAlbumData,
         title: fullAlbumData.title

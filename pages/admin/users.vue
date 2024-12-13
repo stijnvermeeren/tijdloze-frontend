@@ -151,8 +151,8 @@ div
         this.refreshing = false;
       }
     },
-    async asyncData() {
-      const users = await this.$api(`user/list`);
+    async asyncData({$api}) {
+      const users = await $api(`user/list`);
       return {users};
     }
   })
