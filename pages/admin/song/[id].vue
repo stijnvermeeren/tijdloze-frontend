@@ -96,19 +96,19 @@ div
     methods: {
       async submit() {
         this.processing = true;
-        await $fetch(`song/${this.fullSongData.id}`, useFetchOptsPut(this.fullSongData))
+        await this.$api(`song/${this.fullSongData.id}`, useFetchOptsPut(this.fullSongData))
         await navigateTo(`/nummer/${this.fullSongData.id}`)
       },
       async submitDelete() {
         if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
           this.processing = true;
-          await $fetch(`song/${this.fullSongData.id}`, useFetchOptsDelete())
+          await this.$api(`song/${this.fullSongData.id}`, useFetchOptsDelete())
           await useRouter().push(`/artiest/${this.fullSongData.artistId}`);
         }
       }
     },
-    async asyncData() {
-      const fullSongData = await $fetch(`song/${useRoute().params.id}`, useFetchOpts())
+    async asyncData({$api}) {
+      const fullSongData = await $api(`song/${useRoute().params.id}`)
       return {
         fullSongData,
         title: fullSongData.title

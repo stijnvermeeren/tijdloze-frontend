@@ -49,6 +49,8 @@ div
   import Song from "~/orm/Song";
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
+  const {$api} = useNuxtApp()
+
   const listInProgress = computed(() => {
     return useRootStore().listInProgress;
   })
@@ -103,7 +105,7 @@ div
     'comments',
     () => {
       if (commentsOn.value) {
-        return $fetch(
+        return $api(
             `comments/1`,
             useFetchOpts({transform: data => _.take(data, 5)})
         )

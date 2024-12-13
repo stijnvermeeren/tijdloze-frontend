@@ -38,6 +38,8 @@ import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
 
+const {$api} = useNuxtApp()
+
 const props = defineProps({
   type: String
 })
@@ -78,14 +80,14 @@ async function refresh() {
 
 async function accept(id) {
   submitting.value = true
-  await $fetch(`${apiPath}/${id}`, useFetchOptsPost())
+  await $api(`${apiPath}/${id}`, useFetchOptsPost())
   refresh()
   submitting.value = false
 }
 
 async function reject(id) {
   submitting.value = true
-  await $fetch(`${apiPath}/${id}`, useFetchOptsDelete())
+  await $api(`${apiPath}/${id}`, useFetchOptsDelete())
   refresh()
   submitting.value = false
 }

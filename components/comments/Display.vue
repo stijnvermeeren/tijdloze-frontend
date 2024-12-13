@@ -67,14 +67,14 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
       },
       async deleteComment() {
         if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-          await $fetch(`comment/${this.comment.id}`, useFetchOptsDelete())
+          await this.$api(`comment/${this.comment.id}`, useFetchOptsDelete())
           this.isDeleted = true
           this.$emit("deleted")
         }
       },
       async restoreComment() {
         if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-          await $fetch(`comment/${this.comment.id}`, useFetchOptsPost())
+          await this.$api(`comment/${this.comment.id}`, useFetchOptsPost())
           this.isDeleted = false
           this.$emit("restored")
         }

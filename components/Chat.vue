@@ -105,7 +105,7 @@
         const data = {
           displayName: this.displayNameEdit.trim()
         };
-        const user = await $fetch(`user/display-name`, useFetchOptsPost(data))
+        const user = await this.$api(`user/display-name`, useFetchOptsPost(data))
         useAuthStore().setUser(user);
         // TODO replace this
         // await this.loadOnlineOnce();
@@ -218,7 +218,7 @@
           this.ws.close()
         }
 
-        const ticketResponse = await $fetch('chat/ticket', useFetchOpts()).catch(err => {
+        const ticketResponse = await this.$api('chat/ticket').catch(err => {
           console.log("Unable to obtain ticket for chat.")
           this.error = true;
           setTimeout(this.reconnect, 5000)

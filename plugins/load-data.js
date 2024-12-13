@@ -9,6 +9,7 @@ import {useRepo} from "pinia-orm";
 
 export default defineNuxtPlugin(async nuxtApp => {
   const rootStore = useRootStore(nuxtApp.$pinia)
+  const $api = nuxtApp.$api
 
   if (!rootStore.years.length) {
     const [
@@ -16,9 +17,9 @@ export default defineNuxtPlugin(async nuxtApp => {
       commentsOnResponse,
       coreDataResponse
     ] = await Promise.all([
-      $fetch(`text/chatOn`, useFetchOpts()),
-      $fetch(`text/commentsOn`, useFetchOpts()),
-      $fetch('core-data', useFetchOpts())
+      $api(`text/chatOn`),
+      $api(`text/commentsOn`),
+      $api('core-data')
     ])
     rootStore.setChatOn(chatOnResponse.value === 'on')
     rootStore.setCommentsOn(commentsOnResponse.value === 'on')
@@ -39,7 +40,7 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(List).insert(lists);
 
     if (rootStore.listInProgress) {
-      const poll = await $fetch('poll/latest', useFetchOpts())
+      const poll = await $api('poll/latest')
           .catch(err => undefined);
       if (poll && poll.year === rootStore.currentYear.yyyy) {
         usePollStore().setCurrentPoll(poll);

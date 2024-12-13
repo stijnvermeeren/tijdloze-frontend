@@ -204,7 +204,7 @@ definePageMeta({ middleware: 'admin' })
         this.nextSongTab = 'existing';
         this.nextSong = song;
         this.nextSongFullData = undefined;
-        this.nextSongFullData = await $fetch(`song/${this.nextSong.id}`, useFetchOpts());
+        this.nextSongFullData = await this.$api(`song/${this.nextSong.id}`);
       },
       fillMBData(data) {
         this.nextSongTab = 'new';
@@ -220,18 +220,18 @@ definePageMeta({ middleware: 'admin' })
       },
       async undo() {
         this.processing = true;
-        await $fetch(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`, useFetchOptsDelete())
+        await this.$api(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`, useFetchOptsDelete())
         this.previousPosition = undefined;
         this.processing = false;
       },
       async startYear() {
         this.processing = true;
-        await $fetch(`year/${this.nextYearYyyy}`, useFetchOptsPost())
+        await this.$api(`year/${this.nextYearYyyy}`, useFetchOptsPost())
         this.processing = false;
       },
       async deleteYear() {
         this.processing = true;
-        await $fetch(`year/${this.currentYear.yyyy}`, useFetchOptsDelete())
+        await this.$api(`year/${this.currentYear.yyyy}`, useFetchOptsDelete())
         this.processing = false;
       },
       async add(songId) {
@@ -240,7 +240,7 @@ definePageMeta({ middleware: 'admin' })
         const data = {
           songId
         }
-        await $fetch(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsPost(data))
+        await this.$api(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsPost(data))
         this.previousPosition = position;
         this.nextSongTab = 'existing';
         this.nextSong = undefined;

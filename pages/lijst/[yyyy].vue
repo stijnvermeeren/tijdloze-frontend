@@ -65,13 +65,10 @@ div
         }
       }
     },
-    async asyncData() {
+    async asyncData({$api}) {
       const yyyyParam = useRoute().params.yyyy
       if (yyyyParam === useRootStore().currentYear.yyyy.toString()) {
-        const analysisCurrentYearResponse = await $fetch(
-            `text/analysis_${yyyyParam}`,
-            useFetchOpts()
-        ).catch(err => undefined);
+        const analysisCurrentYearResponse = await $api(`text/analysis_${yyyyParam}`).catch(err => undefined);
         return {
           analysisCurrentYear: analysisCurrentYearResponse?.value ?? ''
         }

@@ -41,6 +41,7 @@ import {useAuthStore} from "~/stores/auth";
 import useFetchOptsPost from "~/composables/useFetchOptsPost";
 
 const auth = inject('auth', {}) // provide default value for server-side
+const {$api} = useNuxtApp()
 
 const props = defineProps({
   poll: {
@@ -89,17 +90,17 @@ watch(myVote, () => {
 
 async function reload() {
   isLoading.value = true;
-  const result = await $fetch(`poll/my-votes`, useFetchOpts())
+  const result = await $api(`poll/my-votes`)
   usePollStore().setVotes(result.votes);
 
-  livePoll.value = await $fetch(`poll/${props.poll.id}`, useFetchOpts())
+  livePoll.value = await $api(`poll/${props.poll.id}`)
   isLoading.value = false;
 }
 
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await $fetch(`poll/${props.poll.id}/${myVoteEdit.value}`, useFetchOptsPost());
+    await $api(`poll/${props.poll.id}/${myVoteEdit.value}`, useFetchOptsPost());
 
     await reload();
     voting.value = false;
@@ -120,14 +121,14 @@ function percentage(answerVotes) {
 
 async function deletePoll() {
   deleting.value = true;
-  await $fetch(`poll/${props.poll.id}/hide`, useFetchOptsPost());
+  await $api(`poll/${props.poll.id}/hide`, useFetchOptsPost());
   isDeleted.value = true;
   deleting.value = false;
 }
 
 async function restore() {
   deleting.value = true;
-  await $fetch(`poll/${props.poll.id}/hide`, useFetchOptsDelete());
+  await $api(`poll/${props.poll.id}/hide`, useFetchOptsDelete());
   isDeleted.value = false;
   deleting.value = false;
 }

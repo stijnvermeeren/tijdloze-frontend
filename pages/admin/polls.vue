@@ -29,6 +29,8 @@ import {useRootStore} from "~/stores/root";
 
 definePageMeta({ middleware: 'admin' })
 
+const {$api} = useNuxtApp()
+
 const refreshing = ref(false)
 const question = ref('')
 const answers = ref([{text: ''}, {text: ''}])
@@ -67,7 +69,7 @@ async  function submit() {
     answers: answers.value.map(answer => answer.text),
     year: currentYear.value.yyyy
   };
-  await $fetch('poll', useFetchOptsPost(data));
+  await $api('poll', useFetchOptsPost(data));
   await this.refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];

@@ -93,7 +93,7 @@ div
           payLoad.email = this.email.trim();
         }
 
-        const result = await $fetch('/contact', useFetchOptsPost(payLoad)).catch(err => {
+        const result = await this.$api('/contact', useFetchOptsPost(payLoad)).catch(err => {
           this.inProgress = false;
           this.error = `Foutmelding van de server: ${err}.`;
         })

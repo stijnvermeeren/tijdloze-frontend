@@ -37,7 +37,7 @@ div(v-else)
         const data = {
           answer: this.answerEdit
         };
-        await $fetch(`poll/${this.pollId}/${this.pollAnswerId}`, useFetchOptsPut(data));
+        await this.$api(`poll/${this.pollId}/${this.pollAnswerId}`, useFetchOptsPut(data));
         this.submitting = false;
         this.editing = false;
       },

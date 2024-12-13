@@ -22,13 +22,13 @@ div
         const data = {
           text: this.chatOn
         };
-        await $fetch(`text/chatOn`, useFetchOptsPost(data));
+        await this.$api(`text/chatOn`, useFetchOptsPost(data));
       },
       async commentsOn() {
         const data = {
           text: this.commentsOn
         };
-        await $fetch(`text/commentsOn`, useFetchOptsPost(data));
+        await this.$api(`text/commentsOn`, useFetchOptsPost(data));
       }
     },
     methods: {
@@ -47,12 +47,12 @@ div
         }
       },
       async invalidateCache() {
-        await $fetch('/cache/invalidate', useFetchOpts());
+        await this.$api('/cache/invalidate');
       }
     },
     async asyncData() {
-      const chatOnResponse = await $fetch(`text/chatOn`, useFetchOpts());
-      const commentsOnResponse = await $fetch(`text/commentsOn`, useFetchOpts());
+      const chatOnResponse = await this.$api(`text/chatOn`);
+      const commentsOnResponse = await this.$api(`text/commentsOn`);
       return {
         chatOn: chatOnResponse.value,
         commentsOn: commentsOnResponse.value

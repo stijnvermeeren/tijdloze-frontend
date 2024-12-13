@@ -25,6 +25,8 @@ definePageMeta({
   middleware: 'admin'
 })
 
+const {$api} = useNuxtApp()
+
 const processing = ref(false)
 const fullArtistData = ref({
   name: '',
@@ -37,7 +39,7 @@ const disabled = computed(() => {
 
 async function submit() {
   processing.value = true;
-  const data = await $fetch(`artist`, useFetchOptsPost(fullArtistData.value))
+  const data = await $api(`artist`, useFetchOptsPost(fullArtistData.value))
   await useRouter().push(`/artiest/${data.id}`)
 }
 </script>

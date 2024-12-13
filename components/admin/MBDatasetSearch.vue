@@ -71,7 +71,7 @@ div
         this.showingResults = false;
         this.processing = true;
 
-        const result = await $fetch(
+        const result = await this.$api(
             '/mbdata/search-query',
             useFetchOpts({params: {query: this.query}})
         ).catch(err => {

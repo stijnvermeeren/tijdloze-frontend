@@ -63,13 +63,13 @@ definePageMeta({ middleware: 'admin' })
         return inPreviousYear && notYetInCurrentYear && notYetMarked;
       },
       async unmarkAll() {
-        await $fetch(`/list-exit/${this.currentYear.yyyy}`, useFetchOptsDelete());
+        await this.$api(`/list-exit/${this.currentYear.yyyy}`, useFetchOptsDelete());
       },
       async unmarkExit(song) {
-        await $fetch(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsDelete());
+        await this.$api(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsDelete());
       },
       async markExit(song) {
-        await $fetch(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsPost());
+        await this.$api(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsPost());
       }
     }
   })

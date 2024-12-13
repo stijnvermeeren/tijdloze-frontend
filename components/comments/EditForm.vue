@@ -37,7 +37,7 @@ div
         const data = {
           message: this.editMessage
         };
-        await $fetch(`comment/${this.commentId}`, useFetchOptsPut(data))
+        await this.$api(`comment/${this.commentId}`, useFetchOptsPut(data))
         this.submitting = false;
         this.$emit('submitted', this.editMessage)
       }

@@ -86,7 +86,7 @@ div.commentForm(:class="{expanded: isExpanded}")
         const data = {
           displayName: this.name
         };
-        const user = await $fetch(`user/display-name`, useFetchOptsPost(data))
+        const user = await this.$api(`user/display-name`, useFetchOptsPost(data))
         this.editingDisplayName = false;
         this.submittingDisplayName = false;
         useAuthStore().setUser(user);
@@ -98,7 +98,7 @@ div.commentForm(:class="{expanded: isExpanded}")
         const data = {
           message: this.message
         };
-        await $fetch(`comment`, useFetchOptsPost(data))
+        await this.$api(`comment`, useFetchOptsPost(data))
         this.submitting = false;
         this.message = '';
         this.$emit('submitted');

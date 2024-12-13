@@ -16,6 +16,8 @@ div.d-flex.align-center
 <script setup>
 import {mdiOpenInNew} from "@mdi/js";
 
+const {$api} = useNuxtApp()
+
 const props = defineProps({
   modelValue: String,
   artist: String,
@@ -45,7 +47,7 @@ async function search() {
   }
   const query = queryParts.join(" ")
   processing.value = true
-  const spotifyTracks = await $fetch('/spotify/find', useFetchOpts({params: {query: query}})).catch(err => {
+  const spotifyTracks = await $api('/spotify/find', useFetchOpts({params: {query: query}})).catch(err => {
     processing.value = false
     spotifyMessage.value = "Probleem bij het zoeken op Spotify";
   })

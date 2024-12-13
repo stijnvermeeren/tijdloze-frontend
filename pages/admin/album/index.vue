@@ -23,6 +23,8 @@ definePageMeta({
   middleware: 'admin'
 })
 
+const {$api} = useNuxtApp()
+
 const processing = ref(false)
 const fullAlbumData = ref({
   title: '',
@@ -36,7 +38,7 @@ const disabled = computed(() => {
 
 async function submit() {
   processing.value = true;
-  const data = await $fetch(`album`, useFetchOptsPost(fullAlbumData.value))
+  const data = await $api(`album`, useFetchOptsPost(fullAlbumData.value))
   await useRouter().push(`/album/${data.id}`)
 }
 </script>

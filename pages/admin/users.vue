@@ -135,24 +135,24 @@ div
       },
       async block(userId) {
         this.refreshing = true;
-        await $fetch(`/user/${userId}/block`, useFetchOptsPost());
-        this.users = await $fetch(`user/list`, useFetchOpts());
+        await this.$api(`/user/${userId}/block`, useFetchOptsPost());
+        this.users = await this.$api(`user/list`);
         this.refreshing = false;
       },
       async unblock(userId) {
         this.refreshing = true;
-        await $fetch(`/user/${userId}/block`, useFetchOptsDelete());
-        this.users = await $fetch(`user/list`, useFetchOpts());
+        await this.$api(`/user/${userId}/block`, useFetchOptsDelete());
+        this.users = await this.$api(`user/list`);
         this.refreshing = false;
       },
       async refresh() {
         this.refreshing = true;
-        this.users = await $fetch(`user/list`, useFetchOpts());
+        this.users = await this.$api(`user/list`);
         this.refreshing = false;
       }
     },
     async asyncData() {
-      const users = await $fetch(`user/list`, useFetchOpts());
+      const users = await this.$api(`user/list`);
       return {users};
     }
   })

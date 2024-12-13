@@ -52,7 +52,7 @@ div
         const data = {
           displayName: this.name
         };
-        const user = await $fetch(`user/display-name`, useFetchOptsPost(data))
+        const user = await this.$api(`user/display-name`, useFetchOptsPost(data))
         this.submittingDisplayName = false;
         useAuthStore().setUser(user);
       },
@@ -60,8 +60,8 @@ div
         this.$auth.login(useRoute().path);
       }
     },
-    async asyncData() {
-      const modeResponse = await $fetch(`text/chatOn`, useFetchOpts());
+    async asyncData({$api}) {
+      const modeResponse = await $api(`text/chatOn`);
       return {
         chatEnabled: modeResponse.value === 'on'
       }

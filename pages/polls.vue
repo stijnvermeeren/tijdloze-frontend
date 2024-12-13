@@ -20,8 +20,8 @@ div
         return this.polls.filter(poll => poll.year === this.currentYear.yyyy && !poll.isDeleted)
       }
     },
-    async asyncData() {
-      const polls = await $fetch(`poll/list`, useFetchOpts())
+    async asyncData({$api}) {
+      const polls = await $api(`poll/list`)
       return {polls}
     }
   })

@@ -219,7 +219,7 @@ div
               .find(this.artistId)
           if (artist) {
             for (const song of artist.songs) {
-              const fullSongData = await $fetch(`song/${song.id}`, useFetchOpts())
+              const fullSongData = await this.$api(`song/${song.id}`)
               if (fullSongData) {
                 if (fullSongData.spotifyId === this.songDetails.spotifyId) {
                   return song
@@ -274,7 +274,7 @@ div
         return query;
       },
       async artistMatch(artistName, artistMBId) {
-        const artist = await $fetch(`/artist/musicbrainz/${artistMBId}`, useFetchOpts()).catch(
+        const artist = await this.$api(`/artist/musicbrainz/${artistMBId}`).catch(
             () => undefined
         );
         if (artist)  {
@@ -303,7 +303,7 @@ div
        *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
        */
       async albumMatch(artistId, albumName, releaseYear, albumMBId) {
-        const album = await $fetch(`/album/musicbrainz/${albumMBId}`, useFetchOpts());
+        const album = await this.$api(`/album/musicbrainz/${albumMBId}`);
         if (album)  {
           return useRepo(Album).find(album.id)
         }
@@ -335,7 +335,7 @@ div
             name: this.artistDetails.name,
             countryId: this.artistDetails.countryId
           }
-          const artist = await $fetch('/artist', useFetchOptsPost(artistData));
+          const artist = await this.$api('/artist', useFetchOptsPost(artistData));
           artistId = artist.id;
         } else {
           artistId = this.artistId;
@@ -348,7 +348,7 @@ div
             title: this.albumDetails.title,
             releaseYear: this.albumDetails.releaseYear
           }
-          const album = await $fetch('/album', useFetchOptsPost(albumData));
+          const album = await this.$api('/album', useFetchOptsPost(albumData));
           albumId = album.id;
         }
 
@@ -360,7 +360,7 @@ div
           leadVocals: this.songDetails.leadVocals,
           spotifyId: this.songDetails.spotifyId
         }
-        const song = await $fetch('/song', useFetchOptsPost(songData));
+        const song = await this.$api('/song', useFetchOptsPost(songData));
 
         this.submitting = false;
         Object.assign(this.$data, initialData());

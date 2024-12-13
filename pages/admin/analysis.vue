@@ -95,12 +95,12 @@ div
         const data = {
           text: this.analysis
         };
-        await $fetch(this.apiPath, useFetchOptsPost(data));
+        await this.$api(this.apiPath, useFetchOptsPost(data));
         this.saving = false;
       },
       async refresh() {
         this.refreshing = true;
-        const data = await $fetch(this.apiPath, useFetchOpts());
+        const data = await this.$api(this.apiPath);
         this.analysis = data.value;
         this.initialAnalysis = data.value;
         this.lastLoadedAnalysis = data.value;
@@ -109,7 +109,7 @@ div
     },
     mounted() {
       this.interval = setInterval(async () => {
-        const data = await $fetch(this.apiPath, useFetchOpts());
+        const data = await this.$api(this.apiPath);
         this.lastLoadedAnalysis = data.value;
       }, 10000);
     },
@@ -118,8 +118,8 @@ div
         clearInterval(this.interval);
       }
     },
-    async asyncData() {
-      const data = await $fetch(`text/analysis_${useRootStore().currentYear.yyyy}`, useFetchOpts());
+    async asyncData({$api}) {
+      const data = await $api(`text/analysis_${useRootStore().currentYear.yyyy}`);
       return {
         initialAnalysis: data.value,
         lastLoadedAnalysis: data.value
