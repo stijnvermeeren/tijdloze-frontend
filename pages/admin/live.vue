@@ -52,6 +52,7 @@ div
       admin-m-b-dataset-search(
         v-model="query"
         @mbHit='fillMBData($event)'
+        @search='onMusicbrainzSearch()'
         @selectSearchResult="selectExistingSong($event.item)"
         ref="search"
       )
@@ -78,7 +79,7 @@ div
           ref="wizard"
         )
 
-      div(v-if="nextSongTab === 'hide' || (nextSongTab === 'existing' && !nextSong)")
+      div(v-if="nextSongTab === 'hide'")
         v-btn(@click="nextSongTab = 'new'" variant="plain" ripple) Nieuw nummer manueel toevoegen
 
 
@@ -206,6 +207,9 @@ definePageMeta({ middleware: 'admin' })
         this.nextSongFullData = undefined;
         this.nextSongFullData = await this.$api(`song/${this.nextSong.id}`);
       },
+      onMusicbrainzSearch() {
+        this.nextSongTab = 'hide'
+      },
       fillMBData(data) {
         this.nextSongTab = 'new';
         this.$refs.wizard.loadPreset({
@@ -242,10 +246,9 @@ definePageMeta({ middleware: 'admin' })
         }
         await this.$api(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsPost(data))
         this.previousPosition = position;
-        this.nextSongTab = 'existing';
+        this.nextSongTab = 'hide';
         this.nextSong = undefined;
         this.nextSongFullData = undefined;
-        this.mbData = undefined;
         this.processing = false;
 
         this.loadNextFromImport();

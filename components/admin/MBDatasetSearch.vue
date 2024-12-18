@@ -72,6 +72,7 @@ div
         this.$emit("selectSearchResult", result)
       },
       async searchMusicbrainz() {
+        this.$emit('search');
         this.mbHit = undefined;
         this.showingResults = false;
         this.processing = true;
