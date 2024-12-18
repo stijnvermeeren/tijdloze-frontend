@@ -302,7 +302,9 @@ div
        *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
        */
       async albumMatch(artistId, albumName, releaseYear, albumMBId) {
-        const album = await this.$api(`/album/musicbrainz/${albumMBId}`);
+        const album = await this.$api(`/album/musicbrainz/${albumMBId}`).catch(
+            () => undefined
+        );
         if (album)  {
           return useRepo(Album).find(album.id)
         }
