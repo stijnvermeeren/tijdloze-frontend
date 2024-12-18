@@ -37,13 +37,13 @@ function update(newValue) {
 async function search() {
   const queryParts = []
   if (props.artist) {
-    queryParts.push(`artist:${props.artist}`)
+    queryParts.push(`artist:"${props.artist.replace('"', "")}"`)
   }
   if (props.album) {
-    queryParts.push(`album:${props.album}`)
+    queryParts.push(`album:"${props.album.replace('"', "")}"`)
   }
   if (props.title) {
-    queryParts.push(`track:${props.title}`)
+    queryParts.push(`track:"${props.title.replace('"', "")}"`)
   }
   const query = queryParts.join(" ")
   processing.value = true
