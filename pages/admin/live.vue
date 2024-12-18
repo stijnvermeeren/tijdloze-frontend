@@ -58,21 +58,17 @@ div
 
       hr.my-2
 
-      div(v-show="nextSongTab === 'hide'")
-        v-btn(@click="nextSongTab = 'new'" variant="plain" ripple) Nieuw nummer manueel toevoegen
-
-      div(v-show="nextSongTab === 'existing'")
-        div(v-if="nextSong")
-          div
-            | Gevonden in de database:
-            |
-            strong {{nextSong.artist.name}} - {{nextSong.title}}
-            |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
-          div(v-if='nextSongFullData && nextSongFullData.spotifyId')
-            spotify(:spotify-id='nextSongFullData.spotifyId')
-          div
-            v-btn(@click='add(nextSong.id)' :disabled='!nextValid' rounded)
-              | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
+      div(v-if="nextSongTab === 'existing' && nextSong")
+        div
+          | Gevonden in de database:
+          |
+          strong {{nextSong.artist.name}} - {{nextSong.title}}
+          |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
+        div(v-if='nextSongFullData && nextSongFullData.spotifyId')
+          spotify(:spotify-id='nextSongFullData.spotifyId')
+        div
+          v-btn(@click='add(nextSong.id)' :disabled='!nextValid' rounded)
+            | Toevoegen op positie {{nextPosition}} in {{currentYear.yyyy}}
 
       div(v-show="nextSongTab === 'new'")
         admin-new-song-wizard(
@@ -81,6 +77,10 @@ div
           @existingSong='selectExistingSong($event)'
           ref="wizard"
         )
+
+      div(v-if="nextSongTab === 'hide' || (nextSongTab === 'existing' && !nextSong)")
+        v-btn(@click="nextSongTab = 'new'" variant="plain" ripple) Nieuw nummer manueel toevoegen
+
 
   ui-card(:title="`Tijdloze ${currentYear.yyyy}: import`")
     template(#buttons)

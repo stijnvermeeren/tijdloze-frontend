@@ -36,6 +36,11 @@ div
         requestError: false
       }
     },
+    watch: {
+      query: function() {
+        this.showingResults = false
+      }
+    },
     computed: {
       currentYear() {
         return useRootStore().currentYear;

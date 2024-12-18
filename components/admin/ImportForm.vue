@@ -106,7 +106,6 @@ export default {
       }
 
       if (this.reverse) {
-        console.log("rvers")
         importSongs.reverse()
       }
       this.importText = "";
