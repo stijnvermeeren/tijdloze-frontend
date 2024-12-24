@@ -13,6 +13,7 @@ div
       ref="searchBox"
     )
     v-btn.ml-2(@click='searchMusicbrainz' :disabled='processing' hide-details)
+      v-progress-circular.mr-2(v-if="processing" size="small" indeterminate)
       | Zoeken op MusicBrainz
   div(v-if="requestError")
     ui-alert(type="error" title="Fout bij het zoeken in de MusicBrainz dataset.")

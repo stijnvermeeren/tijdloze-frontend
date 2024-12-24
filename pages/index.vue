@@ -15,7 +15,7 @@ div
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
         v-btn De volledige lijst van {{tableYear.yyyy}}
-      nuxt-link(v-if='listInProgress' to='/lijst/opkomst')
+      nuxt-link(v-if='listInProgress && lastPosition <= 100' to='/lijst/opkomst')
         v-btn Nog op komst
       nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `/lijst/${tableYear.yyyy}/exits` }')
         v-btn Uit de top 100 verdwenen
@@ -53,6 +53,10 @@ div
 
   const listInProgress = computed(() => {
     return useRootStore().listInProgress;
+  })
+
+  const lastPosition = computed(() => {
+    return useRootStore().lastPosition;
   })
 
   const poll = computed(() => {
@@ -105,10 +109,7 @@ div
     'comments',
     () => {
       if (commentsOn.value) {
-        return $api(
-            `comments/1`,
-            useFetchOpts({transform: data => _.take(data, 5)})
-        )
+        return $api(`comments/1`).then(data => _.take(data, 10))
       } else {
         return Promise.resolve([])
       }
