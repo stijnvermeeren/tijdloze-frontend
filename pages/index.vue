@@ -47,7 +47,7 @@ div
   import List from "~/orm/List";
   import {useRepo} from "pinia-orm";
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
-  import ListEntry from "~/orm/ListEntry";
+  import Song from "~/orm/Song";
 
   const {$api} = useNuxtApp()
 
@@ -69,7 +69,7 @@ div
 
   const tableYear = computed(() => {
     if (year.value) {
-      if (useRepo(List).find(year.value.yyyy)?.entryIds?.length === 0 && year.value?.previous) {
+      if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
         return year.value.previous;
       } else {
         return year.value;
@@ -78,11 +78,9 @@ div
   })
 
   const top5 = computed(() => {
-    const list = useRepo(List).find(tableYear.value?.yyyy)
+    const list = useRootStore().list(tableYear.value, 5)
     if (list) {
-      return _.take(list.entryIds, 5).map(entryId => {
-        return useRepo(ListEntry).with('song', q => q.withAll()).find(entryId)
-      })
+      return list
     } else {
       return []
     }

@@ -31,7 +31,7 @@ div
         return useRootStore().years.find(year => year.yyyy.toString() === useRoute().params.yyyy);
       },
       top100() {
-        return useRootStore().list(this.year).filter(entry => entry.position <= 100);
+        return useRootStore().list(this.year, 100, 100);
       },
       newSongs() {
         if (this.year.previous) {
@@ -43,10 +43,9 @@ div
       exits() {
         if (this.year.previous) {
           return _.sortBy(
-            useRootStore().list(this.year.previous)
-                .filter(entry => entry.position <= 100)
-                .filter(entry => entry.song.notInList(this.year)),
-            entry => entry.song.position(this.year.previous)
+              useRootStore().list(this.year.previous, 100, 100)
+                  .filter(entry => entry.song.notInList(this.year)),
+              entry => entry.song.position(this.year.previous)
           );
         } else {
           return [];

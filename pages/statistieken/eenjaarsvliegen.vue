@@ -26,8 +26,8 @@ div
   import List from "../../orm/List";
   import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
-  import ListEntry from "~/orm/ListEntry";
   import Song from "~/orm/Song";
+  import _ from 'lodash';
 
   export default {
     computed: {
@@ -39,10 +39,9 @@ div
       },
       data() {
         const dataPoints = [];
-        useRepo(List).with('entries').get().forEach(list => {
+        useRepo(List).get().forEach(list => {
           const year = this.years.find(year => year.yyyy === list.year)
-          const top100SongIds = list.entries.filter(entry => entry.position <= 100).map(entry => entry.songId)
-          const top100Songs = useRepo(Song).withAll().find(top100SongIds)
+          const top100Songs = useRepo(Song).withAll().find(_.take(list.songIds, 100))
           if (year.previous && year.next) {
             top100Songs.forEach(song => {
               if (song.notInList(year.previous) && song.notInList(year.next)) {

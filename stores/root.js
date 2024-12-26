@@ -6,7 +6,6 @@ import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
 import Year from '~/orm/Year';
 import List from '~/orm/List';
-import ListEntry from "~/orm/ListEntry";
 
 export const useRootStore = defineStore('root', {
   state: () => ({
@@ -55,23 +54,45 @@ export const useRootStore = defineStore('root', {
       return new Set(useRepo(Artist).all().map(artist => artist.countryId));
     },
     list(state) {
-      return year => {
-        const list = useRepo(List)
-          .with('entries', q1 => q1.with('song', q2 => q2.with('album').with('artist')))
-          .find(year?.yyyy)
+      return (year, limit, maxPosition) => {
+        const list = useRepo(List).find(year?.yyyy)
         if (list) {
-          return list.entries
+          let notNullSongIds = list.songIds.filter(x => x)
+          if (limit > 0) {
+            notNullSongIds = _.take(notNullSongIds, limit)
+          }
+          const songs = useRepo(Song).with('album').with('artist').with('album').with('artist').find(notNullSongIds)
+          const songsById = {}
+          songs.forEach(song => {
+            songsById[song.id] = song
+          })
+          const entries = []
+          for (const [index, songId] of list.songIds.entries()) {
+            const position = index + 1
+            if (maxPosition > 0 && position > maxPosition) {
+              return entries
+            }
+            if (songId && songsById[songId]) {
+              entries.push({
+                position,
+                song: songsById[songId]
+              })
+            }
+            if (limit > 0 && entries.length >= limit) {
+              return entries
+            }
+          }
+          return entries
         } else {
           return []
         }
       }
     },
     lastSong(state) {
-      const list = useRepo(List).find(this.currentYear?.yyyy)
-      return useRepo(ListEntry)
-          .with('song', q => q.with('album').with('artist'))
-          .find(_.first(list?.entryIds))
-          .song;
+      const entry = _.first(useRootStore().list(this.currentYear, 1))
+      if (entry) {
+        return entry.song
+      }
     },
     lastPosition(state) {
       const lastSong = this.lastSong

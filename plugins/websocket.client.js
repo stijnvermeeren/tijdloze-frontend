@@ -7,7 +7,6 @@ import _ from 'lodash'
 import {useRootStore} from "~/stores/root";
 import {usePollStore} from "~/stores/poll";
 import {useRepo} from "pinia-orm";
-import ListEntry from "~/orm/ListEntry";
 
 export default defineNuxtPlugin( nuxtApp => {
   const rootStore = useRootStore()
@@ -27,7 +26,7 @@ export default defineNuxtPlugin( nuxtApp => {
         if (!useRepo(List).query().find(response.currentYear)) {
           useRepo(List).save({
             year: response.currentYear,
-            entryIds: []
+            songIds: []
           })
         }
       }
@@ -46,40 +45,12 @@ export default defineNuxtPlugin( nuxtApp => {
             positions
           })
 
-          const newEntryId = `${response.year}-${response.position}`
-          useRepo(ListEntry).save({
-            yearPosition: newEntryId,
-            position: response.position,
-            songId: response.songId
-          })
-
-          function partitionFn(entryId) {
-            const entry = useRepo(ListEntry).find(entryId)
-            if (entry) {
-              return entry.position < response.position
-            } else {
-              console.log(`Failed to find entry with id ${entryId}.`)
-              return false
-            }
-          }
-
           const list = useRepo(List).find(response.year)
-          const partition = _.partition(
-            list.entryIds.filter(entryId => entryId !== newEntryId),
-            partitionFn
-          )
-          list.entryIds = [
-            ...partition[0],
-            newEntryId,
-            ...partition[1]
-          ];
-
+          list.songIds[response.position] = response.songId
           useRepo(List).save(list)
         } else {
           const list = useRepo(List).find(response.year)
-          list.entryIds = list.entryIds.filter(entryId => {
-            return useRepo(ListEntry).find(entryId).position !== response.position
-          })
+          list.songIds[response.position] = null
           useRepo(List).save(list)
 
           const songs = useRepo(Song).where(song => {
