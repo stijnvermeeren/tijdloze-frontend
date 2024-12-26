@@ -46,11 +46,11 @@ export default defineNuxtPlugin( nuxtApp => {
           })
 
           const list = useRepo(List).find(response.year)
-          list.songIds[response.position] = response.songId
+          list.songIds[response.position - 1] = response.songId
           useRepo(List).save(list)
         } else {
           const list = useRepo(List).find(response.year)
-          list.songIds[response.position] = null
+          list.songIds[response.position - 1] = null
           useRepo(List).save(list)
 
           const songs = useRepo(Song).where(song => {
