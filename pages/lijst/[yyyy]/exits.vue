@@ -1,7 +1,7 @@
 <template lang="pug">
-div(v-for='song in exits')
-  song-with-position(:song="song")
-    position-main(:song='song' :year='year.previous')
+div(v-for='entry in exits')
+  song-with-position(:song="entry.song")
+    position-main(:position="entry.position")
     position-annotation in {{year.previous.yyyy}}
 </template>
 

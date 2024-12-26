@@ -14,7 +14,7 @@ import Year from "../orm/Year";
 
 defineProps({
   song: {
-    type: Song
+    type: Object
   }
 })
 </script>

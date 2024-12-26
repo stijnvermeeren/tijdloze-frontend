@@ -6,6 +6,7 @@ import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
 import Year from '~/orm/Year';
 import List from '~/orm/List';
+import ListEntry from "~/orm/ListEntry";
 
 export const useRootStore = defineStore('root', {
   state: () => ({
@@ -56,22 +57,10 @@ export const useRootStore = defineStore('root', {
     list(state) {
       return year => {
         const list = useRepo(List)
-          .with('songs', query => query.with('album').with('artist'))
+          .with('entries', q1 => q1.with('song', q2 => q2.with('album').with('artist')))
           .find(year?.yyyy)
         if (list) {
-          return list.songs
-        } else {
-          return []
-        }
-      }
-    },
-    listTop100(state) {
-      return year => {
-        const list = useRepo(List)
-          .with('top100Songs', query => query.with('album').with('artist'))
-          .find(year.yyyy)
-        if (list) {
-          return list.top100Songs
+          return list.entries
         } else {
           return []
         }
@@ -79,7 +68,10 @@ export const useRootStore = defineStore('root', {
     },
     lastSong(state) {
       const list = useRepo(List).find(this.currentYear?.yyyy)
-      return useRepo(Song).with('album').with('artist').find(_.first(list?.songIds));
+      return useRepo(ListEntry)
+          .with('song', q => q.with('album').with('artist'))
+          .find(_.first(list?.entryIds))
+          .song;
     },
     lastPosition(state) {
       const lastSong = this.lastSong

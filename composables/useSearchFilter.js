@@ -1,10 +1,10 @@
 import _ from "lodash";
 
-export default function (queryFragments, data, matchAttribute) {
-  return data.filter(item => {
+export default function (queryFragments, matchAttribute) {
+  return item => {
     return _.every(
       queryFragments,
       fragment => !fragment || useSearchNormalize(matchAttribute(item)).indexOf(fragment) > -1
     )
-  })
+  }
 }

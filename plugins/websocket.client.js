@@ -7,6 +7,7 @@ import _ from 'lodash'
 import {useRootStore} from "~/stores/root";
 import {usePollStore} from "~/stores/poll";
 import {useRepo} from "pinia-orm";
+import ListEntry from "~/orm/ListEntry";
 
 export default defineNuxtPlugin( nuxtApp => {
   const rootStore = useRootStore()
@@ -26,8 +27,7 @@ export default defineNuxtPlugin( nuxtApp => {
         if (!useRepo(List).query().find(response.currentYear)) {
           useRepo(List).save({
             year: response.currentYear,
-            songIds: [],
-            top100SongIds: []
+            entryIds: []
           })
         }
       }
@@ -46,49 +46,40 @@ export default defineNuxtPlugin( nuxtApp => {
             positions
           })
 
-          function partitionFn(songId) {
-            const song = useRepo(Song).find(songId)
-            if (song) {
-              return song.positions[yearShort] < response.position
+          const newEntryId = `${response.year}-${response.position}`
+          useRepo(ListEntry).save({
+            yearPosition: newEntryId,
+            position: response.position,
+            songId: response.songId
+          })
+
+          function partitionFn(entryId) {
+            const entry = useRepo(ListEntry).find(entryId)
+            if (entry) {
+              return entry.position < response.position
             } else {
-              console.log(`Failed to find song with id ${songId}.`)
+              console.log(`Failed to find entry with id ${entryId}.`)
               return false
             }
           }
 
           const list = useRepo(List).find(response.year)
           const partition = _.partition(
-            list.songIds.filter(songId => songId !== response.songId),
+            list.entryIds.filter(entryId => entryId !== newEntryId),
             partitionFn
           )
-          list.songIds = [
+          list.entryIds = [
             ...partition[0],
-            response.songId,
+            newEntryId,
             ...partition[1]
           ];
 
-          if (response.position <= 100) {
-            const partition = _.partition(
-              list.top100SongIds.filter(songId => songId !== response.songId),
-              partitionFn
-            )
-            list.top100SongIds = [
-              ...partition[0],
-              response.songId,
-              ...partition[1]
-            ];
-          }
           useRepo(List).save(list)
         } else {
           const list = useRepo(List).find(response.year)
-          list.songIds = list.songIds.filter(songId => {
-            return useRepo(Song).find(songId).positions[yearShort] !== response.position
+          list.entryIds = list.entryIds.filter(entryId => {
+            return useRepo(ListEntry).find(entryId).position !== response.position
           })
-          if (response.position <= 100) {
-            list.top100SongIds = list.top100SongIds.filter(songId => {
-              return useRepo(Song).find(songId).positions[yearShort] !== response.position
-            })
-          }
           useRepo(List).save(list)
 
           const songs = useRepo(Song).where(song => {

@@ -6,6 +6,7 @@ import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import List from "~/orm/List";
 import {useRepo} from "pinia-orm";
+import ListEntry from "~/orm/ListEntry";
 
 export default defineNuxtPlugin(async nuxtApp => {
   const rootStore = useRootStore(nuxtApp.$pinia)
@@ -30,8 +31,22 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(Song).insert(coreDataResponse.songs);
 
     const lists = coreDataResponse.lists.map(list => {
-      list.top100SongIds = _.take(list.songIds, list.top100SongCount)
-      return list
+      const entries = []
+      list.songIds.forEach((songId, index) => {
+        if (songId) {
+        const position = index + 1
+          return entries.push({
+            yearPosition: `${list.year}-${position}`,
+            position: position,
+            songId: songId
+          })
+        }
+      })
+      useRepo(ListEntry).insert(entries);
+      return {
+        year: list.year,
+        entryIds: entries.map(entry => entry.yearPosition)
+      }
     })
 
     // without a flush, on the server-side, we sometimes get old data back even after inserting the new data... :'(

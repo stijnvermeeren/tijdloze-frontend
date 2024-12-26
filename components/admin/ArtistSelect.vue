@@ -41,7 +41,7 @@ const keyword = ref('');
 const candidateArtists = computed(() => {
   const queryFragments = useSearchQueryFragments(keyword.value)
   return _.sortBy(
-      useSearchFilter(queryFragments, useRepo(Artist).all(), useSearchArtistContent),
+      useRepo(Artist).all().filter(useSearchFilter(queryFragments, useSearchArtistContent)),
       artist => -useSearchScore(keyword.value, useSearchArtistContent(artist))
   ).map(artist => {
     return {

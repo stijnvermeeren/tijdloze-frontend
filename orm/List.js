@@ -1,5 +1,6 @@
 import { Model } from 'pinia-orm'
 import Song from "./Song";
+import ListEntry from "~/orm/ListEntry";
 
 export default class List extends Model {
   static get entity() {
@@ -11,10 +12,8 @@ export default class List extends Model {
   static fields() {
     return {
       year: this.attr(null),
-      songIds: this.attr([]),
-      top100SongIds: this.attr([]),
-      songs: this.hasManyBy(Song, 'songIds'),
-      top100Songs: this.hasManyBy(Song, 'top100SongIds')
+      entryIds: this.attr([]),
+      entries: this.hasManyBy(ListEntry, 'entryIds')
     };
   }
 }

@@ -10,14 +10,14 @@ div
   )
     template(#prepend-inner)
       v-icon(:icon="mdiMagnify")
-div.fullList(v-if='filteredSongs.length > 0')
-  div.content(v-if='filteredSongs.length > 20')
+div.fullList(v-if='filteredList.length > 0')
+  div.content(v-if='filteredList.length > 20')
     div.wrapper
-      RecycleScroller.scroller(:items="filteredSongs" :item-size="60" key-field="id" :buffer="40")
+      RecycleScroller.scroller(:items="filteredList" :item-size="60" key-field="position" :buffer="40")
         template(#default="{item}")
-          song-with-position(:song="item" :year="year")
+          song-with-position(:song="item.song" :override-position="item.position" :year="year")
   div(v-else)
-    song-with-position(v-for="song in filteredSongs" :key="song.id" :song="song" :year="year")
+    song-with-position(v-for="entry in filteredList" :key="entry.position" :song="entry.song" :override-position="entry.position" :year="year")
 
 p(v-else)
   template(v-if="filterQuery") Geen passende nummers gevonden in de Tijdloze van {{year.yyyy}}.
@@ -32,16 +32,16 @@ const props = defineProps({
   year: {
     type: Year
   },
-  songs: {
+  list: {
     type: Array
   }
 })
 
 const filterQuery = ref("")
 
-const filteredSongs = computed(() => {
+const filteredList = computed(() => {
   const queryFragments = useSearchQueryFragments(filterQuery.value)
-  return useSearchFilter(queryFragments, props.songs, useSearchSongContent)
+  return props.list.filter(entry => useSearchFilter(queryFragments, useSearchSongContent)(entry.song))
 })
 </script>
 

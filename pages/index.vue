@@ -10,7 +10,7 @@ div
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
     template(v-if="top5.length")
-      song-with-position(v-for='song in top5' :key='song.id' :song='song' :year="tableYear" hide-previous-next)
+      song-with-position(v-for='{position, song} in top5' :key='song.id' :song='song' :override-position="position" :year="tableYear" hide-previous-next)
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
@@ -48,6 +48,7 @@ div
   import {useRepo} from "pinia-orm";
   import Song from "~/orm/Song";
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
+  import ListEntry from "~/orm/ListEntry";
 
   const {$api} = useNuxtApp()
 
@@ -69,7 +70,7 @@ div
 
   const tableYear = computed(() => {
     if (year.value) {
-      if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
+      if (useRepo(List).find(year.value.yyyy)?.entryIds?.length === 0 && year.value?.previous) {
         return year.value.previous;
       } else {
         return year.value;
@@ -80,20 +81,18 @@ div
   const top5 = computed(() => {
     const list = useRepo(List).find(tableYear.value?.yyyy)
     if (list) {
-      const songs = _.take(list.songIds, 5).map(songId => {
-        return useRepo(Song).find(songId)
+      return _.take(list.entryIds, 5).map(entryId => {
+        return useRepo(ListEntry).with('song', q => q.withAll()).find(entryId)
       })
-      useRepo(Song).withAll().load(songs)
-      return songs
     } else {
       return []
     }
   })
 
   const exitsKnown = computed(() => {
-    return !! useRootStore().listTop100(tableYear.value?.previous).find(song => {
-      return song.notInList(tableYear.value);
-    })
+    return !! useRootStore().list(tableYear.value?.previous)
+        .filter(entry => entry.position <= 100)
+        .find(entry => entry.song.notInList(tableYear.value))
   })
 
   const {data: chatOn} = await useFetch(

@@ -189,8 +189,8 @@ definePageMeta({ middleware: 'admin' })
         const allSongs = useRepo(Song).withAll().get()
         for (const song of songs) {
           const queryFragments = useSearchQueryFragments(song.query)
-          const results = useSearchFilter(queryFragments, allSongs, useSearchSongContent)
-          if (results.length != 1) {
+          const results = allSongs.filter(useSearchFilter(queryFragments, useSearchSongContent))
+          if (results.length !== 1) {
             console.log(song.query, results.length)
           }
         }

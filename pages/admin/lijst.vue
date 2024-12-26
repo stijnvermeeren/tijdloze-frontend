@@ -3,9 +3,9 @@ Title Admin: huidige lijst
 div
   h2 Admin: volledige lijst van dit jaar
 
-  div(v-for="song in songs")
+  div(v-for="{position, song} in list")
     | {{song.position(currentYear, true)}}. {{song.artist.name}} - {{song.title}} (
-    a(@click="remove(song)")
+    a(@click="remove(position, song)")
       | Uit lijst verwijderen
     | )
 </template>
@@ -26,13 +26,12 @@ definePageMeta({ middleware: 'admin' })
       currentYear() {
         return useRootStore().currentYear;
       },
-      songs() {
+      list() {
         return useRootStore().list(this.currentYear)
       }
     },
     methods: {
-      async remove(song) {
-        const position = song.position(this.currentYear, true)
+      async remove(position, song) {
         if (confirm(`"${song.artist.name} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${this.currentYear.yyyy})?`)) {
           await this.$api(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsDelete())
         }

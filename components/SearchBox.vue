@@ -147,7 +147,7 @@
         this.searchActive = false
       },
       search(queryFragments, data, matchAttribute, type) {
-        return useSearchFilter(queryFragments, data, matchAttribute).map(item => {
+        return data.filter(useSearchFilter(queryFragments, matchAttribute)).map(item => {
           let score = useSearchScore(this.query, matchAttribute(item));
           if (this.songsYear && type === 'song') {
             score = score / 100 + item.position(this.songsYear);

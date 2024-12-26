@@ -5,7 +5,7 @@ div.container
     |
     | {{previousPosition}}
   div.main
-    position-main.position-main(:song="song" :year="year")
+    position-main.position-main(:position="position" :probably-in-list="song.probablyInList(year, true)")
     position-annotation(v-if='position && year.previous')
       position-change(:position="position" :previous-position="previousPosition")
   div.next(v-if="nextPosition && !hidePreviousNext" :title="`Positie in ${year.next.yyyy}`")
@@ -23,11 +23,19 @@ const props = defineProps({
   hidePreviousNext: {
     type: Boolean,
     default: false
+  },
+  overridePosition: {
+    type: Number,
+    default: 0
   }
 })
 
 const position = computed(() => {
-  return props.song.position(props.year, true);
+  if (props.overridePosition) {
+    return props.overridePosition
+  } else {
+    return props.song.position(props.year, true);
+  }
 })
 
 const previousPosition = computed(() => {

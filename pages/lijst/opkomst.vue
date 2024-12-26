@@ -20,7 +20,7 @@ div
         return useRootStore().currentYear;
       },
       upcomingSongs() {
-        const previousYear = useRootStore().listTop100(this.year.previous)
+        const previousYear = useRootStore().list(this.year.previous).filter(entry => entry.position <= 100)
         return _.reverse(
           previousYear.filter(song => !song.position(this.year) && song.probablyInList(this.year))
         );
