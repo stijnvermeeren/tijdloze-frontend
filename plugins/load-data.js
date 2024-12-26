@@ -30,24 +30,27 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(Album).insert(coreDataResponse.albums);
     useRepo(Song).insert(coreDataResponse.songs);
 
+    const entries = []
     const lists = coreDataResponse.lists.map(list => {
-      const entries = []
+      const yearEntryIds = []
       list.songIds.forEach((songId, index) => {
         if (songId) {
-        const position = index + 1
-          return entries.push({
-            yearPosition: `${list.year}-${position}`,
+          const position = index + 1
+          const entryId = `${list.year}-${position}`
+          yearEntryIds.push(entryId)
+          entries.push({
+            yearPosition: entryId,
             position: position,
             songId: songId
           })
         }
       })
-      useRepo(ListEntry).insert(entries);
       return {
         year: list.year,
-        entryIds: entries.map(entry => entry.yearPosition)
+        entryIds: yearEntryIds
       }
     })
+    useRepo(ListEntry).insert(entries);
 
     // without a flush, on the server-side, we sometimes get old data back even after inserting the new data... :'(
     useRepo(List).flush()
