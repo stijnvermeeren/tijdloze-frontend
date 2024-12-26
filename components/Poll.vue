@@ -1,5 +1,5 @@
 <template lang="pug">
-.poll
+div.poll
   div.reload
     v-btn(:icon="mdiRefresh" size="small" density="comfortable" @click="reload" :loading="isLoading")
   poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
@@ -80,7 +80,7 @@ const voteCount = computed(() => {
   return _.sumBy(livePoll.value.answers, answer => answer.voteCount);
 })
 
-watch(props.poll, (newPoll) => {
+watch(() => props.poll, (newPoll) => {
   livePoll.value = newPoll
 })
 
@@ -90,8 +90,10 @@ watch(myVote, () => {
 
 async function reload() {
   isLoading.value = true;
-  const result = await $api(`poll/my-votes`)
-  usePollStore().setVotes(result.votes);
+  if (isAuthenticated.value) {
+    const result = await $api(`poll/my-votes`)
+    usePollStore().setVotes(result.votes);
+  }
 
   livePoll.value = await $api(`poll/${props.poll.id}`)
   isLoading.value = false;
@@ -134,7 +136,7 @@ async function restore() {
 }
 
 function login() {
-  auth.login(useRoute().path);
+  useRouter().replace({path: '/auth/login', query: {redirect: useRoute().fullPath}});
 }
 </script>
 

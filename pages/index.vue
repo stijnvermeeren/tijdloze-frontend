@@ -32,9 +32,9 @@ div
       nuxt-link(to='/reacties')
         v-btn Meer reacties
 
-  ui-card(v-if='listInProgress && poll' title="Poll")
+  ui-card(v-if='listInProgress && currentPoll' title="Poll")
     div
-      poll(:poll='poll')
+      poll(:poll='currentPoll')
     div.link
       nuxt-link(to='/polls')
         v-btn Alle polls
@@ -46,7 +46,6 @@ div
   import {usePollStore} from "~/stores/poll";
   import List from "~/orm/List";
   import {useRepo} from "pinia-orm";
-  import Song from "~/orm/Song";
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
   import ListEntry from "~/orm/ListEntry";
 
@@ -60,7 +59,7 @@ div
     return useRootStore().lastPosition;
   })
 
-  const poll = computed(() => {
+  const currentPoll = computed(() => {
     return usePollStore().currentPoll;
   })
 
