@@ -40,7 +40,7 @@
             | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
           | )
       div(v-if="result.type === 'album'")
-        | {{result.item.title}}
+        album-title(:album="result.item")
         span.info
           | (album van #[span.artiest {{result.item.artist.name}}] uit {{result.item.releaseYear}})
     .more-suggestions(v-if='resultsCount > resultsLimit')

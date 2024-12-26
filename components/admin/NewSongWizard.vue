@@ -33,14 +33,16 @@ div
     v-radio-group(v-model="albumId" density="compact")
       v-radio(v-for="album in candidateAlbums" :key="album.id" :value="album.id" :label="`${album.title} (${album.releaseYear})`")
       v-radio(:value="0" label="Nieuw album")
-      div(v-if="albumId === 0")
-        div.d-flex
-          v-text-field.mr-4(
-            v-model='albumDetails.title'
-            label="Titel"
-            :disabled="!!albumId"
-            hide-details
-          )
+    div(v-if="albumId === 0")
+      div
+        v-text-field(
+          v-model='albumDetails.title'
+          label="Titel"
+          :disabled="!!albumId"
+          hide-details
+        )
+      div.d-flex.justify-space-between
+        div
           v-text-field.releaseYear(
             v-model.number='albumDetails.releaseYear'
             label="Jaar"
@@ -49,10 +51,14 @@ div
             hide-details
           )
         div
-          admin-musicbrainz-input(
-            v-model='albumDetails.musicbrainzId'
-            musicbrainz-category="release-group"
-            )
+          v-checkbox(v-model='albumDetails.isSingle' label="Single" hide-details)
+        div
+          v-checkbox(v-model='albumDetails.isSoundtrack' label="Soundtrack" hide-details)
+      div
+        admin-musicbrainz-input(
+          v-model='albumDetails.musicbrainzId'
+          musicbrainz-category="release-group"
+          )
 
   div.heading Nummer
   v-container
@@ -110,7 +116,9 @@ div
       albumDetails: {
         title: '',
         musicbrainzId: undefined,
-        releaseYear: undefined
+        releaseYear: undefined,
+        isSingle: false,
+        isSoundtrack: false
       },
       songDetails: {
         title: '',
@@ -145,7 +153,7 @@ div
         }
       },
       albumTitle() {
-        if (this.albumId) {
+        if (this.albumId && this.album) {
           return this.album.title;
         } else {
           return this.albumDetails.title
@@ -253,6 +261,8 @@ div
         this.albumDetails.title = preset.albumTitle;
         this.albumDetails.musicbrainzId = preset.albumMBId;
         this.albumDetails.releaseYear = preset.albumYear;
+        this.albumDetails.isSingle = preset.albumIsSingle;
+        this.albumDetails.isSoundtrack = preset.albumIsSoundtrack;
         if (album) {
           this.albumId = album.id;
         } else {
@@ -347,7 +357,9 @@ div
           const albumData = {
             artistId,
             title: this.albumDetails.title,
-            releaseYear: this.albumDetails.releaseYear
+            releaseYear: this.albumDetails.releaseYear,
+            isSingle: this.albumDetails.isSingle,
+            isSoundtrack: this.albumDetails.isSoundtrack,
           }
           const album = await this.$api('/album', useFetchOptsPost(albumData));
           albumId = album.id;

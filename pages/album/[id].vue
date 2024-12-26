@@ -3,7 +3,8 @@ Title {{album.title}} ({{album.artist.name}})
 div
   div.flexTitle
     page-title(icon='album' icon-alt='Album')
-      h2 {{album.title}}
+      h2
+        album-title(:album="album")
     ui-admin-link-btn(:to="`/admin/album/${album.id}`") Admin: album aanpassen
 
   div Album van

@@ -219,7 +219,9 @@ definePageMeta({ middleware: 'admin' })
           artistCountryId: data.countryId,
           albumTitle: data.albumTitle,
           albumMBId: data.albumMBId,
-          albumYear: data.releaseYear
+          albumYear: data.releaseYear,
+          albumIsSingle: data.isSingle,
+          albumIsSoundtrack: data.isSoundtrack
         });
       },
       async undo() {

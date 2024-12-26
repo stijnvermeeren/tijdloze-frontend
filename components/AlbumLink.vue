@@ -1,9 +1,10 @@
 <template lang="pug">
-nuxt-link(:to='`/album/${album.id}-${album.slug}`') {{album.title}}
+nuxt-link(:to='`/album/${album.id}-${album.slug}`')
+  album-title(:album="album")
 </template>
 
 <script setup>
-defineProps({
+const props = defineProps({
   album: Object
 })
 </script>

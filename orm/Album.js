@@ -16,6 +16,8 @@ export default class Album extends Model {
       artistId: this.attr(null),
       releaseYear: this.attr(null),
       cover: this.attr(null),
+      isSingle: this.attr(false),
+      isSoundtrack: this.attr(false),
 
       songs: this.hasMany(Song, 'albumId'),
       artist: this.belongsTo(Artist, 'artistId')

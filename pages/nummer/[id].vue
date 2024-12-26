@@ -11,7 +11,9 @@ Title {{song.title}} ({{song.artist.name}})
     strong #[song-artist-link(:song='song')]
   div Origineel op album
     = " "
-    strong #[album-link(:album='song.album')] ({{ song.album.releaseYear }})
+    strong
+      album-link(:album='song.album')
+      span.ml-2  ({{ song.album.releaseYear }})
 
   div.links
     ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
