@@ -1,7 +1,7 @@
 <template lang="pug">
 div.songWithCover
   div
-    album-cover(:cover="song.album.cover")
+    album-cover(:cover="song.album.cover" :key="mounted")
   div
     div.title
       song-link(:song='song')
@@ -9,14 +9,18 @@ div.songWithCover
 </template>
 
 <script setup>
-import Song from "../orm/Song";
-import Year from "../orm/Year";
-
-defineProps({
+const props = defineProps({
   song: {
     type: Object
   }
 })
+
+// Fix for wrong covers on hydration mismatch on homepage. Better solution would be to avoid hydration mismatch...
+const mounted = ref(false)
+onMounted(() => {
+  mounted.value = true
+})
+
 </script>
 
 <style lang="scss" scoped>
