@@ -12,12 +12,22 @@ export default defineNuxtPlugin( nuxtApp => {
   const rootStore = useRootStore()
   const pollStore = usePollStore()
 
+  async function reloadCoreData() {
+    const coreDataResponse = await nuxtApp.$api('core-data')
+    rootStore.updateCoreData(coreDataResponse)
+
+    useRepo(Artist).insert(coreDataResponse.artists);
+    useRepo(Album).insert(coreDataResponse.albums);
+    useRepo(Song).insert(coreDataResponse.songs);
+    useRepo(List).insert(coreDataResponse.lists);
+  }
+
   new Sockette(nuxtApp.$url.websocket("ws/current-list"), {
     timeout: 5e3,
     maxAttempts: 10,
     onopen: e => {
     },
-    onmessage: e => {
+    onmessage: async e => {
       const response = JSON.parse(e.data)
 
       if (response.currentYear) {
@@ -48,6 +58,10 @@ export default defineNuxtPlugin( nuxtApp => {
           const list = useRepo(List).find(response.year)
           list.songIds[response.position - 1] = response.songId
           useRepo(List).save(list)
+
+          if (list.songIds.length > response.position && !list.songIds[response.position]) {
+            await reloadCoreData()
+          }
         } else {
           const list = useRepo(List).find(response.year)
           const songId = list.songIds[response.position - 1]
