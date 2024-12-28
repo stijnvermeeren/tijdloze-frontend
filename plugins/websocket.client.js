@@ -39,27 +39,28 @@ export default defineNuxtPlugin( nuxtApp => {
         const yearShort = response.year % 100
 
         if (response.songId) {
-          const positions = useRepo(Song).find(response.songId)?.positions ?? {}
-          positions[yearShort] = response.position
-          useRepo(Song).where('id', response.songId).update({
-            positions
-          })
+          const song = useRepo(Song).find(response.songId)
+          if (song) {
+            song.positions[yearShort] = response.position
+            useRepo(Song).save(song)
+          }
 
           const list = useRepo(List).find(response.year)
           list.songIds[response.position - 1] = response.songId
           useRepo(List).save(list)
         } else {
           const list = useRepo(List).find(response.year)
+          const songId = list.songIds[response.position - 1]
           list.songIds[response.position - 1] = null
           useRepo(List).save(list)
 
-          const songs = useRepo(Song).where(song => {
-            return song.positions[yearShort] === response.position
-          }).get()
-          songs.forEach(song => {
-            delete song.positions[yearShort]
-            useRepo(Song).save(song)
-          })
+          if (songId) {
+            const song = useRepo(Song).find(songId)
+            if (song?.positions[yearShort] === response.position) {
+              delete song.positions[yearShort]
+              useRepo(Song).save(song)
+            }
+          }
         }
       }
 
@@ -68,11 +69,13 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.deletedArtistId) {
-        useRepo(Song).where(song => song.artistId === response.deletedArtistId).delete()
-
-        useRepo(Album).where(album => album.artistId === response.deletedArtistId).delete()
-
-        useRepo(Artist).destroy(response.deletedArtistId)
+        const artist = useRepo(Artist).withAll().find(response.deletedArtistId)
+        if (artist) {
+          console.log(artist.songs.map(song => song.id))
+          useRepo(Song).destroy(artist.songs.map(song => song.id))
+          useRepo(Album).destroy(artist.albums.map(album => album.id))
+          useRepo(Artist).destroy(response.deletedArtistId)
+        }
       }
 
       if (response.album) {
@@ -80,9 +83,11 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.deletedAlbumId) {
-        useRepo(Song).where(song => song.albumId === response.deletedAlbumId).delete()
-
-        useRepo(Album).destroy(response.deletedAlbumId)
+        const album = useRepo(Album).withAll().find(response.deletedAlbumId)
+        if (album) {
+          useRepo(Song).destroy(album.songs.map(song => song.id))
+          useRepo(Album).destroy(response.deletedAlbumId)
+        }
       }
 
       if (response.song) {
