@@ -39,8 +39,8 @@ module.exports = defineNuxtConfig({
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
   routeRules: {
-    '**': { swr: true },
-    '/admin/**': { ssr: false }
+    // '**': { swr: true },
+    // '/admin/**': { ssr: false }
   },
   build: {
     transpile: [
