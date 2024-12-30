@@ -16,10 +16,10 @@ export default defineNuxtPlugin( nuxtApp => {
     const coreDataResponse = await nuxtApp.$api('core-data')
     rootStore.updateCoreData(coreDataResponse)
 
-    useRepo(Artist).insert(coreDataResponse.artists);
-    useRepo(Album).insert(coreDataResponse.albums);
-    useRepo(Song).insert(coreDataResponse.songs);
-    useRepo(List).insert(coreDataResponse.lists);
+    useRepo(Artist).save(coreDataResponse.artists);
+    useRepo(Album).save(coreDataResponse.albums);
+    useRepo(Song).save(coreDataResponse.songs);
+    useRepo(List).save(coreDataResponse.lists);
   }
 
   new Sockette(nuxtApp.$url.websocket("ws/current-list"), {
