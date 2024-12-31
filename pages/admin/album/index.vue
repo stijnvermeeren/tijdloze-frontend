@@ -6,13 +6,16 @@ div
     v-row(dense)
       v-col
         v-text-field(v-model='fullAlbumData.title' label="Title" hide-details)
-    v-row(dense)
-      v-col Artist
+    v-row.align-center(dense)
       v-col
         admin-artist-select(v-model='fullAlbumData.artistId')
     v-row(dense)
       v-col
         v-text-field(v-model.number='fullAlbumData.releaseYear' type='number' label="Jaar" hide-details)
+      v-col
+        v-checkbox(v-model='fullAlbumData.isSingle' label="Single" hide-details)
+      v-col
+        v-checkbox(v-model='fullAlbumData.isSoundtrack' label="Soundtrack" hide-details)
     v-row
       v-col
        v-btn(@click='submit' :disabled='disabled' color="blue") Toevoegen
@@ -29,7 +32,9 @@ const processing = ref(false)
 const fullAlbumData = ref({
   title: '',
   artistId: undefined,
-  releaseYear: undefined
+  releaseYear: undefined,
+  isSingle: false,
+  isSoundtrack: false
 })
 
 const disabled = computed(() => {
