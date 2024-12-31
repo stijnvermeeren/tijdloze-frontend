@@ -7,7 +7,7 @@ div
   ui-card
     template(#title) Tijdloze van {{year.previous.yyyy}}
     div
-      song-with-position(v-for='song in upcomingSongs' :song='song' :year='year.previous')
+      song-with-position(v-for='entry in upcomingSongs' :song='entry.song' :year='year.previous')
 </template>
 
 <script>
@@ -22,7 +22,7 @@ div
       upcomingSongs() {
         const previousYear = useRootStore().list(this.year.previous).filter(entry => entry.position <= 100)
         return _.reverse(
-          previousYear.filter(song => !song.position(this.year) && song.probablyInList(this.year))
+          previousYear.filter(entry => !entry.song.position(this.year) && entry.song.probablyInList(this.year))
         );
       }
     }
