@@ -224,8 +224,8 @@
           setTimeout(this.reconnect, 5000)
         })
 
-        if (!this.closing && ticketResponse.value) {
-          this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.value.ticket}`), {
+        if (!this.closing && ticketResponse) {
+          this.ws = new Sockette(this.$url.websocket(`ws/chat?ticket=${ticketResponse.ticket}`), {
             timeout: 5e3,
             maxAttempts: 1,
             onopen: e => {

@@ -16,7 +16,7 @@ div
             v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
               | Naar de chatbox
     div(v-else)
-      | Om toegang te krijgen tot de chatbox moet je je #[a(@click='login()') aanmelden/registeren].
+      | Om toegang te krijgen tot de chatbox moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
   template(v-else)
     div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
 </template>
@@ -32,6 +32,9 @@ div
       }
     },
     computed: {
+      route() {
+        return useRoute()
+      },
       isAuthenticated() {
         return useAuthStore().isAuthenticated;
       },
