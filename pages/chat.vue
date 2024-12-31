@@ -1,7 +1,7 @@
 <template lang="pug">
 Title Chatbox
 div
-  h2 De Tijdloze chatbox {{chatEnabled}} {{skipSettingsCheck}}
+  h2 De Tijdloze chatbox
   template(v-if='chatEnabled || skipSettingsCheck')
     div(v-if='isAuthenticated')
       div(v-if='displayName')
