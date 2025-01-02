@@ -10,7 +10,15 @@ div
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
   ui-card(v-if="tableYear" :title="`De Tijdloze van ${tableYear.yyyy}`")
     template(v-if="top5.length")
-      song-with-position(v-for='{position, song} in top5' :key='song.id' :song='song' :override-position="position" :year="tableYear" hide-previous-next)
+      song-with-position(
+        v-for='{position, song, attribution} in top5'
+        :key='song.id'
+        :song='song'
+        :attribution="attribution"
+        :override-position="position"
+        :year="tableYear"
+        hide-previous-next
+      )
     p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')

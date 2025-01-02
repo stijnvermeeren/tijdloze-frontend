@@ -6,12 +6,20 @@ div.songWithCover
     div.title
       song-link(:song='song')
     div.artist van #[song-artist-link(:song='song')] uit {{song.album.releaseYear}}
+    div.attribution(v-if="attribution")
+      | In de officiële lijst als "
+      span {{attribution}}
+      | "
 </template>
 
 <script setup>
 const props = defineProps({
   song: {
-    type: Object
+    type: Object,
+  },
+  attribution: {
+    type: String,
+    default: undefined
   }
 })
 
@@ -39,6 +47,13 @@ div.songWithCover {
   .artist {
     font-size: 85%;
     color: #777;
+  }
+  .attribution {
+    font-size: 85%;
+    color: #777;
+    font-style: italic;
+    span {
+    }
   }
 }
 </style>

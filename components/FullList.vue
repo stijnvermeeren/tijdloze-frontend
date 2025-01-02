@@ -15,9 +15,16 @@ div.fullList(v-if='filteredList.length > 0')
     div.wrapper
       RecycleScroller.scroller(:items="filteredList" :item-size="60" key-field="position" :buffer="40")
         template(#default="{item}")
-          song-with-position(:song="item.song" :override-position="item.position" :year="year")
+          song-with-position(:song="item.song" :attribution="item.attribution" :override-position="item.position" :year="year")
   div(v-else)
-    song-with-position(v-for="entry in filteredList" :key="entry.position" :song="entry.song" :override-position="entry.position" :year="year")
+    song-with-position(
+      v-for="entry in filteredList"
+      :key="entry.position"
+      :song="entry.song"
+      :attribution="entry.attribution"
+      :override-position="entry.position"
+      :year="year"
+    )
 
 p(v-else)
   template(v-if="filterQuery") Geen passende nummers gevonden in de Tijdloze van {{year.yyyy}}.

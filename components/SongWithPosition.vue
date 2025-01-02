@@ -3,7 +3,7 @@ div.entry
   div.position
     slot
       position-in-list(:song='song' :override-position="overridePosition" :year='year' :hide-previous-next="hidePreviousNext")
-  song-with-cover(:song="song")
+  song-with-cover(:song="song" :attribution="attribution")
 </template>
 
 <script setup>
@@ -13,6 +13,10 @@ import Year from "../orm/Year";
 defineProps({
   song: {
     type: Object
+  },
+  attribution: {
+    type: String,
+    default: undefined
   },
   overridePosition: {
     type: Number,

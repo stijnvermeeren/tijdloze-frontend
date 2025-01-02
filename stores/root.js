@@ -73,9 +73,14 @@ export const useRootStore = defineStore('root', {
               return entries
             }
             if (songId && songsById[songId]) {
+              let attribution = undefined
+              if (position in list.attributions) {
+                attribution = list.attributions[position]
+              }
               entries.push({
                 position,
-                song: songsById[songId]
+                song: songsById[songId],
+                attribution
               })
             }
             if (limit > 0 && entries.length >= limit) {

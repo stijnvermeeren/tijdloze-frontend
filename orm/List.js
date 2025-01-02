@@ -10,7 +10,8 @@ export default class List extends Model {
   static fields() {
     return {
       year: this.attr(null),
-      songIds: this.attr(null)
+      songIds: this.attr(null),
+      attributions: this.attr(null)
     };
   }
 }
