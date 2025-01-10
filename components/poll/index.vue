@@ -2,14 +2,14 @@
 div.poll
   div.reload
     v-btn(:icon="mdiRefresh" size="small" density="comfortable" @click="reload" :loading="isLoading")
-  poll-question(:question='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
+  poll-question(v-model='livePoll.question' :poll-id='livePoll.id' :is-admin='isAdmin')
   div(v-if='showResults')
     div(v-for='answer in livePoll.answers' :class="['answer', {myVote: answer.id === myVote}]")
       .answerVotes
         span.bar(:style="{width: barWidth(answer.voteCount) + 'px'}")
         span.count {{percentage(answer.voteCount)}}
       .answerText
-        poll-answer(:answer='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
+        poll-answer(v-model='answer.answer' :poll-id='livePoll.id' :poll-answer-id='answer.id' :is-admin='isAdmin')
   div(v-else)
     v-radio-group(v-model='myVoteEdit' hide-details)
       v-radio.answer(
@@ -141,7 +141,7 @@ function login() {
 </script>
 
 <style lang="scss" scoped>
-  @use "../assets/styleConfig";
+  @use "../../assets/styleConfig";
 
   div.poll {
     margin: 10px 0;
