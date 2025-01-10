@@ -1,7 +1,6 @@
 <template lang="pug">
 v-select(
-  :model-value='modelValue'
-  @update:model-value='input'
+  v-model='model'
   :items="items"
   label="Taal"
   clearable
@@ -10,28 +9,15 @@ v-select(
 )
 </template>
 
-<script>
-  import languages from '~/utils/language'
+<script setup>
+import languages from '~/utils/language'
 
-  export default {
-    props: {
-      modelValue: String
-    },
-    emits: ['update:modelValue'],
-    computed: {
-      items() {
-        return Object.entries(languages).map(([languageId, languageName]) => {
-          return {
-            title: languageName,
-            value: languageId,
-          }
-        })
-      }
-    },
-    methods: {
-      input(newValue) {
-        this.$emit('update:modelValue', newValue);
-      }
-    }
+const model = defineModel()
+
+const items = Object.entries(languages).map(([languageId, languageName]) => {
+  return {
+    title: languageName,
+    value: languageId,
   }
+})
 </script>

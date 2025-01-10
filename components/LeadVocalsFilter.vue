@@ -1,7 +1,6 @@
 <template lang="pug">
 v-select(
-  :model-value='modelValue'
-  @update:model-value='input'
+  v-model="model"
   label="Lead vocals"
   clearable
   density="compact"
@@ -10,29 +9,15 @@ v-select(
 )
 </template>
 
-<script>
-  import vocalsGenders from '~/utils/leadVocals'
-  import languages from "~/utils/language";
+<script setup>
+import vocalsGenders from '~/utils/leadVocals'
 
-  export default {
-    props: {
-      modelValue: String
-    },
-    emits: ['update:modelValue'],
-    computed: {
-      items() {
-        return Object.entries(vocalsGenders).map(([genderId, genderName]) => {
-          return {
-            title: genderName,
-            value: genderId,
-          }
-        })
-      }
-    },
-    methods: {
-      input(newValue) {
-        this.$emit('update:modelValue', newValue);
-      }
-    }
+const model = defineModel()
+
+const items = Object.entries(vocalsGenders).map(([genderId, genderName]) => {
+  return {
+    title: genderName,
+    value: genderId,
   }
+})
 </script>

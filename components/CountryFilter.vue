@@ -1,7 +1,6 @@
 <template lang="pug">
 v-select(
-  :model-value='modelValue'
-  @update:model-value='input'
+  v-model="model"
   :items="items"
   :disabled="disabled"
   label="Nationaliteit van artiest"
@@ -11,40 +10,32 @@ v-select(
 )
 </template>
 
-<script>
-  import countries from '~/utils/country'
-  import _ from 'lodash';
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import countries from '~/utils/country'
+import _ from 'lodash';
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    props: {
-      modelValue: String,
-      disabled: {
-        type: Boolean,
-        default: false
-      }
-    },
-    emits: ['update:modelValue'],
-    computed: {
-      sortedCountryIds() {
-        return _.sortBy(Object.keys(countries), countryId => countries[countryId])
-      },
-      usedCountryIds() {
-        return this.sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId));
-      },
-      items() {
-        return this.usedCountryIds.map(countryId => {
-          return {
-            title: countries[countryId],
-            value: countryId,
-          }
-        })
-      }
-    },
-    methods: {
-      input(value) {
-        this.$emit('update:modelValue', value);
-      }
-    }
+const props = defineProps({
+  disabled: {
+    type: Boolean,
+    default: false
   }
+})
+
+const model = defineModel()
+
+const sortedCountryIds = _.sortBy(Object.keys(countries), countryId => countries[countryId])
+
+const usedCountryIds = computed(() => {
+  return sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId))
+})
+
+const items = computed(() => {
+  return usedCountryIds.value.map(countryId => {
+    return {
+      title: countries[countryId],
+      value: countryId,
+    }
+  })
+})
 </script>
