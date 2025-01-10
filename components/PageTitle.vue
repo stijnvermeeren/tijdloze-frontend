@@ -6,14 +6,11 @@ div.pageTitleContainer
     slot
 </template>
 
-<script>
-  export default {
-    name: 'PageTitle',
-    props: {
-      icon: String,
-      iconAlt: String
-    }
-  }
+<script setup>
+const props = defineProps({
+  icon: String,
+  iconAlt: String
+})
 </script>
 
 <style lang="scss" scoped>

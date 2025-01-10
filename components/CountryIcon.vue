@@ -10,20 +10,17 @@ span(v-if="countryName")
   span.name(v-if='includeName') {{countryName}}
 </template>
 
-<script>
-  import countries from '~/utils/country'
+<script setup>
+import countries from '~/utils/country'
 
-  export default {
-    props: {
-      countryId: String,
-      includeName: Boolean
-    },
-    computed: {
-      countryName() {
-        return countries[this.countryId]
-      }
-    }
-  }
+const props = defineProps({
+  countryId: String,
+  includeName: Boolean
+})
+
+const countryName = computed(() => {
+  return countries[props.countryId]
+})
 </script>
 
 <style scoped lang="scss">
