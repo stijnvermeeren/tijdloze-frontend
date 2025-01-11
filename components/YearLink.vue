@@ -2,21 +2,18 @@
 nuxt-link(:to='`/lijst/${year.yyyy}`') {{text}}
 </template>
 
-<script>
-  import Year from "../orm/Year";
+<script setup>
+import Year from "../orm/Year";
 
-  export default {
-    props: {
-      year: Year,
-      short: {
-        type: Boolean,
-        default: false
-      }
-    },
-    computed: {
-      text() {
-        return this.short ? this.year._yy : this.year.yyyy
-      }
-    }
+const props = defineProps({
+  year: Year,
+  short: {
+    type: Boolean,
+    default: false
   }
+})
+
+const text = computed(() => {
+  return props.short ? props.year._yy : props.year.yyyy
+})
 </script>

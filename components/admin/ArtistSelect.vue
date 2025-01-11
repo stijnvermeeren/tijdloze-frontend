@@ -1,8 +1,7 @@
 <template lang="pug">
 v-autocomplete(
   v-model:search="keyword"
-  :model-value="modelValue"
-  @update:model-value='update'
+  v-model="artistId"
   :items="candidateArtists"
   :label="label"
   :disabled="disabled"
@@ -19,9 +18,6 @@ import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 
 const props = defineProps({
-  modelValue: {
-    type: Number
-  },
   label: {
     type: String,
     default: "Artiest"
@@ -35,6 +31,8 @@ const props = defineProps({
     default: false
   }
 })
+
+const artistId = defineModel()
 
 const keyword = ref('');
 
@@ -50,12 +48,4 @@ const candidateArtists = computed(() => {
     }
   })
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-function update(newValue) {
-  if (newValue) {
-    emit('update:modelValue', newValue);
-  }
-}
 </script>

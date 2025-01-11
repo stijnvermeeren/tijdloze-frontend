@@ -1,8 +1,7 @@
 <template lang="pug">
 div.d-flex
   v-autocomplete(
-    :model-value='modelValue'
-    @update:model-value='update'
+    v-model="countryId"
     clearable
     label="Land"
     placeholder="Geen land geselecteerd"
@@ -10,8 +9,7 @@ div.d-flex
     hide-details
   )
   v-btn-toggle.ml-4(
-    :model-value='modelValue'
-    @update:model-value='update'
+    v-model="countryId"
     color="blue"
   )
     v-btn(value="us")
@@ -26,13 +24,7 @@ div.d-flex
 import countries from '~/utils/country'
 import _ from 'lodash';
 
-defineProps({
-  modelValue: {
-    type: String
-  }
-})
-
-const emit = defineEmits(['update:modelValue'])
+const countryId = defineModel()
 
 const countryOptions = _.sortBy(
   Object.keys(countries),
@@ -43,10 +35,6 @@ const countryOptions = _.sortBy(
     title: countries[countryId]
   }
 })
-
-function update(newValue) {
-  emit('update:modelValue', newValue)
-}
 </script>
 
 <style lang="scss" scoped>

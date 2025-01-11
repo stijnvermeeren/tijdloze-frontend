@@ -1,15 +1,14 @@
 <template lang="pug">
 div.d-flex
   v-autocomplete(
-    :model-value="modelValue"
-    @update:model-value="update"
+    v-model="languageId"
     clearable
     placeholder="Geen taal geselecteerd"
     label="Taal"
     :items="selectOptions"
     hide-details
   )
-  v-btn-toggle.ml-4(:model-value="modelValue" @update:model-value="update" color="blue")
+  v-btn-toggle.ml-4(v-model="languageId" color="blue")
     v-btn(value="en") Engels
     v-btn(value="nl") Nederlands
     v-btn(value="i") Instrumentaal
@@ -18,11 +17,7 @@ div.d-flex
 <script setup>
 import languages from '~/utils/language'
 
-defineProps({
-  modelValue: String
-})
-
-const emit = defineEmits(['update:modelValue'])
+const languageId = defineModel()
 
 const selectOptions = Object.entries(languages).map(([languageId, languageName]) => {
   return {
@@ -30,10 +25,6 @@ const selectOptions = Object.entries(languages).map(([languageId, languageName])
     title: languageName
   }
 })
-
-function update(newValue) {
-  emit('update:modelValue', newValue)
-}
 </script>
 
 <style lang="scss" scoped>

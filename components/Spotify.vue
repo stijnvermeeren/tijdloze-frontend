@@ -10,13 +10,10 @@ iframe(
 )
 </template>
 
-<script>
-  export default {
-    name: 'Spotify',
-    props: {
-      spotifyId: String
-    }
-  }
+<script setup>
+const props = defineProps({
+  spotifyId: String
+})
 </script>
 
 <style lang="scss" scoped>

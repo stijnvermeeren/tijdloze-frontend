@@ -1,7 +1,7 @@
 <template lang="pug">
 div.d-flex
-  v-text-field(:model-value='modelValue' @update:model-value='update' label="Officiële website" hide-details)
-  v-btn.ml-2(v-if='modelValue' :icon="mdiOpenInNew" :href="modelValue" target="_blank")
+  v-text-field(v-model="officialUrl" label="Officiële website" hide-details)
+  v-btn.ml-2(v-if='officialUrl' :icon="mdiOpenInNew" :href="officialUrl" target="_blank")
   v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>
 
@@ -9,20 +9,15 @@ div.d-flex
 import {mdiOpenInNew, mdiSearchWeb} from "@mdi/js";
 
 const props = defineProps({
-  modelValue: String,
   query: String
 })
 
-const emit = defineEmits(['update:modelValue'])
+const officialUrl = defineModel()
 
 const searchUrl = computed(() => {
   const encodedQuery = encodeURIComponent(props.query)
   return `https://www.google.ch/search?q=${encodedQuery}`
 })
-
-function update(newValue) {
-  emit('update:modelValue', newValue);
-}
 </script>
 <style scoped>
   input {

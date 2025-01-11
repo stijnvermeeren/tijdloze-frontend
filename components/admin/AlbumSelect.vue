@@ -1,12 +1,11 @@
 <template lang="pug">
 div
   v-autocomplete(
-    :model-value="modelValue"
-    @update:model-value='update'
+    v-model="albumId"
     :items="candidateAlbums"
     label="Album"
     hide-details
-    :error="!modelValue"
+    :error="!albumId"
   )
 </template>
 
@@ -16,13 +15,12 @@ import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 
 const props = defineProps({
-  modelValue: {
-    type: Number
-  },
   artistId: {
     type: Number
   }
 })
+
+const albumId = defineModel()
 
 const candidateAlbums = computed(() => {
   const artist = useRepo(Artist).with('albums').find(props.artistId);
@@ -40,10 +38,4 @@ const candidateAlbums = computed(() => {
     return [];
   }
 })
-
-const emit = defineEmits(['update:modelValue'])
-
-function update(newValue) {
-  emit('update:modelValue', newValue);
-}
 </script>

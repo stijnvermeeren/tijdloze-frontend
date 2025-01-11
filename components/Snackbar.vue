@@ -6,40 +6,28 @@ v-snackbar(:close-on-back="false" v-model="isOpen" :timeout="10000" timer="#f9bc
     song-with-cover(:song="song")
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  const rootStore = useRootStore()
+const rootStore = useRootStore()
 
-  export default {
-    name: "Snackbar",
-    data() {
-      return {
-        isOpen: false
-      }
-    },
-    computed: {
-      song() {
-        return rootStore.lastSong;
-      },
-      year() {
-        return rootStore.currentYear;
-      },
-      position() {
-        if (this.song) {
-          return this.song.position(this.year, true);
-        }
-      }
-    },
-    watch: {
-      song(newSong, oldSong) {
-        if (newSong && (!oldSong || oldSong.id !== newSong.id) && this.position <= 100) {
-          this.isOpen = true
-        }
-      }
-    },
-    ssrComputedCache: true
+const isOpen = ref(false)
+const song = computed(() => {
+  return rootStore.lastSong;
+})
+const year = computed(() => {
+  return rootStore.currentYear;
+})
+const position = computed(() => {
+  if (song.value) {
+    return song.value.position(year.value, true);
   }
+})
+watch(song, (newSong, oldSong) => {
+  if (newSong && (!oldSong || oldSong.id !== newSong.id) && position.value <= 100) {
+    isOpen.value = true
+  }
+})
 </script>
 
 <style lang="scss" scoped>

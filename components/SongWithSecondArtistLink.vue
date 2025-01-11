@@ -9,28 +9,24 @@ span
     | )
 </template>
 
-<script>
-  import SongLink from "./SongLink";
-  import ArtistLink from "./ArtistLink";
-  import Song from "../orm/Song";
-  import Artist from "../orm/Artist";
+<script setup>
+import SongLink from "./SongLink";
+import ArtistLink from "./ArtistLink";
+import Song from "../orm/Song";
+import Artist from "../orm/Artist";
 
-  export default {
-    components: {ArtistLink, SongLink},
-    props: {
-      song: Song,
-      artist: Artist
-    },
-    computed: {
-      secondArtist() {
-        if (this.artist && this.song.secondArtistId && this.artist.id === this.song.secondArtistId) {
-          return this.song.artist
-        } else {
-          return this.song.secondArtist
-        }
-      }
-    }
+const props = defineProps({
+  song: Song,
+  artist: Artist
+})
+
+const secondArtist = computed(() => {
+  if (props.artist && props.song.secondArtistId && props.artist.id === props.song.secondArtistId) {
+    return props.song.artist
+  } else {
+    return props.song.secondArtist
   }
+})
 </script>
 
 <style lang="scss" scoped>

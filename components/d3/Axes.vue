@@ -32,38 +32,31 @@ g
         | {{position}}
 </template>
 
-<script>
-  import Year from "../../orm/Year";
+<script setup>
+import Year from "../../orm/Year";
 
-  export default defineNuxtComponent({
-    props: {
-      xScale: Function,
-      yScale: Function,
-      years: Array,
-      hoverYear: Year
-    },
-    data() {
-      return {
-        yTickValues: [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
-      }
-    },
-    computed: {
-      rightX() {
-        return this.xScale.range()[1];
-      }
-    },
-    methods: {
-      isHoverYear(year) {
-        return !!this.hoverYear && year.yyyy === this.hoverYear.yyyy;
-      },
-      isNextToHoverYear(year) {
-        return !!this.hoverYear && (
-            (year.previous?.yyyy === this.hoverYear.yyyy) ||
-            (year.next?.yyyy === this.hoverYear.yyyy)
-        );
-      }
-    }
-  })
+const props = defineProps({
+  xScale: Function,
+  yScale: Function,
+  years: Array,
+  hoverYear: Year
+})
+
+const yTickValues = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+
+const rightX = computed(() => {
+  return props.xScale.range()[1];
+})
+
+function isHoverYear(year) {
+  return !!props.hoverYear && year.yyyy === props.hoverYear.yyyy;
+}
+function isNextToHoverYear(year) {
+  return !!props.hoverYear && (
+      (year.previous?.yyyy === props.hoverYear.yyyy) ||
+      (year.next?.yyyy === props.hoverYear.yyyy)
+  );
+}
 </script>
 
 <style lang="scss" scoped>
