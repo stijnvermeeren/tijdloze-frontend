@@ -53,49 +53,39 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script>
+<script setup>
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
 
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    data() {
-      return {
-        processing: false
-      }
-    },
-    computed: {
-      artist() {
-        return useRepo(Artist).find(this.fullAlbumData.artistId);
-      },
-      disabled() {
-        return this.processing || !this.fullAlbumData.title || !this.fullAlbumData.artistId || !this.fullAlbumData.releaseYear
-      }
-    },
-    methods: {
-      async submit() {
-        this.processing = true;
-        await this.$api(`album/${this.fullAlbumData.id}`, useFetchOptsPut(this.fullAlbumData))
-        await useRouter().push(`/album/${this.fullAlbumData.id}`);
-      },
-      async submitDelete() {
-        if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
-          this.processing = true;
-          await this.$api(`album/${this.fullAlbumData.id}`, useFetchOptsDelete())
-          await useRouter().push(`/artiest/${this.fullAlbumData.artistId}`);
-        }
-      }
-    },
-    async asyncData({$api}) {
-      const fullAlbumData = await $api(`album/${useRoute().params.id}`)
-      return {
-        fullAlbumData,
-        title: fullAlbumData.title
-      };
-    }
+  const {$api} = useNuxtApp()
+
+  definePageMeta({
+    middleware: 'admin'
   })
+
+  const processing = ref(false)
+
+  const {data: fullAlbumData} = await useFetch(`album/${useRoute().params.id}`, useFetchOpts())
+  const title = ref(fullAlbumData.value.title)  // not reactive
+
+  const artist = computed(() => {
+    return useRepo(Artist).find(fullAlbumData.value.artistId);
+  })
+  const disabled = computed(() => {
+    return processing.value || !fullAlbumData.value.title || !fullAlbumData.value.artistId || !fullAlbumData.value.releaseYear
+  })
+
+  async function submit() {
+    processing.value = true;
+    await $api(`album/${fullAlbumData.value.id}`, useFetchOptsPut(fullAlbumData.value))
+    await useRouter().push(`/album/${fullAlbumData.value.id}`);
+  }
+
+  async function submitDelete() {
+    if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
+      processing.value = true;
+      await $api(`album/${fullAlbumData.value.id}`, useFetchOptsDelete())
+      await useRouter().push(`/artiest/${fullAlbumData.value.artistId}`);
+    }
+  }
 </script>

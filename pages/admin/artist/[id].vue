@@ -1,5 +1,5 @@
 <template lang="pug">
-Title Admin: Artist: {{this.fullArtistData.name}}
+Title Admin: Artist: {{fullArtistData.name}}
 div
   h2 Artiest aanpassen
 
@@ -53,42 +53,31 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script>
-  import useFetchOptsDelete from "~/composables/useFetchOptsDelete";
+<script setup>
+const {$api} = useNuxtApp()
 
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    data() {
-      return {
-        processing: false
-      }
-    },
-    computed: {
-      disabled() {
-        return this.processing || !this.fullArtistData.name
-      }
-    },
-    methods: {
-      async submit() {
-        this.processing = true;
-        await this.$api(`artist/${this.fullArtistData.id}`, useFetchOptsPut(this.fullArtistData))
-        await navigateTo(`/artiest/${this.fullArtistData.id}`);
-      },
-      async submitDelete() {
-        if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
-          this.processing = true;
-          await this.$api(`artist/${this.fullArtistData.id}`, useFetchOptsDelete())
-          await navigateTo(`/database`)
-        }
-      }
-    },
-    async asyncData({$api}) {
-      const fullArtistData = await $api(`artist/${useRoute().params.id}`)
-      return {fullArtistData};
-    }
-  })
+definePageMeta({
+  middleware: 'admin'
+})
+
+const processing = ref(false)
+
+const {data: fullArtistData} = await useFetch(`artist/${useRoute().params.id}`, useFetchOpts())
+
+const disabled = computed(() => {
+  return processing.value || !fullArtistData.value.name
+})
+
+async function submit() {
+  processing.value = true;
+  await $api(`artist/${fullArtistData.value.id}`, useFetchOptsPut(fullArtistData.value))
+  await navigateTo(`/artiest/${fullArtistData.value.id}`);
+}
+async function submitDelete() {
+  if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
+    processing.value = true;
+    await $api(`artist/${fullArtistData.value.id}`, useFetchOptsDelete())
+    await navigateTo(`/database`)
+  }
+}
 </script>

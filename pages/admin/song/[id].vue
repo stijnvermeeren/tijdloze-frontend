@@ -55,64 +55,57 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script>
-  import Artist from "@/orm/Artist";
-  import Album from "@/orm/Album";
-  import {useRepo} from "pinia-orm";
-  import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
+<script setup>
+import Artist from "@/orm/Artist";
+import Album from "@/orm/Album";
+import {useRepo} from "pinia-orm";
+import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
 
-  export default defineNuxtComponent({
-    components: {SongSpotifyInput},
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    data() {
-      return {
-        processing: false
-      }
-    },
-    computed: {
-      artistId() {
-        return this.fullSongData.artistId;
-      },
-      album() {
-        return useRepo(Album).find(this.fullSongData.albumId);
-      },
-      artist() {
-        return useRepo(Artist).find(this.fullSongData.artistId);
-      },
-      disabled() {
-        return this.processing || !this.fullSongData.title || !this.fullSongData.artistId ||
-          !this.fullSongData.albumId
-      }
-    },
-    watch: {
-      artistId() {
-        this.fullSongData.albumId = undefined;
-      }
-    },
-    methods: {
-      async submit() {
-        this.processing = true;
-        await this.$api(`song/${this.fullSongData.id}`, useFetchOptsPut(this.fullSongData))
-        await navigateTo(`/nummer/${this.fullSongData.id}`)
-      },
-      async submitDelete() {
-        if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
-          this.processing = true;
-          await this.$api(`song/${this.fullSongData.id}`, useFetchOptsDelete())
-          await useRouter().push(`/artiest/${this.fullSongData.artistId}`);
-        }
-      }
-    },
-    async asyncData({$api}) {
-      const fullSongData = await $api(`song/${useRoute().params.id}`)
-      return {
-        fullSongData,
-        title: fullSongData.title
-      };
-    }
-  })
+const {$api} = useNuxtApp()
+
+definePageMeta({
+  middleware: 'admin'
+})
+
+const processing  = ref(false)
+
+const {data: fullSongData, status} = await useFetch(`song/${useRoute().params.id}`, useFetchOpts())
+const title = ref(fullSongData.value.title)  // not reactive
+
+watch(status, (newValue) => {
+  if (newValue === 'success') {
+    title.value = fullSongData.value.title
+  }
+})
+
+const artistId = computed(() => {
+  return fullSongData.value.artistId;
+})
+const album = computed(() => {
+  return useRepo(Album).find(fullSongData.value.albumId);
+})
+const artist = computed(() => {
+  return useRepo(Artist).find(fullSongData.value.artistId);
+})
+const disabled = computed(() => {
+  return processing.value || !fullSongData.value.title || !fullSongData.value.artistId ||
+    !fullSongData.value.albumId
+})
+
+watch(artistId, () => {
+  fullSongData.value.albumId = undefined
+})
+
+async function submit() {
+  processing.value = true;
+  await $api(`song/${fullSongData.value.id}`, useFetchOptsPut(fullSongData.value))
+  await navigateTo(`/nummer/${fullSongData.value.id}`)
+}
+async function submitDelete() {
+  if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
+    processing.value = true;
+    await $api(`song/${fullSongData.value.id}`, useFetchOptsDelete())
+    await useRouter().push(`/artiest/${fullSongData.value.artistId}`);
+  }
+}
 </script>
