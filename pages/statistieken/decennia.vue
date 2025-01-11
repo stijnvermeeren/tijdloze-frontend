@@ -21,71 +21,66 @@ div
       d3-distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 
-<script>
-  import Album from "@/orm/Album";
-  import {useRootStore} from "~/stores/root";
-  import {useRepo} from "pinia-orm";
+<script setup>
+import Album from "@/orm/Album";
+import {useRootStore} from "~/stores/root";
+import {useRepo} from "pinia-orm";
 
-  export default defineNuxtComponent({
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      decades() {
-        const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));
-        const endYear = this.currentYear.yyyy;
-        const decades = [];
-        for (let decadeYear = this.decadeYear(startYear); decadeYear <= endYear; decadeYear += 10) {
-          decades.push({ decadeYear, name: `De jaren '${decadeYear.toString().substring(2,4)}` })
-        }
-        return decades.reverse();
-      },
-      graphData() {
-        const dataPoints = {};
-        const result = this.decades.map(decade => {
-          dataPoints[decade.decadeYear] = [];
-          return {
-            decade: decade,
-            dataPoints: dataPoints[decade.decadeYear]
-          };
-        });
+const years = computed(() => {
+  return useRootStore().years;
+})
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const decades = computed(() => {
+  const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));
+  const endYear = currentYear.value.yyyy;
+  const decades = [];
+  for (let decadeYear = yearInDecade(startYear); decadeYear <= endYear; decadeYear += 10) {
+    decades.push({ decadeYear, name: `De jaren '${decadeYear.toString().substring(2,4)}` })
+  }
+  return decades.reverse();
+})
+const graphData = computed(() => {
+  const dataPoints = {};
+  const result = decades.value.map(decade => {
+    dataPoints[decade.decadeYear] = [];
+    return {
+      decade: decade,
+      dataPoints: dataPoints[decade.decadeYear]
+    };
+  });
 
-        useRootStore().songs.forEach(song => {
-          this.years.forEach(year => {
-            if (song.position(year)) {
-              dataPoints[this.decadeYear(song.album.releaseYear)].push({
-                song: song,
-                year: year
-              });
-            }
-          });
+  useRootStore().songs.forEach(song => {
+    years.value.forEach(year => {
+      if (song.position(year)) {
+        dataPoints[yearInDecade(song.album.releaseYear)].push({
+          song: song,
+          year: year
         });
-
-        return result;
-      },
-      counts() {
-        const allCounts = this.graphData.map(({decade, dataPoints}) => {
-          return {
-            entry: decade.name,
-            total: dataPoints.length,
-            perYear: Object.fromEntries(
-              this.years.map(year => [
-                year.yyyy,
-                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              ])
-            )
-          }
-        });
-        return allCounts.filter(entry => entry.total > 0)
       }
-    },
-    methods: {
-      decadeYear(yyyy) {
-        return yyyy - yyyy % 10;
-      }
+    });
+  });
+
+  return result;
+})
+const counts = computed(() => {
+  const allCounts = graphData.value.map(({decade, dataPoints}) => {
+    return {
+      entry: decade.name,
+      total: dataPoints.length,
+      perYear: Object.fromEntries(
+        years.value.map(year => [
+          year.yyyy,
+          dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+        ])
+      )
     }
-  })
+  });
+  return allCounts.filter(entry => entry.total > 0)
+})
+
+function yearInDecade(yyyy) {
+  return yyyy - yyyy % 10;
+}
 </script>

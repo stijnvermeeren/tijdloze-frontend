@@ -22,40 +22,36 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script>
-  import List from "../../orm/List";
-  import {useRootStore} from "~/stores/root";
-  import {useRepo} from "pinia-orm";
-  import Song from "~/orm/Song";
-  import _ from 'lodash';
+<script setup>
+import List from "../../orm/List";
+import {useRootStore} from "~/stores/root";
+import {useRepo} from "pinia-orm";
+import Song from "~/orm/Song";
+import _ from 'lodash';
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      songs() {
-        return useRootStore().songs;
-      },
-      data() {
-        const dataPoints = [];
-        useRepo(List).get().forEach(list => {
-          const year = this.years.find(year => year.yyyy === list.year)
-          const top100Songs = useRepo(Song).withAll().find(_.take(list.songIds, 100))
-          if (year.previous && year.next) {
-            top100Songs.forEach(song => {
-              if (song.notInList(year.previous) && song.notInList(year.next)) {
-                dataPoints.push({
-                  song: song,
-                  year: year,
-                  isFinal: (this.years.filter(year => song.position(year)).length === 1)
-                });
-              }
-            })
-          }
-        });
-        return dataPoints;
-      }
+const years = computed(() => {
+  return useRootStore().years;
+})
+const songs = computed(() => {
+  return useRootStore().songs;
+})
+const data = computed(() => {
+  const dataPoints = [];
+  useRepo(List).get().forEach(list => {
+    const year = years.value.find(year => year.yyyy === list.year)
+    const top100Songs = useRepo(Song).withAll().find(_.take(list.songIds, 100))
+    if (year.previous && year.next) {
+      top100Songs.forEach(song => {
+        if (song.notInList(year.previous) && song.notInList(year.next)) {
+          dataPoints.push({
+            song: song,
+            year: year,
+            isFinal: (years.value.filter(year => song.position(year)).length === 1)
+          });
+        }
+      })
     }
-  }
+  });
+  return dataPoints;
+})
 </script>

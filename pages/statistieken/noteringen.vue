@@ -10,22 +10,18 @@ div
     nuxt-page(:artists='artists' :years='years')
 </template>
 
-<script>
-  import Artist from "@/orm/Artist";
-  import {useRootStore} from "~/stores/root";
-  import {useRepo} from "pinia-orm";
+<script setup>
+import Artist from "@/orm/Artist";
+import {useRootStore} from "~/stores/root";
+import {useRepo} from "pinia-orm";
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      artists() {
-        return useRepo(Artist)
-          .with('songs')
-          .with('secondarySongs')
-          .get();
-      }
-    }
-  }
+const years = computed(() => {
+  return useRootStore().years;
+})
+const artists = computed(() => {
+  return useRepo(Artist)
+    .with('songs')
+    .with('secondarySongs')
+    .get();
+})
 </script>

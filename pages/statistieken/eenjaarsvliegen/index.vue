@@ -27,26 +27,22 @@ table.lijst.perEen
         div(v-else) /
 </template>
 
-<script>
-  import _ from 'lodash'
+<script setup>
+import _ from 'lodash'
 
-  export default {
-    props: {
-      data: Array,
-      years: Array
-    },
-    computed: {
-      listYears() {
-        return _.reverse(_.drop(_.dropRight(this.years, 1), 1));
-      }
-    },
-    methods: {
-      entriesPerYear(year) {
-        return _.sortBy(
-          this.data.filter(entry => entry.year.equals(year)),
-          entry => entry.song.position(entry.year)
-        );
-      }
-    }
-  }
+const props = defineProps({
+  data: Array,
+  years: Array
+})
+
+const listYears = computed(() => {
+  return _.reverse(_.drop(_.dropRight(props.years, 1), 1));
+})
+
+function entriesPerYear(year) {
+  return _.sortBy(
+    props.data.filter(entry => entry.year.equals(year)),
+    entry => entry.song.position(entry.year)
+  );
+}
 </script>

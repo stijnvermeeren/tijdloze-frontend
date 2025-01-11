@@ -23,43 +23,40 @@ table.lijst.perEen
                 song-with-cover(:song='entry.song')
 </template>
 
-<script>
-  import _ from 'lodash';
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import _ from 'lodash';
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    props: {
-      years: Array
-    },
-    computed: {
-      songs() {
-        return useRootStore().songs;
-      },
-      byNumberOfYears() {
-        let data = [];
-        let maxYears = 0;
-        this.songs.forEach(song => {
-          song.stationaryIntervals(useRootStore().years)
-            .filter(interval => interval.length > 2)
-            .map(interval => {
-              maxYears = Math.max(maxYears, interval.length);
-              data.push({
-                song,
-                years: interval,
-                position: song.position(_.first(interval))
-              });
-            })
+const props = defineProps({
+  years: Array
+})
+
+const songs = computed(() => {
+  return useRootStore().songs;
+})
+const byNumberOfYears = computed(() => {
+  let data = [];
+  let maxYears = 0;
+  songs.value.forEach(song => {
+    song.stationaryIntervals(useRootStore().years)
+      .filter(interval => interval.length > 2)
+      .map(interval => {
+        maxYears = Math.max(maxYears, interval.length);
+        data.push({
+          song,
+          years: interval,
+          position: song.position(_.first(interval))
         });
+      })
+  });
 
-        return _.rangeRight(3, maxYears + 1).map(numberOfYears => {
-          const entries = _.sortBy(
-            data.filter(item => item.years.length === numberOfYears),
-            [data => -data.years[0].yyyy, data => data.song.position(data.years[0])]
-          );
+  return _.rangeRight(3, maxYears + 1).map(numberOfYears => {
+    const entries = _.sortBy(
+      data.filter(item => item.years.length === numberOfYears),
+      [data => -data.years[0].yyyy, data => data.song.position(data.years[0])]
+    );
 
-          return {numberOfYears, entries};
-        });
-      }
-    }
-  }
+    return {numberOfYears, entries};
+  });
+})
 </script>

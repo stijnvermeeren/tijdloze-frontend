@@ -7,7 +7,7 @@ table.lijst.perVijf
       th.l Nummer
       th Plaats
       th Definitief
-    tr(v-for='{entry, position} in ranking')
+    tr(v-for='{entry, position} in rankingList')
       td.r {{position}}
       td
         year-link(:year='entry.year')
@@ -18,23 +18,20 @@ table.lijst.perVijf
         template(v-if='entry.isFinal') *
 </template>
 
-<script>
-  import ranking from '~/utils/ranking';
+<script setup>
+import ranking from '~/utils/ranking';
 
-  export default {
-    props: {
-      data: Array,
-      years: Array
-    },
-    computed: {
-      ranking() {
-        return ranking(
-          this.data,
-          ({song, year}) => song.position(year),
-          ({year}) => year.yyyy,
-          50
-        );
-      }
-    }
-  }
+const props = defineProps({
+  data: Array,
+  years: Array
+})
+
+const rankingList = computed(() => {
+  return ranking(
+    props.data,
+    ({song, year}) => song.position(year),
+    ({year}) => year.yyyy,
+    50
+  );
+})
 </script>

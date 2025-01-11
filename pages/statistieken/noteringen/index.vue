@@ -10,37 +10,34 @@ div
         th.r
         th.l Artiest
         th Noteringen
-      tr(v-for='{position, entry} in ranking')
+      tr(v-for='{position, entry} in rankingList')
         td.r {{position}}
         td.l
           artist-link(:artist='entry.artist')
         td {{entry.count}}
 </template>
 
-<script>
-  import ranking from '~/utils/ranking';
-  import _ from 'lodash'
+<script setup>
+import ranking from '~/utils/ranking';
+import _ from 'lodash'
 
-  export default {
-    props: {
-      artists: Array,
-      years: Array
-    },
-    computed: {
-      ranking() {
-        const data = this.artists.map(artist => {
-          return {
-            artist: artist,
-            count: _.sum(artist.allSongs.map(song => song.listCount(this.years)))
-          };
-        }).filter(({ count }) => count > 0);
-        return ranking(
-          data,
-          ({count}) => -count,
-          ({artist}) => artist.name,
-          200
-        );
-      }
-    }
-  }
+const props = defineProps({
+  artists: Array,
+  years: Array
+})
+
+const rankingList = computed(() => {
+  const data = props.artists.map(artist => {
+    return {
+      artist: artist,
+      count: _.sum(artist.allSongs.map(song => song.listCount(props.years)))
+    };
+  }).filter(({ count }) => count > 0);
+  return ranking(
+    data,
+    ({count}) => -count,
+    ({artist}) => artist.name,
+    200
+  );
+})
 </script>

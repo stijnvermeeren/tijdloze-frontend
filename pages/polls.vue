@@ -8,21 +8,16 @@ div
     | Nog geen polls...
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  export default defineNuxtComponent({
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      currentYearPolls() {
-        return this.polls.filter(poll => poll.year === this.currentYear.yyyy && !poll.isDeleted)
-      }
-    },
-    async asyncData({$api}) {
-      const polls = await $api(`poll/list`)
-      return {polls}
-    }
-  })
+const {data: polls} = await useFetch(`poll/list`, useFetchOpts())
+
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+
+const currentYearPolls = computed(() => {
+  return polls.value.filter(poll => poll.year === currentYear.value.yyyy && !poll.isDeleted)
+})
 </script>

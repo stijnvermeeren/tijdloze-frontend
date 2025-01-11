@@ -14,62 +14,50 @@ div
     d3-distribution-graph(:points='dataPoints' :title='vocalsGenders[vocalsGenderId]')
 </template>
 
-<script>
-  import vocalsGenders from '~/utils/leadVocals'
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import vocalsGenders from '~/utils/leadVocals'
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      vocalsGenders() {
-        return vocalsGenders;
-      },
-      graphData() {
-        const dataPoints = {};
-        const result = Object.keys(vocalsGenders).map(vocalsGenderId => {
-          dataPoints[vocalsGenderId] = [];
-          return {
-            vocalsGenderId: vocalsGenderId,
-            dataPoints: dataPoints[vocalsGenderId]
-          };
-        });
+const years = computed(() => {
+  return useRootStore().years;
+})
+const graphData = computed(() => {
+  const dataPoints = {};
+  const result = Object.keys(vocalsGenders).map(vocalsGenderId => {
+    dataPoints[vocalsGenderId] = [];
+    return {
+      vocalsGenderId: vocalsGenderId,
+      dataPoints: dataPoints[vocalsGenderId]
+    };
+  });
 
-        useRootStore().songs.forEach(song => {
-          if (song.leadVocals) {
-            this.years.forEach(year => {
-              if (song.position(year)) {
-                dataPoints[song.leadVocals].push({
-                  song: song,
-                  year: year
-                });
-              }
-            });
-          }
-        });
-
-        return result;
-      },
-      counts() {
-        return this.graphData.map(({vocalsGenderId, dataPoints}) => {
-          return {
-            entry: vocalsGenders[vocalsGenderId],
-            total: dataPoints.length,
-            perYear: Object.fromEntries(
-              this.years.map(year => [
-                year.yyyy,
-                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              ])
-            )
-          }
-        });
-      }
-    },
-    methods: {
-      decadeYear(yyyy) {
-        return yyyy - yyyy % 10;
-      }
+  useRootStore().songs.forEach(song => {
+    if (song.leadVocals) {
+      years.value.forEach(year => {
+        if (song.position(year)) {
+          dataPoints[song.leadVocals].push({
+            song: song,
+            year: year
+          });
+        }
+      });
     }
-  }
+  });
+
+  return result;
+})
+const counts = computed(() => {
+  return graphData.value.map(({vocalsGenderId, dataPoints}) => {
+    return {
+      entry: vocalsGenders[vocalsGenderId],
+      total: dataPoints.length,
+      perYear: Object.fromEntries(
+        years.value.map(year => [
+          year.yyyy,
+          dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+        ])
+      )
+    }
+  });
+})
 </script>

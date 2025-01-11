@@ -18,63 +18,51 @@ div
     d3-distribution-graph(:points='dataPoints' :title='languages[languageId]')
 </template>
 
-<script>
-  import languages from '~/utils/language'
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import languages from '~/utils/language'
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      languages() {
-        return languages;
-      },
-      graphData() {
-        const dataPoints = {};
-        const result = Object.keys(languages).map(languageId => {
-          dataPoints[languageId] = [];
-          return {
-            languageId: languageId,
-            dataPoints: dataPoints[languageId]
-          };
-        });
+const years = computed(() => {
+  return useRootStore().years;
+})
+const graphData = computed(() => {
+  const dataPoints = {};
+  const result = Object.keys(languages).map(languageId => {
+    dataPoints[languageId] = [];
+    return {
+      languageId: languageId,
+      dataPoints: dataPoints[languageId]
+    };
+  });
 
-        useRootStore().songs.forEach(song => {
-          if (song.languageId) {
-            this.years.forEach(year => {
-              if (song.position(year)) {
-                dataPoints[song.languageId].push({
-                  song: song,
-                  year: year
-                });
-              }
-            });
-          }
-        });
-
-        // Only return languages with at least on top 100 entry.
-        return result.filter(data => data.dataPoints.length)
-      },
-      counts() {
-        return this.graphData.map(({languageId, dataPoints}) => {
-          return {
-            entry: languages[languageId],
-            total: dataPoints.length,
-            perYear: Object.fromEntries(
-              this.years.map(year => [
-                year.yyyy,
-                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              ])
-            )
-          }
-        });
-      }
-    },
-    methods: {
-      decadeYear(yyyy) {
-        return yyyy - yyyy % 10;
-      }
+  useRootStore().songs.forEach(song => {
+    if (song.languageId) {
+      years.value.forEach(year => {
+        if (song.position(year)) {
+          dataPoints[song.languageId].push({
+            song: song,
+            year: year
+          });
+        }
+      });
     }
-  }
+  });
+
+  // Only return languages with at least on top 100 entry.
+  return result.filter(data => data.dataPoints.length)
+})
+const counts = computed(() => {
+  return graphData.value.map(({languageId, dataPoints}) => {
+    return {
+      entry: languages[languageId],
+      total: dataPoints.length,
+      perYear: Object.fromEntries(
+        years.value.map(year => [
+          year.yyyy,
+          dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+        ])
+      )
+    }
+  });
+})
 </script>

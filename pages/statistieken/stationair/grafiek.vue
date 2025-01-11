@@ -2,14 +2,10 @@
 d3-stationary-graph(:songs='songs')
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      songs() {
-        return useRootStore().songs;
-      }
-    }
-  }
+const songs = computed(() => {
+  return useRootStore().songs;
+})
 </script>

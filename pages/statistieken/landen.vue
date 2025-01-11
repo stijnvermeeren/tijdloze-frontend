@@ -20,69 +20,59 @@ div
         country-icon(:country-id='countryId' :include-name='true')
 </template>
 
-<script>
-  import _ from 'lodash';
-  import countries from '~/utils/country'
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import _ from 'lodash';
+import countries from '~/utils/country'
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      countries() {
-        return this.graphData.map(data => data.country);
-      },
-      graphData() {
-        const usedCountryIds = _.sortBy(
-            [...useRootStore().usedCountryIds],
-            countryId => countries[countryId]
-        )
-        const dataPoints = {};
+const years = computed(() => {
+  return useRootStore().years;
+})
 
-        const result = usedCountryIds.map(countryId => {
-          dataPoints[countryId] = [];
-          return {
-            countryId: countryId,
-            dataPoints: dataPoints[countryId]
-          };
-        });
+const graphData = computed(() => {
+  const usedCountryIds = _.sortBy(
+      [...useRootStore().usedCountryIds],
+      countryId => countries[countryId]
+  )
+  const dataPoints = {};
 
-        useRootStore().songs.forEach(song => {
-          if (song.artist.countryId) {
-            this.years.forEach(year => {
-              if (song.position(year)) {
-                dataPoints[song.artist.countryId].push({
-                  song: song,
-                  year: year
-                });
-              }
-            });
-          }
-        });
+  const result = usedCountryIds.map(countryId => {
+    dataPoints[countryId] = [];
+    return {
+      countryId: countryId,
+      dataPoints: dataPoints[countryId]
+    };
+  });
 
-        // Only return countries with at least on top 100 entry.
-        return result.filter(data => data.dataPoints.length)
-      },
-      counts() {
-        return this.graphData.map(({countryId, countryName, dataPoints}) => {
-          return {
-            entry: countryId,
-            total: dataPoints.length,
-            perYear: Object.fromEntries(
-              this.years.map(year => [
-                year.yyyy,
-                dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
-              ])
-            )
-          }
-        });
-      }
-    },
-    methods: {
-      decadeYear(yyyy) {
-        return yyyy - yyyy % 10;
-      }
+  useRootStore().songs.forEach(song => {
+    if (song.artist.countryId) {
+      years.value.forEach(year => {
+        if (song.position(year)) {
+          dataPoints[song.artist.countryId].push({
+            song: song,
+            year: year
+          });
+        }
+      });
     }
-  }
+  });
+
+  // Only return countries with at least on top 100 entry.
+  return result.filter(data => data.dataPoints.length)
+})
+
+const counts = computed(() => {
+  return graphData.value.map(({countryId, countryName, dataPoints}) => {
+    return {
+      entry: countryId,
+      total: dataPoints.length,
+      perYear: Object.fromEntries(
+        years.value.map(year => [
+          year.yyyy,
+          dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
+        ])
+      )
+    }
+  });
+})
 </script>

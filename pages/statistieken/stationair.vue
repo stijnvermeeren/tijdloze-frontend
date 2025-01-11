@@ -10,32 +10,28 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script>
+<script setup>
 import _ from 'lodash';
 import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      years() {
-        return useRootStore().years;
-      },
-      songs() {
-        return useRootStore().songs;
-      },
-      data() {
-        const dataPoints = [];
-        this.songs.forEach(song => {
-          _.drop(this.years, 1).forEach(year => {
-            if (song.position(year) && song.position(year) === song.position(year.previous)) {
-              dataPoints.push({
-                song: song,
-                year: year
-              });
-            }
-          });
+const years = computed(() => {
+  return useRootStore().years;
+})
+const songs = computed(() => {
+  return useRootStore().songs;
+})
+const data = computed(() => {
+  const dataPoints = [];
+  songs.value.forEach(song => {
+    _.drop(years.value, 1).forEach(year => {
+      if (song.position(year) && song.position(year) === song.position(year.previous)) {
+        dataPoints.push({
+          song: song,
+          year: year
         });
-        return dataPoints;
       }
-    }
-  }
+    });
+  });
+  return dataPoints;
+})
 </script>

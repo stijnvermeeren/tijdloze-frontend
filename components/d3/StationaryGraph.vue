@@ -48,10 +48,10 @@
 
   const tooltipSong = computed(() => {
     if (!!hoverYear.value && !!hoverPosition.value) {
-      return useRootStore().listTop100(hoverYear.value).find(song => {
-        return song.position(hoverYear.value) === hoverPosition.value
-          && stationaryYears(song).find(year => year.yyyy === hoverYear.value.yyyy);
-      })
+      return useRootStore().list(hoverYear.value).find(entry => {
+        return entry.position === hoverPosition.value
+          && stationaryYears(entry.song).find(year => year.yyyy === hoverYear.value.yyyy);
+      })?.song
     }
     return undefined;
   })

@@ -30,42 +30,40 @@ div
                 td.l(v-else) /
 </template>
 
-<script>
-  import _ from 'lodash'
+<script setup>
+import _ from 'lodash'
 
-  export default {
-    props: {
-      albums: Array,
-      years: Array
-    },
-    computed: {
-      data() {
-        const MAX = 3;
-        const MIN = 2;
+const props = defineProps({
+  albums: Array,
+  years: Array
+})
 
-        return _.reverse([...this.years]).map(year => {
-          const albumsPerCount = _.groupBy(this.albums, album => {
-            return album.songs.filter(song => song.position(year)).length;
-          });
+const data = computed(() => {
+  const MAX = 3;
+  const MIN = 2;
 
-          const range = _.range(MAX, MIN - 1, -1);
-          const counts = range.map(count => {
-            return {
-              count: count,
-              albums: albumsPerCount[count]
-            }
-          });
+  return _.reverse([...props.years]).map(year => {
+    const albumsPerCount = _.groupBy(props.albums, album => {
+      return album.songs.filter(song => song.position(year)).length;
+    });
 
-
-          return {
-            year: year,
-            counts: counts
-          };
-        });
+    const range = _.range(MAX, MIN - 1, -1);
+    const counts = range.map(count => {
+      return {
+        count: count,
+        albums: albumsPerCount[count]
       }
-    },
-    head: {
-      title: 'Noteringen (albums) per jaar'
-    }
-  }
+    });
+
+
+    return {
+      year: year,
+      counts: counts
+    };
+  });
+})
+
+useHead({
+  title: 'Noteringen (albums) per jaar'
+})
 </script>

@@ -21,8 +21,5 @@ div
     nuxt-page
 </template>
 
-<script>
-  export default {
-    ssrComputedCache: true
-  }
+<script setup>
 </script>

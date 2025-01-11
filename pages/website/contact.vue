@@ -43,71 +43,66 @@ div
             | Bericht verzenden
 </template>
 
-<script>
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    data() {
-      return {
-        name: useAuthStore().isAuthenticated ? useAuthStore().displayNameWithFallback : '',
-        email: useAuthStore().isAuthenticated ? useAuthStore().user.email || '' : '',
-        message: "",
-        error: null,
-        emailTouched: false,
-        inProgress: false,
-        success: false
-      }
-    },
-    computed: {
-      submitDisabled() {
-        const nameOk = !!this.name.trim();
-        const emailOk = !this.email.trim() || this.validateEmail(this.email.trim());
-        const messageOk = !!this.message.trim();
-        return !(nameOk && emailOk && messageOk);
-      },
-      cardSubtitle() {
-        const from = `Van ${this.name}`
-        if (this.email.trim()) {
-          return `${from} (${this.email})`
-        } else {
-          return from
-        }
-      }
-    },
-    methods: {
-      reset() {
-        this.message = "";
-        this.error = null;
-        this.inProgress = false;
-        this.success = false;
-      },
-      async submit() {
-        this.inProgress = true;
-        this.error = "";
+const {$api} = useNuxtApp()
 
-        const payLoad = {
-          name: this.name.trim(),
-          message: this.message
-        };
-        if (this.email.trim()) {
-          payLoad.email = this.email.trim();
-        }
+const name = ref(useAuthStore().isAuthenticated ? useAuthStore().displayNameWithFallback : '')
+const email = ref(useAuthStore().isAuthenticated ? useAuthStore().user.email || '' : '')
+const message = ref("")
+const error = ref(null)
+const emailTouched = ref(false)
+const inProgress = ref(false)
+const success = ref(false)
 
-        const result = await this.$api('/contact', useFetchOptsPost(payLoad)).catch(err => {
-          this.inProgress = false;
-          this.error = `Foutmelding van de server: ${err}.`;
-        })
-        if (result !== undefined) {
-          this.inProgress = false;
-          this.success = true;
-        }
-      },
-      validateEmail(email) {
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email.toLowerCase());
-      }
-    }
+const submitDisabled = computed(() => {
+  const nameOk = !!name.value.trim();
+  const emailOk = !email.value.trim() || validateEmail(email.value.trim());
+  const messageOk = !!message.value.trim();
+  return !(nameOk && emailOk && messageOk);
+})
+
+const cardSubtitle = computed(() => {
+  const from = `Van ${name.value}`
+  if (email.value.trim()) {
+    return `${from} (${email.value})`
+  } else {
+    return from
   }
+})
+
+function reset() {
+  message.value = "";
+  error.value = null;
+  inProgress.value = false;
+  success.value = false;
+}
+async function submit() {
+  inProgress.value = true;
+  error.value = "";
+
+  const payLoad = {
+    name: name.value.trim(),
+    message: message.value
+  };
+  if (email.value.trim()) {
+    payLoad.email = email.value.trim();
+  }
+
+  const result = await $api('/contact', useFetchOptsPost(payLoad)).catch(err => {
+    inProgress.value = false;
+    error.value = `Foutmelding van de server: ${err}.`;
+  })
+  if (result !== undefined) {
+    inProgress.value = false;
+    success.value = true;
+  }
+}
+function validateEmail(email) {
+  const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return re.test(email.toLowerCase());
+}
 </script>
 
 <style lang="scss" scoped>

@@ -6,7 +6,7 @@ table.lijst.perVijf
       th Jaar
       th.l Nummer
       th(colspan='2') Gedaald
-    tr(v-for='{entry, position} in ranking')
+    tr(v-for='{entry, position} in rankingList')
       td.r {{position}}
       td
         year-link(:year='entry.year')
@@ -16,23 +16,20 @@ table.lijst.perVijf
       td.i {{entry.oldPosition}} &rarr; {{entry.newPosition}}
 </template>
 
-<script>
-  import ranking from '~/utils/ranking';
+<script setup>
+import ranking from '~/utils/ranking';
 
-  export default {
-    props: {
-      data: Array,
-      years: Array
-    },
-    computed: {
-      ranking() {
-        return ranking(
-          this.data,
-          ({oldPosition, newPosition}) => oldPosition - newPosition,
-          [({newPosition}) => newPosition, ({year}) => year.yyyy],
-          50
-        );
-      }
-    }
-  }
+const props = defineProps({
+  data: Array,
+  years: Array
+})
+
+const rankingList = computed(() => {
+  return ranking(
+    props.data,
+    ({oldPosition, newPosition}) => oldPosition - newPosition,
+    [({newPosition}) => newPosition, ({year}) => year.yyyy],
+    50
+  );
+})
 </script>

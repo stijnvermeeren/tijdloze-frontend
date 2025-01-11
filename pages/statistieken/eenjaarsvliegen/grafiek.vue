@@ -11,20 +11,17 @@ div
         |  Niet-definitieve eenjaarsvliegen
 </template>
 
-<script>
-  export default {
-    props: {
-      data: Array
-    },
-    computed: {
-      finalPoints() {
-        return this.data.filter(point => point.isFinal);
-      },
-      nonFinalPoints() {
-        return this.data.filter(point => !point.isFinal);
-      }
-    }
-  }
+<script setup>
+const props = defineProps({
+  data: Array
+})
+
+const finalPoints = computed(() => {
+  return props.data.filter(point => point.isFinal);
+})
+const nonFinalPoints = computed(() => {
+  return props.data.filter(point => !point.isFinal);
+})
 </script>
 
 <style lang="scss" scoped>

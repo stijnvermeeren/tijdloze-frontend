@@ -9,43 +9,41 @@ div
         th.r
         th.l Album
         th Aantal nummers
-      tr(v-for='{position, entry} in ranking')
+      tr(v-for='{position, entry} in rankingList')
         td.r {{position}}
         td.l
           | #[album-link(:album='entry.album')] (#[artist-link(:artist='entry.album.artist')])
         td {{entry.count}}
 </template>
 
-<script>
-  import ranking from '~/utils/ranking';
-  import _ from 'lodash'
+<script setup>
+import ranking from '~/utils/ranking';
+import _ from 'lodash'
 
-  export default {
-    props: {
-      albums: Array,
-      years: Array
-    },
-    computed: {
-      ranking() {
-        const data = this.albums.map(album => {
-          return {
-            album: album,
-            count: album.songs.filter(song => {
-              return _.find(this.years, year => song.position(year))
-            }).length
-          };
-        }).filter(({ count }) => count > 1);
+const props = defineProps({
+  albums: Array,
+  years: Array
+})
 
-        return ranking(
-          data,
-          ({count}) => -count,
-          ({album}) => album.title,
-          50
-        );
-      }
-    },
-    head: {
-      title: 'Noteringen (albums): verschillende nummers'
-    }
-  }
+const rankingList = computed(() => {
+  const data = props.albums.map(album => {
+    return {
+      album: album,
+      count: album.songs.filter(song => {
+        return _.find(props.years, year => song.position(year))
+      }).length
+    };
+  }).filter(({ count }) => count > 1);
+
+  return ranking(
+    data,
+    ({count}) => -count,
+    ({album}) => album.title,
+    50
+  );
+})
+
+useHead({
+  title: 'Noteringen (albums): verschillende nummers'
+})
 </script>
