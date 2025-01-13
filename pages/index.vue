@@ -12,7 +12,7 @@ div
     template(v-if="top5.length")
       song-with-position(
         v-for='{position, song, attribution} in top5'
-        :key='song.id'
+        :key='position'
         :song='song'
         :attribution="attribution"
         :override-position="position"

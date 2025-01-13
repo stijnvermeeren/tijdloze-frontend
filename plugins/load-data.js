@@ -28,6 +28,9 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(Artist).insert(coreDataResponse.artists);
     useRepo(Album).insert(coreDataResponse.albums);
     useRepo(Song).insert(coreDataResponse.songs);
+
+    // for some reason, flush is necessary to avoid getting stale data on the SSR-generated page
+    useRepo(List).flush();
     useRepo(List).insert(coreDataResponse.lists);
 
     if (rootStore.listInProgress) {
