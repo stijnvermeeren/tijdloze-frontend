@@ -36,7 +36,7 @@ div.commentForm(:class="{expanded: isExpanded}")
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
-const emit = defineEmits(['submitted, displayNameChanged'])
+const emit = defineEmits(['submitted', 'displayNameChanged'])
 
 const props = defineProps({
   "expanded": {
