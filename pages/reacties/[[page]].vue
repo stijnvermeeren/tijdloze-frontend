@@ -48,16 +48,16 @@ div
   })
 
   async function reload() {
-    await reloadComments()
+    await refreshComments()
     await reloadCommentCount()
   }
 
   async function onDisplayNameChanged() {
-    await reloadComments()
+    await refreshComments()
   }
 
   async function onSubmitted() {
-    await reloadComments()
+    await refreshComments()
     navigateTo('/reacties');
   }
 

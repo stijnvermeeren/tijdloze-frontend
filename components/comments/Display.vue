@@ -16,71 +16,68 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
-<script>
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    props: {
-      comment: Object
-    },
-    data() {
-      return {
-        isDeleted: !!this.comment.deleted,
-        message: this.comment.message,
-        editing: false
-      }
-    },
-    computed: {
-      isAuthenticated() {
-        return useAuthStore().isAuthenticated;
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin;
-      },
-      isMine() {
-        return this.isAuthenticated && useAuthStore().user.id === this.comment.userId;
-      },
-      showUpdated() {
-        function parseDate(dateString) {
-          const parts = dateString.split(/[^0-9]+/g);
-          return new Date(
-              parseInt(parts[0]),
-              parseInt(parts[1]) - 1,
-              parseInt(parts[2]),
-              parseInt(parts[3]),
-              parseInt(parts[4]),
-              parseInt(parts[5])
-          )
-        }
+const {$api} = useNuxtApp()
+const emit = defineEmits(['deleted', 'restored'])
 
-        const differenceMillis = parseDate(this.comment.updated) - parseDate(this.comment.created);
-        return !this.isMine && differenceMillis > 10000;
-      }
-    },
-    methods: {
-      editComment() {
-        this.editing = true;
-      },
-      commentEdited(newMessage) {
-        this.message = newMessage;
-        this.editing = false;
-      },
-      async deleteComment() {
-        if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-          await this.$api(`comment/${this.comment.id}`, useFetchOptsDelete())
-          this.isDeleted = true
-          this.$emit("deleted")
-        }
-      },
-      async restoreComment() {
-        if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-          await this.$api(`comment/${this.comment.id}`, useFetchOptsPost())
-          this.isDeleted = false
-          this.$emit("restored")
-        }
-      }
-    }
+const props = defineProps({
+  comment: Object
+})
+
+const isDeleted = ref(!!props.comment.deleted)
+const message = ref(props.comment.message)
+const editing = ref(false)
+
+const isAuthenticated = computed(() => {
+  return useAuthStore().isAuthenticated;
+})
+const isAdmin = computed(() => {
+  return useAuthStore().isAdmin;
+})
+const isMine = computed(() => {
+  return isAuthenticated.value && useAuthStore().user.id === props.comment.userId;
+})
+const showUpdated = computed(() => {
+  function parseDate(dateString) {
+    const parts = dateString.split(/[^0-9]+/g);
+    return new Date(
+        parseInt(parts[0]),
+        parseInt(parts[1]) - 1,
+        parseInt(parts[2]),
+        parseInt(parts[3]),
+        parseInt(parts[4]),
+        parseInt(parts[5])
+    )
   }
+
+  const differenceMillis = parseDate(props.comment.updated) - parseDate(props.comment.created);
+  return !isMine.value && differenceMillis > 10000;
+})
+
+function editComment() {
+  editing.value = true;
+}
+
+function commentEdited(newMessage) {
+  message.value = newMessage;
+  editing.value = false;
+}
+async function deleteComment() {
+  if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
+    await $api(`comment/${props.comment.id}`, useFetchOptsDelete())
+    isDeleted.value = true
+    emit("deleted")
+  }
+}
+async function restoreComment() {
+  if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
+    await $api(`comment/${props.comment.id}`, useFetchOptsPost())
+    isDeleted.value = false
+    emit("restored")
+  }
+}
 </script>
 
 <style lang="scss" scoped>
