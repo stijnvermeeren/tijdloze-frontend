@@ -13,34 +13,30 @@ div
       | Bericht wijzigen
 </template>
 
-<script>
-  export default {
-    props: {
-      commentId: Number,
-      message: String
-    },
-    data() {
-      return {
-        editMessage: this.message,
-        submitting: false,
-      }
-    },
-    computed: {
-      invalidMessage() {
-        return this.editMessage.length === 0;
-      }
-    },
-    methods: {
-      async submit() {
-        this.submitting = true;
+<script setup>
+const {$api} = useNuxtApp()
+const emit = defineEmits(['submitted'])
 
-        const data = {
-          message: this.editMessage
-        };
-        await this.$api(`comment/${this.commentId}`, useFetchOptsPut(data))
-        this.submitting = false;
-        this.$emit('submitted', this.editMessage)
-      }
-    }
-  }
+const props = defineProps({
+  commentId: Number,
+  message: String
+})
+
+const editMessage = ref(props.message)
+const submitting = ref(false)
+
+const invalidMessage = computed(() => {
+  return editMessage.value.length === 0;
+})
+
+async function submit() {
+  submitting.value = true;
+
+  const data = {
+    message: editMessage.value
+  };
+  await $api(`comment/${props.commentId}`, useFetchOptsPut(data))
+  submitting.value = false;
+  emit('submitted', editMessage.value)
+}
 </script>

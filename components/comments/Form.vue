@@ -32,79 +32,79 @@ div.commentForm(:class="{expanded: isExpanded}")
     | Om reacties the plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
-<script>
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    props: {
-      "expanded": {
-        type: Boolean,
-        default: false
-      }
-    },
-    data() {
-      return {
-        isExpanded: !!this.expanded,
-        name: "",
-        message: "",
-        editingDisplayName: false,
-        submittingDisplayName: false,
-        submitting: false,
-      }
-    },
-    computed: {
-      route() {
-        return useRoute()
-      },
-      isAuthenticated() {
-        return useAuthStore().isAuthenticated;
-      },
-      displayName() {
-        return useAuthStore().displayName;
-      },
-      invalidDisplayName() {
-        return this.name.length === 0;
-      },
-      invalidMessage() {
-        return this.message.length === 0;
-      }
-    },
-    methods: {
-      onFocus(event) {
-        this.isExpanded = true;
-        this.$nextTick(() => {
-          event.target.focus()
-        });
-      },
-      editDisplayName() {
-        this.name = useAuthStore().displayNameWithFallback;
-        this.editingDisplayName = true;
-      },
-      async submitDisplayName() {
-        this.submittingDisplayName = true;
+const {$api} = useNuxtApp()
+const emit = defineEmits(['submitted', 'displayNameChanged'])
 
-        const data = {
-          displayName: this.name
-        };
-        const user = await this.$api(`user/display-name`, useFetchOptsPost(data))
-        this.editingDisplayName = false;
-        this.submittingDisplayName = false;
-        useAuthStore().setUser(user);
-        this.$emit('displayNameChanged');
-      },
-      async submit() {
-        this.submitting = true;
-
-        const data = {
-          message: this.message
-        };
-        await this.$api(`comment`, useFetchOptsPost(data))
-        this.submitting = false;
-        this.message = '';
-        this.$emit('submitted');
-      }
-    }
+const props = defineProps({
+  "expanded": {
+    type: Boolean,
+    default: false
   }
+})
+
+
+const isExpanded = ref(!!props.expanded)
+const name = ref("")
+const message = ref("")
+const editingDisplayName = ref(false)
+const submittingDisplayName = ref(false)
+const submitting = ref(false)
+
+const route = computed(() => {
+  return useRoute()
+})
+const isAuthenticated = computed(() => {
+  return useAuthStore().isAuthenticated;
+})
+const displayName = computed(() => {
+  return useAuthStore().displayName;
+})
+const invalidDisplayName = computed(() => {
+  return name.value.length === 0;
+})
+const invalidMessage = computed(() => {
+  return message.value.length === 0;
+})
+
+function onFocus(event) {
+  isExpanded.value = true;
+  nextTick(() => {
+    event.target.focus()
+  });
+}
+
+function editDisplayName() {
+  name.value = useAuthStore().displayNameWithFallback;
+  editingDisplayName.value = true;
+}
+
+async function submitDisplayName() {
+  submittingDisplayName.value = true;
+
+  const data = {
+    displayName: name.value
+  };
+  const user = await $api(`user/display-name`, useFetchOptsPost(data))
+  editingDisplayName.value = false;
+  submittingDisplayName.value = false;
+  useAuthStore().setUser(user);
+  emit('displayNameChanged');
+}
+
+async function submit() {
+  submitting.value = true;
+
+  const data = {
+    message: message.value
+  };
+  await $api(`comment`, useFetchOptsPost(data))
+  submitting.value = false;
+  message.value = '';
+  emit('submitted');
+}
 </script>
 
 <style lang="scss" scoped>
