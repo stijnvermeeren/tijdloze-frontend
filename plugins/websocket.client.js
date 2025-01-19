@@ -85,7 +85,6 @@ export default defineNuxtPlugin( nuxtApp => {
       if (response.deletedArtistId) {
         const artist = useRepo(Artist).withAll().find(response.deletedArtistId)
         if (artist) {
-          console.log(artist.songs.map(song => song.id))
           useRepo(Song).destroy(artist.songs.map(song => song.id))
           useRepo(Album).destroy(artist.albums.map(album => album.id))
           useRepo(Artist).destroy(response.deletedArtistId)

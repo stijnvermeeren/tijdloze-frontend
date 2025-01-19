@@ -21,55 +21,45 @@ div
     div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
 </template>
 
-<script>
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {useAuthStore} from "~/stores/auth";
 
-  export default defineNuxtComponent({
-    data() {
-      return {
-        name: useAuthStore().displayName,
-        submittingDisplayName: false
-      }
-    },
-    computed: {
-      route() {
-        return useRoute()
-      },
-      isAuthenticated() {
-        return useAuthStore().isAuthenticated;
-      },
-      displayName() {
-        return useAuthStore().displayName;
-      },
-      invalidDisplayName() {
-        return !this.name || this.name.length === 0;
-      },
-      skipSettingsCheck() {
-        return 'skipSettingsCheck' in useRoute().query
-      }
-    },
-    methods: {
-      async submitDisplayName() {
-        this.submittingDisplayName = true;
+const {$api} = useNuxtApp()
 
-        const data = {
-          displayName: this.name
-        };
-        const user = await this.$api(`user/display-name`, useFetchOptsPost(data))
-        this.submittingDisplayName = false;
-        useAuthStore().setUser(user);
-      },
-      login() {
-        this.$auth.login(useRoute().path);
-      }
-    },
-    async asyncData({$api}) {
-      const modeResponse = await $api(`text/chatOn`);
-      return {
-        chatEnabled: modeResponse.value === 'on'
-      }
-    }
-  })
+const name = ref(useAuthStore().displayName)
+const submittingDisplayName = ref(false)
+
+const {data: chatEnabled} = await useFetch(
+    `text/chatOn`,
+    useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
+)
+
+const route = computed(() => {
+  return useRoute()
+})
+const isAuthenticated = computed(() => {
+  return useAuthStore().isAuthenticated;
+})
+const displayName = computed(() => {
+  return useAuthStore().displayName;
+})
+const invalidDisplayName = computed(() => {
+  return !name.value || name.value.length === 0;
+})
+const skipSettingsCheck = computed(() => {
+  return 'skipSettingsCheck' in useRoute().query
+})
+
+async function submitDisplayName() {
+  submittingDisplayName.value = true;
+
+  const data = {
+    displayName: name.value
+  };
+  const user = await $api(`user/display-name`, useFetchOptsPost(data))
+  submittingDisplayName.value = false;
+  useAuthStore().setUser(user);
+}
 </script>
 
 <style lang="scss" scoped>
