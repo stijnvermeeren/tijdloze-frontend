@@ -58,7 +58,7 @@ div
         admin-musicbrainz-input(
           v-model='albumDetails.musicbrainzId'
           musicbrainz-category="release-group"
-          )
+        )
 
   div.heading Nummer
   v-container
@@ -96,291 +96,310 @@ div
     ) {{buttonLabel}}
 </template>
 
-<script>
-  import _ from "lodash";
-  import Album from "@/orm/Album";
-  import Artist from "@/orm/Artist";
-  import {useRepo} from "pinia-orm";
-  import useFetchData from "~/composables/useFetchData";
+<script setup>
+import _ from "lodash";
+import Album from "@/orm/Album";
+import Artist from "@/orm/Artist";
+import {useRepo} from "pinia-orm";
 
-  function initialData() {
-    return {
-      artistType: 'new',
-      artistId: undefined,
-      artistDetails: {
-        name: '',
-        musicbrainzId: undefined,
-        countryId: undefined
-      },
-      albumId: 0,
-      albumDetails: {
-        title: '',
-        musicbrainzId: undefined,
-        releaseYear: undefined,
-        isSingle: false,
-        isSoundtrack: false
-      },
-      songDetails: {
-        title: '',
-        languageId: undefined,
-        leadVocals: undefined,
-        spotifyId: undefined
-      },
-      existingSong: undefined,
-      submitting: false
-    }
+const emit = defineEmits(['existingSong', 'newSong'])
+const {$api} = useNuxtApp()
+
+const spotifyRef = useTemplateRef('spotify')
+
+const defaultArtistType = 'new'
+function defaultArtistDetails() {
+  return {
+    name: '',
+    musicbrainzId: undefined,
+    countryId: undefined
+  }
+}
+function defaultAlbumDetails() {
+  return {
+    title: '',
+    musicbrainzId: undefined,
+    releaseYear: undefined,
+    isSingle: false,
+    isSoundtrack: false
+  }
+}
+function defaultSongDetails() {
+  return {
+    title: '',
+    languageId: undefined,
+    leadVocals: undefined,
+    spotifyId: undefined
+  }
+}
+
+const artistType = ref(defaultArtistType)
+const artistId = ref(undefined)
+const artistDetails = ref(defaultArtistDetails())
+const albumId = ref(undefined)
+const albumDetails = ref(defaultAlbumDetails())
+const songDetails = ref(defaultSongDetails())
+const existingSong = ref(undefined)
+const submitting = ref(false)
+
+const props = defineProps({
+  preset: {
+    type: Object
+  },
+  buttonLabel: {
+    type: String,
+    default: "Toevoegen"
+  }
+})
+
+const artistName = computed(() => {
+  if (artistId.value) {
+    return artist.value.name;
+  } else {
+    return artistDetails.value.name;
+  }
+})
+const albumTitle = computed(() => {
+  if (albumId.value && album.value) {
+    return album.value.title;
+  } else {
+    return albumDetails.value.title
+  }
+})
+const artistNew = computed(() => {
+  return artistType.value === 'new';
+})
+const album = computed(() => {
+  return useRepo(Album).find(albumId.value);
+})
+const artist = computed(() => {
+  return useRepo(Artist).find(artistId.value);
+})
+const artistValid = computed(() => {
+  if (artistNew.value) {
+    return artistDetails.value.name;
+  } else {
+    return !! artistId.value;
+  }
+})
+const albumValid = computed(() => {
+  if (!albumId.value) {
+    return albumDetails.value.title && albumDetails.value.releaseYear;
+  } else {
+    return true;
+  }
+})
+const songValid = computed(() => {
+  return songDetails.value.title;
+})
+const candidateAlbums = computed(() => {
+  if (!artistId.value || artistType.value === 'new') {
+    return [];
   }
 
-  export default {
-    props: {
-      preset: {
-        type: Object
-      },
-      buttonLabel: {
-        type: String,
-        default: "Toevoegen"
-      }
-    },
-    data() {
-      return initialData()
-    },
-    computed: {
-      artistName() {
-        if (this.artistId) {
-          return this.artist.name;
-        } else {
-          return this.artistDetails.name;
-        }
-      },
-      albumTitle() {
-        if (this.albumId && this.album) {
-          return this.album.title;
-        } else {
-          return this.albumDetails.title
-        }
-      },
-      artistNew() {
-        return this.artistType === 'new';
-      },
-      album() {
-        return useRepo(Album).find(this.albumId);
-      },
-      artist() {
-        return useRepo(Artist).find(this.artistId);
-      },
-      artistValid() {
-        if (this.artistNew) {
-          return this.artistDetails.name;
-        } else {
-          return !! this.artistId;
-        }
-      },
-      albumValid() {
-        if (!this.albumId) {
-          return this.albumDetails.title && this.albumDetails.releaseYear;
-        } else {
-          return true;
-        }
-      },
-      songValid() {
-        return this.songDetails.title;
-      },
-      candidateAlbums() {
-        if (!this.artistId || this.artistType === 'new') {
-          return [];
-        }
+  const artist = useRepo(Artist).with('albums').find(artistId.value);
+  if (artist) {
+    return _.sortBy(
+        artist.albums,
+        [album => album.releaseYear, album => album.title]
+    )
+  } else {
+    return [];
+  }
+})
 
-        const artist = useRepo(Artist).with('albums').find(this.artistId);
-        if (artist) {
-          return _.sortBy(
-              artist.albums,
-              [album => album.releaseYear, album => album.title]
-          )
-        } else {
-          return [];
-        }
-      }
-    },
-    watch: {
-      artistId() {
-        this.checkAlbum();
-      },
-      artistType() {
-        this.checkAlbum();
-      },
-      'songDetails.spotifyId': async function() {
-        this.existingSong = await this.loadExistingSong()
-      }
-    },
-    methods: {
-      selectExisting() {
-        this.$emit('existingSong', this.existingSong);
-      },
-      async loadExistingSong() {
-        if (!this.artistNew && this.artistId && this.songDetails.spotifyId) {
-          const artist = useRepo(Artist)
-              .withAll()
-              .with('songs', q => q
-                  .with('artist')
-                  .with('secondArtist'))
-              .find(this.artistId)
-          if (artist) {
-            for (const song of artist.songs) {
-              const fullSongData = await this.$api(`song/${song.id}`)
-              if (fullSongData) {
-                if (fullSongData.spotifyId === this.songDetails.spotifyId) {
-                  return song
-                }
-              }
-            }
+watch(() => artistId, () => {
+  checkAlbum();
+})
+watch(() => artistType, () => {
+  checkAlbum();
+})
+watch(() => songDetails.value.spotifyId, async () => {
+  existingSong.value = await loadExistingSong()
+})
+
+function selectExisting() {
+  emit('existingSong', existingSong.value);
+}
+
+async function loadExistingSong() {
+  if (!artistNew.value && artistId.value && songDetails.value.spotifyId) {
+    const artist = useRepo(Artist)
+        .withAll()
+        .with('songs', q => q
+            .with('artist')
+            .with('secondArtist'))
+        .find(artistId.value)
+    if (artist) {
+      for (const song of artist.songs) {
+        const fullSongData = await $api(`song/${song.id}`)
+        if (fullSongData) {
+          if (fullSongData.spotifyId === songDetails.value.spotifyId) {
+            return song
           }
         }
-      },
-      checkAlbum() {
-        if (this.albumId && this.album?.artistId !== this.artistId) {
-          this.albumId = 0;
-        }
-      },
-      async loadPreset(preset) {
-        const artist = await this.artistMatch(preset.artistName, preset.artistMBId);
-        const album = artist
-          ? await this.albumMatch(artist.id, preset.albumTitle, preset.albumYear, preset.albumMBId)
-          : undefined;
-
-        this.artistDetails.name = preset.artistName;
-        this.artistDetails.musicbrainzId = preset.artistMBId;
-        this.artistDetails.countryId = preset.artistCountryId;
-        if (artist) {
-          this.artistType = 'existing';
-          this.artistId = artist.id;
-        } else {
-          this.artistType = 'new';
-          this.artistId = 0;
-        }
-
-        this.albumDetails.title = preset.albumTitle;
-        this.albumDetails.musicbrainzId = preset.albumMBId;
-        this.albumDetails.releaseYear = preset.albumYear;
-        this.albumDetails.isSingle = preset.albumIsSingle;
-        this.albumDetails.isSoundtrack = preset.albumIsSoundtrack;
-        if (album) {
-          this.albumId = album.id;
-        } else {
-          this.albumId = 0;
-        }
-
-        this.songDetails.title = preset.songTitle;
-
-        nextTick(() =>
-            this.$refs.spotify.search()
-        )
-      },
-      preProcessArtistName(artistName) {
-        let query = useSearchNormalize(artistName.toLowerCase());
-        if (query.substring(0,4) === 'the') {
-          query = artistName.substring(4);
-        }
-        return query;
-      },
-      async artistMatch(artistName, artistMBId) {
-        const artist = await this.$api(`/artist/musicbrainz/${artistMBId}`).catch(
-            () => undefined
-        );
-        if (artist)  {
-          return useRepo(Artist).find(artist.id)
-        }
-
-        if (artistName) {
-          const query = this.preProcessArtistName(artistName);
-
-          return useRepo(Artist).all().find(artist => {
-            const matchName = this.preProcessArtistName(artist.name);
-            return query === matchName;
-          })
-        } else {
-          return undefined;
-        }
-      },
-      /*
-       * An album matches if the MusicBrainz id matches, or
-       * - The artist matches
-       * - The release year matches
-       * - The titles match (case-insensitive) where one title is allowed to have some extra words. Punctuation is
-       *   ignored.
-       *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
-       *        "Sign 'O' the Times" matches with "Sign "O" the Times"
-       *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
-       */
-      async albumMatch(artistId, albumName, releaseYear, albumMBId) {
-        const album = await this.$api(`/album/musicbrainz/${albumMBId}`).catch(
-            () => undefined
-        );
-        if (album)  {
-          return useRepo(Album).find(album.id)
-        }
-
-        function tokenize(title) {
-          return [...title.toLowerCase().matchAll(/\w+/g)];
-        }
-
-        if (artistId && albumName && releaseYear) {
-          const queryTokens = tokenize(albumName);
-
-          return useRepo(Album).all().find(album => {
-            const matchTokens = tokenize(album.title);
-            const minLength = Math.min(queryTokens.length, matchTokens.length);
-            return album.artistId === artistId &&
-              queryTokens.slice(0, minLength).join(" ") === matchTokens.slice(0, minLength).join(" ") &&
-              album.releaseYear === releaseYear;
-          })
-        } else {
-          return undefined;
-        }
-      },
-      async submit() {
-        this.submitting = true;
-
-        let artistId = undefined;
-        if (this.artistNew) {
-          const artistData = {
-            name: this.artistDetails.name,
-            countryId: this.artistDetails.countryId
-          }
-          const artist = await this.$api('/artist', useFetchOptsPost(artistData));
-          artistId = artist.id;
-        } else {
-          artistId = this.artistId;
-        }
-
-        let albumId = this.albumId;
-        if (!albumId) {
-          const albumData = {
-            artistId,
-            title: this.albumDetails.title,
-            releaseYear: this.albumDetails.releaseYear,
-            isSingle: this.albumDetails.isSingle,
-            isSoundtrack: this.albumDetails.isSoundtrack,
-          }
-          const album = await this.$api('/album', useFetchOptsPost(albumData));
-          albumId = album.id;
-        }
-
-        const songData = {
-          artistId,
-          albumId,
-          title: this.songDetails.title,
-          languageId: this.songDetails.languageId,
-          leadVocals: this.songDetails.leadVocals,
-          spotifyId: this.songDetails.spotifyId
-        }
-        const song = await this.$api('/song', useFetchOptsPost(songData));
-
-        this.submitting = false;
-        Object.assign(this.$data, initialData());
-        this.$emit('newSong', song);
       }
     }
   }
+}
+
+function checkAlbum() {
+  if (albumId.value && album.value?.artistId !== artistId.value) {
+    albumId.value = 0;
+  }
+}
+
+async function loadPreset(preset) {
+  const matchedArtist = await artistMatch(preset.artistName, preset.artistMBId);
+  const matchedAlbum = matchedArtist
+    ? await albumMatch(matchedArtist.id, preset.albumTitle, preset.albumYear, preset.albumMBId)
+    : undefined;
+
+  artistDetails.value.name = preset.artistName;
+  artistDetails.value.musicbrainzId = preset.artistMBId;
+  artistDetails.value.countryId = preset.artistCountryId;
+  if (matchedArtist) {
+    artistType.value = 'existing';
+    artistId.value = matchedArtist.id;
+  } else {
+    artistType.value = 'new';
+    artistId.value = undefined;
+  }
+
+  albumDetails.value.title = preset.albumTitle;
+  albumDetails.value.musicbrainzId = preset.albumMBId;
+  albumDetails.value.releaseYear = preset.albumYear;
+  albumDetails.value.isSingle = preset.albumIsSingle;
+  albumDetails.value.isSoundtrack = preset.albumIsSoundtrack;
+  if (album) {
+    albumId.value = matchedAlbum.id;
+  } else {
+    albumId.value = 0;
+  }
+
+  songDetails.value.title = preset.songTitle;
+
+  await nextTick(spotifyRef.value.search)
+}
+
+function preProcessArtistName(artistName) {
+  let query = useSearchNormalize(artistName.toLowerCase());
+  if (query.substring(0,4) === 'the') {
+    query = artistName.substring(4);
+  }
+  return query;
+}
+
+async function artistMatch(artistName, artistMBId) {
+  const artist = await $api(`/artist/musicbrainz/${artistMBId}`).catch(
+      () => undefined
+  );
+  if (artist)  {
+    return useRepo(Artist).find(artist.id)
+  }
+
+  if (artistName) {
+    const query = preProcessArtistName(artistName);
+
+    return useRepo(Artist).all().find(artist => {
+      const matchName = preProcessArtistName(artist.name);
+      return query === matchName;
+    })
+  } else {
+    return undefined;
+  }
+}
+
+/*
+ * An album matches if the MusicBrainz id matches, or
+ * - The artist matches
+ * - The release year matches
+ * - The titles match (case-insensitive) where one title is allowed to have some extra words. Punctuation is
+ *   ignored.
+ *   E.g. "Nevermind" matches with "Nevermind (Remastered)"
+ *        "Sign 'O' the Times" matches with "Sign "O" the Times"
+ *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
+ */
+async function albumMatch(artistId, albumName, releaseYear, albumMBId) {
+  const album = await $api(`/album/musicbrainz/${albumMBId}`).catch(
+      () => undefined
+  );
+  if (album)  {
+    return useRepo(Album).find(album.id)
+  }
+
+  function tokenize(title) {
+    return [...title.toLowerCase().matchAll(/\w+/g)];
+  }
+
+  if (artistId && albumName && releaseYear) {
+    const queryTokens = tokenize(albumName);
+
+    return useRepo(Album).all().find(album => {
+      const matchTokens = tokenize(album.title);
+      const minLength = Math.min(queryTokens.length, matchTokens.length);
+      return album.artistId === artistId &&
+        queryTokens.slice(0, minLength).join(" ") === matchTokens.slice(0, minLength).join(" ") &&
+        album.releaseYear === releaseYear;
+    })
+  } else {
+    return undefined;
+  }
+}
+
+async function submit() {
+  submitting.value = true;
+
+  let payloadArtistId = undefined;
+  if (artistNew.value) {
+    const artistData = {
+      name: artistDetails.value.name,
+      countryId: artistDetails.value.countryId
+    }
+    const artist = await $api('/artist', useFetchOptsPost(artistData));
+    payloadArtistId = artist.id;
+  } else {
+    payloadArtistId = artistId.value;
+  }
+
+  let payloadAlbumId = albumId.value;
+  if (!payloadAlbumId) {
+    const albumData = {
+      artistId: payloadArtistId,
+      title: albumDetails.value.title,
+      releaseYear: albumDetails.value.releaseYear,
+      isSingle: albumDetails.value.isSingle,
+      isSoundtrack: albumDetails.value.isSoundtrack,
+    }
+    const album = await $api('/album', useFetchOptsPost(albumData));
+    payloadAlbumId = album.id;
+  }
+
+  const songData = {
+    artistId: payloadArtistId,
+    albumId: payloadAlbumId,
+    title: songDetails.value.title,
+    languageId: songDetails.value.languageId,
+    leadVocals: songDetails.value.leadVocals,
+    spotifyId: songDetails.value.spotifyId
+  }
+  const song = await $api('/song', useFetchOptsPost(songData));
+
+  artistType.value = defaultArtistType
+  artistId.value = undefined
+  artistDetails.value = defaultArtistDetails()
+  albumId.value = undefined
+  albumDetails.value = defaultAlbumDetails()
+  songDetails.value = defaultSongDetails()
+  existingSong.value = undefined
+  submitting.value = false;
+
+  emit('newSong', song);
+}
+
+defineExpose({
+  loadPreset
+})
 </script>
 
 <style lang="scss" scoped>

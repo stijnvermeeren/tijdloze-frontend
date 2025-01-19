@@ -32,86 +32,82 @@ div
     v-btn(@click="startImport") Import beginnen
 </template>
 
-<script>
+<script setup>
 
-export default {
-  props: {
-    startPosition: {
-      type: Number,
-      default: 1
-    }
-  },
-  data() {
-    return {
-      importText: '',
-      importMode: 'regex',
-      importStart: this.startPosition,
-      importStep: -1,
-      reverse: true,
-      regex: '(?<position>[0-9]+)\\n\\n.+\\n(?<title>.+)\\n\\n(?<artist>.+)'
-    }
-  },
-  computed: {
-    importPlaceholder() {
-      if (this.importMode === 'auto') {
-        return "Pearl Jam - Black\nFleetwood Mac - The Chain"
-      } else if (this.importMode === 'manual') {
-        return "2 Pearl Jam - Black\n1 Fleetwood Mac - The Chain"
-      } else {
-        return ""
-      }
-    }
-  },
-  methods: {
-    startImport() {
-      const importSongs = []
-      if (this.importMode === 'regex') {
-        this.importText.matchAll(this.regex).forEach(matchObject => {
-          const query = `${matchObject.groups.artist} ${matchObject.groups.title}`
-          const overridePosition = parseInt(matchObject.groups.position)
-          importSongs.push({
-            overridePosition,
-            query
-          })
-        })
-      } else {
-        const fragments = this.importText.split("\n")
-
-        let overridePosition = this.importStart
-
-        fragments.forEach(fragment => {
-          let cleanFragment = fragment
-          if (this.importMode === 'manual') {
-            overridePosition = undefined
-            const positionMatch = fragment.match(/^[0-9]+/g);
-            if (positionMatch && positionMatch.length) {
-              overridePosition = parseInt(positionMatch[0]);
-            }
-            cleanFragment = fragment
-                .replace(/^[0-9]*[\.]?/g, "")
-                .replaceAll("\t", " ")
-                .trim()
-          }
-          if (cleanFragment) {
-            importSongs.push({
-              overridePosition: overridePosition,
-              query: cleanFragment
-            })
-          }
-
-          if (this.importMode === 'auto') {
-            overridePosition += this.importStep
-          }
-        })
-      }
-
-      if (this.reverse) {
-        importSongs.reverse()
-      }
-      this.importText = "";
-      this.$emit('startImport', importSongs)
-    }
+const props = defineProps({
+  startPosition: {
+    type: Number,
+    default: 1
   }
+})
+
+const emit = defineEmits(['startImport'])
+
+const importText = ref('')
+const importMode = ref('regex')
+const importStart = ref(props.startPosition)
+const importStep = ref(-1)
+const reverse = ref(true)
+
+const regex = '(?<position>[0-9]+)\\n\\n.+\\n(?<title>.+)\\n\\n(?<artist>.+)'
+
+const importPlaceholder = computed(() => {
+  if (importMode.value === 'auto') {
+    return "Pearl Jam - Black\nFleetwood Mac - The Chain"
+  } else if (importMode.value === 'manual') {
+    return "2 Pearl Jam - Black\n1 Fleetwood Mac - The Chain"
+  } else {
+    return ""
+  }
+})
+
+function startImport() {
+  const importSongs = []
+  if (importMode.value === 'regex') {
+    importText.value.matchAll(regex).forEach(matchObject => {
+      const query = `${matchObject.groups.artist} ${matchObject.groups.title}`
+      const overridePosition = parseInt(matchObject.groups.position)
+      importSongs.push({
+        overridePosition,
+        query
+      })
+    })
+  } else {
+    const fragments = importText.value.split("\n")
+
+    let overridePosition = importStart.value
+
+    fragments.forEach(fragment => {
+      let cleanFragment = fragment
+      if (importMode.value === 'manual') {
+        overridePosition = undefined
+        const positionMatch = fragment.match(/^[0-9]+/g);
+        if (positionMatch && positionMatch.length) {
+          overridePosition = parseInt(positionMatch[0]);
+        }
+        cleanFragment = fragment
+            .replace(/^[0-9]*[\.]?/g, "")
+            .replaceAll("\t", " ")
+            .trim()
+      }
+      if (cleanFragment) {
+        importSongs.push({
+          overridePosition: overridePosition,
+          query: cleanFragment
+        })
+      }
+
+      if (importMode.value === 'auto') {
+        overridePosition += importStep.value
+      }
+    })
+  }
+
+  if (reverse.value) {
+    importSongs.reverse()
+  }
+  importText.value = "";
+  emit('startImport', importSongs)
 }
 </script>
 

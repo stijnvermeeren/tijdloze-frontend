@@ -23,84 +23,86 @@ div
       | Geen resultaten in de MusicBrainz dataset. Controlleer de query.
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  export default defineNuxtComponent({
-    data() {
-      return {
-        waitingForResults: false,
-        query: "",
-        processing: false,
-        showingResults: false,
-        mbHit: undefined,
-        requestError: false
-      }
-    },
-    watch: {
-      query: function() {
-        this.showingResults = false
-      }
-    },
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      previousYear() {
-        return this.currentYear.previous;
-      }
-    },
-    methods: {
-      initialResults(results) {
-        if (this.waitingForResults) {
-          this.waitingForResults = false
-          if (results.length === 0) {
-            this.searchMusicbrainz()
-            this.$refs.searchBox.setSearchInactive()
-          } else if (results.length === 1) {
-            this.selectSearchResult(results[0])
-            this.$refs.searchBox.setSearchInactive()
-          }
-        }
-      },
-      setQuery(newQuery) {
-        this.query = newQuery;
-        this.showingResults = false
-        this.mbHit = undefined
-        this.waitingForResults = true
-      },
-      async selectSearchResult(result) {
-        this.$emit("selectSearchResult", result)
-      },
-      async searchMusicbrainz() {
-        this.$emit('search');
-        this.mbHit = undefined;
-        this.showingResults = false;
-        this.processing = true;
+const {$api} = useNuxtApp()
 
-        const result = await this.$api(
-            '/mbdata/search-query',
-            useFetchOpts({params: {query: this.query}})
-        ).catch(err => {
-          this.requestError = true;
-          this.processing = false;
-        })
+const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
 
-        if (result) {
-          this.mbHit = result.hit;
-          if (this.mbHit) {
-            this.$emit('mbHit', this.mbHit);
-          }
-          this.processing = false;
-          this.requestError = false;
-          this.showingResults = true;
-        }
-      },
-      possibleSong(song) {
-        return !song.position(this.currentYear, true);
-      }
+const waitingForResults = ref(false)
+const query = ref("")
+const processing = ref(false)
+const showingResults = ref(false)
+const mbHit = ref(undefined)
+const requestError = ref(false)
+
+const searchBoxRef = useTemplateRef('searchBox')
+
+watch(query, () => {
+  showingResults.value = false
+})
+
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const previousYear = computed(() => {
+  return currentYear.value.previous;
+})
+
+function initialResults(results) {
+  if (waitingForResults.value) {
+    waitingForResults.value = false
+    if (results.length === 0) {
+      searchMusicbrainz()
+      searchBoxRef.value.searchActive = false
+    } else if (results.length === 1) {
+      selectSearchResult(results[0])
+      searchBoxRef.value.searchActive = false
     }
+  }
+}
+function setQuery(newQuery) {
+  query.value = newQuery;
+  showingResults.value = false
+  mbHit.value = undefined
+  waitingForResults.value = true
+}
+function selectSearchResult(result) {
+  emit("selectSearchResult", result)
+}
+async function searchMusicbrainz() {
+  emit('search');
+  mbHit.value = undefined;
+  showingResults.value = false;
+  processing.value = true;
+
+  const result = await $api(
+      '/mbdata/search-query',
+      useFetchOpts({params: {query: query.value}})
+  ).catch(err => {
+    requestError.value = true;
+    processing.value = false;
   })
+
+  if (result) {
+    mbHit.value = result.hit;
+    if (mbHit.value) {
+      emit('mbHit', mbHit.value);
+    }
+    processing.value = false;
+    requestError.value = false;
+    showingResults.value = true;
+  }
+}
+
+function possibleSong(song) {
+  return !song.position(currentYear.value, true);
+}
+
+defineExpose({
+  setQuery
+})
 </script>
 
 <style lang="scss" scoped>
