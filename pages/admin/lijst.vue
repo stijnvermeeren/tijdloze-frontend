@@ -11,31 +11,22 @@ div
 </template>
 
 <script setup>
+import {useRootStore} from "~/stores/root";
+
+const {$api} = useNuxtApp()
+
 definePageMeta({ middleware: 'admin' })
-</script>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const list = computed(() => {
+  return useRootStore().list(currentYear.value)
+})
 
-  export default defineNuxtComponent({
-    data() {
-      return {
-      }
-    },
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      list() {
-        return useRootStore().list(this.currentYear)
-      }
-    },
-    methods: {
-      async remove(position, song) {
-        if (confirm(`"${song.artist.name} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${this.currentYear.yyyy})?`)) {
-          await this.$api(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsDelete())
-        }
-      }
-    }
-  })
+async function remove(position, song) {
+  if (confirm(`"${song.artist.name} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${currentYear.value.yyyy})?`)) {
+    await this.$api(`list-entry/${currentYear.value.yyyy}/${position}`, useFetchOptsDelete())
+  }
+}
 </script>

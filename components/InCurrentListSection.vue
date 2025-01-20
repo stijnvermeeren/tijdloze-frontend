@@ -2,33 +2,29 @@
 song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear")
 </template>
 
-<script>
-  import _ from 'lodash'
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import _ from 'lodash'
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    name: 'InCurrentList',
-    props: {
-      songs: Array
-    },
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      previousYear() {
-        return this.currentYear.previous;
-      },
-      sortedSongs() {
-        return _.sortBy(
-          this.songs,
-          [
-            song => song.position(this.currentYear, true),
-            song => song.position(this.previousYear, true)
-          ]
-        )
-      }
-    }
-  }
+const props = defineProps({
+  songs: Array
+})
+
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const previousYear = computed(() => {
+  return currentYear.value.previous;
+})
+const sortedSongs = computed(() => {
+  return _.sortBy(
+    props.songs,
+    [
+      song => song.position(currentYear.value, true),
+      song => song.position(previousYear.value, true)
+    ]
+  )
+})
 </script>
 
 <style lang="scss" scoped>

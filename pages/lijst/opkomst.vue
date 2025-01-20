@@ -15,23 +15,20 @@ div
       )
 </template>
 
-<script>
-  import _ from 'lodash';
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import _ from 'lodash';
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    computed: {
-      year() {
-        return useRootStore().currentYear;
-      },
-      upcomingSongs() {
-        const previousYear = useRootStore().list(this.year.previous).filter(entry => entry.position <= 100)
-        return _.reverse(
-          previousYear.filter(entry => !entry.song.position(this.year) && entry.song.probablyInList(this.year))
-        );
-      }
-    }
-  }
+const year = computed(() => {
+  return useRootStore().currentYear;
+})
+
+const upcomingSongs = computed(() => {
+  const previousYear = useRootStore().list(year.value.previous).filter(entry => entry.position <= 100)
+  return _.reverse(
+    previousYear.filter(entry => !entry.song.position(year.value) && entry.song.probablyInList(year.value))
+  );
+})
 </script>
 
 <style scoped>

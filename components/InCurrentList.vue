@@ -20,56 +20,47 @@ div.container
     | Nog geen nummers in de Tijdloze.
 </template>
 
-<script>
-  import _ from 'lodash'
-  import Artist from "../orm/Artist";
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import Artist from "../orm/Artist";
+import {useRootStore} from "~/stores/root";
 
-  export default {
-    name: 'InCurrentList',
-    props: {
-      songs: Array,
-      albums: Array,
-      artist: Artist
-    },
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      previousYear() {
-        return this.currentYear.previous;
-      },
-      top100Songs() {
-        return this.songs.filter(song => this.sortBlock(song) === 1)
-      },
-      fullListSongs() {
-        return this.songs.filter(song => this.sortBlock(song) === 2)
-      },
-      otherSongs() {
-        return this.songs.filter(song => this.sortBlock(song) === 3)
-      }
-    },
-    methods: {
-      sortBlock(song) {
-        if (song.probablyInList(this.currentYear)) {
-          // songs that are probably still in the top 100
-          return 1;
-        } else if (song.probablyInList(this.currentYear, true)) {
-          // songs that are already in the list
-          return 2;
-        } else {
-          return 3;
-        }
-      },
-      albumSongs(album) {
-        // Only show songs linked to the current artist (in case this album is actually from a different artist)
-        // Test e.g. with the Daft Punk album Random Access Memories.
-        return this.artist ? (
-            album.songs.filter(song => song.artistId === this.artist.id || song.secondArtistId === this.artist.id)
-        ) : album.songs
-      }
-    }
+const props = defineProps({
+  songs: Array,
+  albums: Array,
+  artist: Artist
+})
+
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const top100Songs = computed(() => {
+  return props.songs.filter(song => sortBlock(song) === 1)
+})
+const fullListSongs = computed(() => {
+  return props.songs.filter(song => sortBlock(song) === 2)
+})
+const otherSongs = computed(() => {
+  return props.songs.filter(song => sortBlock(song) === 3)
+})
+
+function sortBlock(song) {
+  if (song.probablyInList(currentYear.value)) {
+    // songs that are probably still in the top 100
+    return 1;
+  } else if (song.probablyInList(currentYear.value, true)) {
+    // songs that are already in the list
+    return 2;
+  } else {
+    return 3;
   }
+}
+function albumSongs(album) {
+  // Only show songs linked to the current artist (in case this album is actually from a different artist)
+  // Test e.g. with the Daft Punk album Random Access Memories.
+  return props.artist ? (
+      album.songs.filter(song => song.artistId === props.artist.id || song.secondArtistId === props.artist.id)
+  ) : album.songs
+}
 </script>
 
 

@@ -24,61 +24,56 @@ span.container
       a(@click='showInfo = false') Sluiten
 </template>
 
-<script>
-  import {useAuthStore} from "~/stores/auth";
+<script setup>
+import {useAuthStore} from "~/stores/auth";
 
-  export default {
-    name: "User",
-    props: {
-      user: Object
-    },
-    data() {
-      return {
-        showInfo: false,
-        blocking: false,
-        isBlocked: !!this.user.isBlocked,
-        contextPosition: {
-          top: 0,
-          left: 0
-        }
-      }
-    },
-    computed: {
-      currentUser() {
-        return useAuthStore().user;
-      }
-    },
-    methods: {
-      async block() {
-        this.blocking = true;
-        await this.$api(`/user/${this.user.id}/block`, useFetchOptsPost());
-        this.isBlocked = true;
-        this.blocking = false;
-      },
-      async unblock() {
-        this.blocking = true;
-        await this.$api(`/user/${this.user.id}/block`, useFetchOptsDelete());
-        this.isBlocked = false;
-        this.blocking = false;
-      }
-    },
-    watch: {
-      showInfo() {
-        const boundingBox = this.$refs['label'].getBoundingClientRect()
-        this.contextPosition = {
-          top: boundingBox.bottom,
-          left: boundingBox.left + 20
-        }
-      },
-      user() {
-        this.isBlocked = !!this.user.isBlocked;
-      }
-    }
+const {$api} = useNuxtApp()
+
+const props = defineProps({
+  user: Object
+})
+
+const showInfo = ref(false)
+const blocking = ref(false)
+const isBlocked = ref(!!props.user.isBlocked)
+const contextPosition = ref({
+  top: 0,
+  left: 0
+})
+
+const label = useTemplateRef('label')
+
+const currentUser = computed(() => {
+  return useAuthStore().user;
+})
+
+async function block() {
+  blocking.value = true;
+  await $api(`/user/${props.user.id}/block`, useFetchOptsPost());
+  isBlocked.value = true;
+  blocking.value = false;
+}
+async function unblock() {
+  blocking.value = true;
+  await $api(`/user/${props.user.id}/block`, useFetchOptsDelete());
+  isBlocked.value = false;
+  blocking.value = false;
+}
+
+watch(showInfo, () => {
+  const boundingBox = label.value.getBoundingClientRect()
+  contextPosition.value = {
+    top: boundingBox.bottom,
+    left: boundingBox.left + 20
   }
+})
+watch(() => props.user, () => {
+  isBlocked.value = !!props.user.isBlocked;
+})
 </script>
 
 <style lang="scss" scoped>
-  @use "../assets/styleConfig";
+  @use "../../assets/styleConfig";
 
   span.container {
 

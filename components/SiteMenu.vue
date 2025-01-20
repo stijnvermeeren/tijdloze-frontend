@@ -75,101 +75,88 @@ div
   div.overlay(v-if="isOpen")
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
-  import {useAuthStore} from "~/stores/auth";
-  import {mdiLockOutline, mdiClose} from "@mdi/js";
+<script setup>
+import {useRootStore} from "~/stores/root";
+import {useAuthStore} from "~/stores/auth";
+import {mdiLockOutline, mdiClose} from "@mdi/js";
 
-  export default defineNuxtComponent({
-    data() {
-      return {
-        isOpen: false,
-        mdiLockOutline,
-        mdiClose
-      };
-    },
-    computed: {
-      openeds() {
-        return [this.groupMap(useRoute().path)]
-      },
-      commentsOn() {
-        return useRootStore().commentsOn;
-      },
-      chatOn() {
-        return useRootStore().chatOn;
-      },
-      listInProgress() {
-        return useRootStore().listInProgress;
-      },
-      top100InProgress() {
-        return this.listInProgress && useRootStore().lastPosition <= 100;
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      years() {
-        return [...useRootStore().years].reverse();
-      },
-      isAdmin() {
-        return useAuthStore().isAdmin;
-      }
-    },
-    methods: {
-      groupMap(path) {
-        const firstPart = path.split('/').slice(0, 2).join('/')
-        switch (path) {
-          case '/lijst/opkomst':
-          case '/polls':
-          case '/chat':
-            return 'inprogress'
-          default:
-            return `group-${firstPart}`
-        }
-      },
-      selectSearchResult(result) {
-        let path = ''
+const isOpen = ref(false)
 
-        if (result.type === 'song') {
-          path = `/nummer/${result.item.id}-${result.item.slug}`
-        } else if (result.type === 'artist') {
-          path = `/artiest/${result.item.id}-${result.item.slug}`
-        } else if (result.type === 'album') {
-          path = `/album/${result.item.id}-${result.item.slug}`
-        }
-        if (path) {
-          this.isOpen = false;
-          navigateTo(path);
-        }
-      },
-      escapeKeyListener: function (evt) {
-        if (evt.code === "Escape" && this.isOpen) {
-          this.isOpen = false;
-        }
-      },
-      close(e) {
-        if (this.isOpen) {
-          this.isOpen = false;
-        }
-      },
-      menuClick(event) {
-        if (event.target.parentElement.tagName.toLowerCase() === 'a') {
-          this.isOpen = false;
-        }
-      }
-    },
-    created: function() {
-      if (process.client) {
-        document.addEventListener('keyup', this.escapeKeyListener);
-        document.addEventListener('click', this.close);
-      }
-    },
-    destroyed: function() {
-      if (process.client) {
-        document.removeEventListener('keyup', this.escapeKeyListener);
-        document.removeEventListener('click', this.close);
-      }
-    }
-  });
+const openeds = computed(() => {
+  return [groupMap(useRoute().path)]
+})
+const commentsOn = computed(() => {
+  return useRootStore().commentsOn;
+})
+const chatOn = computed(() => {
+  return useRootStore().chatOn;
+})
+const listInProgress = computed(() => {
+  return useRootStore().listInProgress;
+})
+const top100InProgress = computed(() => {
+  return listInProgress.value && useRootStore().lastPosition <= 100;
+})
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const years = computed(() => {
+  return [...useRootStore().years].reverse();
+})
+const isAdmin = computed(() => {
+  return useAuthStore().isAdmin;
+})
+
+function groupMap(path) {
+  const firstPart = path.split('/').slice(0, 2).join('/')
+  switch (path) {
+    case '/lijst/opkomst':
+    case '/polls':
+    case '/chat':
+      return 'inprogress'
+    default:
+      return `group-${firstPart}`
+  }
+}
+function selectSearchResult(result) {
+  let path = ''
+
+  if (result.type === 'song') {
+    path = `/nummer/${result.item.id}-${result.item.slug}`
+  } else if (result.type === 'artist') {
+    path = `/artiest/${result.item.id}-${result.item.slug}`
+  } else if (result.type === 'album') {
+    path = `/album/${result.item.id}-${result.item.slug}`
+  }
+  if (path) {
+    isOpen.value = false;
+    navigateTo(path);
+  }
+}
+function escapeKeyListener(evt) {
+  if (evt.code === "Escape" && isOpen.value) {
+    isOpen.value = false;
+  }
+}
+function close(e) {
+  if (isOpen.value) {
+    isOpen.value = false;
+  }
+}
+function menuClick(event) {
+  if (event.target.parentElement?.tagName?.toLowerCase() === 'a') {
+    isOpen.value = false;
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keyup', escapeKeyListener);
+  document.addEventListener('click', close)
+})
+onBeforeUnmount(() =>{
+  document.removeEventListener('keyup', escapeKeyListener);
+  document.removeEventListener('click', close);
+});
 </script>
 
 

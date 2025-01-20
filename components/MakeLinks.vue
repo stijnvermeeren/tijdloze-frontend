@@ -5,32 +5,29 @@ span
     smart-link(v-if='fragment.to' :to='fragment.to')
 </template>
 
-<script>
-  import _ from 'lodash';
+<script setup>
+import _ from 'lodash';
 
-  export default {
-    props: {
-      text: String
-    },
-    computed: {
-      fragments() {
-        let unprocessedText = this.text;
-        let fragments = [];
+const props = defineProps({
+  text: String
+})
 
-        while (unprocessedText.length > 0) {
-          fragments.push({
-            text: _.takeWhile(unprocessedText, char => char !== '[').join("")
-          });
-          unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== '['), 1);
+const fragments = computed(() => {
+  let unprocessedText = props.text;
+  let fragments = [];
 
-          fragments.push({
-            to: _.takeWhile(unprocessedText, char => char !== ']').join("")
-          });
-          unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== ']'), 1);
-        }
+  while (unprocessedText.length > 0) {
+    fragments.push({
+      text: _.takeWhile(unprocessedText, char => char !== '[').join("")
+    });
+    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== '['), 1);
 
-        return fragments;
-      }
-    }
+    fragments.push({
+      to: _.takeWhile(unprocessedText, char => char !== ']').join("")
+    });
+    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== ']'), 1);
   }
+
+  return fragments;
+})
 </script>

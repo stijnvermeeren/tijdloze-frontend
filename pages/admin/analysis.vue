@@ -28,14 +28,14 @@ div
         make-links(text="[*Pink Floyd]")
       div HTML werkt ook (gebruik voorzichtig en met mate):
         |
-        code &lt;strong&gt;vet&lt;/strong&gt; &lt;em&gt;scheef&lt;/em&gt;
+        code {{textExample}}
         |
         | wordt
         |
         make-links(:text="textExample")
     div
       v-textarea(v-model='analysis' :rows="10")
-    div(v-if="outOfDate")
+    div(v-if="outOfDate && !refreshing")
       | Opgelet! De tekst werd reeds door een andere Admin gewijzigd!
       |
       v-btn(@click='refresh()' :disabled='refreshing') Opnieuw laden
@@ -50,82 +50,70 @@ div
             make-links(:text='text')
 </template>
 
-<script>
-  import {useRootStore} from "~/stores/root";
+<script setup>
+import {useRootStore} from "~/stores/root";
 
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
+const {$api} = useNuxtApp()
 
-      return {
-        textExample: "<strong>vet</strong> <em>scheef</em>"
-      }
-    },
-    data() {
-      return {
-        refreshing: false,
-        saving: false,
-        interval: undefined,
-        analysis: this.initialAnalysis
-      }
-    },
-    computed: {
-      outOfDate() {
-        return this.lastLoadedAnalysis !== this.initialAnalysis;
-      },
-      analysisPreview() {
-        if (this.analysis) {
-          return this.analysis.split(/\r?\n/);
-        } else {
-          return "";
-        }
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      apiPath() {
-        return `text/analysis_${this.currentYear.yyyy}`
-      }
-    },
-    methods: {
-      async save() {
-        this.saving = true;
-        const data = {
-          text: this.analysis
-        };
-        await this.$api(this.apiPath, useFetchOptsPost(data));
-        this.saving = false;
-      },
-      async refresh() {
-        this.refreshing = true;
-        const data = await this.$api(this.apiPath);
-        this.analysis = data.value;
-        this.initialAnalysis = data.value;
-        this.lastLoadedAnalysis = data.value;
-        this.refreshing = false;
-      }
-    },
-    mounted() {
-      this.interval = setInterval(async () => {
-        const data = await this.$api(this.apiPath);
-        this.lastLoadedAnalysis = data.value;
-      }, 10000);
-    },
-    beforeDestroy() {
-      if (this.interval) {
-        clearInterval(this.interval);
-      }
-    },
-    async asyncData({$api}) {
-      const data = await $api(`text/analysis_${useRootStore().currentYear.yyyy}`);
-      return {
-        initialAnalysis: data.value,
-        lastLoadedAnalysis: data.value
-      };
-    }
-  })
+definePageMeta({
+  middleware: 'admin'
+})
+
+const textExample = "<strong>vet</strong> <em>scheef</em>"
+
+const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useFetch(
+    `text/analysis_${useRootStore().currentYear.yyyy}`,
+    useFetchOpts({transform: data => data.value})
+);
+const initialAnalysis = ref(lastLoadedAnalysis.value)
+
+const refreshing = ref(false)
+const saving = ref(false)
+const interval = ref(undefined)
+const analysis = ref(initialAnalysis.value)
+
+const outOfDate = computed(() => {
+  return lastLoadedAnalysis.value !== initialAnalysis.value;
+})
+const analysisPreview = computed(() => {
+  if (analysis.value) {
+    return analysis.value.split(/\r?\n/);
+  } else {
+    return "";
+  }
+})
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const apiPath = computed(() => {
+  return `text/analysis_${currentYear.value.yyyy}`
+})
+
+async function save() {
+  saving.value = true;
+  const data = {
+    text: analysis.value
+  };
+  await $api(apiPath.value, useFetchOptsPost(data));
+  await refresh()
+  saving.value = false;
+}
+async function refresh() {
+  refreshing.value = true;
+  await refreshLastLoaded()
+  analysis.value = lastLoadedAnalysis.value;
+  initialAnalysis.value = lastLoadedAnalysis.value;
+  refreshing.value = false;
+}
+
+onMounted(() => {
+  interval.value = setInterval(refreshLastLoaded, 10000);
+})
+onBeforeUnmount(() => {
+  if (interval.value) {
+    clearInterval(interval.value);
+  }
+})
 </script>
 
 <style lang="scss" scoped>

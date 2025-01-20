@@ -1,6 +1,6 @@
 <template lang="pug">
 v-autocomplete(
-  v-model:search="keyword"
+  v-model:search="query"
   v-model="artistId"
   :items="candidateArtists"
   :label="label"
@@ -34,13 +34,18 @@ const props = defineProps({
 
 const artistId = defineModel()
 
-const keyword = ref('');
+const query = ref('')
+
+watch(artistId, (newArtistId) => {
+  const artist = useRepo(Artist).find(newArtistId)
+  query.value = artist.name
+})
 
 const candidateArtists = computed(() => {
-  const queryFragments = useSearchQueryFragments(keyword.value)
+  const queryFragments = useSearchQueryFragments(query.value)
   return _.sortBy(
       useRepo(Artist).all().filter(useSearchFilter(queryFragments, useSearchArtistContent)),
-      artist => -useSearchScore(keyword.value, useSearchArtistContent(artist))
+      artist => -useSearchScore(query.value, useSearchArtistContent(artist))
   ).map(artist => {
     return {
       value: artist.id,

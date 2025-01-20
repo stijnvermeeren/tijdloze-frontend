@@ -52,7 +52,7 @@ div
       admin-m-b-dataset-search(
         v-model="query"
         @mbHit='fillMBData($event)'
-        @search='onMusicbrainzSearch()'
+        @search="nextSongTab = 'hide'"
         @selectSearchResult="selectExistingSong($event.item)"
         ref="search"
       )
@@ -97,164 +97,154 @@ div
 </template>
 
 <script setup>
+import Song from "@/orm/Song";
+import {useRootStore} from "~/stores/root";
+import {mdiSearchWeb} from "@mdi/js";
+import {useRepo} from "pinia-orm";
+
+const {$api} = useNuxtApp()
+
 definePageMeta({ middleware: 'admin' })
-</script>
 
-<script>
-  import Song from "@/orm/Song";
-  import {useRootStore} from "~/stores/root";
-  import {mdiSearchWeb} from "@mdi/js";
-  import {useRepo} from "pinia-orm";
+const wizard = useTemplateRef('wizard')
+const search = useTemplateRef('search')
 
-  export default defineNuxtComponent({
-    data() {
-      return {
-        nextSongTab: 'hide',
-        nextSong: undefined,
-        nextSongFullData: undefined,
-        processing: false,
-        query: '',
-        importQuery: '',
-        importSongs: [],
-        nextPosition: useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100,
-        previousPosition: undefined,
-        mdiSearchWeb
-      }
-    },
-    computed: {
-      currentYear() {
-        return useRootStore().currentYear;
-      },
-      previousYear() {
-        return this.currentYear.previous;
-      },
-      lastSong() {
-        return useRootStore().lastSong;
-      },
-      lastPosition() {
-        return useRootStore().lastPosition
-      },
-      nextYearYyyy() {
-        return (new Date()).getFullYear();
-      },
-      nextPositionAuto() {
-        return this.lastPosition ? this.lastPosition - 1 : 100;
-      },
-      previousSong() {
-        if (this.previousPosition) {
-          return useRepo(Song).withAll().get().find(song => song.position(this.currentYear, true) === this.previousPosition)
-        } else {
-          return undefined
-        }
-      },
-      nextValid() {
-        if (this.nextSongTab === 'existing') {
-          return !!this.nextSong
-        } else {
-          return true
-        }
-      }
-    },
-    watch: {
-      nextPositionAuto(newValue) {
-        if (!this.importQuery) {
-          this.nextPosition = newValue
-        }
-      }
-    },
-    methods: {
-      loadNextFromImport() {
-        let canBeImported = false;
-        let nextImport = this.importSongs.shift();
-        while (!canBeImported && nextImport) {
-          const {overridePosition, query} = nextImport;
-          if (!overridePosition || !useRootStore().songs.find(song => song.position(this.currentYear, true) === overridePosition)) {
-            this.importQuery = query
-            this.query = query
-            this.$refs.search.setQuery(query)
-            this.nextPosition = overridePosition;
-            canBeImported = true;
-          } else {
-            nextImport = this.importSongs.shift()
-          }
-        }
-        if (!canBeImported) {
-          this.importQuery = ''
-          this.query = ''
-          this.$refs.search.setQuery('')
-          this.nextPosition = this.nextPositionAuto
-        }
-      },
-      startImport(songs) {
-        const allSongs = useRepo(Song).withAll().get()
-        for (const song of songs) {
-          const queryFragments = useSearchQueryFragments(song.query)
-          const results = allSongs.filter(useSearchFilter(queryFragments, useSearchSongContent))
-          if (results.length !== 1) {
-            console.log(song.query, results.length)
-          }
-        }
+const nextSongTab = ref('hide')
+const nextSong = ref(undefined)
+const nextSongFullData = ref(undefined)
+const processing = ref(false)
+const query = ref('')
+const importQuery = ref('')
+const importSongs = ref([])
+const nextPosition = ref(useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100)
+const previousPosition = ref(undefined)
 
-        this.importSongs = songs
-        this.loadNextFromImport();
-      },
-      cancelImport() {
-        this.importSongs = []
-      },
-      async selectExistingSong(song) {
-        this.nextSongTab = 'existing';
-        this.nextSong = song;
-        this.nextSongFullData = undefined;
-        this.nextSongFullData = await this.$api(`song/${this.nextSong.id}`);
-      },
-      onMusicbrainzSearch() {
-        this.nextSongTab = 'hide'
-      },
-      fillMBData(data) {
-        this.nextSongTab = 'new';
-        this.$refs.wizard.loadPreset({
-          songTitle: data.title,
-          artistName: data.name,
-          artistMBId: data.artistMBId,
-          artistCountryId: data.countryId,
-          albumTitle: data.albumTitle,
-          albumMBId: data.albumMBId,
-          albumYear: data.releaseYear,
-          albumIsSingle: data.isSingle,
-          albumIsSoundtrack: data.isSoundtrack
-        });
-      },
-      async undo() {
-        this.processing = true;
-        await this.$api(`list-entry/${this.currentYear.yyyy}/${this.previousPosition}`, useFetchOptsDelete())
-        this.previousPosition = undefined;
-        this.processing = false;
-      },
-      async startYear() {
-        this.processing = true;
-        await this.$api(`year/${this.nextYearYyyy}`, useFetchOptsPost())
-        this.processing = false;
-      },
-      async deleteYear() {
-        this.processing = true;
-        await this.$api(`year/${this.currentYear.yyyy}`, useFetchOptsDelete())
-        this.processing = false;
-      },
-      async add(songId) {
-        this.processing = true;
-        const position = this.nextPosition
-        const data = {
-          songId
-        }
-        await this.$api(`list-entry/${this.currentYear.yyyy}/${position}`, useFetchOptsPost(data))
-        this.previousPosition = position;
-        this.nextSongTab = 'hide';
-        this.nextSong = undefined;
-        this.nextSongFullData = undefined;
-        this.processing = false;
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const previousYear = computed(() => {
+  return currentYear.value.previous;
+})
+const lastSong = computed(() => {
+  return useRootStore().lastSong;
+})
+const lastPosition = computed(() => {
+  return useRootStore().lastPosition
+})
+const nextYearYyyy = computed(() => {
+  return (new Date()).getFullYear();
+})
+const nextPositionAuto = computed(() => {
+  return lastPosition.value ? lastPosition.value - 1 : 100;
+})
+const previousSong = computed(() => {
+  if (previousPosition.value) {
+    return useRepo(Song).withAll().get().find(song => song.position(currentYear.value, true) === previousPosition.value)
+  } else {
+    return undefined
+  }
+})
+const nextValid = computed(() => {
+  if (nextSongTab.value === 'existing') {
+    return !!nextSong.value
+  } else {
+    return true
+  }
+})
 
-        this.loadNextFromImport();
-      }
+watch(nextPositionAuto, (newValue) => {
+  if (!importQuery.value) {
+    nextPosition.value = newValue
+  }
+})
+
+function loadNextFromImport() {
+  let canBeImported = false;
+  let nextImport = importSongs.value.shift();
+  while (!canBeImported && nextImport) {
+    const {overridePosition, query: newQuery} = nextImport;
+    if (!overridePosition || !useRootStore().songs.find(song => song.position(currentYear.value, true) === overridePosition)) {
+      importQuery.value = newQuery
+      query.value = newQuery
+      search.value.setQuery(newQuery)
+      nextPosition.value = overridePosition;
+      canBeImported = true;
+    } else {
+      nextImport = importSongs.value.shift()
     }
-  })
+  }
+  if (!canBeImported) {
+    importQuery.value = ''
+    query.value = ''
+    search.value.setQuery('')
+    nextPosition.value = nextPositionAuto.value
+  }
+}
+function startImport(songs) {
+  const allSongs = useRepo(Song).withAll().get()
+  for (const song of songs) {
+    const queryFragments = useSearchQueryFragments(song.query)
+    const results = allSongs.filter(useSearchFilter(queryFragments, useSearchSongContent))
+    if (results.length !== 1) {
+      console.log(song.query, results.length)
+    }
+  }
+
+  importSongs.value = songs
+  loadNextFromImport();
+}
+function cancelImport() {
+  importSongs.value = []
+}
+async function selectExistingSong(song) {
+  nextSongTab.value = 'existing';
+  nextSong.value = song;
+  nextSongFullData.value = undefined;
+  nextSongFullData.value = await $api(`song/${nextSong.value.id}`);
+}
+function fillMBData(data) {
+  nextSongTab.value = 'new';
+  wizard.value.loadPreset({
+    songTitle: data.title,
+    artistName: data.name,
+    artistMBId: data.artistMBId,
+    artistCountryId: data.countryId,
+    albumTitle: data.albumTitle,
+    albumMBId: data.albumMBId,
+    albumYear: data.releaseYear,
+    albumIsSingle: data.isSingle,
+    albumIsSoundtrack: data.isSoundtrack
+  });
+}
+async function undo() {
+  processing.value = true;
+  await $api(`list-entry/${currentYear.value.yyyy}/${previousPosition.value}`, useFetchOptsDelete())
+  previousPosition.value = undefined;
+  processing.value = false;
+}
+async function startYear() {
+  processing.value = true;
+  await $api(`year/${nextYearYyyy.value}`, useFetchOptsPost())
+  processing.value = false;
+}
+async function deleteYear() {
+  processing.value = true;
+  await $api(`year/${currentYear.value.yyyy}`, useFetchOptsDelete())
+  processing.value = false;
+}
+async function add(songId) {
+  processing.value = true;
+  const position = nextPosition.value
+  const data = {
+    songId
+  }
+  await $api(`list-entry/${currentYear.value.yyyy}/${position}`, useFetchOptsPost(data))
+  previousPosition.value = position;
+  nextSongTab.value = 'hide';
+  nextSong.value = undefined;
+  nextSongFullData.value = undefined;
+  processing.value = false;
+
+  loadNextFromImport();
+}
 </script>

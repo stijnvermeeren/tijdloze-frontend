@@ -1,5 +1,5 @@
 <template lang="pug">
-#searchBox(ref="searchBoxContainer")
+.searchBox(ref="searchBoxContainer")
   v-text-field(
     :label='placeholder'
     persistent-placeholder
@@ -49,158 +49,151 @@
       | Geen resultaten gevonden.
 </template>
 
-<script>
-  import _ from 'lodash';
-  import Artist from "@/orm/Artist";
-  import Song from "@/orm/Song";
-  import Album from "@/orm/Album";
-  import {useRepo} from "pinia-orm"
-  import {mdiMagnify} from "@mdi/js";
+<script setup>
+import _ from 'lodash';
+import Artist from "@/orm/Artist";
+import Song from "@/orm/Song";
+import Album from "@/orm/Album";
+import {useRepo} from "pinia-orm"
+import {mdiMagnify} from "@mdi/js";
 
-  export default {
-    props: {
-      modelValue: {
-        type: String,
-        default: ''
-      },
-      placeholder: {
-        type: String,
-        default: 'Zoek artiest, album of nummer'
-      },
-      songFilter: {
-        type: Function,
-        default: song => true
-      },
-      artistFilter: {
-        type: Function,
-        default: artist => true
-      },
-      albumFilter: {
-        type: Function,
-        default: album => true
-      },
-      songsYear: {
-        type: Object
-      }
-    },
-    data() {
-      return {
-        query: this.modelValue,
-        selectedIndex: undefined,
-        resultsLimit: 10,
-        searchActive: false
-      }
-    },
-    computed: {
-      mdiMagnify() {
-        return mdiMagnify
-      },
-      allArtists() {
-        return useRepo(Artist).all().filter(this.artistFilter);
-      },
-      allSongs() {
-        return useRepo(Song).with('artist').with('secondArtist').get().filter(this.songFilter);
-      },
-      allAlbums() {
-        return useRepo(Album).with('artist').get().filter(this.albumFilter);
-      },
-      results() {
-        if (!this.query) {
-          return []
-        }
+const emit = defineEmits(['initialResults', 'selectSearchResult'])
 
-        const queryFragments = useSearchQueryFragments(this.query)
-        const artists = this.search(queryFragments, this.allArtists, useSearchArtistContent, 'artist');
-        const songs = this.search(queryFragments, this.allSongs, useSearchSongContent, 'song');
-        const albums = this.search(queryFragments, this.allAlbums, useSearchAlbumContent, 'album');
+const query = defineModel({
+  type: String,
+  default: ''
+})
 
-        return _.sortBy(
-          _.concat(artists, songs, albums),
-          result => -result.score
-        );
-      },
-      visibleResults() {
-        return _.take(this.results, this.resultsLimit);
-      },
-      resultsCount() {
-        return this.results.length;
-      }
-    },
-    watch: {
-      query(newValue) {
-        this.selectedIndex = undefined;
-        this.$emit('update:modelValue', newValue);
-      },
-      modelValue(newValue) {
-        this.$refs.input.focus();
-        this.query = newValue;
-        this.$emit('initialResults', this.results);
-      }
-    },
-    methods: {
-      onBlur(event) {
-        if (!this.$refs.searchBoxContainer.contains(event.relatedTarget)) {
-          this.setSearchInactive()
-        }
-      },
-      setSearchInactive() {
-        this.searchActive = false
-      },
-      search(queryFragments, data, matchAttribute, type) {
-        return data.filter(useSearchFilter(queryFragments, matchAttribute)).map(item => {
-          let score = useSearchScore(this.query, matchAttribute(item));
-          if (this.songsYear && type === 'song') {
-            score = score / 100 + item.position(this.songsYear);
-          }
-
-          return {type, item, score}
-        });
-      },
-      move(offset) {
-        if (this.selectedIndex === undefined) {
-          if (offset >= 0) {
-            this.selectedIndex = -1;
-          } else {
-            this.selectedIndex = 0;
-          }
-        }
-        this.selectedIndex = this.mod(this.selectedIndex + offset, this.results.length);
-      },
-      mod(n, m) {
-        return ((n % m) + m) % m;
-      },
-      go(index) {
-        if (index !== undefined) {
-          const result = this.results[index];
-          result.query = this.query;
-          this.$emit('selectSearchResult', result);
-          this.query = '';
-          this.searchActive = false;
-        }
-      },
-      escapeKeyListener: function (evt) {
-        if (evt.code === "Escape" && this.query) {
-          this.query = '';
-        }
-      }
-    },
-    created: function() {
-      if (process.client) {
-        document.addEventListener('keyup', this.escapeKeyListener);
-      }
-    },
-    destroyed: function() {
-      if (process.client) {
-        document.removeEventListener('keyup', this.escapeKeyListener);
-      }
-    },
+const props = defineProps({
+  placeholder: {
+    type: String,
+    default: 'Zoek artiest, album of nummer'
+  },
+  songFilter: {
+    type: Function,
+    default: song => true
+  },
+  artistFilter: {
+    type: Function,
+    default: artist => true
+  },
+  albumFilter: {
+    type: Function,
+    default: album => true
+  },
+  songsYear: {
+    type: Object
   }
+})
+
+const input = useTemplateRef('input')
+const searchBoxContainer = useTemplateRef('searchBoxContainer')
+
+const selectedIndex = ref(undefined)
+const searchActive = ref(false)
+
+const resultsLimit = 10
+
+const allArtists = computed(() => {
+  return useRepo(Artist).all().filter(props.artistFilter);
+})
+const allSongs = computed(() => {
+  return useRepo(Song).with('artist').with('secondArtist').get().filter(props.songFilter);
+})
+const allAlbums = computed(() => {
+  return useRepo(Album).with('artist').get().filter(props.albumFilter);
+})
+const results = computed(() => {
+  if (!query.value) {
+    return []
+  }
+
+  const queryFragments = useSearchQueryFragments(query.value)
+  const artists = search(queryFragments, allArtists.value, useSearchArtistContent, 'artist');
+  const songs = search(queryFragments, allSongs.value, useSearchSongContent, 'song');
+  const albums = search(queryFragments, allAlbums.value, useSearchAlbumContent, 'album');
+
+  return _.sortBy(
+    _.concat(artists, songs, albums),
+    result => -result.score
+  );
+})
+const visibleResults = computed(() => {
+  return _.take(results.value, resultsLimit);
+})
+const resultsCount = computed(() => {
+  return results.value.length;
+})
+
+
+watch(query, () => {
+  selectedIndex.value = undefined;
+  input.value.focus();
+  emit('initialResults', results.value);
+})
+
+function onBlur(event) {
+  if (searchBoxContainer.value) {
+    if (!searchBoxContainer.value.contains(event.relatedTarget)) {
+      searchActive.value = false
+    }
+  }
+}
+function search(queryFragments, data, matchAttribute, type) {
+  return data.filter(useSearchFilter(queryFragments, matchAttribute)).map(item => {
+    let score = useSearchScore(query.value, matchAttribute(item));
+    if (props.songsYear && type === 'song') {
+      score = score / 100 + item.position(props.songsYear);
+    }
+
+    return {type, item, score}
+  });
+}
+function move(offset) {
+  if (selectedIndex.value === undefined) {
+    if (offset >= 0) {
+      selectedIndex.value = -1;
+    } else {
+      selectedIndex.value = 0;
+    }
+  }
+  selectedIndex.value = mod(selectedIndex.value + offset, visibleResults.value.length);
+}
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+function go(index) {
+  if (index !== undefined) {
+    const result = results.value[index];
+    result.query = query.value;
+    emit('selectSearchResult', result);
+    query.value = '';
+    searchActive.value = false;
+  }
+}
+
+function escapeKeyListener(evt) {
+  if (evt.code === "Escape" && query.value) {
+    query.value = '';
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keyup', escapeKeyListener)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('keyup', escapeKeyListener)
+})
+
+defineExpose({
+  searchActive
+})
 </script>
 
 <style lang="scss" scoped>
   @use "../assets/styleConfig";
 
-  #searchBox {
+  .searchBox {
     position: relative;
     margin: 10px 0;
     font-size: 16px;
