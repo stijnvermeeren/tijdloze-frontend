@@ -10,55 +10,33 @@ div
     v-btn(@click="invalidateCache") Invalidate API caches
 </template>
 
-<script>
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    watch: {
-      async chatOn() {
-        const data = {
-          text: this.chatOn
-        };
-        await this.$api(`text/chatOn`, useFetchOptsPost(data));
-      },
-      async commentsOn() {
-        const data = {
-          text: this.commentsOn
-        };
-        await this.$api(`text/commentsOn`, useFetchOptsPost(data));
-      }
-    },
-    methods: {
-      selectSearchResult(result) {
-        let path = ''
+<script setup>
+const {$api} = useNuxtApp()
 
-        if (result.type === 'song') {
-          path = `/admin/song/${result.item.id}`
-        } else if (result.type === 'artist') {
-          path = `/admin/artist/${result.item.id}`
-        } else if (result.type === 'album') {
-          path = `/admin/album/${result.item.id}`
-        }
-        if (path) {
-          useRouter().push(path);
-        }
-      },
-      async invalidateCache() {
-        await this.$api('/cache/invalidate');
-      }
-    },
-    async asyncData({$api}) {
-      const chatOnResponse = await $api(`text/chatOn`);
-      const commentsOnResponse = await $api(`text/commentsOn`);
-      return {
-        chatOn: chatOnResponse.value,
-        commentsOn: commentsOnResponse.value
-      };
-    }
-  })
+definePageMeta({
+  middleware: 'admin'
+})
+
+const {data: chatOn} = await useFetch(`text/chatOn`, useFetchOpts({transform: response => response.value}));
+const {data: commentsOn} = await useFetch(`text/commentsOn`, useFetchOpts({transform: response => response.value}));
+
+watch(chatOn, async () => {
+  const data = {
+    text: chatOn.value
+  };
+  await $api(`text/chatOn`, useFetchOptsPost(data));
+})
+
+watch(commentsOn, async () => {
+  const data = {
+    text: commentsOn.value
+  };
+  await $api(`text/commentsOn`, useFetchOptsPost(data));
+})
+
+async function invalidateCache() {
+  await $api('/cache/invalidate');
+}
 </script>
 
 <style scoped>

@@ -271,7 +271,7 @@ async function loadPreset(preset) {
   albumDetails.value.releaseYear = preset.albumYear;
   albumDetails.value.isSingle = preset.albumIsSingle;
   albumDetails.value.isSoundtrack = preset.albumIsSoundtrack;
-  if (album) {
+  if (matchedAlbum) {
     albumId.value = matchedAlbum.id;
   } else {
     albumId.value = 0;

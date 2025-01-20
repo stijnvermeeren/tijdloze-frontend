@@ -37,125 +37,110 @@ div
           v-btn(@click='block(user.id)', :disabled='refreshing' density="compact") blokkeren
 </template>
 
-<script>
-  import _ from 'lodash'
-  import {useAuthStore} from "~/stores/auth";
-  import {mdiMagnify} from "@mdi/js";
-  import useFetchOptsDelete from "~/composables/useFetchOptsDelete";
+<script setup>
+import _ from 'lodash'
+import {useAuthStore} from "~/stores/auth";
+import {mdiMagnify} from "@mdi/js";
 
-  export default defineNuxtComponent({
-    setup() {
-      definePageMeta({
-        middleware: 'admin'
-      })
-    },
-    data() {
-      return {
-        refreshing: false,
-        sortProperty: 'lastSeen',
-        searchQuery: ''
-      }
-    },
-    computed: {
-      mdiMagnify() {
-        return mdiMagnify
-      },
-      tableHeaders() {
-        return [
-          {
-            title: 'Gebruikersnaam',
-            key: 'username',
-            value: 'displayName',
-            headerProps: {style: 'font-weight: bold'}
-          },
-          {
-            title: '',
-            key: 'block'
-          },
-          {
-            title: 'Naam',
-            key: 'name',
-            value: 'name',
-            headerProps: { style: 'font-weight: bold'}
-          },
-          {
-            title: 'ID',
-            key: 'id',
-            value: 'id',
-            headerProps: { style: 'font-weight: bold'}
-          },
-          {
-            title: 'Registratie',
-            key: 'created',
-            value: 'created',
-            headerProps: { style: 'font-weight: bold'},
-            sort: (a, b) => {
-              return this.parseDate(a).getTime() - this.parseDate(b).getTime()
-            }
-          },
-          {
-            title: 'Laatste login',
-            key: 'lastSeen',
-            value: 'lastSeen',
-            headerProps: { style: 'font-weight: bold'},
-            sort: (a, b) => {
-              return this.parseDate(a).getTime() - this.parseDate(b).getTime()
-            }
-          }
-        ]
-      },
-      currentUser() {
-        return useAuthStore().user;
-      },
-      userCount() {
-        return this.users.length;
-      },
-      adminCount() {
-        return this.users.filter(user => user.isAdmin).length;
-      },
-      blockedCount() {
-        return this.users.filter(user => user.isBlocked).length;
-      },
-      activeCount() {
-        return this.users.filter(user => {
-          return this.parseDate(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
-        }).length;
-      }
-    },
-    methods: {
-      parseDate(dateString) {
-        return new Date(
-          parseInt(dateString.substring(6, 10)),
-          parseInt(dateString.substring(3, 5)) - 1,
-          parseInt(dateString.substring(0, 2)),
-          parseInt(dateString.substring(11, 13)),
-          parseInt(dateString.substring(14, 16)),
-          parseInt(dateString.substring(17, 19))
-        )
-      },
-      async block(userId) {
-        this.refreshing = true;
-        await this.$api(`/user/${userId}/block`, useFetchOptsPost());
-        this.users = await this.$api(`user/list`);
-        this.refreshing = false;
-      },
-      async unblock(userId) {
-        this.refreshing = true;
-        await this.$api(`/user/${userId}/block`, useFetchOptsDelete());
-        this.users = await this.$api(`user/list`);
-        this.refreshing = false;
-      },
-      async refresh() {
-        this.refreshing = true;
-        this.users = await this.$api(`user/list`);
-        this.refreshing = false;
-      }
-    },
-    async asyncData({$api}) {
-      const users = await $api(`user/list`);
-      return {users};
+const {$api} = useNuxtApp()
+
+definePageMeta({
+  middleware: 'admin'
+})
+
+const refreshing = ref(false)
+const searchQuery = ref('')
+
+const {data: users, refresh: refreshUsers} = await useFetch(`user/list`, useFetchOpts());
+
+const tableHeaders = [
+  {
+    title: 'Gebruikersnaam',
+    key: 'username',
+    value: 'displayName',
+    headerProps: {style: 'font-weight: bold'}
+  },
+  {
+    title: '',
+    key: 'block'
+  },
+  {
+    title: 'Naam',
+    key: 'name',
+    value: 'name',
+    headerProps: { style: 'font-weight: bold'}
+  },
+  {
+    title: 'ID',
+    key: 'id',
+    value: 'id',
+    headerProps: { style: 'font-weight: bold'}
+  },
+  {
+    title: 'Registratie',
+    key: 'created',
+    value: 'created',
+    headerProps: { style: 'font-weight: bold'},
+    sort: (a, b) => {
+      return parseDate(a).getTime() - parseDate(b).getTime()
     }
-  })
+  },
+  {
+    title: 'Laatste login',
+    key: 'lastSeen',
+    value: 'lastSeen',
+    headerProps: { style: 'font-weight: bold'},
+    sort: (a, b) => {
+      return parseDate(a).getTime() - parseDate(b).getTime()
+    }
+  }
+]
+
+const currentUser = computed(() => {
+  return useAuthStore().user;
+})
+const userCount = computed(() => {
+  return users.value.length;
+})
+const adminCount = computed(() => {
+  return users.value.filter(user => user.isAdmin).length;
+})
+const blockedCount = computed(() => {
+  return users.value.filter(user => user.isBlocked).length;
+})
+const activeCount = computed(() => {
+  return users.value.filter(user => {
+    return parseDate(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
+  }).length;
+})
+
+function parseDate(dateString) {
+  return new Date(
+    parseInt(dateString.substring(6, 10)),
+    parseInt(dateString.substring(3, 5)) - 1,
+    parseInt(dateString.substring(0, 2)),
+    parseInt(dateString.substring(11, 13)),
+    parseInt(dateString.substring(14, 16)),
+    parseInt(dateString.substring(17, 19))
+  )
+}
+async function block(userId) {
+  refreshing.value = true;
+  await $api(`/user/${userId}/block`, useFetchOptsPost());
+  await refreshUsers()
+  refreshing.value = false;
+}
+async function unblock(userId) {
+  refreshing.value = true;
+  await $api(`/user/${userId}/block`, useFetchOptsDelete());
+  await refreshUsers()
+  refreshing.value = false;
+}
+async function refresh() {
+  refreshing.value = true;
+  await refreshUsers()
+  refreshing.value = false;
+}
 </script>
 
 <style lang="scss" scoped>

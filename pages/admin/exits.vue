@@ -1,6 +1,6 @@
 <template lang="pug">
 Title Admin: Exits markeren
-div
+div(style="min-height: 30em")
   h2 Exits markeren ({{currentYear.yyyy}})
   div
     search-box(
@@ -23,55 +23,48 @@ div
           |
           | - {{song.title}}
           v-btn(@click='unmarkExit(song)') Terugzetten
-      div
-        v-btn(@click='unmarkAll()') Alle exits terugzetten
+  div
+    v-btn(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
 <script setup>
+import Song from '~/orm/Song'
+import {useRootStore} from "~/stores/root";
+import {useRepo} from "pinia-orm";
+
+const {$api} = useNuxtApp()
+
 definePageMeta({ middleware: 'admin' })
+
+const exitSongIds = computed(() => {
+  return useRootStore().exitSongIds;
+})
+const exits = computed(() => {
+  return exitSongIds.value.map(id => {
+    return useRepo(Song).with('artist').with('secondArtist').find(id)
+  });
+})
+const currentYear = computed(() => {
+  return useRootStore().currentYear;
+})
+const previousYear = computed(() => {
+  return currentYear.value.previous;
+})
+
+function songValid(song) {
+  const inPreviousYear = song.position(previousYear.value);
+
+  const notYetInCurrentYear = currentYear.value ? !song.position(currentYear.value) : true;
+  const notYetMarked = !exitSongIds.value.includes(song.id);
+  return inPreviousYear && notYetInCurrentYear && notYetMarked;
+}
+async function unmarkAll() {
+  await $api(`/list-exit/${currentYear.value.yyyy}`, useFetchOptsDelete());
+}
+async function unmarkExit(song) {
+  await $api(`/list-exit/${currentYear.value.yyyy}/${song.id}`, useFetchOptsDelete());
+}
+async function markExit(song) {
+  await $api(`/list-exit/${currentYear.value.yyyy}/${song.id}`, useFetchOptsPost());
+}
 </script>
-
-<script>
-  import Song from '~/orm/Song'
-  import {useRootStore} from "~/stores/root";
-  import {useRepo} from "pinia-orm";
-
-  export default defineNuxtComponent({
-    name: 'exits',
-    computed: {
-      exitSongIds() {
-        return useRootStore().exitSongIds;
-      },
-      exits() {
-        return this.exitSongIds.map(id => {
-          return useRepo(Song).with('artist').with('secondArtist').find(id)
-        });
-      },
-      previousYear() {
-        return this.currentYear.previous;
-      },
-      currentYear() {
-        return useRootStore().currentYear;
-      }
-    },
-    methods: {
-      songValid(song) {
-        const inPreviousYear = song.position(this.previousYear);
-
-        const notYetInCurrentYear = this.currentYear ? !song.position(this.currentYear) : true;
-        const notYetMarked = !this.exitSongIds.includes(song.id);
-        return inPreviousYear && notYetInCurrentYear && notYetMarked;
-      },
-      async unmarkAll() {
-        await this.$api(`/list-exit/${this.currentYear.yyyy}`, useFetchOptsDelete());
-      },
-      async unmarkExit(song) {
-        await this.$api(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsDelete());
-      },
-      async markExit(song) {
-        await this.$api(`/list-exit/${this.currentYear.yyyy}/${song.id}`, useFetchOptsPost());
-      }
-    }
-  })
-</script>
-
