@@ -144,7 +144,7 @@ function close(e) {
   }
 }
 function menuClick(event) {
-  if (event.target.parentElement.tagName.toLowerCase() === 'a') {
+  if (event.target.parentElement?.tagName?.toLowerCase() === 'a') {
     isOpen.value = false;
   }
 }

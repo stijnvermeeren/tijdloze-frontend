@@ -284,7 +284,7 @@ async function loadPreset(preset) {
 
 function preProcessArtistName(artistName) {
   let query = useSearchNormalize(artistName.toLowerCase());
-  if (query.substring(0,4) === 'the') {
+  if (query.substring(0, 4) === 'the ') {
     query = artistName.substring(4);
   }
   return query;
