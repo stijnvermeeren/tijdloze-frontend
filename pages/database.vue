@@ -146,6 +146,8 @@ const countryFilter = ref(useRoute().query.land)
 const languageFilter = ref(useRoute().query.taal)
 const leadVocalsFilter = ref(useRoute().query.leadVocals)
 
+const {years, currentYear} = storeToRefs(useRootStore())
+
 const lowestReleaseYear = computed(() => {
   return _.min(useRepo(Album).all().map(album => album.releaseYear))
 })
@@ -182,9 +184,6 @@ const extended = computed(() => {
 const selectedSongs = computed(() => {
   return applyFilters(useRootStore().songs);
 })
-const years = computed(() => {
-  return useRootStore().years;
-})
 const yearOptions = computed(() => {
   return years.value.map(year => {
     return {
@@ -192,9 +191,6 @@ const yearOptions = computed(() => {
       value: year.yyyy
     }
   })
-})
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
 })
 const selectedYears = computed(() => {
   return years.value.filter(year => year.yyyy >= startYear.value && year.yyyy <= endYear.value);

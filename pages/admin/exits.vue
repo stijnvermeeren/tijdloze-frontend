@@ -36,20 +36,14 @@ const {$api} = useNuxtApp()
 
 definePageMeta({ middleware: 'admin' })
 
-const exitSongIds = computed(() => {
-  return useRootStore().exitSongIds;
-})
+const {currentYear, previousYear, exitSongIds} = storeToRefs(useRootStore())
+
 const exits = computed(() => {
   return exitSongIds.value.map(id => {
     return useRepo(Song).with('artist').with('secondArtist').find(id)
   });
 })
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
-const previousYear = computed(() => {
-  return currentYear.value.previous;
-})
+
 
 function songValid(song) {
   const inPreviousYear = song.position(previousYear.value);

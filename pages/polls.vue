@@ -13,9 +13,7 @@ import {useRootStore} from "~/stores/root";
 
 const {data: polls} = await useFetch(`poll/list`, useFetchOpts())
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
+const {currentYear} = storeToRefs(useRootStore())
 
 const currentYearPolls = computed(() => {
   return polls.value.filter(poll => poll.year === currentYear.value.yyyy && !poll.isDeleted)

@@ -8,15 +8,14 @@ import {useRootStore} from "~/stores/root";
 
 const cutoffs = [3, 10, 20, 50, 100]
 
-const data = computed(() => {
-  const years = useRootStore().years;
-  const songs = useRootStore().songs;
+const {songs, years} = storeToRefs(useRootStore())
 
+const data = computed(() => {
   return cutoffs.map(cutoff => {
-    const cutoffData = years.map(year => {
+    const cutoffData = years.value.map(year => {
       const ages = [];
 
-      songs.forEach(song => {
+      songs.value.forEach(song => {
         if (song.position(year) && song.position(year) <= cutoff) {
           ages.push(year.yyyy - song.album.releaseYear);
         }

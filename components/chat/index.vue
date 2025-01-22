@@ -105,8 +105,7 @@ async function saveDisplayName() {
   const data = {
     displayName: displayNameEdit.value.trim()
   };
-  const user = await $api(`user/display-name`, useFetchOptsPost(data))
-  useAuthStore().setUser(user);
+  useAuthStore().user = await $api(`user/display-name`, useFetchOptsPost(data));
   // TODO replace this
   // await this.loadOnlineOnce();
   savingDisplayName.value = false;

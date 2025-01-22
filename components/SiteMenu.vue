@@ -15,7 +15,7 @@ div
         v-list-group.lists(value="group-/lijst")
           template(#activator="{ props }")
             v-list-item(v-bind="props") De Tijdloze van ...
-          v-list-item(v-for='year in years' :key='year.yyyy' :to='`/lijst/${year.yyyy}`') {{year.yyyy}}
+          v-list-item(v-for='year in sortedYears' :key='year.yyyy' :to='`/lijst/${year.yyyy}`') {{year.yyyy}}
         v-list-item(to="/database") Volledige database
         v-list-group(value="group-/statistieken")
           template(#activator="{ props }")
@@ -85,26 +85,13 @@ const isOpen = ref(false)
 const openeds = computed(() => {
   return [groupMap(useRoute().path)]
 })
-const commentsOn = computed(() => {
-  return useRootStore().commentsOn;
-})
-const chatOn = computed(() => {
-  return useRootStore().chatOn;
-})
-const listInProgress = computed(() => {
-  return useRootStore().listInProgress;
-})
+const { commentsOn, chatOn, currentYear, lastPosition, listInProgress, years } = storeToRefs(useRootStore())
+const { isAdmin } = storeToRefs(useAuthStore())
 const top100InProgress = computed(() => {
-  return listInProgress.value && useRootStore().lastPosition <= 100;
+  return listInProgress.value && lastPosition.value <= 100;
 })
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
-const years = computed(() => {
-  return [...useRootStore().years].reverse();
-})
-const isAdmin = computed(() => {
-  return useAuthStore().isAdmin;
+const sortedYears = computed(() => {
+  return [...years.value].reverse();
 })
 
 function groupMap(path) {

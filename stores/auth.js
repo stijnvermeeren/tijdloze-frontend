@@ -1,40 +1,38 @@
 import { defineStore } from 'pinia'
 
-export const useAuthStore = defineStore('auth', {
-  state: () => ({
-    accessToken: null,
-    user: null,
-  }),
-  getters: {
-    isAuthenticated(state) {
-      return !!state.user;
-    },
-    isAdmin(state) {
-      return this.isAuthenticated && state.user.isAdmin;
-    },
-    displayName(state) {
-      if (state.user) {
-        return state.user.displayName;
-      }
-    },
-    displayNameWithFallback(state) {
-      if (state.user) {
-        if (state.user.displayName) {
-          return state.user.displayName;
-        } else if (state.user.name) {
-          return state.user.name;
-        } else {
-          return state.user.email;
-        }
+export const useAuthStore = defineStore('auth', () => {
+  const accessToken = ref(null)
+  const user = ref(null)
+
+  const isAuthenticated = computed(() => {
+    return !!user.value;
+  })
+  const isAdmin = computed(() => {
+    return isAuthenticated.value && user.value.isAdmin;
+  })
+  const displayName = computed(() => {
+    if (user.value) {
+      return user.value.displayName;
+    }
+  })
+  const displayNameWithFallback = computed(() => {
+    if (user.value) {
+      if (user.value.displayName) {
+        return user.value.displayName;
+      } else if (user.value.name) {
+        return user.value.name;
+      } else {
+        return user.value.email;
       }
     }
-  },
-  actions: {
-    setAccessToken(accessToken) {
-      this.accessToken = accessToken || null;
-    },
-    setUser(user) {
-      this.user = user || null
-    }
+  })
+
+  return {
+    accessToken,
+    displayName,
+    displayNameWithFallback,
+    isAdmin,
+    isAuthenticated,
+    user
   }
 })

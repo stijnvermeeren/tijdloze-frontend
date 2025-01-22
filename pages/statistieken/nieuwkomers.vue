@@ -13,12 +13,8 @@ div
 <script setup>
 import {useRootStore} from "~/stores/root";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
-const songs = computed(() => {
-  return useRootStore().songs;
-})
+const {songs, years} = storeToRefs(useRootStore())
+
 const data = computed(() => {
   const dataPoints = [];
   const firstTijdlozeYear = years.value[0];

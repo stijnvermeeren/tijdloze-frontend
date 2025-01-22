@@ -15,9 +15,8 @@ const props = defineProps({
   songs: Array
 })
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {years} = storeToRefs(useRootStore())
+
 const listCount = computed(() => {
   return _.sumBy(props.songs, song => song.listCount(years.value))
 })

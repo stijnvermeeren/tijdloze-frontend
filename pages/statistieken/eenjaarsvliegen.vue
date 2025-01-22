@@ -29,12 +29,8 @@ import {useRepo} from "pinia-orm";
 import Song from "~/orm/Song";
 import _ from 'lodash';
 
-const years = computed(() => {
-  return useRootStore().years;
-})
-const songs = computed(() => {
-  return useRootStore().songs;
-})
+const {songs, years} = storeToRefs(useRootStore())
+
 const data = computed(() => {
   const dataPoints = [];
   useRepo(List).get().forEach(list => {

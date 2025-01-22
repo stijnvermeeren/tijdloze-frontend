@@ -68,9 +68,9 @@ const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHo
 
 const tooltipSong = computed(() => {
   if (!!hoverYear.value && !!hoverPosition.value) {
-    return useRootStore().listTop100(hoverYear.value).find(song => {
-      return song.position(hoverYear.value) === hoverPosition.value;
-    })
+    return useRootStore().list(hoverYear.value, 100, 100).find(entry => {
+      return entry.position === hoverPosition.value;
+    })?.song
   }
   return undefined;
 })

@@ -19,9 +19,7 @@ div
 import _ from 'lodash';
 import {useRootStore} from "~/stores/root";
 
-const year = computed(() => {
-  return useRootStore().currentYear;
-})
+const {currentYear: year} = storeToRefs(useRootStore())
 
 const upcomingSongs = computed(() => {
   const previousYear = useRootStore().list(year.value.previous).filter(entry => entry.position <= 100)

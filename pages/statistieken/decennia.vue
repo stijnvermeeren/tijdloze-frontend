@@ -26,12 +26,8 @@ import Album from "@/orm/Album";
 import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
+const {currentYear, songs, years} = storeToRefs(useRootStore())
+
 const decades = computed(() => {
   const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));
   const endYear = currentYear.value.yyyy;
@@ -51,7 +47,7 @@ const graphData = computed(() => {
     };
   });
 
-  useRootStore().songs.forEach(song => {
+  songs.value.forEach(song => {
     years.value.forEach(year => {
       if (song.position(year)) {
         dataPoints[yearInDecade(song.album.releaseYear)].push({

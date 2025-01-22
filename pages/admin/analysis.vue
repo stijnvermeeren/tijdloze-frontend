@@ -72,6 +72,8 @@ const saving = ref(false)
 const interval = ref(undefined)
 const analysis = ref(initialAnalysis.value)
 
+const {currentYear} = storeToRefs(useRootStore())
+
 const outOfDate = computed(() => {
   return lastLoadedAnalysis.value !== initialAnalysis.value;
 })
@@ -81,9 +83,6 @@ const analysisPreview = computed(() => {
   } else {
     return "";
   }
-})
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
 })
 const apiPath = computed(() => {
   return `text/analysis_${currentYear.value.yyyy}`

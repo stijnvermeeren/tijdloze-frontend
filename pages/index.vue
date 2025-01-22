@@ -49,78 +49,64 @@ div
 </template>
 
 <script setup>
-  import _ from 'lodash';
-  import {useRootStore} from "~/stores/root";
-  import {usePollStore} from "~/stores/poll";
-  import List from "~/orm/List";
-  import {useRepo} from "pinia-orm";
-  import useClientDataRefresh from "~/composables/useClientDataRefresh";
-  import Song from "~/orm/Song";
+import _ from 'lodash';
+import {useRootStore} from "~/stores/root";
+import {usePollStore} from "~/stores/poll";
+import List from "~/orm/List";
+import {useRepo} from "pinia-orm";
+import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
-  const {$api} = useNuxtApp()
+const {$api} = useNuxtApp()
 
-  const listInProgress = computed(() => {
-    return useRootStore().listInProgress;
-  })
+const {currentYear: year, lastPosition, listInProgress} = storeToRefs(useRootStore())
+const { currentPoll } = storeToRefs(usePollStore())
 
-  const lastPosition = computed(() => {
-    return useRootStore().lastPosition;
-  })
-
-  const currentPoll = computed(() => {
-    return usePollStore().currentPoll;
-  })
-
-  const year = computed(() => {
-    return useRootStore().currentYear;
-  })
-
-  const tableYear = computed(() => {
-    if (year.value) {
-      if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
-        return year.value.previous;
-      } else {
-        return year.value;
-      }
-    }
-  })
-
-  const top5 = computed(() => {
-    const list = useRootStore().list(tableYear.value, 5)
-    if (list) {
-      return list
+const tableYear = computed(() => {
+  if (year.value) {
+    if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
+      return year.value.previous;
     } else {
-      return []
+      return year.value;
     }
-  })
+  }
+})
 
-  const exitsKnown = computed(() => {
-    return !! useRootStore().list(tableYear.value?.previous)
-        .filter(entry => entry.position <= 100)
-        .find(entry => entry.song.notInList(tableYear.value))
-  })
+const top5 = computed(() => {
+  const list = useRootStore().list(tableYear.value, 5)
+  if (list) {
+    return list
+  } else {
+    return []
+  }
+})
 
-  const {data: chatOn} = await useFetch(
-    `text/chatOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
-  )
-  const {data: commentsOn} = await useFetch(
-    `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'text/commentsOn'})
-  )
+const exitsKnown = computed(() => {
+  return !! useRootStore().list(tableYear.value?.previous)
+      .filter(entry => entry.position <= 100)
+      .find(entry => entry.song.notInList(tableYear.value))
+})
 
-  const {data: comments, execute: refreshComments} = await useAsyncData(
-    'comments',
-    () => {
-      if (commentsOn.value) {
-        return $api(`comments/1`).then(data => _.take(data, 10))
-      } else {
-        return Promise.resolve([])
-      }
-    },
-    {watch: [commentsOn]}
-  )
-  useClientDataRefresh(refreshComments)
+const {data: chatOn} = await useFetch(
+  `text/chatOn`,
+  useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
+)
+const {data: commentsOn} = await useFetch(
+  `text/commentsOn`,
+  useFetchOpts({transform: data => data.value === 'on', key: 'text/commentsOn'})
+)
+
+const {data: comments, execute: refreshComments} = await useAsyncData(
+  'comments',
+  () => {
+    if (commentsOn.value) {
+      return $api(`comments/1`).then(data => _.take(data, 10))
+    } else {
+      return Promise.resolve([])
+    }
+  },
+  {watch: [commentsOn]}
+)
+useClientDataRefresh(refreshComments)
 </script>
 
 <style lang="scss" scoped>

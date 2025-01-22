@@ -28,9 +28,8 @@ const input = computed(() => {
   }
 })
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {years} = storeToRefs(useRootStore())
+
 const song = computed(() => {
   const songId = findSongId(input.value)
   return songId ? useRepo(Song).find(songId) : undefined

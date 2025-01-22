@@ -17,16 +17,15 @@ const {$api} = useNuxtApp()
 
 definePageMeta({ middleware: 'admin' })
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
+const {currentYear} = storeToRefs(useRootStore())
+
 const list = computed(() => {
   return useRootStore().list(currentYear.value)
 })
 
 async function remove(position, song) {
   if (confirm(`"${song.artist.name} - ${song.title}" (positie ${position}) verwijderen uit de lijst van ${currentYear.value.yyyy})?`)) {
-    await this.$api(`list-entry/${currentYear.value.yyyy}/${position}`, useFetchOptsDelete())
+    await $api(`list-entry/${currentYear.value.yyyy}/${position}`, useFetchOptsDelete())
   }
 }
 </script>

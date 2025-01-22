@@ -113,7 +113,7 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.poll) {
-        pollStore.setCurrentPoll(response.poll)
+        pollStore.currentPoll = response.poll
       }
     },
     onreconnect: e => {},

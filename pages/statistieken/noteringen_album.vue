@@ -15,9 +15,7 @@ import Album from "@/orm/Album";
 import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {years} = storeToRefs(useRootStore())
 const albums = computed(() => {
   return useRepo(Album).withAll().get();
 })

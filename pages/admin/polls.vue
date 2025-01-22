@@ -38,12 +38,10 @@ const submitting = ref(false)
 
 const {data: polls, refresh: refreshPolls} = await useFetch(`poll/list`, useFetchOpts())
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
+const {currentYear, years} = storeToRefs(useRootStore())
 
 const groupedPolls = computed(() => {
-  const pollYears = useRootStore().years.filter(year => parseInt(year.yyyy) >= 2015);
+  const pollYears = years.value.filter(year => parseInt(year.yyyy) >= 2015);
   return pollYears.reverse().map(year => {
     return {
       year: year.yyyy,
@@ -62,7 +60,7 @@ async function refresh() {
   refreshing.value = false;
 }
 
-async  function submit() {
+async function submit() {
   submitting.value = true;
   const data = {
     question: question.value,
@@ -70,7 +68,7 @@ async  function submit() {
     year: currentYear.value.yyyy
   };
   await $api('poll', useFetchOptsPost(data));
-  await this.refresh();
+  await refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];
   submitting.value = false;

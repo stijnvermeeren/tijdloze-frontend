@@ -42,6 +42,8 @@ div
 
   const byAlbum = ref(false)
 
+  const {currentYear, years} = storeToRefs(useRootStore())
+
   const artistId = computed(() => idFromSlug(useRoute().params?.id))
 
   // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
@@ -71,10 +73,6 @@ div
         .find(artistId.value);
   })
 
-  const currentYear = computed(() => {
-    return useRootStore().currentYear;
-  })
-
   const collapseHeight = computed(() => {
     if (artist.value.allSongs.length <= 5) {
       return undefined
@@ -85,7 +83,7 @@ div
   })
 
   const top100Songs = computed(() => {
-    return artist.value.allSongs.filter(song => song.listCount(useRootStore().years) > 0)
+    return artist.value.allSongs.filter(song => song.listCount(years.value) > 0)
   })
 
   const links = computed(() => {

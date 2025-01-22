@@ -43,12 +43,7 @@ watch(query, () => {
   showingResults.value = false
 })
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
-const previousYear = computed(() => {
-  return currentYear.value.previous;
-})
+const {currentYear, previousYear} = storeToRefs(useRootStore())
 
 function initialResults(results) {
   if (waitingForResults.value) {
