@@ -60,7 +60,7 @@ async function refresh() {
   refreshing.value = false;
 }
 
-async  function submit() {
+async function submit() {
   submitting.value = true;
   const data = {
     question: question.value,
@@ -68,7 +68,7 @@ async  function submit() {
     year: currentYear.value.yyyy
   };
   await $api('poll', useFetchOptsPost(data));
-  await this.refresh();
+  await refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];
   submitting.value = false;
