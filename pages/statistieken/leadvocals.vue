@@ -18,9 +18,8 @@ div
 import vocalsGenders from '~/utils/leadVocals'
 import {useRootStore} from "~/stores/root";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {songs, years} = storeToRefs(useRootStore())
+
 const graphData = computed(() => {
   const dataPoints = {};
   const result = Object.keys(vocalsGenders).map(vocalsGenderId => {
@@ -31,7 +30,7 @@ const graphData = computed(() => {
     };
   });
 
-  useRootStore().songs.forEach(song => {
+  songs.value.forEach(song => {
     if (song.leadVocals) {
       years.value.forEach(year => {
         if (song.position(year)) {

@@ -58,7 +58,7 @@ async function submitDisplayName() {
   };
   const user = await $api(`user/display-name`, useFetchOptsPost(data))
   submittingDisplayName.value = false;
-  useAuthStore().setUser(user);
+  useAuthStore().user.value = user;
 }
 </script>
 

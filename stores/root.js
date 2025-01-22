@@ -7,136 +7,151 @@ import Song from '~/orm/Song';
 import Year from '~/orm/Year';
 import List from '~/orm/List';
 
-export const useRootStore = defineStore('root', {
-  state: () => ({
-    yearsRaw: [],
-    exitSongIds: [],
-    commentsOn: true,
-    chatOn: false
-  }),
-  getters: {
-    songIdsByTitle(state) {
-      return _.mapValues(
-        _.groupBy(useRepo(Song).all(), song => song.title.toLowerCase()),
-        songs => songs.map(song => song.id)
-      )
-    },
-    artistIdsByFullName(state) {
-      return _.mapValues(
-        _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
-        artists => artists.map(artist => artist.id)
-      )
-    },
-    artistIdsByName(state) {
-      return _.mapValues(
-        _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
-        artists => artists.map(artist => artist.id)
-      )
-    },
-    songs(state) {
-      return _.sortBy(
-        useRepo(Song).withAll().get(),
-        song => [song.title, song.album.releaseYear]
-      );
-    },
-    years(state) {
-      const years = state.yearsRaw?.map(yyyy => new Year(yyyy)) ?? []
-      years.forEach((year, i) => {
-        year.previous = years?.[i - 1]
-        year.next = years?.[i + 1]
+export const useRootStore = defineStore('root', () => {
+  const yearsRaw = ref([])
+  const exitSongIds = ref([])
+  const commentsOn = ref(true)
+  const chatOn = ref(false)
+  
+  const songIdsByTitle = computed(() => {
+    return _.mapValues(
+      _.groupBy(useRepo(Song).all(), song => song.title.toLowerCase()),
+      songs => songs.map(song => song.id)
+    )
+  })
+  const artistIdsByFullName = computed(() => {
+    return _.mapValues(
+      _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
+      artists => artists.map(artist => artist.id)
+    )
+  })
+  const artistIdsByName = computed(() => {
+    return _.mapValues(
+      _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
+      artists => artists.map(artist => artist.id)
+    )
+  })
+  const songs = computed(() => {
+    return _.sortBy(
+      useRepo(Song).withAll().get(),
+      song => [song.title, song.album.releaseYear]
+    );
+  })
+  const years = computed(() => {
+    const years = yearsRaw.value?.map(yyyy => new Year(yyyy)) ?? []
+    years.forEach((year, i) => {
+      year.previous = years?.[i - 1]
+      year.next = years?.[i + 1]
+    })
+    return years ?? []
+  })
+  const currentYear = computed(() => {
+    return _.last(years.value)
+  })
+  const previousYear = computed(() => {
+    return currentYear.value.previous;
+  })
+
+  const usedCountryIds = computed(() => {
+    return new Set(useRepo(Artist).all().map(artist => artist.countryId));
+  })
+
+  const lastSong = computed(() => {
+    const entry = _.first(list(currentYear.value, 1))
+    if (entry) {
+      return entry.song
+    }
+  })
+  const lastPosition = computed(() => {
+    if (lastSong.value) {
+      return lastSong.value.position(currentYear.value, true)
+    } else {
+      return undefined
+    }
+  })
+  const listInProgress = computed(() => {
+    return lastPosition.value && lastPosition.value !== 1;
+  })
+  const lastCompleteYear = computed(() => {
+    if (listInProgress.value) {
+      return currentYear.value.previous
+    } else {
+      return currentYear.value
+    }
+  })
+
+  function list(year, limit, maxPosition) {
+    const list = useRepo(List).find(year?.yyyy)
+    if (list) {
+      let notNullSongIds = list.songIds.filter(x => x)
+      if (limit > 0) {
+        notNullSongIds = _.take(notNullSongIds, limit)
+      }
+      const songs = useRepo(Song).with('album').with('artist').with('album').with('artist').find(notNullSongIds)
+      const songsById = {}
+      songs.forEach(song => {
+        songsById[song.id] = song
       })
-      return years ?? []
-    },
-    currentYear(state) {
-      return _.last(this.years)
-    },
-    usedCountryIds(state) {
-      return new Set(useRepo(Artist).all().map(artist => artist.countryId));
-    },
-    list(state) {
-      return (year, limit, maxPosition) => {
-        const list = useRepo(List).find(year?.yyyy)
-        if (list) {
-          let notNullSongIds = list.songIds.filter(x => x)
-          if (limit > 0) {
-            notNullSongIds = _.take(notNullSongIds, limit)
-          }
-          const songs = useRepo(Song).with('album').with('artist').with('album').with('artist').find(notNullSongIds)
-          const songsById = {}
-          songs.forEach(song => {
-            songsById[song.id] = song
-          })
-          const entries = []
-          for (const [index, songId] of list.songIds.entries()) {
-            const position = index + 1
-            if (maxPosition > 0 && position > maxPosition) {
-              return entries
-            }
-            if (songId && songsById[songId]) {
-              let attribution = undefined
-              if (position in list.attributions) {
-                attribution = list.attributions[position]
-              }
-              entries.push({
-                position,
-                song: songsById[songId],
-                attribution
-              })
-            }
-            if (limit > 0 && entries.length >= limit) {
-              return entries
-            }
-          }
+      const entries = []
+      for (const [index, songId] of list.songIds.entries()) {
+        const position = index + 1
+        if (maxPosition > 0 && position > maxPosition) {
           return entries
-        } else {
-          return []
+        }
+        if (songId && songsById[songId]) {
+          let attribution = undefined
+          if (position in list.attributions) {
+            attribution = list.attributions[position]
+          }
+          entries.push({
+            position,
+            song: songsById[songId],
+            attribution
+          })
+        }
+        if (limit > 0 && entries.length >= limit) {
+          return entries
         }
       }
-    },
-    lastSong(state) {
-      const entry = _.first(useRootStore().list(this.currentYear, 1))
-      if (entry) {
-        return entry.song
-      }
-    },
-    lastPosition(state) {
-      const lastSong = this.lastSong
-      if (lastSong) {
-        return lastSong.position(this.currentYear, true)
-      } else {
-        return undefined
-      }
-    },
-    listInProgress(state) {
-      return this.lastPosition && this.lastPosition !== 1;
-    },
-    lastCompleteYear(state) {
-      if (this.listInProgress) {
-        return this.currentYear.previous
-      } else {
-        return this.currentYear
-      }
+      return entries
+    } else {
+      return []
     }
-  },
-  actions: {
-    setCommentsOn(commentsOn) {
-      this.commentsOn = commentsOn
-    },
-    setChatOn(chatOn) {
-      this.chatOn = chatOn
-    },
-    updateCoreData(json) {
-      this.yearsRaw = json.years;
-      this.exitSongIds = json.exitSongIds;
-    },
-    setExitSongIds(exitSongIds) {
-      this.exitSongIds = exitSongIds
-    },
-    setCurrentYear(currentYear) {
-      if (_.last(this.yearsRaw) !== currentYear) {
-        this.yearsRaw = this.yearsRaw.filter(year => year < currentYear)
-        this.yearsRaw.push(currentYear)
-      }
+  }
+
+  function updateCoreData(json) {
+    yearsRaw.value = json.years;
+    exitSongIds.value = json.exitSongIds;
+  }
+  function setExitSongIds(exitSongIds) {
+    exitSongIds.value = exitSongIds
+  }
+  function setCurrentYear(currentYear) {
+    if (_.last(yearsRaw.value) !== currentYear) {
+      yearsRaw.value = yearsRaw.value.filter(year => year < currentYear)
+      yearsRaw.value.push(currentYear)
     }
+  }
+    
+  return {
+    artistIdsByName,
+    artistIdsByFullName,
+    chatOn,
+    commentsOn,
+    currentYear,
+    exitSongIds,
+    lastCompleteYear,
+    lastPosition,
+    lastSong,
+    list,
+    listInProgress,
+    previousYear,
+    setExitSongIds,
+    setCurrentYear,
+    songIdsByTitle,
+    songs,
+    updateCoreData,
+    usedCountryIds,
+    years
   }
 })

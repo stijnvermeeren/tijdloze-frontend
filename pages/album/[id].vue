@@ -35,6 +35,8 @@ div
 
   const albumId = computed(() => idFromSlug(useRoute().params?.id))
 
+  const {currentYear, years} = storeToRefs(useRootStore())
+
   const {data: fullAlbumData, error} = await useFetch(
       `album/${albumId.value}`, useFetchOpts({'key': `album/${albumId.value}`})
   )
@@ -49,12 +51,8 @@ div
       .find(albumId.value);
   })
 
-  const currentYear = computed(() => {
-    return useRootStore().currentYear;
-  })
-
   const top100Songs = computed(() => {
-    return album.value.songsSorted.filter(song => song.listCount(useRootStore().years) > 0)
+    return album.value.songsSorted.filter(song => song.listCount(years.value) > 0)
   })
 
   const links = computed(() => {

@@ -15,9 +15,7 @@ import Artist from "@/orm/Artist";
 import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {years} = storeToRefs(useRootStore())
 const artists = computed(() => {
   return useRepo(Artist)
     .with('songs')

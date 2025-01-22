@@ -25,18 +25,16 @@ import _ from 'lodash';
 import countries from '~/utils/country'
 import {useRootStore} from "~/stores/root";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {usedCountryIds, songs, years} = storeToRefs(useRootStore())
 
 const graphData = computed(() => {
-  const usedCountryIds = _.sortBy(
-      [...useRootStore().usedCountryIds],
+  const sortedUsedCountryIds = _.sortBy(
+      [...usedCountryIds.value],
       countryId => countries[countryId]
   )
   const dataPoints = {};
 
-  const result = usedCountryIds.map(countryId => {
+  const result = sortedUsedCountryIds.map(countryId => {
     dataPoints[countryId] = [];
     return {
       countryId: countryId,
@@ -44,7 +42,7 @@ const graphData = computed(() => {
     };
   });
 
-  useRootStore().songs.forEach(song => {
+  songs.value.forEach(song => {
     if (song.artist.countryId) {
       years.value.forEach(year => {
         if (song.position(year)) {

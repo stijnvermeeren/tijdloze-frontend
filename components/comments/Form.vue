@@ -87,10 +87,9 @@ async function submitDisplayName() {
   const data = {
     displayName: name.value
   };
-  const user = await $api(`user/display-name`, useFetchOptsPost(data))
+  useAuthStore().user = await $api(`user/display-name`, useFetchOptsPost(data));
   editingDisplayName.value = false;
   submittingDisplayName.value = false;
-  useAuthStore().setUser(user);
   emit('displayNameChanged');
 }
 

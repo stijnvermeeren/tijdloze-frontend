@@ -92,7 +92,7 @@ async function reload() {
   isLoading.value = true;
   if (isAuthenticated.value) {
     const result = await $api(`poll/my-votes`)
-    usePollStore().setVotes(result.votes);
+    usePollStore().votes = result.votes;
   }
 
   livePoll.value = await $api(`poll/${props.poll.id}`)

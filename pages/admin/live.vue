@@ -109,6 +109,8 @@ definePageMeta({ middleware: 'admin' })
 const wizard = useTemplateRef('wizard')
 const search = useTemplateRef('search')
 
+const {currentYear, previousYear, lastSong, lastPosition} = storeToRefs(useRootStore())
+
 const nextSongTab = ref('hide')
 const nextSong = ref(undefined)
 const nextSongFullData = ref(undefined)
@@ -116,21 +118,9 @@ const processing = ref(false)
 const query = ref('')
 const importQuery = ref('')
 const importSongs = ref([])
-const nextPosition = ref(useRootStore().lastPosition ? useRootStore().lastPosition - 1 : 100)
+const nextPosition = ref(lastPosition.value ? lastPosition.value - 1 : 100)
 const previousPosition = ref(undefined)
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
-const previousYear = computed(() => {
-  return currentYear.value.previous;
-})
-const lastSong = computed(() => {
-  return useRootStore().lastSong;
-})
-const lastPosition = computed(() => {
-  return useRootStore().lastPosition
-})
 const nextYearYyyy = computed(() => {
   return (new Date()).getFullYear();
 })

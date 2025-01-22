@@ -21,8 +21,8 @@ export default defineNuxtPlugin(async nuxtApp => {
       $api(`text/commentsOn`),
       $api('core-data')
     ])
-    rootStore.setChatOn(chatOnResponse.value === 'on')
-    rootStore.setCommentsOn(commentsOnResponse.value === 'on')
+    rootStore.chatOn = (chatOnResponse.value === 'on')
+    rootStore.commentsOn = (commentsOnResponse.value === 'on')
     rootStore.updateCoreData(coreDataResponse)
 
     useRepo(Artist).insert(coreDataResponse.artists);
@@ -37,7 +37,7 @@ export default defineNuxtPlugin(async nuxtApp => {
       const poll = await $api('poll/latest')
           .catch(err => undefined);
       if (poll && poll.year === rootStore.currentYear.yyyy) {
-        usePollStore().setCurrentPoll(poll);
+        usePollStore().currentPoll = poll;
       }
     }
   }

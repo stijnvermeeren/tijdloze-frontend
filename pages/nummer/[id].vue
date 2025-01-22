@@ -67,14 +67,10 @@ if (error.value) {
   create404Error()
 }
 
+const {currentYear, years} = storeToRefs(useRootStore())
+
 const song = computed(() => {
   return useRepo(Song).withAll().find(songId.value);
-})
-const years = computed(() => {
-  return useRootStore().years;
-})
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
 })
 const links = computed(() => {
   const links = [];

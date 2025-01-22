@@ -22,9 +22,8 @@ div
 import languages from '~/utils/language'
 import {useRootStore} from "~/stores/root";
 
-const years = computed(() => {
-  return useRootStore().years;
-})
+const {songs, years} = storeToRefs(useRootStore())
+
 const graphData = computed(() => {
   const dataPoints = {};
   const result = Object.keys(languages).map(languageId => {
@@ -35,7 +34,7 @@ const graphData = computed(() => {
     };
   });
 
-  useRootStore().songs.forEach(song => {
+  songs.value.forEach(song => {
     if (song.languageId) {
       years.value.forEach(year => {
         if (song.position(year)) {

@@ -39,9 +39,7 @@ const props = defineProps({
   }
 })
 
-const years = computed(() => {
-  return useRootStore().years
-})
+const {years} = storeToRefs(useRootStore())
 
 const yearGroups = computed(() => {
   const yearsLength = years.value.length

@@ -10,12 +10,8 @@ const props = defineProps({
   songs: Array
 })
 
-const currentYear = computed(() => {
-  return useRootStore().currentYear;
-})
-const previousYear = computed(() => {
-  return currentYear.value.previous;
-})
+const {currentYear, previousYear} = storeToRefs(useRootStore())
+
 const sortedSongs = computed(() => {
   return _.sortBy(
     props.songs,

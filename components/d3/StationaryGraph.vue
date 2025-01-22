@@ -48,7 +48,7 @@
 
   const tooltipSong = computed(() => {
     if (!!hoverYear.value && !!hoverPosition.value) {
-      return useRootStore().list(hoverYear.value).find(entry => {
+      return useRootStore().list(hoverYear.value, 100, 100).find(entry => {
         return entry.position === hoverPosition.value
           && stationaryYears(entry.song).find(year => year.yyyy === hoverYear.value.yyyy);
       })?.song
