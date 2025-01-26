@@ -13,7 +13,7 @@ div
       comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
   div
-    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
+    comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread' @updated="reload")
 
   comments-pager(:page='page' :pages='pages')
 </template>

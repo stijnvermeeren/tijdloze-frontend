@@ -42,6 +42,10 @@ const props = defineProps({
   "expanded": {
     type: Boolean,
     default: false
+  },
+  "parentId": {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -97,7 +101,8 @@ async function submit() {
   submitting.value = true;
 
   const data = {
-    message: message.value
+    message: message.value,
+    parentId: props.parentId
   };
   await $api(`comment`, useFetchOptsPost(data))
   submitting.value = false;

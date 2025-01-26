@@ -35,7 +35,7 @@ div
 
   ui-card(v-if="commentsOn" title="Reageer en discussieer")
     comments-form(@submitted="refreshComments" @displayNameChanged="refreshComments")
-    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment')
+    comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread')
     .link
       nuxt-link(to='/reacties')
         v-btn Meer reacties
@@ -99,7 +99,7 @@ const {data: comments, execute: refreshComments} = await useAsyncData(
   'comments',
   () => {
     if (commentsOn.value) {
-      return $api(`comments/1`).then(data => _.take(data, 10))
+      return $api(`comments/1`).then(data => _.take(data, 6))
     } else {
       return Promise.resolve([])
     }

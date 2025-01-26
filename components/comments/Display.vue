@@ -1,16 +1,15 @@
 <template lang="pug">
-ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
-  template(#title)
-    div.reacinfo
-      span.name {{ comment.name }}
-      span.created {{ comment.created }}
-      span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
-      span.edit(v-if="isMine")
-        a(@click="editComment") Wijzigen
-      span.delete(v-if="!isDeleted && (isMine || isAdmin)")
-        a(@click="deleteComment") Verwijderen
-      span.delete(v-if="isDeleted && isAdmin")
-        a(@click="restoreComment") Terugzetten
+v-sheet.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}" :elevation="1" rounded outlined)
+  div.commentHeader
+    span.name {{ comment.name }}
+    span.created {{ comment.created }}
+    span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
+    span.edit(v-if="isMine")
+      a(@click="editComment") Wijzigen
+    span.delete(v-if="!isDeleted && (isMine || isAdmin)")
+      a(@click="deleteComment") Verwijderen
+    span.delete(v-if="isDeleted && isAdmin")
+      a(@click="restoreComment") Terugzetten
   div
     div.bericht(v-if="!editing") {{message.trim()}}
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
@@ -84,14 +83,21 @@ async function restoreComment() {
   @use "../../assets/styleConfig";
 
   .comment {
-    margin: 1em 3em;
+    padding: 0.5em 2em;
+    margin-bottom: 2px;
 
     &.mine {
-      border-width: 4px;
+      .commentHeader span.name {
+        font-style: italic;
+      }
     }
 
-    div.reacinfo {
+    div.commentHeader {
       margin-bottom: 0.2em;
+
+      span.name {
+        font-weight: bold;
+      }
 
       span.created, span.updated, span.edit, span.delete {
         margin-left: 2em;
