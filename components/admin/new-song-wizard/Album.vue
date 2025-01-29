@@ -180,17 +180,6 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-  .heading {
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  div.indent {
-    margin-left: 20px;
-    margin-bottom: 20px;
-  }
-
   .releaseYear{
     width: 100px;
     flex-grow: 0.2;

@@ -114,9 +114,4 @@ defineExpose({
     margin-left: 20px;
     margin-bottom: 20px;
   }
-
-  .releaseYear{
-    width: 100px;
-    flex-grow: 0.2;
-  }
 </style>
