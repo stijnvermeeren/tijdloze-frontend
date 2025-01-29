@@ -27,6 +27,35 @@ div
                 v-model='artistDetails.musicbrainzId'
                 musicbrainz-category="artist"
               )
+  div
+    v-checkbox(v-model="hasSecondArtist" label="Tweede artiest")
+  div(v-if="hasSecondArtist")
+    div.heading Tweede artiest
+    div.indent
+      v-btn-toggle(v-model="secondArtistType" color="blue" density="compact")
+        v-btn(value="existing") Artiest uit de database
+        v-btn(value="new") Nieuwe artiest
+      div(v-if="secondArtistType === 'existing'")
+        admin-artist-select(v-model='secondArtistId')
+      div(v-else)
+        v-container
+          v-row(dense)
+            v-col
+              v-text-field(
+                v-model='secondArtistDetails.name'
+                label="Naam"
+                placeholder='The Beatles / Bob Dylan / ...'
+                hide-details
+              )
+          v-row(dense)
+            v-col
+              admin-country-input(v-model='secondArtistDetails.countryId')
+          v-row(dense)
+            v-col
+              admin-musicbrainz-input(
+                v-model='secondArtistDetails.musicbrainzId'
+                musicbrainz-category="artist"
+              )
 
   div.heading Album
   div.indent
@@ -136,6 +165,12 @@ function defaultSongDetails() {
 const artistType = ref(defaultArtistType)
 const artistId = ref(undefined)
 const artistDetails = ref(defaultArtistDetails())
+
+const hasSecondArtist = ref(false)
+const secondArtistType = ref(defaultArtistType)
+const secondArtistId = ref(undefined)
+const secondArtistDetails = ref(defaultArtistDetails())
+
 const albumId = ref(undefined)
 const albumDetails = ref(defaultAlbumDetails())
 const songDetails = ref(defaultSongDetails())
@@ -266,6 +301,27 @@ async function loadPreset(preset) {
     artistId.value = undefined;
   }
 
+  if (preset.secondArtistName) {
+    hasSecondArtist.value = true
+    const matchedSecondArtist = await artistMatch(preset.secondArtistName, preset.secondArtistMBId);
+
+    secondArtistDetails.value.name = preset.secondArtistName;
+    secondArtistDetails.value.musicbrainzId = preset.secondArtistMBId;
+    secondArtistDetails.value.countryId = preset.secondArtistCountryId;
+    if (matchedSecondArtist) {
+      secondArtistType.value = 'existing';
+      secondArtistId.value = matchedSecondArtist.id;
+    } else {
+      secondArtistType.value = 'new';
+      secondArtistId.value = undefined;
+    }
+  } else {
+    hasSecondArtist.value = false
+    secondArtistType.value = 'new'
+    secondArtistId.value = undefined
+    secondArtistDetails.value = defaultArtistDetails()
+  }
+
   albumDetails.value.title = preset.albumTitle;
   albumDetails.value.musicbrainzId = preset.albumMBId;
   albumDetails.value.releaseYear = preset.albumYear;
@@ -352,14 +408,20 @@ async function submit() {
 
   let payloadArtistId = undefined;
   if (artistNew.value) {
-    const artistData = {
-      name: artistDetails.value.name,
-      countryId: artistDetails.value.countryId
-    }
-    const artist = await $api('/artist', useFetchOptsPost(artistData));
+    const artist = await $api('/artist', useFetchOptsPost(artistDetails.value));
     payloadArtistId = artist.id;
   } else {
     payloadArtistId = artistId.value;
+  }
+
+  let payloadSecondArtistId = undefined;
+  if (hasSecondArtist.value) {
+    if (secondArtistType.value === 'new') {
+      const artist = await $api('/artist', useFetchOptsPost(secondArtistDetails.value));
+      payloadSecondArtistId = artist.id;
+    } else {
+      payloadSecondArtistId = secondArtistId.value;
+    }
   }
 
   let payloadAlbumId = albumId.value;
@@ -377,17 +439,25 @@ async function submit() {
 
   const songData = {
     artistId: payloadArtistId,
+    secondArtistId: payloadSecondArtistId,
     albumId: payloadAlbumId,
     title: songDetails.value.title,
     languageId: songDetails.value.languageId,
     leadVocals: songDetails.value.leadVocals,
     spotifyId: songDetails.value.spotifyId
   }
+  console.log(songData)
   const song = await $api('/song', useFetchOptsPost(songData));
 
   artistType.value = defaultArtistType
   artistId.value = undefined
   artistDetails.value = defaultArtistDetails()
+
+  hasSecondArtist.value = false
+  secondArtistType.value = defaultArtistType
+  secondArtistId.value = undefined
+  secondArtistDetails.value = defaultArtistDetails()
+
   albumId.value = undefined
   albumDetails.value = defaultAlbumDetails()
   songDetails.value = defaultSongDetails()
