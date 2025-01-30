@@ -71,7 +71,7 @@ async function loadPreset(preset) {
     secondArtistRef.value.reset()
   }
 
-  await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSoundtrack, preset.albumIsSoundtrack)
+  await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
   await songRef.value.loadPreset(preset.songTitle)
 }
 
