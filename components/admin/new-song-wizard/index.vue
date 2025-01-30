@@ -61,18 +61,18 @@ const isValid = computed(() => {
 })
 
 async function loadPreset(preset) {
-  artistRef.value.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
+  await artistRef.value.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
 
   if (preset.secondArtistName) {
     hasSecondArtist.value = true
-    secondArtistRef.value.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
+    await secondArtistRef.value.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
   } else {
     hasSecondArtist.value = false
     secondArtistRef.value.reset()
   }
 
-  albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSoundtrack, preset.albumIsSoundtrack)
-  songRef.value.loadPreset(preset.songTitle)
+  await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSoundtrack, preset.albumIsSoundtrack)
+  await songRef.value.loadPreset(preset.songTitle)
 }
 
 async function submit() {
