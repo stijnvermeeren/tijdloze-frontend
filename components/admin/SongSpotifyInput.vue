@@ -52,6 +52,7 @@ async function search() {
     if (spotifyTracks.length) {
       spotifyId.value = spotifyTracks[0].spotifyId
     } else {
+      spotifyId.value = ''
       spotifyMessage.value = "Niets gevonden op Spotify"
     }
   }
