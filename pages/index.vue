@@ -23,9 +23,9 @@ div
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
         v-btn De volledige lijst van {{tableYear.yyyy}}
-      nuxt-link(v-if='listInProgress && lastPosition <= 100' to='/lijst/opkomst')
-        v-btn Nog op komst
-      nuxt-link(v-if='listInProgress && exitsKnown' :to='{ path: `/lijst/${tableYear.yyyy}/exits` }')
+      nuxt-link(v-if='listInProgress && lastPosition <= 1000' :to='`/lijst/${tableYear.yyyy}/opkomst`')
+        v-btn Nog op komst?
+      nuxt-link(v-if='listInProgress && exitsKnown' :to='`/lijst/${tableYear.yyyy}/exits`')
         v-btn Uit de top 100 verdwenen
 
   ui-card(v-if="chatOn" title="Chatbox")

@@ -10,6 +10,7 @@ div
 <script setup>
 import _ from 'lodash';
 import analyse from '~/utils/analyse';
+import {useRootStore} from "~/stores/root";
 
 definePageMeta({
   validate: async (route) => {
@@ -19,6 +20,7 @@ definePageMeta({
 
 const {$api} = useNuxtApp()
 const {currentYear, years, context} = storeToRefs(useYearStore())
+const {listInProgress} = storeToRefs(useRootStore())
 
 const yyyyParam = useRoute().params.yyyy
 const analysisCurrentYear = ref('')
@@ -80,6 +82,9 @@ const tabs = computed(() => {
   }
   if (analysis.value) {
     tabs.push({ to: `/lijst/${year.value.yyyy}/analyse`, title: 'Analyse' })
+  }
+  if (year.value.equals(currentYear.value) && listInProgress.value) {
+    tabs.push({ to: `/lijst/${year.value.yyyy}/opkomst`, title: 'Nog op komst?' })
   }
   return tabs
 })
