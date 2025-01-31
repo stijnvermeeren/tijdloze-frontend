@@ -1,4 +1,5 @@
 import {useRootStore} from "~/stores/root";
+import {useConfigStore} from "~/stores/config";
 import {usePollStore} from "~/stores/poll";
 import _ from "lodash";
 import Song from "~/orm/Song";
@@ -8,10 +9,12 @@ import List from "~/orm/List";
 import {useRepo} from "pinia-orm";
 
 export default defineNuxtPlugin(async nuxtApp => {
-  const rootStore = useRootStore(nuxtApp.$pinia)
+  const rootStore = useRootStore()
+  const yearStore = useYearStore()
+  const configStore = useConfigStore()
   const $api = nuxtApp.$api
 
-  if (!rootStore.years.length) {
+  if (!yearStore.years.length) {
     const [
       chatOnResponse,
       commentsOnResponse,
@@ -21,9 +24,10 @@ export default defineNuxtPlugin(async nuxtApp => {
       $api(`text/commentsOn`),
       $api('core-data')
     ])
-    rootStore.chatOn = (chatOnResponse.value === 'on')
-    rootStore.commentsOn = (commentsOnResponse.value === 'on')
-    rootStore.updateCoreData(coreDataResponse)
+    configStore.chatOn = (chatOnResponse.value === 'on')
+    configStore.commentsOn = (commentsOnResponse.value === 'on')
+    rootStore.exitSongIds.value = coreDataResponse.exitSongIds
+    yearStore.setYearsRaw(coreDataResponse.years)
 
     useRepo(Artist).insert(coreDataResponse.artists);
     useRepo(Album).insert(coreDataResponse.albums);
@@ -36,7 +40,7 @@ export default defineNuxtPlugin(async nuxtApp => {
     if (rootStore.listInProgress) {
       const poll = await $api('poll/latest')
           .catch(err => undefined);
-      if (poll && poll.year === rootStore.currentYear.yyyy) {
+      if (poll && poll.year === yearStore.currentYear.yyyy) {
         usePollStore().currentPoll = poll;
       }
     }

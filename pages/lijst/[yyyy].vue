@@ -10,44 +10,47 @@ div
 <script setup>
 import _ from 'lodash';
 import analyse from '~/utils/analyse';
-import {useRootStore} from "~/stores/root";
 
 definePageMeta({
   validate: async (route) => {
-    return !! useRootStore().years.find(year => year.yyyy.toString() === route.params.yyyy);
+    return !! useYearStore().years.find(year => year.yyyy.toString() === route.params.yyyy);
   }
 })
 
 const {$api} = useNuxtApp()
+const {currentYear, years, context} = storeToRefs(useYearStore())
 
 const yyyyParam = useRoute().params.yyyy
 const analysisCurrentYear = ref('')
-if (yyyyParam === useRootStore().currentYear.yyyy.toString()) {
+if (yyyyParam === currentYear.value.yyyy.toString()) {
   const analysisCurrentYearResponse = await $api(`text/analysis_${yyyyParam}`).catch(err => '');
   analysisCurrentYear.value = analysisCurrentYearResponse?.value ?? ''
 }
 
 const year = computed(() => {
-  return useRootStore().years.find(year => year.yyyy.toString() === useRoute().params.yyyy);
+  return years.value.find(year => year.yyyy.toString() === useRoute().params.yyyy);
+})
+const previousYear = computed(() => {
+  return context.value.forYear(year.value).previous?.year
 })
 
 const top100 = computed(() => {
   return useRootStore().list(year.value, 100, 100);
 })
 const newSongs = computed(() => {
-  if (year.value.previous) {
-    return top100.value.filter(entry => !entry.song.position(year.value.previous));
+  if (previousYear.value) {
+    return top100.value.filter(entry => !entry.song.position(previousYear.value));
   } else {
     return [];
   }
 })
 
 const exits = computed(() => {
-  if (year.value.previous) {
+  if (previousYear.value) {
     return _.sortBy(
-        useRootStore().list(year.value.previous, 100, 100)
+        useRootStore().list(previousYear.value, 100, 100)
             .filter(entry => entry.song.notInList(year.value)),
-        entry => entry.song.position(year.value.previous)
+        entry => entry.song.position(previousYear.value)
     );
   } else {
     return [];
@@ -59,7 +62,7 @@ const analysis = computed(() => {
   if (item) {
     return item.analyse;
   } else {
-    if (year.value.yyyy === useRootStore().currentYear?.yyyy && analysisCurrentYear.value) {
+    if (year.value.yyyy === currentYear.value?.yyyy && analysisCurrentYear.value) {
       return analysisCurrentYear.value.split(/\r?\n/);
     } else {
       return null;

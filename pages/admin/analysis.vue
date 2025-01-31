@@ -51,8 +51,6 @@ div
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
-
 const {$api} = useNuxtApp()
 
 definePageMeta({
@@ -61,8 +59,10 @@ definePageMeta({
 
 const textExample = "<strong>vet</strong> <em>scheef</em>"
 
+const {currentYear} = storeToRefs(useYearStore())
+
 const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useFetch(
-    `text/analysis_${useRootStore().currentYear.yyyy}`,
+    `text/analysis_${currentYear.value.yyyy}`,
     useFetchOpts({transform: data => data.value})
 );
 const initialAnalysis = ref(lastLoadedAnalysis.value)
@@ -72,7 +72,6 @@ const saving = ref(false)
 const interval = ref(undefined)
 const analysis = ref(initialAnalysis.value)
 
-const {currentYear} = storeToRefs(useRootStore())
 
 const outOfDate = computed(() => {
   return lastLoadedAnalysis.value !== initialAnalysis.value;

@@ -10,7 +10,6 @@ span(:class='{bold: isBold}')
 <script setup>
 import Artist from "../orm/Artist";
 import Song from "../orm/Song";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
 const props = defineProps({
@@ -28,7 +27,7 @@ const input = computed(() => {
   }
 })
 
-const {years} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const song = computed(() => {
   const songId = findSongId(input.value)

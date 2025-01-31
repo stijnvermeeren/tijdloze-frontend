@@ -20,9 +20,9 @@ div
 
 <script setup>
 import languages from '~/utils/language'
-import {useRootStore} from "~/stores/root";
 
-const {songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
   const dataPoints = {};

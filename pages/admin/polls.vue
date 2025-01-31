@@ -25,8 +25,6 @@ div
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
-
 definePageMeta({ middleware: 'admin' })
 
 const {$api} = useNuxtApp()
@@ -38,7 +36,7 @@ const submitting = ref(false)
 
 const {data: polls, refresh: refreshPolls} = await useFetch(`poll/list`, useFetchOpts())
 
-const {currentYear, years} = storeToRefs(useRootStore())
+const {currentYear, years} = storeToRefs(useYearStore())
 
 const groupedPolls = computed(() => {
   const pollYears = years.value.filter(year => parseInt(year.yyyy) >= 2015);

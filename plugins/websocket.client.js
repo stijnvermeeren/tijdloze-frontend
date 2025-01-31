@@ -10,11 +10,13 @@ import {useRepo} from "pinia-orm";
 
 export default defineNuxtPlugin( nuxtApp => {
   const rootStore = useRootStore()
+  const yearStore = useYearStore()
   const pollStore = usePollStore()
 
   async function reloadCoreData() {
     const coreDataResponse = await nuxtApp.$api('core-data')
-    rootStore.updateCoreData(coreDataResponse)
+    rootStore.exitSongIds.value = coreDataResponse.exitSongIds
+    yearStore.setYearsRaw(coreDataResponse.years)
 
     useRepo(Artist).save(coreDataResponse.artists);
     useRepo(Album).save(coreDataResponse.albums);
@@ -42,7 +44,7 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.exitSongIds) {
-        rootStore.setExitSongIds(response.exitSongIds)
+        rootStore.exitSongIds.value = response.exitSongIds
       }
 
       if (response.year && response.position) {

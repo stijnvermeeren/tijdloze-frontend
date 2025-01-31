@@ -9,11 +9,9 @@ div
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
-
 const {data: polls} = await useFetch(`poll/list`, useFetchOpts())
 
-const {currentYear} = storeToRefs(useRootStore())
+const {currentYear} = storeToRefs(useYearStore())
 
 const currentYearPolls = computed(() => {
   return polls.value.filter(poll => poll.year === currentYear.value.yyyy && !poll.isDeleted)

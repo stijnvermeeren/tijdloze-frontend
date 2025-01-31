@@ -22,7 +22,6 @@ div.container
 
 <script setup>
 import Artist from "../orm/Artist";
-import {useRootStore} from "~/stores/root";
 
 const props = defineProps({
   songs: Array,
@@ -30,7 +29,7 @@ const props = defineProps({
   artist: Artist
 })
 
-const {currentYear} = storeToRefs(useRootStore())
+const {currentYear} = storeToRefs(useYearStore())
 
 const top100Songs = computed(() => {
   return props.songs.filter(song => sortBlock(song) === 1)

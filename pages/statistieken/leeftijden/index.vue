@@ -4,11 +4,11 @@ ui-data-table(:data="data" total-name="Gemiddeld")
 
 <script setup>
 import _ from 'lodash'
-import {useRootStore} from "~/stores/root";
 
 const cutoffs = [3, 10, 20, 50, 100]
 
-const {songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   return cutoffs.map(cutoff => {

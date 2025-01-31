@@ -9,7 +9,8 @@ v-snackbar(:close-on-back="false" v-model="isOpen" :timeout="10000" timer="#f9bc
 <script setup>
 import {useRootStore} from "~/stores/root";
 
-const {lastSong: song, currentYear: year} = storeToRefs(useRootStore())
+const {currentYear: year} = storeToRefs(useYearStore())
+const {lastSong: song} = storeToRefs(useRootStore())
 
 const isOpen = ref(false)
 

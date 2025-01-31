@@ -74,7 +74,6 @@ import _ from 'lodash'
 import ranking from '~/utils/ranking';
 import Artist from "@/orm/Artist";
 import Album from "../orm/Album";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
 const TYPE_SONGS = 'nummers'
@@ -137,7 +136,7 @@ const isMounted = ref(false)
 const type = ref(parseType(useRoute().query.type))
 const filter = ref(parseFilter(useRoute().query.filter))
 const cutoff = ref(parseCutoff(useRoute().query.cutoff))
-const startYear = ref(useRoute().query.start || _.first(useRootStore().years)?.yyyy)
+const startYear = ref(useRoute().query.start || _.first(useYearStore().years)?.yyyy)
 const endYear = ref(useRoute().query.einde || useRootStore().lastCompleteYear?.yyyy)
 const minReleaseYear = ref(parseInt(useRoute().query.minReleaseYear))
 const maxReleaseYear = ref(parseInt(useRoute().query.maxReleaseYear))
@@ -146,7 +145,7 @@ const countryFilter = ref(useRoute().query.land)
 const languageFilter = ref(useRoute().query.taal)
 const leadVocalsFilter = ref(useRoute().query.leadVocals)
 
-const {years, currentYear} = storeToRefs(useRootStore())
+const {years, currentYear} = storeToRefs(useYearStore())
 
 const lowestReleaseYear = computed(() => {
   return _.min(useRepo(Album).all().map(album => album.releaseYear))
@@ -328,7 +327,7 @@ watch(query, (newQuery) => {
   type.value = parseType(newQuery.type);
   filter.value = parseFilter(newQuery.filter);
   cutoff.value = parseCutoff(newQuery.cutoff);
-  startYear.value = newQuery.start ? newQuery.start : _.first(useRootStore().years)?.yyyy;
+  startYear.value = newQuery.start ? newQuery.start : _.first(useYearStore().years)?.yyyy;
   endYear.value = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
   scoreMethod.value = parseScoreMethod(newQuery.score, type.value);
   countryFilter.value = newQuery.land;
@@ -363,9 +362,10 @@ function applyFilters(songs) {
     );
   } else if (filter.value === FILTER_NO_EXIT) {
     result = result.filter(song =>
-        selectedYears.value.slice(1).every(year =>
-            !song.position(year.previous, extended.value) || !!song.position(year, extended.value)
-        )
+      selectedYears.value.slice(1).every((year, index) => {
+        const previousYear = selectedYears.value[index]
+        return !song.position(previousYear, extended.value) || !!song.position(year, extended.value)
+      })
     );
   } else if (filter.value === FILTER_ANY) {
     result = result.filter(song =>

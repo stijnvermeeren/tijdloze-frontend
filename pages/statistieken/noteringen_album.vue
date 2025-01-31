@@ -12,10 +12,9 @@ div
 
 <script setup>
 import Album from "@/orm/Album";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const {years} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 const albums = computed(() => {
   return useRepo(Album).withAll().get();
 })

@@ -4,14 +4,13 @@ import _ from 'lodash';
 
 import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
-import Year from '~/orm/Year';
 import List from '~/orm/List';
+import {useYearStore} from "~/stores/year";
 
 export const useRootStore = defineStore('root', () => {
-  const yearsRaw = ref([])
+  const yearStore = useYearStore()
+
   const exitSongIds = ref([])
-  const commentsOn = ref(true)
-  const chatOn = ref(false)
   
   const songIdsByTitle = computed(() => {
     return _.mapValues(
@@ -37,34 +36,20 @@ export const useRootStore = defineStore('root', () => {
       song => [song.title, song.album.releaseYear]
     );
   })
-  const years = computed(() => {
-    const years = yearsRaw.value?.map(yyyy => new Year(yyyy)) ?? []
-    years.forEach((year, i) => {
-      year.previous = years?.[i - 1]
-      year.next = years?.[i + 1]
-    })
-    return years ?? []
-  })
-  const currentYear = computed(() => {
-    return _.last(years.value)
-  })
-  const previousYear = computed(() => {
-    return currentYear.value.previous;
-  })
 
   const usedCountryIds = computed(() => {
     return new Set(useRepo(Artist).all().map(artist => artist.countryId));
   })
 
   const lastSong = computed(() => {
-    const entry = _.first(list(currentYear.value, 1))
+    const entry = _.first(list(yearStore.currentYear, 1))
     if (entry) {
       return entry.song
     }
   })
   const lastPosition = computed(() => {
     if (lastSong.value) {
-      return lastSong.value.position(currentYear.value, true)
+      return lastSong.value.position(yearStore.currentYear, true)
     } else {
       return undefined
     }
@@ -74,9 +59,9 @@ export const useRootStore = defineStore('root', () => {
   })
   const lastCompleteYear = computed(() => {
     if (listInProgress.value) {
-      return currentYear.value.previous
+      return yearStore.previousYear
     } else {
-      return currentYear.value
+      return yearStore.currentYear
     }
   })
 
@@ -118,40 +103,18 @@ export const useRootStore = defineStore('root', () => {
       return []
     }
   }
-
-  function updateCoreData(json) {
-    yearsRaw.value = json.years;
-    exitSongIds.value = json.exitSongIds;
-  }
-  function setExitSongIds(exitSongIds) {
-    exitSongIds.value = exitSongIds
-  }
-  function setCurrentYear(currentYear) {
-    if (_.last(yearsRaw.value) !== currentYear) {
-      yearsRaw.value = yearsRaw.value.filter(year => year < currentYear)
-      yearsRaw.value.push(currentYear)
-    }
-  }
     
   return {
     artistIdsByName,
     artistIdsByFullName,
-    chatOn,
-    commentsOn,
-    currentYear,
     exitSongIds,
     lastCompleteYear,
     lastPosition,
     lastSong,
     list,
     listInProgress,
-    previousYear,
-    setExitSongIds,
-    setCurrentYear,
     songIdsByTitle,
     songs,
-    updateCoreData,
-    usedCountryIds,
-    years
+    usedCountryIds
   }
 })

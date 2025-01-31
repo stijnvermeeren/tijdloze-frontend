@@ -29,14 +29,14 @@ div(style="min-height: 30em")
 
 <script setup>
 import Song from '~/orm/Song'
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
 const {$api} = useNuxtApp()
 
 definePageMeta({ middleware: 'admin' })
 
-const {currentYear, previousYear, exitSongIds} = storeToRefs(useRootStore())
+const {currentYear, previousYear} = storeToRefs(useYearStore())
+const {exitSongIds} = storeToRefs(useRootStore())
 
 const exits = computed(() => {
   return exitSongIds.value.map(id => {

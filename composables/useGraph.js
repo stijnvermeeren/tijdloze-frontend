@@ -1,6 +1,5 @@
 
 import {scaleLinear, scaleBand} from "d3-scale";
-import {useRootStore} from "~/stores/root";
 import _ from "lodash";
 import {line} from "d3-shape";
 
@@ -8,9 +7,7 @@ export default function () {
 
   const {width, height} = useGraphConstants()
 
-  const years = computed(() => {
-    return useRootStore().years;
-  })
+  const {years, currentYear} = storeToRefs(useYearStore())
 
   const xScale = computed(() => {
     return scaleBand()
@@ -55,7 +52,7 @@ export default function () {
         });
 
       const lastYear = _.last(interval);
-      if (suddenEnds || lastYear.isCurrent()) {
+      if (suddenEnds || lastYear.equals(currentYear.value)) {
         return _.flatten([start, positions, undefinedPoint]);
       } else {
         const end = {

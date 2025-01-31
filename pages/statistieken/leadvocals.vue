@@ -16,9 +16,9 @@ div
 
 <script setup>
 import vocalsGenders from '~/utils/leadVocals'
-import {useRootStore} from "~/stores/root";
 
-const {songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
   const dataPoints = {};

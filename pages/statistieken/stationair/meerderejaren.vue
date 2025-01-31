@@ -25,7 +25,6 @@ table.lijst.perEen
 
 <script setup>
 import _ from 'lodash';
-import {useRootStore} from "~/stores/root";
 
 const props = defineProps({
   years: Array
@@ -38,7 +37,7 @@ const byNumberOfYears = computed(() => {
   let data = [];
   let maxYears = 0;
   songs.value.forEach(song => {
-    song.stationaryIntervals(useRootStore().years)
+    song.stationaryIntervals(useYearStore().years)
       .filter(interval => interval.length > 2)
       .map(interval => {
         maxYears = Math.max(maxYears, interval.length);

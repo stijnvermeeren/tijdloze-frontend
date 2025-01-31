@@ -52,9 +52,10 @@ function isHoverYear(year) {
   return !!props.hoverYear && year.yyyy === props.hoverYear.yyyy;
 }
 function isNextToHoverYear(year) {
+  const yearContext = useYearStore().context.forYear(year)
   return !!props.hoverYear && (
-      (year.previous?.yyyy === props.hoverYear.yyyy) ||
-      (year.next?.yyyy === props.hoverYear.yyyy)
+      (yearContext.previous?.year.yyyy === props.hoverYear.yyyy) ||
+      (yearContext.next?.year.yyyy === props.hoverYear.yyyy)
   );
 }
 </script>
