@@ -22,4 +22,7 @@ div
 </template>
 
 <script setup>
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>

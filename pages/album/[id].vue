@@ -60,12 +60,4 @@ div
 </script>
 
 <style lang="scss" scoped>
-  .links {
-    margin-top: 10px;
-    margin-bottom: 20px;
-
-    a {
-      margin: 0 5px;
-    }
-  }
 </style>

@@ -42,4 +42,8 @@ const data = computed(() => {
 useHead({
   title: 'Re-entries'
 })
+
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>
