@@ -362,9 +362,10 @@ function applyFilters(songs) {
     );
   } else if (filter.value === FILTER_NO_EXIT) {
     result = result.filter(song =>
-        selectedYears.value.slice(1).every(year =>
-            !song.position(year.previous, extended.value) || !!song.position(year, extended.value)
-        )
+      selectedYears.value.slice(1).every((year, index) => {
+        const previousYear = selectedYears.value[index]
+        return !song.position(previousYear, extended.value) || !!song.position(year, extended.value)
+      })
     );
   } else if (filter.value === FILTER_ANY) {
     result = result.filter(song =>

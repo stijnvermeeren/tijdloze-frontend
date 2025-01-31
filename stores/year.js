@@ -1,28 +1,23 @@
 import { defineStore } from 'pinia'
-import { useRepo } from 'pinia-orm'
 import _ from 'lodash';
 
-import Artist from '~/orm/Artist';
-import Song from '~/orm/Song';
 import Year from '~/orm/Year';
-import List from '~/orm/List';
+import {YearsIndex} from '~/utils/yearContext';
 
 export const useYearStore = defineStore('year', () => {
   const yearsRaw = ref([])
 
   const years = computed(() => {
-    const years = yearsRaw.value?.map(yyyy => new Year(yyyy)) ?? []
-    years.forEach((year, i) => {
-      year.previous = years?.[i - 1]
-      year.next = years?.[i + 1]
-    })
-    return years ?? []
+    return yearsRaw.value?.map(yyyy => new Year(yyyy)) ?? []
+  })
+  const context = computed(() => {
+    return new YearsIndex(years.value)
   })
   const currentYear = computed(() => {
     return _.last(years.value)
   })
   const previousYear = computed(() => {
-    return currentYear.value.previous;
+    return context.value.forYear(currentYear.value).previous?.year;
   })
 
   function setCurrentYear(currentYear) {
@@ -37,6 +32,7 @@ export const useYearStore = defineStore('year', () => {
   }
     
   return {
+    context,
     currentYear,
     previousYear,
     setCurrentYear,

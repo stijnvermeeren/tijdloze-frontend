@@ -38,8 +38,9 @@ const listData = computed(() => {
 })
 
 function entriesPerYear(year) {
+  const previousYear = useYearStore().context.forYear(year).previous?.year
   return _.sortBy(
-    props.data.filter(entry => entry.year.equals(year.previous)),
+    props.data.filter(entry => entry.year.equals(previousYear)),
     entry => entry.song.position(entry.year)
   );
 }

@@ -20,7 +20,7 @@ function createIntervals(years, fn) {
 
 export function allEntriesIntervals(songs, years, extended) {
   function showYear(year) {
-    return year.isCurrent() || songs.find(song => song.position(year, extended));
+    return year.equals(useYearStore().currentYear) || songs.find(song => song.position(year, extended));
   }
 
   return createIntervals(years, showYear)

@@ -19,8 +19,9 @@ const {years} = storeToRefs(useYearStore())
 const data = computed(() => {
   const dataPoints = [];
   songs.value.forEach(song => {
-    _.drop(years.value, 1).forEach(year => {
-      if (song.position(year) && song.position(year) === song.position(year.previous)) {
+    _.drop(years.value, 1).forEach((year, index) => {
+      const previousYear = years.value[index]
+      if (song.position(year) && song.position(year) === song.position(previousYear)) {
         dataPoints.push({
           song: song,
           year: year

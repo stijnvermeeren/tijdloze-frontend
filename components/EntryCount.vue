@@ -14,7 +14,7 @@ const props = defineProps({
   songs: Array
 })
 
-const {years} = storeToRefs(useYearStore())
+const {years, currentYear} = storeToRefs(useYearStore())
 
 const listCount = computed(() => {
   return _.sumBy(props.songs, song => song.listCount(years.value))
@@ -23,7 +23,7 @@ const inListSummary = computed(() => {
   const intervalSummaries = probablyInListIntervals(props.songs, years.value).map(interval => {
     const first = _.first(interval);
     const last = _.last(interval);
-    if (last.isCurrent()) {
+    if (last.equals(currentYear.value)) {
       return `${first.yyyy}-...`
     } else if (first.equals(last)) {
       return first.yyyy

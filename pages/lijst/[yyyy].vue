@@ -18,7 +18,7 @@ definePageMeta({
 })
 
 const {$api} = useNuxtApp()
-const {currentYear, years} = storeToRefs(useYearStore())
+const {currentYear, years, context} = storeToRefs(useYearStore())
 
 const yyyyParam = useRoute().params.yyyy
 const analysisCurrentYear = ref('')
@@ -30,24 +30,27 @@ if (yyyyParam === currentYear.value.yyyy.toString()) {
 const year = computed(() => {
   return years.value.find(year => year.yyyy.toString() === useRoute().params.yyyy);
 })
+const previousYear = computed(() => {
+  return context.value.forYear(year.value).previous?.year
+})
 
 const top100 = computed(() => {
   return useRootStore().list(year.value, 100, 100);
 })
 const newSongs = computed(() => {
-  if (year.value.previous) {
-    return top100.value.filter(entry => !entry.song.position(year.value.previous));
+  if (previousYear.value) {
+    return top100.value.filter(entry => !entry.song.position(previousYear.value));
   } else {
     return [];
   }
 })
 
 const exits = computed(() => {
-  if (year.value.previous) {
+  if (previousYear.value) {
     return _.sortBy(
-        useRootStore().list(year.value.previous, 100, 100)
+        useRootStore().list(previousYear.value, 100, 100)
             .filter(entry => entry.song.notInList(year.value)),
-        entry => entry.song.position(year.value.previous)
+        entry => entry.song.position(previousYear.value)
     );
   } else {
     return [];

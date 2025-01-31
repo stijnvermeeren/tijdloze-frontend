@@ -61,7 +61,9 @@ export default class Song extends Model {
       return true;
     }
 
-    if (year.isCurrent() && year.previous && this.position(year.previous, extended)) {
+    const previousYear = useYearStore().context.forYear(year).previous?.year
+
+    if (year.equals(useYearStore().currentYear) && previousYear && this.position(previousYear, extended)) {
       if (extended) {
         return useRootStore().listInProgress;
       } else {
@@ -98,9 +100,11 @@ export default class Song extends Model {
   }
 
   isReEntry(year) {
+    const previousYear = useYearStore().context.forYear(year).previous?.year
+
     return this.position(year) &&
-      year.previous &&
-      !this.position(year.previous) &&
+      previousYear &&
+      !this.position(previousYear) &&
       !useYearStore().years.find(year => this.position(year)).equals(year);
   }
 }

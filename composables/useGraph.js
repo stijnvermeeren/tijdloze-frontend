@@ -7,9 +7,7 @@ export default function () {
 
   const {width, height} = useGraphConstants()
 
-  const years = computed(() => {
-    return useYearStore().years;
-  })
+  const {years, currentYear} = storeToRefs(useYearStore())
 
   const xScale = computed(() => {
     return scaleBand()
@@ -54,7 +52,7 @@ export default function () {
         });
 
       const lastYear = _.last(interval);
-      if (suddenEnds || lastYear.isCurrent()) {
+      if (suddenEnds || lastYear.equals(currentYear.value)) {
         return _.flatten([start, positions, undefinedPoint]);
       } else {
         const end = {

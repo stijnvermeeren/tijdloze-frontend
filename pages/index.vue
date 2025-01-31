@@ -4,7 +4,7 @@ div
     ui-alert.alert(v-if="listInProgress")
       | De Tijdloze is een radioprogramma van Studio Brussel. Officiële informatie vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
       br
-      | De Tijdloze van {{year.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
+      | De Tijdloze van {{currentYear.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
 
     ui-alert(v-else title="Officiële informatie / stemmen")
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
@@ -19,7 +19,7 @@ div
         :year="tableYear"
         hide-previous-next
       )
-    p(v-else) Nog geen nummers in de Tijdloze van {{year.tableYear}}.
+    p(v-else) Nog geen nummers in de Tijdloze van {{tableYear.yyyy}}.
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
         v-btn De volledige lijst van {{tableYear.yyyy}}
@@ -57,17 +57,20 @@ import useClientDataRefresh from "~/composables/useClientDataRefresh";
 const {$api} = useNuxtApp()
 
 const {lastPosition, listInProgress} = storeToRefs(useRootStore())
-const {currentYear: year} = storeToRefs(useYearStore())
+const {currentYear, previousYear, context} = storeToRefs(useYearStore())
 const { currentPoll } = storeToRefs(usePollStore())
 
 const tableYear = computed(() => {
-  if (year.value) {
-    if (useRepo(List).find(year.value.yyyy)?.songIds?.length === 0 && year.value?.previous) {
-      return year.value.previous;
+  if (currentYear.value) {
+    if (useRepo(List).find(currentYear.value.yyyy)?.songIds?.length === 0 && previousYear.value) {
+      return previousYear.value;
     } else {
-      return year.value;
+      return currentYear.value;
     }
   }
+})
+const yearBeforeTableYear = computed(() => {
+  return context.value.forYear(tableYear.value).previous?.year
 })
 
 const top5 = computed(() => {
@@ -80,7 +83,7 @@ const top5 = computed(() => {
 })
 
 const exitsKnown = computed(() => {
-  return !! useRootStore().list(tableYear.value?.previous)
+  return !! useRootStore().list(yearBeforeTableYear.value)
       .filter(entry => entry.position <= 100)
       .find(entry => entry.song.notInList(tableYear.value))
 })

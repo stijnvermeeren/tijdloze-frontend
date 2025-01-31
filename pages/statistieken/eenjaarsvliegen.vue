@@ -23,9 +23,6 @@ div
 </template>
 
 <script setup>
-import List from "../../orm/List";
-import {useRepo} from "pinia-orm";
-import Song from "~/orm/Song";
 import _ from 'lodash';
 
 const {songs} = storeToRefs(useRootStore())
@@ -33,20 +30,20 @@ const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   const dataPoints = [];
-  useRepo(List).get().forEach(list => {
-    const year = years.value.find(year => year.yyyy === list.year)
-    const top100Songs = useRepo(Song).withAll().find(_.take(list.songIds, 100))
-    if (year.previous && year.next) {
-      top100Songs.forEach(song => {
-        if (song.notInList(year.previous) && song.notInList(year.next)) {
-          dataPoints.push({
-            song: song,
-            year: year,
-            isFinal: (years.value.filter(year => song.position(year)).length === 1)
-          });
-        }
-      })
-    }
+
+  _.dropRight(_.drop(years.value, 1), 1).forEach((year, index) => {
+    const previousYear = years.value[index]
+    const nextYear = years.value[index + 2]
+    const top100 = useRootStore().list(year, 100, 100)
+    top100.forEach(({song}) => {
+      if (song.notInList(previousYear) && song.notInList(nextYear)) {
+        dataPoints.push({
+          song: song,
+          year: year,
+          isFinal: (years.value.filter(year => song.position(year)).length === 1)
+        });
+      }
+    })
   });
   return dataPoints;
 })

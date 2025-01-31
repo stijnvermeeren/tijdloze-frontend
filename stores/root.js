@@ -59,7 +59,7 @@ export const useRootStore = defineStore('root', () => {
   })
   const lastCompleteYear = computed(() => {
     if (listInProgress.value) {
-      return yearStore.currentYear.previous
+      return yearStore.previousYear
     } else {
       return yearStore.currentYear
     }
