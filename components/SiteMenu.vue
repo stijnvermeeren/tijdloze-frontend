@@ -9,7 +9,6 @@ div
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
         template(v-if='listInProgress')
           v-list-item(:to="`/lijst/${currentYear.yyyy}`" value="inProgress") De Tijdloze {{currentYear.yyyy}}
-          v-list-item.subItem(v-if="top100InProgress" to="/lijst/opkomst") Nog op komst...
           v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
           v-list-item.subItem(v-if="top100InProgress" to="/polls") Polls
         v-list-group.lists(value="group-/lijst")
@@ -100,7 +99,6 @@ const sortedYears = computed(() => {
 function groupMap(path) {
   const firstPart = path.split('/').slice(0, 2).join('/')
   switch (path) {
-    case '/lijst/opkomst':
     case '/polls':
     case '/chat':
       return 'inprogress'
