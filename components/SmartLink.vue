@@ -10,7 +10,6 @@ span(:class='{bold: isBold}')
 <script setup>
 import Artist from "../orm/Artist";
 import Song from "../orm/Song";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
 const props = defineProps({

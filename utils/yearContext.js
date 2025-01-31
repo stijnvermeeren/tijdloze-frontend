@@ -20,12 +20,12 @@ class YearContext {
         return this.yearsIndex.years[this.index]
     }
     get previous() {
-        if (this.yearsIndex.years.length > 1) {
+        if (this.index > 1) {
             return new YearContext(this.yearsIndex, this.index - 1)
         }
     }
     get next() {
-        if (this.yearsIndex + 1 < this.yearsIndex.years.length) {
+        if (this.index + 1 < this.yearsIndex.years.length) {
             return new YearContext(this.yearsIndex, this.index + 1)
         }
     }
