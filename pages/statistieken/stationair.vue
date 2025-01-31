@@ -31,4 +31,8 @@ const data = computed(() => {
   });
   return dataPoints;
 })
+
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>

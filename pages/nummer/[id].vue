@@ -15,44 +15,15 @@ Title {{song.title}} ({{song.artist.name}})
       album-link(:album='song.album')
       span.ml-2  ({{ song.album.releaseYear }})
 
-  div.links
-    ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
-
-  ui-alert(v-if='fullSongData.notes')
-    make-links(:text='fullSongData.notes')
+  ui-tabs(:tabs="tabs")
+    nuxt-page(:song="song" :lyrics="fullSongData.lyrics" :full-song-data="fullSongData")
 
   .spotify(v-if='fullSongData.spotifyId')
     div
       spotify(:spotify-id='fullSongData.spotifyId')
-
-  ui-card(v-if='fullSongData.lyrics' :collapse-height="80" title="Lyrics")
-    .lyrics {{ fullSongData.lyrics }}
-
-  ui-card(v-else-if="fullSongData.languageId === 'i'" title="Lyrics")
-    div (Instrumentaal nummer)
-    .clear
-
-  ui-card(title="In de Tijdloze")
-    template(#subtitle)
-      entry-count(:songs='[song]')
-    .allPositions
-      template(v-for='(interval, index) in intervals')
-        div(v-if='index' :key="index")
-          div ...
-          div
-        div(v-for='year in interval' :key='year.yyyy')
-          div.year
-            year-link(:year='year' short)
-          div
-            position-with-change(:song='song' :year='year')
-
-
-  ui-card(v-if='song.listCount(years) > 0' title="Grafiek")
-    d3-graph(:songs='[song]' :no-label='true')
 </template>
 
 <script setup>
-import {allEntriesIntervals} from '~/utils/intervals'
 import { idFromSlug } from '~/utils/slug'
 import Song from "@/orm/Song";
 import {useRepo} from "pinia-orm";
@@ -71,63 +42,29 @@ const {currentYear, years} = storeToRefs(useYearStore())
 const song = computed(() => {
   return useRepo(Song).withAll().find(songId.value);
 })
-const links = computed(() => {
-  const links = [];
-  const addLink = (property, title) => {
-    if (fullSongData.value[property]) {
-      links.push({
-        href: fullSongData.value[property],
-        title: title
-      })
-    }
-  };
-
-  addLink('urlWikiEn', 'Wikipedia (Engels)');
-  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-  return links;
+const tabs = computed(() => {
+  const tabs = [
+      { to: `/nummer/${songId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` },
+      { to: `/nummer/${songId.value}/noteringen`, title: `Alle noteringen` }
+  ]
+  if (song.value.listCount(years.value) > 0) {
+    tabs.push({ to: `/nummer/${songId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
+  }
+  if (fullSongData.value.lyrics) {
+    tabs.push({ to: `/nummer/${songId.value}/lyrics`, title: 'Lyrics' })
+  }
+  tabs.push({ to: `/nummer/${songId.value}/info`, title: 'Info' })
+  return tabs
 })
 
-const intervals = computed(() => {
-  return allEntriesIntervals([song.value], years.value, true);
+definePageMeta({
+  noScrollDepth: 2
 })
 </script>
 
 <style lang="scss" scoped>
-  .links {
-    margin-top: 10px;
-    margin-bottom: 20px;
-
-    a {
-      margin: 0 5px;
-    }
-  }
-
-  div.allPositions {
-    text-align: center;
-    display: flex;
-    flex-wrap: wrap;
-
-    > div {
-      margin: 12px 12px;
-      min-width: 45px;
-      display: flex;
-      flex-direction: column;
-
-      > div {
-
-      }
-    }
-  }
-
-  div.lyrics {
-    padding: 0 20px 10px 20px;
-    white-space: pre-line;
-    font-style: italic;
-    font-size: 14px;
-  }
-
   div.spotify {
-    margin-bottom: 20px;
+    margin-top: 30px;
 
     div {
       text-align: center;

@@ -88,4 +88,8 @@ const tabs = computed(() => {
   }
   return tabs
 })
+
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>

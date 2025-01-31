@@ -18,4 +18,8 @@ const {years} = storeToRefs(useYearStore())
 const albums = computed(() => {
   return useRepo(Album).withAll().get();
 })
+
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>

@@ -21,4 +21,8 @@ const artists = computed(() => {
     .with('secondarySongs')
     .get();
 })
+
+definePageMeta({
+  noScrollDepth: 2
+})
 </script>

@@ -1,9 +1,7 @@
 <template lang="pug">
 a(:href="href")
-  v-btn(size="small" density="comfortable" rounded)
-    v-icon.mr-2(:icon="mdiLink")
-    span
-      slot
+  v-btn(size="small" density="comfortable" :prepend-icon="mdiLink" rounded)
+    slot
 </template>
 
 <script setup>
