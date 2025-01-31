@@ -1,10 +1,9 @@
 <template lang="pug">
 ui-card
-  template(#title)
-    v-tabs.mb-4
-      v-tab(v-for='tab in tabs' :key='tab.to' :to="tab.to")
-        div {{tab.title}}
-        div.subtitle(v-if="tab.subtitle") ({{tab.subtitle}})
+  v-tabs.mb-4
+    v-tab(v-for='tab in tabs' :key='tab.to' :to="tab.to")
+      div {{tab.title}}
+      div.subtitle(v-if="tab.subtitle") ({{tab.subtitle}})
   slot
 </template>
 

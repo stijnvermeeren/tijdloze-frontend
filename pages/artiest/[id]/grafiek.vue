@@ -1,10 +1,10 @@
 <template lang="pug">
-d3-graph(:songs='[song]')
+d3-graph(:songs='top100Songs')
 </template>
 
 <script setup>
 const props = defineProps({
-  song: Object
+  top100Songs: Array
 })
 </script>
 

@@ -15,18 +15,12 @@ Title {{song.title}} ({{song.artist.name}})
       album-link(:album='song.album')
       span.ml-2  ({{ song.album.releaseYear }})
 
-  div.links
-    ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
-
-  ui-alert(v-if='fullSongData.notes')
-    make-links(:text='fullSongData.notes')
+  ui-tabs(:tabs="tabs")
+    nuxt-page(:song="song" :lyrics="fullSongData.lyrics" :full-song-data="fullSongData")
 
   .spotify(v-if='fullSongData.spotifyId')
     div
       spotify(:spotify-id='fullSongData.spotifyId')
-
-  ui-tabs(:tabs="tabs")
-    nuxt-page(:song="song" :lyrics="fullSongData.lyrics")
 </template>
 
 <script setup>
@@ -48,22 +42,6 @@ const {currentYear, years} = storeToRefs(useYearStore())
 const song = computed(() => {
   return useRepo(Song).withAll().find(songId.value);
 })
-const links = computed(() => {
-  const links = [];
-  const addLink = (property, title) => {
-    if (fullSongData.value[property]) {
-      links.push({
-        href: fullSongData.value[property],
-        title: title
-      })
-    }
-  };
-
-  addLink('urlWikiEn', 'Wikipedia (Engels)');
-  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-  return links;
-})
-
 const tabs = computed(() => {
   const tabs = [
       { to: `/nummer/${songId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` },
@@ -75,22 +53,18 @@ const tabs = computed(() => {
   if (fullSongData.value.lyrics) {
     tabs.push({ to: `/nummer/${songId.value}/lyrics`, title: 'Lyrics' })
   }
+  tabs.push({ to: `/nummer/${songId.value}/info`, title: 'Info' })
   return tabs
+})
+
+definePageMeta({
+  noScrollDepth: 2
 })
 </script>
 
 <style lang="scss" scoped>
-  .links {
-    margin-top: 10px;
-    margin-bottom: 20px;
-
-    a {
-      margin: 0 5px;
-    }
-  }
-
   div.spotify {
-    margin-bottom: 20px;
+    margin-top: 30px;
 
     div {
       text-align: center;

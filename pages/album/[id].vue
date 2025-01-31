@@ -14,11 +14,8 @@ div
     = " "
     | uit {{ album.releaseYear }}.
 
-  div.links
-    ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
-
   ui-tabs(:tabs="tabs")
-    nuxt-page(:album="album" :top100-songs="top100Songs")
+    nuxt-page(:album="album" :top100-songs="top100Songs" :full-album-data="fullAlbumData")
 </template>
 
 <script setup>
@@ -48,30 +45,17 @@ div
     return album.value.songsSorted.filter(song => song.listCount(years.value) > 0)
   })
 
-  const links = computed(() => {
-    const links = [];
-    const addLink = (property, title) => {
-      if (fullAlbumData.value[property]) {
-        links.push({
-          href: fullAlbumData.value[property],
-          title: title
-        })
-      }
-    };
-
-    addLink('urlWikiEn', 'Wikipedia (Engels)');
-    addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-    addLink('urlAllMusic', 'AllMusic');
-    return links;
-  })
-
-
   const tabs = computed(() => {
     const tabs = [{ to: `/album/${albumId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` }]
     if (top100Songs.value.length) {
       tabs.push({ to: `/album/${albumId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
     }
+    tabs.push({ to: `/album/${albumId.value}/info`, title: 'Info' })
     return tabs
+  })
+
+  definePageMeta({
+    noScrollDepth: 2
   })
 </script>
 

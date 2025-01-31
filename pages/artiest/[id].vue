@@ -6,24 +6,14 @@ div
       h2 {{artist.name}}
     ui-admin-link-btn(:to="`/admin/artist/${artist.id}`") Admin: artist aanpassen
 
-  div.links
-    nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
-      v-btn(size="small" density="comfortable" rounded)
-        country-icon(:country-id='artist.countryId' :include-name="true")
-    external-link-btn(v-for='(link, index) in links' :key='index' :href="link.href") {{ link.title }}
-
-  ui-alert(v-if='fullArtistData.notes')
-    make-links(:text='fullArtistData.notes')
-
   ui-tabs(:tabs="tabs")
-    nuxt-page(:artist="artist" :top100-songs="top100Songs")
+    nuxt-page(:artist="artist" :top100-songs="top100Songs" :full-artist-data="fullArtistData")
 </template>
 
 <script setup>
   import { idFromSlug } from '~/utils/slug'
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
-  import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
 
   const {currentYear, years} = storeToRefs(useYearStore())
 
@@ -88,17 +78,14 @@ div
     if (top100Songs.value.length) {
       tabs.push({ to: `/artiest/${artistId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
     }
+    tabs.push({ to: `/artiest/${artistId.value}/info`, title: 'Info' })
     return tabs
+  })
+
+  definePageMeta({
+    noScrollDepth: 2
   })
 </script>
 
 <style lang="scss" scoped>
-.links {
-  margin-top: 10px;
-  margin-bottom: 20px;
-
-  a {
-    margin: 0 5px;
-  }
-}
 </style>
