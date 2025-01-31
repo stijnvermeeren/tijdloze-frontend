@@ -12,9 +12,9 @@ div
 
 <script setup>
 import _ from 'lodash';
-import {useRootStore} from "~/stores/root";
 
-const {songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   const dataPoints = [];

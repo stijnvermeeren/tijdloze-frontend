@@ -36,13 +36,12 @@ div
 <script setup>
   import { idFromSlug } from '~/utils/slug'
   import Artist from "@/orm/Artist";
-  import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
   import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
 
   const byAlbum = ref(false)
 
-  const {currentYear, years} = storeToRefs(useRootStore())
+  const {currentYear, years} = storeToRefs(useYearStore())
 
   const artistId = computed(() => idFromSlug(useRoute().params?.id))
 

@@ -10,9 +10,9 @@ div
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
-const {songs, years} = storeToRefs(useRootStore())
 const data = computed(() => {
   const dataPoints = [];
   songs.value.forEach(song => {

@@ -24,8 +24,6 @@ div
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
-
 const {$api} = useNuxtApp()
 
 const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
@@ -43,7 +41,7 @@ watch(query, () => {
   showingResults.value = false
 })
 
-const {currentYear, previousYear} = storeToRefs(useRootStore())
+const {currentYear, previousYear} = storeToRefs(useYearStore())
 
 function initialResults(results) {
   if (waitingForResults.value) {

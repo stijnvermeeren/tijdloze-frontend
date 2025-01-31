@@ -28,7 +28,7 @@ const input = computed(() => {
   }
 })
 
-const {years} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const song = computed(() => {
   const songId = findSongId(input.value)

@@ -23,9 +23,9 @@ div
 <script setup>
 import _ from 'lodash';
 import countries from '~/utils/country'
-import {useRootStore} from "~/stores/root";
 
-const {usedCountryIds, songs, years} = storeToRefs(useRootStore())
+const {usedCountryIds, songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
   const sortedUsedCountryIds = _.sortBy(

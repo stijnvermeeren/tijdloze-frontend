@@ -50,15 +50,14 @@ div
 
 <script setup>
 import _ from 'lodash';
-import {useRootStore} from "~/stores/root";
-import {usePollStore} from "~/stores/poll";
 import List from "~/orm/List";
 import {useRepo} from "pinia-orm";
 import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
 const {$api} = useNuxtApp()
 
-const {currentYear: year, lastPosition, listInProgress} = storeToRefs(useRootStore())
+const {lastPosition, listInProgress} = storeToRefs(useRootStore())
+const {currentYear: year} = storeToRefs(useYearStore())
 const { currentPoll } = storeToRefs(usePollStore())
 
 const tableYear = computed(() => {

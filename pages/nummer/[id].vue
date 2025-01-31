@@ -55,7 +55,6 @@ Title {{song.title}} ({{song.artist.name}})
 import {allEntriesIntervals} from '~/utils/intervals'
 import { idFromSlug } from '~/utils/slug'
 import Song from "@/orm/Song";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
 const songId = computed(() => idFromSlug(useRoute().params?.id))
@@ -67,7 +66,7 @@ if (error.value) {
   create404Error()
 }
 
-const {currentYear, years} = storeToRefs(useRootStore())
+const {currentYear, years} = storeToRefs(useYearStore())
 
 const song = computed(() => {
   return useRepo(Song).withAll().find(songId.value);

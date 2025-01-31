@@ -17,7 +17,7 @@ const {$api} = useNuxtApp()
 
 definePageMeta({ middleware: 'admin' })
 
-const {currentYear} = storeToRefs(useRootStore())
+const {currentYear} = storeToRefs(useYearStore())
 
 const list = computed(() => {
   return useRootStore().list(currentYear.value)

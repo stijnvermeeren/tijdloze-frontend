@@ -98,7 +98,6 @@ div
 
 <script setup>
 import Song from "@/orm/Song";
-import {useRootStore} from "~/stores/root";
 import {mdiSearchWeb} from "@mdi/js";
 import {useRepo} from "pinia-orm";
 
@@ -109,7 +108,8 @@ definePageMeta({ middleware: 'admin' })
 const wizard = useTemplateRef('wizard')
 const search = useTemplateRef('search')
 
-const {currentYear, previousYear, lastSong, lastPosition} = storeToRefs(useRootStore())
+const {lastSong, lastPosition} = storeToRefs(useRootStore())
+const {currentYear, previousYear} = storeToRefs(useYearStore())
 
 const nextSongTab = ref('hide')
 const nextSong = ref(undefined)

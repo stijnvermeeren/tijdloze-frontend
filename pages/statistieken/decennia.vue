@@ -23,10 +23,10 @@ div
 
 <script setup>
 import Album from "@/orm/Album";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 
-const {currentYear, songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {currentYear, years} = storeToRefs(useYearStore())
 
 const decades = computed(() => {
   const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));

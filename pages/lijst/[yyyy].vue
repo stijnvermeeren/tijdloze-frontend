@@ -10,25 +10,25 @@ div
 <script setup>
 import _ from 'lodash';
 import analyse from '~/utils/analyse';
-import {useRootStore} from "~/stores/root";
 
 definePageMeta({
   validate: async (route) => {
-    return !! useRootStore().years.find(year => year.yyyy.toString() === route.params.yyyy);
+    return !! useYearStore().years.find(year => year.yyyy.toString() === route.params.yyyy);
   }
 })
 
 const {$api} = useNuxtApp()
+const {currentYear, years} = storeToRefs(useYearStore())
 
 const yyyyParam = useRoute().params.yyyy
 const analysisCurrentYear = ref('')
-if (yyyyParam === useRootStore().currentYear.yyyy.toString()) {
+if (yyyyParam === currentYear.value.yyyy.toString()) {
   const analysisCurrentYearResponse = await $api(`text/analysis_${yyyyParam}`).catch(err => '');
   analysisCurrentYear.value = analysisCurrentYearResponse?.value ?? ''
 }
 
 const year = computed(() => {
-  return useRootStore().years.find(year => year.yyyy.toString() === useRoute().params.yyyy);
+  return years.value.find(year => year.yyyy.toString() === useRoute().params.yyyy);
 })
 
 const top100 = computed(() => {
@@ -59,7 +59,7 @@ const analysis = computed(() => {
   if (item) {
     return item.analyse;
   } else {
-    if (year.value.yyyy === useRootStore().currentYear?.yyyy && analysisCurrentYear.value) {
+    if (year.value.yyyy === currentYear.value?.yyyy && analysisCurrentYear.value) {
       return analysisCurrentYear.value.split(/\r?\n/);
     } else {
       return null;

@@ -101,6 +101,6 @@ export default class Song extends Model {
     return this.position(year) &&
       year.previous &&
       !this.position(year.previous) &&
-      !useRootStore().years.find(year => this.position(year)).equals(year);
+      !useYearStore().years.find(year => this.position(year)).equals(year);
   }
 }

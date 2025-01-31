@@ -1,6 +1,5 @@
 
 import {scaleLinear, scaleBand} from "d3-scale";
-import {useRootStore} from "~/stores/root";
 import _ from "lodash";
 import {line} from "d3-shape";
 
@@ -9,7 +8,7 @@ export default function () {
   const {width, height} = useGraphConstants()
 
   const years = computed(() => {
-    return useRootStore().years;
+    return useYearStore().years;
   })
 
   const xScale = computed(() => {

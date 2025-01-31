@@ -85,8 +85,11 @@ const isOpen = ref(false)
 const openeds = computed(() => {
   return [groupMap(useRoute().path)]
 })
-const { commentsOn, chatOn, currentYear, lastPosition, listInProgress, years } = storeToRefs(useRootStore())
+const { commentsOn, chatOn } = storeToRefs(useConfigStore())
+const { lastPosition, listInProgress } = storeToRefs(useRootStore())
+const { currentYear, years } = storeToRefs(useYearStore())
 const { isAdmin } = storeToRefs(useAuthStore())
+
 const top100InProgress = computed(() => {
   return listInProgress.value && lastPosition.value <= 100;
 })

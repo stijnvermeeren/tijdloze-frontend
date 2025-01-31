@@ -30,12 +30,11 @@ div
 <script setup>
   import { idFromSlug } from '~/utils/slug'
   import Album from "@/orm/Album";
-  import {useRootStore} from "~/stores/root";
   import {useRepo} from "pinia-orm";
 
   const albumId = computed(() => idFromSlug(useRoute().params?.id))
 
-  const {currentYear, years} = storeToRefs(useRootStore())
+  const {currentYear, years} = storeToRefs(useYearStore())
 
   const {data: fullAlbumData, error} = await useFetch(
       `album/${albumId.value}`, useFetchOpts({'key': `album/${albumId.value}`})

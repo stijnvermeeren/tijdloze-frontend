@@ -24,12 +24,12 @@ div
 
 <script setup>
 import List from "../../orm/List";
-import {useRootStore} from "~/stores/root";
 import {useRepo} from "pinia-orm";
 import Song from "~/orm/Song";
 import _ from 'lodash';
 
-const {songs, years} = storeToRefs(useRootStore())
+const {songs} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   const dataPoints = [];

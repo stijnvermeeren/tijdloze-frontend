@@ -9,13 +9,12 @@ span
 <script setup>
 import {probablyInListIntervals} from '~/utils/intervals'
 import _ from 'lodash'
-import {useRootStore} from "~/stores/root";
 
 const props = defineProps({
   songs: Array
 })
 
-const {years} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const listCount = computed(() => {
   return _.sumBy(props.songs, song => song.listCount(years.value))

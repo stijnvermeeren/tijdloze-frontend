@@ -23,8 +23,6 @@ v-data-table(
 </template>
 
 <script setup>
-import {useRootStore} from "~/stores/root";
-
 const CHUNK_LENGTH = 8
 
 const props = defineProps({
@@ -39,7 +37,7 @@ const props = defineProps({
   }
 })
 
-const {years} = storeToRefs(useRootStore())
+const {years} = storeToRefs(useYearStore())
 
 const yearGroups = computed(() => {
   const yearsLength = years.value.length
