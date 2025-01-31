@@ -20,7 +20,7 @@ class YearContext {
         return this.yearsIndex.years[this.index]
     }
     get previous() {
-        if (this.index > 1) {
+        if (this.index > 0) {
             return new YearContext(this.yearsIndex, this.index - 1)
         }
     }
