@@ -15,22 +15,8 @@ div
   ui-alert(v-if='fullArtistData.notes')
     make-links(:text='fullArtistData.notes')
 
-  ui-card(
-    :title="`In de Tijdloze van ${currentYear.yyyy}`"
-    :collapse-height="collapseHeight"
-    :collapse-message="`Toon alle ${artist.allSongs.length} nummers`"
-  )
-    template(#subtitle)
-      entry-count(:songs='artist.allSongs')
-    template(#buttons)
-      v-checkbox(v-model="byAlbum" density="compact" color="blue" variant="outlined" label="Per album")
-    div(v-if="!byAlbum")
-      in-current-list(:songs='artist.allSongs' :artist='artist')
-    div(v-else)
-      in-current-list(:albums='artist.allAlbums' :artist='artist')
-
-  ui-card(v-if='top100Songs.length' title="Grafiek")
-    d3-graph(:songs='top100Songs')
+  ui-tabs(:tabs="tabs")
+    nuxt-page(:artist="artist" :top100-songs="top100Songs")
 </template>
 
 <script setup>
@@ -38,8 +24,6 @@ div
   import Artist from "@/orm/Artist";
   import {useRepo} from "pinia-orm";
   import ExternalLinkBtn from "~/components/ui/ExternalLinkBtn.vue";
-
-  const byAlbum = ref(false)
 
   const {currentYear, years} = storeToRefs(useYearStore())
 
@@ -72,15 +56,6 @@ div
         .find(artistId.value);
   })
 
-  const collapseHeight = computed(() => {
-    if (artist.value.allSongs.length <= 5) {
-      return undefined
-    } else {
-      const probablyInTop100Songs = artist.value.allSongs.filter(song => song.probablyInList(currentYear.value))
-      return 60 + 70 * Math.max(4, probablyInTop100Songs.length)
-    }
-  })
-
   const top100Songs = computed(() => {
     return artist.value.allSongs.filter(song => song.listCount(years.value) > 0)
   })
@@ -106,6 +81,14 @@ div
     addLink('urlAllMusic', 'AllMusic');
     addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
     return links;
+  })
+
+  const tabs = computed(() => {
+    const tabs = [{ to: `/artiest/${artistId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` }]
+    if (top100Songs.value.length) {
+      tabs.push({ to: `/artiest/${artistId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
+    }
+    return tabs
   })
 </script>
 

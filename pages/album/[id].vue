@@ -17,14 +17,8 @@ div
   div.links
     ui-external-link-btn(v-for='(link, index) in links' :key='index' :href='link.href') {{ link.title }}
 
-  ui-card(title="In de Tijdloze")
-    template(#subtitle)
-      entry-count(:songs='album.songs')
-    div
-      in-current-list(:songs='album.songs')
-
-  ui-card(v-if='top100Songs.length' title="Grafiek")
-    d3-graph(:songs='top100Songs')
+  ui-tabs(:tabs="tabs")
+    nuxt-page(:album="album" :top100-songs="top100Songs")
 </template>
 
 <script setup>
@@ -69,6 +63,15 @@ div
     addLink('urlWikiNl', 'Wikipedia (Nederlands)');
     addLink('urlAllMusic', 'AllMusic');
     return links;
+  })
+
+
+  const tabs = computed(() => {
+    const tabs = [{ to: `/album/${albumId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` }]
+    if (top100Songs.value.length) {
+      tabs.push({ to: `/album/${albumId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
+    }
+    return tabs
   })
 </script>
 
