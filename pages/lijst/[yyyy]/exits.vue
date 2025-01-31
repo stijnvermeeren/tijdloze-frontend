@@ -2,7 +2,7 @@
 div(v-for='entry in exits')
   song-with-position(:song="entry.song")
     position-main(:position="entry.position")
-    position-annotation in {{year.yyyy}}
+    position-annotation in {{previousYear.yyyy}}
 </template>
 
 <script setup>
