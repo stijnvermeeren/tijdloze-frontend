@@ -1,6 +1,6 @@
 <template lang="pug">
 ui-card
-  v-tabs.mb-6
+  v-tabs.mb-6(show-arrows)
     v-tab(v-for='tab in tabs' :key='tab.to' :to="tab.to")
       div {{tab.title}}
       div.subtitle(v-if="tab.subtitle") ({{tab.subtitle}})

@@ -8,6 +8,7 @@ div
     v-switch(v-model="chatOn" :true-value="'on'" :false-value="'off'" label="Chatbox open" hide-details)
   div
     v-btn(@click="invalidateCache") Invalidate API caches
+    v-btn(@click="startWikipediaCrawl") Start Wikipedia crawl
 </template>
 
 <script setup>
@@ -35,7 +36,10 @@ watch(commentsOn, async () => {
 })
 
 async function invalidateCache() {
-  await $api('/cache/invalidate');
+  await $api('/cache/invalidate', useFetchOpts());
+}
+async function startWikipediaCrawl() {
+  await $api('/wikipedia/crawl', useFetchOpts());
 }
 </script>
 
