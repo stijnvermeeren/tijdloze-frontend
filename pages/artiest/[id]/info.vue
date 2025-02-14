@@ -8,6 +8,8 @@
     nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
       strong
         country-icon(:country-id='artist.countryId' :include-name="true")
+  wikipedia-content(:url="fullArtistData['urlWikiNl']" language="Nederlands")
+  wikipedia-content(:url="fullArtistData['urlWikiEn']" language="Engels")
   p.links(v-if="links.length")
     | Externe links:
     template(v-for='(link, index) in links' :key='index')
@@ -37,8 +39,6 @@ const links = computed(() => {
   };
 
   addLink('urlOfficial', 'Officiële website');
-  addLink('urlWikiEn', 'Wikipedia (Engels)');
-  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
   addLink('urlAllMusic', 'AllMusic');
   addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
   addLink('musicbrainzId', 'MusicBrainz', id => `https://musicbrainz.org/artist/${id}`);

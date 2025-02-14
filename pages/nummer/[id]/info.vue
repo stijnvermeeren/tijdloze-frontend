@@ -15,6 +15,8 @@
     template(v-for='(link, index) in links' :key='index')
       br
       ui-external-link-btn( :href="link.href") {{ link.title }}
+  wikipedia-content(:url="fullSongData['urlWikiNl']" language="Nederlands")
+  wikipedia-content(:url="fullSongData['urlWikiEn']" language="Engels")
 </template>
 
 <script setup>
@@ -37,8 +39,6 @@ const links = computed(() => {
     }
   };
 
-  addLink('urlWikiEn', 'Wikipedia (Engels)');
-  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
   return links;
 })
 

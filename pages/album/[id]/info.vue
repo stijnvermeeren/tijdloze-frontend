@@ -1,4 +1,6 @@
 <template lang="pug">
+  wikipedia-content(:url="fullAlbumData['urlWikiNl']" language="Nederlands")
+  wikipedia-content(:url="fullAlbumData['urlWikiEn']" language="Engels")
   p.links(v-if="links.length")
     | Externe links:
     template(v-for='(link, index) in links' :key='index')
@@ -23,8 +25,6 @@ const links = computed(() => {
     }
   };
 
-  addLink('urlWikiEn', 'Wikipedia (Engels)');
-  addLink('urlWikiNl', 'Wikipedia (Nederlands)');
   addLink('urlAllMusic', 'AllMusic');
   addLink('musicbrainzId', 'MusicBrainz', id => `https://musicbrainz.org/release-group/${id}`);
   return links;
