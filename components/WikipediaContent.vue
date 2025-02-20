@@ -1,5 +1,5 @@
 <template lang="pug">
-div.mt-5.mb-7
+div.mt-5.mb-7(v-if="url")
   div.title Wikipedia ({{language}})
   div.details(v-if="sanitizedContent")
     div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
