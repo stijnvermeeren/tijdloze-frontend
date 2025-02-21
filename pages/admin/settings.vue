@@ -6,9 +6,15 @@ div
     v-switch(v-model="commentsOn" :true-value="'on'" :false-value="'off'" label="Reacties open" hide-details)
   div
     v-switch(v-model="chatOn" :true-value="'on'" :false-value="'off'" label="Chatbox open" hide-details)
-  div
+  p
     v-btn(@click="invalidateCache") Invalidate API caches
     v-btn(@click="startWikipediaCrawl") Start Wikipedia crawl
+  p
+    v-btn(@click="musicbrainzArtistDetails") Load artist details from Musicbrainz
+    v-btn(@click="musicbrainzAlbumDetails") Load album details from Musicbrainz
+  p
+    v-btn(@click="wikidataArtistDetails") Load artist details from Wikidata
+    v-btn(@click="wikidataAlbumDetails") Load album details from Wikidata
 </template>
 
 <script setup>
@@ -40,6 +46,18 @@ async function invalidateCache() {
 }
 async function startWikipediaCrawl() {
   await $api('/wikipedia/crawl', useFetchOpts());
+}
+async function musicbrainzArtistDetails() {
+  await $api('/musicbrainz/crawl-artist-details', useFetchOpts());
+}
+async function musicbrainzAlbumDetails() {
+  await $api('/musicbrainz/crawl-album-details', useFetchOpts());
+}
+async function wikidataArtistDetails() {
+  await $api('/wikidata/crawl-artist-details', useFetchOpts());
+}
+async function wikidataAlbumDetails() {
+  await $api('/wikidata/crawl-album-details', useFetchOpts());
 }
 </script>
 

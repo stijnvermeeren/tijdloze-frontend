@@ -39,6 +39,9 @@ div
         admin-all-music-url-input(v-model='fullArtistData.urlAllMusic' :query='fullArtistData.name')
     v-row(dense)
       v-col
+        admin-wikidata-input(v-model='fullArtistData.wikidataId' :query='fullArtistData.name')
+    v-row(dense)
+      v-col
         admin-artist-spotify-input(v-model='fullArtistData.spotifyId')
     v-row(dense)
       v-col

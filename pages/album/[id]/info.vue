@@ -16,10 +16,14 @@ const props = defineProps({
 
 const links = computed(() => {
   const links = [];
-  const addLink = (property, title) => {
+  const addLink = (property, title, fn) => {
+    if (!fn) {
+      fn = x => x
+    }
+
     if (props.fullAlbumData[property]) {
       links.push({
-        href: props.fullAlbumData[property],
+        href: fn(props.fullAlbumData[property]),
         title: title
       })
     }
