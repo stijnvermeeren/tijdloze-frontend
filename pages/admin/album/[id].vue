@@ -47,6 +47,9 @@ div
           musicbrainz-category="release-group"
           :query='`${fullAlbumData.title} ${artist.name}`'
         )
+    v-row(dense)
+      v-col
+        admin-wikidata-input(v-model='fullAlbumData.wikidataId' :query='`${fullAlbumData.title} ${artist.name}`')
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')
