@@ -68,7 +68,6 @@ const modelFetchPath = computed(() => {
 const {data: model} = await useFetch(modelFetchPath, useFetchOpts())
 
 const currentValue = computed(() => {
-  console.log(model.value)
   return model?.value?.[crawl?.value?.field]
 })
 

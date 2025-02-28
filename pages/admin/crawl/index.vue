@@ -1,5 +1,5 @@
 <template lang="pug">
-Title Admin: Instellingen
+Title Admin: Crawler
 div
   h2 Crawler
   h3 Process results
