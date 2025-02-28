@@ -11,6 +11,18 @@ v-container
       admin-lead-vocals-input(v-model='songDetails.leadVocals')
   v-row(dense)
     v-col
+      admin-musicbrainz-input(
+        v-model='songDetails.recordingMBId'
+        musicbrainz-category="recording"
+      )
+  v-row(dense)
+    v-col
+      admin-musicbrainz-input(
+        v-model='songDetails.workMBId'
+        musicbrainz-category="work"
+      )
+  v-row(dense)
+    v-col
       admin-song-spotify-input(
         v-model="songDetails.spotifyId"
         :artist="artistName"
@@ -28,6 +40,7 @@ v-container
 </template>
 
 <script setup>
+import languages from '~/utils/language'
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
 
@@ -47,6 +60,8 @@ function defaultSongDetails() {
     title: '',
     languageId: undefined,
     leadVocals: undefined,
+    recordingMBId: undefined,
+    workMBId: undefined,
     spotifyId: undefined
   }
 }
@@ -87,8 +102,18 @@ async function loadExistingSong() {
   }
 }
 
-async function loadPreset(title) {
+async function loadPreset(title, recordingMBId, workMBId, languageId) {
   songDetails.value.title = title;
+  songDetails.value.recordingMBId = recordingMBId;
+  songDetails.value.workMBId = workMBId;
+
+  if (languageId === 'zxx') {
+    songDetails.value.languageId = 'i';
+  } else if (languages[languageId]) {
+    songDetails.value.languageId = languageId;
+  } else {
+    songDetails.value.languageId = undefined;
+  }
 
   await nextTick(spotifyRef.value.search)
 }
@@ -101,7 +126,9 @@ async function submit(artistId, secondArtistId, albumId) {
     title: songDetails.value.title,
     languageId: songDetails.value.languageId,
     leadVocals: songDetails.value.leadVocals,
-    spotifyId: songDetails.value.spotifyId
+    spotifyId: songDetails.value.spotifyId,
+    musicbrainzRecordingId: songDetails.value.recordingMBId,
+    musicbrainzWorkId: songDetails.value.workMBId
   }
   return await $api('/song', useFetchOptsPost(songData));
 }
