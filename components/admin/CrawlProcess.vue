@@ -5,6 +5,7 @@ ui-card(v-if="crawl")
     span(v-if="type === 'album'")
       album-link(:album="storeModel")
       |  ({{storeModel.releaseYear}})
+    song-link(v-if="type === 'song'" :song="storeModel")
     span : {{crawl.field}}
   template(#subtitle)
     div Gecrawled: {{crawl.crawlDate}}
@@ -39,6 +40,7 @@ div(v-else) Niets meer gevonden...
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
+import Song from "~/orm/Song";
 
 const {$api} = useNuxtApp()
 
@@ -52,6 +54,7 @@ const repoModel = function(){
   switch(props.type) {
     case "artist": return Artist
     case "album": return Album
+    case "song": return Song
   }
 }()
 

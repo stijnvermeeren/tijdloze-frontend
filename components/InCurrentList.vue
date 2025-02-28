@@ -8,10 +8,10 @@ div.container
       in-current-list-section(:songs="albumSongs(album)")
     template(v-if="songs")
       template(v-if="top100Songs.length")
-        div.currentListHeader In de top 100
+        div.currentListHeader In de top 100 van {{currentYear.yyyy}}
         in-current-list-section(:songs='top100Songs')
       template(v-if="fullListSongs.length")
-        div.currentListHeader In de countdown
+        div.currentListHeader In de countdown van {{currentYear.yyyy}}
         in-current-list-section(:songs='fullListSongs')
       template(v-if="otherSongs.length")
         div.currentListHeader Vroeger in de Tijdloze

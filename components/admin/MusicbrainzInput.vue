@@ -1,6 +1,6 @@
 <template lang="pug">
 div.d-flex
-  v-text-field(v-model="musicbrainzId" label="Musicbrainz Id" hide-details)
+  v-text-field(v-model="musicbrainzId" :label="`Musicbrainz Id (${musicbrainzCategory})`" hide-details)
   v-btn.ml-2(v-if='musicbrainzId' :icon="mdiOpenInNew" :href="visitUrl" target="_blank")
   v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>

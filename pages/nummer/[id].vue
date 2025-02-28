@@ -44,7 +44,7 @@ const song = computed(() => {
 })
 const tabs = computed(() => {
   const tabs = [
-      { to: `/nummer/${songId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` },
+      { to: `/nummer/${songId.value}`, title: `In de Tijdloze` },
       { to: `/nummer/${songId.value}/noteringen`, title: `Alle noteringen` }
   ]
   if (song.value.listCount(years.value) > 0) {

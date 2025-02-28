@@ -196,6 +196,9 @@ function fillMBData(data) {
   nextSongTab.value = 'new';
   wizard.value.loadPreset({
     songTitle: data.title,
+    language: data.language,
+    recordingMBId: data.recordingMBId,
+    workMBId: data.workMBId,
     artistName: data.name,
     artistMBId: data.artistMBId,
     artistCountryId: data.countryId,

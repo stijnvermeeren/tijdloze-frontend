@@ -50,31 +50,8 @@ div
     return artist.value.allSongs.filter(song => song.listCount(years.value) > 0)
   })
 
-  const links = computed(() => {
-    const links = [];
-    const addLink = (property, title, fn) => {
-      if (!fn) {
-        fn = x => x
-      }
-
-      if (fullArtistData.value[property]) {
-        links.push({
-          href: fn(fullArtistData.value[property]),
-          title: title
-        })
-      }
-    };
-
-    addLink('urlOfficial', 'Officiële website');
-    addLink('urlWikiEn', 'Wikipedia (Engels)');
-    addLink('urlWikiNl', 'Wikipedia (Nederlands)');
-    addLink('urlAllMusic', 'AllMusic');
-    addLink('spotifyId', 'Spotify', id => `https://open.spotify.com/artist/${id}`);
-    return links;
-  })
-
   const tabs = computed(() => {
-    const tabs = [{ to: `/artiest/${artistId.value}`, title: `In de Tijdloze van ${currentYear.value.yyyy}` }]
+    const tabs = [{ to: `/artiest/${artistId.value}`, title: `Nummers in de Tijdloze` }]
     if (top100Songs.value.length) {
       tabs.push({ to: `/artiest/${artistId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
     }

@@ -10,13 +10,13 @@
     | Taal:
     |
     strong {{languages[song.languageId]}}
+  wikipedia-content(:url="fullSongData['urlWikiNl']" language="Nederlands")
+  wikipedia-content(:url="fullSongData['urlWikiEn']" language="Engels")
   p.links(v-if="links.length")
     | Externe links:
     template(v-for='(link, index) in links' :key='index')
       br
       ui-external-link-btn( :href="link.href") {{ link.title }}
-  wikipedia-content(:url="fullSongData['urlWikiNl']" language="Nederlands")
-  wikipedia-content(:url="fullSongData['urlWikiEn']" language="Engels")
 </template>
 
 <script setup>
@@ -30,14 +30,21 @@ const props = defineProps({
 
 const links = computed(() => {
   const links = [];
-  const addLink = (property, title) => {
+  const addLink = (property, title, fn) => {
+    if (!fn) {
+      fn = x => x
+    }
+
     if (props.fullSongData[property]) {
       links.push({
-        href: props.fullSongData[property],
+        href: fn(props.fullSongData[property]),
         title: title
       })
     }
   };
+
+  addLink('musicbrainzRecordingId', 'MusicBrainz (recording)', id => `https://musicbrainz.org/recording/${id}`);
+  addLink('musicbrainzWorkId', 'MusicBrainz (work)', id => `https://musicbrainz.org/work/${id}`);
 
   return links;
 })

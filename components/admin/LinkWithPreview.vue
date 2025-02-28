@@ -29,6 +29,10 @@ const href = computed(() => {
       return `https://open.spotify.com/${props.type}/${props.value}`
     case "wikidataId":
       return `https://wikidata.org/wiki/${props.value}`
+    case "musicbrainzWorkId":
+      return `https://musicbrainz.org/work/${props.value}`
+    case "musicbrainzRecordingId":
+      return `https://musicbrainz.org/recording/${props.value}`
     case "musicbrainzId":
       if (props.type === "artist") {
         return `https://musicbrainz.org/artist/${props.value}`
@@ -38,6 +42,8 @@ const href = computed(() => {
       }
       return undefined
     case "countryId":
+      return undefined
+    case "languageId":
       return undefined
     default:
       return props.value
