@@ -13,6 +13,10 @@ div
   h3 Wikipedia
   p
     v-btn(@click="startWikipediaCrawl") Start Wikipedia crawl
+  h3 Load details from Musicbrainz export
+  p Obtain data such as Musicbrainz Ids from the musicbrainz_export dataset, based on artist name and song title.
+  p
+    v-btn(@click="call('/mbdata/crawl-songs')") Songs
   h3 Load details from Musicbrainz
   p Obtain identifiers such as Wikidata Id by calling the Musicbrainz API with an existing Musicbrainz Id.
   p

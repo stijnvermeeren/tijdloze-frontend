@@ -5,7 +5,7 @@ ui-card(v-if="crawl")
     span(v-if="type === 'album'")
       album-link(:album="storeModel")
       |  ({{storeModel.releaseYear}})
-    song-artist-link(v-if="type === 'song'" :song="storeModel")
+    song-link(v-if="type === 'song'" :song="storeModel")
     span : {{crawl.field}}
   template(#subtitle)
     div Gecrawled: {{crawl.crawlDate}}
@@ -68,6 +68,7 @@ const modelFetchPath = computed(() => {
 const {data: model} = await useFetch(modelFetchPath, useFetchOpts())
 
 const currentValue = computed(() => {
+  console.log(model.value)
   return model?.value?.[crawl?.value?.field]
 })
 
