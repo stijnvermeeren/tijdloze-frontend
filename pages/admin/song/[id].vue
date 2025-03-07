@@ -49,6 +49,26 @@ div
           :album="album?.title"
           :title="fullSongData.title"
         )
+    v-row(dense)
+      v-col
+        admin-musicbrainz-input(
+          v-model='fullSongData.musicbrainzRecordingId'
+          musicbrainz-category="recording"
+          :query='`${fullSongData.title} ${artist.name}`'
+        )
+    v-row(dense)
+      v-col
+        admin-musicbrainz-input(
+          v-model='fullSongData.musicbrainzWorkId'
+          musicbrainz-category="work"
+          :query='fullSongData.title'
+        )
+    v-row(dense)
+      v-col
+        admin-wikidata-input(
+          v-model='fullSongData.wikidataId'
+          :query='`${fullSongData.title} ${artist.name}`'
+        )
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')

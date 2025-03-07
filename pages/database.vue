@@ -15,11 +15,11 @@ div
         v-select.inline.selectYear(v-model='endYear' :items="yearOptions" density="compact" :hide-details="true")
     v-row(dense)
       v-col
-        country-filter(v-model='countryFilter')
+        country-filter(v-model='countryFilterValue')
       v-col
-        language-filter(v-model='languageFilter')
+        language-filter(v-model='languageFilterValue')
       v-col
-        lead-vocals-filter(v-model='leadVocalsFilter')
+        lead-vocals-filter(v-model='leadVocalsFilterValue')
     v-row.mt-8(dense)
       v-col
         v-range-slider(
@@ -141,9 +141,9 @@ const endYear = ref(useRoute().query.einde || useRootStore().lastCompleteYear?.y
 const minReleaseYear = ref(parseInt(useRoute().query.minReleaseYear))
 const maxReleaseYear = ref(parseInt(useRoute().query.maxReleaseYear))
 const scoreMethod = ref(parseScoreMethod(useRoute().query.score, type.value))
-const countryFilter = ref(useRoute().query.land)
-const languageFilter = ref(useRoute().query.taal)
-const leadVocalsFilter = ref(useRoute().query.leadVocals)
+const countryFilterValue = ref(useRoute().query.land)
+const languageFilterValue = ref(useRoute().query.taal)
+const leadVocalsFilterValue = ref(useRoute().query.leadVocals)
 
 const {years, currentYear} = storeToRefs(useYearStore())
 
@@ -164,9 +164,9 @@ const queryParams = computed(() => {
     filter: filter.value,
     cutoff: cutoff.value,
     score: scoreMethod.value,
-    land: countryFilter.value,
-    taal: languageFilter.value,
-    leadVocals: leadVocalsFilter.value,
+    land: countryFilterValue.value,
+    taal: languageFilterValue.value,
+    leadVocals: leadVocalsFilterValue.value,
     minReleaseYear: minReleaseYear.value,
     maxReleaseYear: maxReleaseYear.value
   };
@@ -330,9 +330,9 @@ watch(query, (newQuery) => {
   startYear.value = newQuery.start ? newQuery.start : _.first(useYearStore().years)?.yyyy;
   endYear.value = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
   scoreMethod.value = parseScoreMethod(newQuery.score, type.value);
-  countryFilter.value = newQuery.land;
-  languageFilter.value = newQuery.taal;
-  leadVocalsFilter.value = newQuery.leadVocals;
+  countryFilterValue.value = newQuery.land;
+  languageFilterValue.value = newQuery.taal;
+  leadVocalsFilterValue.value = newQuery.leadVocals;
   minReleaseYear.value = parseInt(newQuery.minReleaseYear);
   maxReleaseYear.value = parseInt(newQuery.maxReleaseYear);
 })
@@ -373,14 +373,14 @@ function applyFilters(songs) {
     );
   }
 
-  if (countryFilter.value) {
-    result = result.filter(song => song.artist.countryId === countryFilter.value);
+  if (countryFilterValue.value) {
+    result = result.filter(song => song.artist.countryId === countryFilterValue.value);
   }
-  if (languageFilter.value) {
-    result = result.filter(song => song.languageId === languageFilter.value);
+  if (languageFilterValue.value) {
+    result = result.filter(song => song.languageId === languageFilterValue.value);
   }
-  if (leadVocalsFilter.value) {
-    result = result.filter(song => song.leadVocals === leadVocalsFilter.value);
+  if (leadVocalsFilterValue.value) {
+    result = result.filter(song => song.leadVocals === leadVocalsFilterValue.value);
   }
   if (minReleaseYear.value) {
     result = result.filter(song => song.album.releaseYear >= minReleaseYear.value);

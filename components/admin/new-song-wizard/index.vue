@@ -34,7 +34,6 @@ div
 const emit = defineEmits(['existingSong', 'newSong'])
 const {$api} = useNuxtApp()
 
-const spotifyRef = useTemplateRef('spotify')
 const artistRef = useTemplateRef('artist2')
 const secondArtistRef = useTemplateRef('secondArtist')
 const albumRef = useTemplateRef('album')
@@ -72,7 +71,7 @@ async function loadPreset(preset) {
   }
 
   await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
-  await songRef.value.loadPreset(preset.songTitle)
+  await songRef.value.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language)
 }
 
 async function submit() {

@@ -159,6 +159,7 @@ async function submit(artistId) {
     const albumData = {
       artistId: artistId,
       title: albumDetails.value.title,
+      musicbrainzId: albumDetails.value.musicbrainzId,
       releaseYear: albumDetails.value.releaseYear,
       isSingle: albumDetails.value.isSingle,
       isSoundtrack: albumDetails.value.isSoundtrack,
