@@ -10,9 +10,10 @@ div
       nuxt-link(to="/admin/crawl/album") Albums
     li
       nuxt-link(to="/admin/crawl/song") Songs
-  h3 Wikipedia
+  h3 Wikipedia content
+  p (Re)load Wikipedia summary content for all Wikipedia URLs for songs, albums and artists.
   p
-    v-btn(@click="startWikipediaCrawl") Start Wikipedia crawl
+    v-btn(@click="call('/wikipedia/crawl')") Start Wikipedia crawl
   h3 Load details from Musicbrainz export
   p Obtain data such as Musicbrainz Ids from the musicbrainz_export dataset, based on artist name and song title.
   p
@@ -38,9 +39,6 @@ definePageMeta({
   middleware: 'admin'
 })
 
-async function startWikipediaCrawl() {
-  await $api('/wikipedia/crawl', useFetchOpts());
-}
 async function call(path) {
   await $api(path, useFetchOpts());
 }
