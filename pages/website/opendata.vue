@@ -23,7 +23,7 @@ div
           span Download #[strong tijdloze.zip]
       br
       span.lastUpdate(v-if='lastUpdateSql') Laatst gewijzigd op {{formatDate(lastUpdateSql)}}
-    p De belangrijkste tabellen (#[em artist], #[em album], #[em song], #[em list_entry]) van de database van tijdloze.rocks kunnen ook apart, als individuele TSV-bestanden, gedownload worden. Dit is ideaal voor wie de gegevens zelf in een relationele database (bijvoorbeeld SQL) wilt laden. Het schema van deze tabellen is hieronder afgebeeld.
+    p De belangrijkste tabellen (#[em artist], #[em album], #[em song], #[em list_entry]) van de database van tijdloze.rocks kunnen ook apart, als individuele TSV-bestanden, gedownload worden. Dit is ideaal voor wie de gegevens zelf in een relationele database wilt laden. Het schema van deze tabellen is hieronder afgebeeld.
     p Het ZIP-archief dat je hier kunt downloaden, bevat naast de TSV-bestanden ook nog SQL-scripts om de gegevens in een Postgres-database te laden, en een bestand #[em README.txt] met extra uitleg.
     a(href="/images/db_schema.png")
       v-img(src="/images/db_schema.png" cover)
