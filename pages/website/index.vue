@@ -19,12 +19,11 @@ div
       li Iedereen die mij tips gemaild heeft of mij op foutjes gewezen heeft - voor het verbeteren van de kwaliteit van deze website.
 
 
-
   ui-card(title="Technologie")
     template(#buttons)
       nuxt-link(to="/website/opensource")
         v-btn(rounded variant="tonal" size="small") Open source
-    p Tijdloze.rocks is volledig #[nuxt-link(to='/website/opensource') open source]. Iedereen mag de broncode mag bekijken en hergebruiken.
-    p Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Wie geïnteresseerd is om mee te helpen, mag me steeds #[nuxt-link(to='/website/contact') contacteren] of meteen op Github aan de slag gaan.
-    p De website wordt gehost door #[a(href='http://www.cloudvps.nl/') CloudVPS].
+    p Tijdloze.rocks is volledig #[nuxt-link(to='/website/opensource') open source]. Iedereen mag de broncode bekijken en hergebruiken.
+    p Hulp bij het verbeteren van de layout en de functionaliteiten is steeds welkom. Wie geïnteresseerd is om mee te helpen, mag me steeds #[nuxt-link(to='/website/contact') contacteren] of meteen op GitHub aan de slag gaan.
+    p De website wordt gehost door #[a(href='https://www.transip.nl/') TransIP].
 </template>

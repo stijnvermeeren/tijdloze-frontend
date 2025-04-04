@@ -4,30 +4,29 @@ div
   h2 Open data
   p Alle statistieken op deze website baseren zich op een database van alle Tijdloze lijsten. Deze database kan in verschillende formaten worden gedownload.
 
-  ui-card(title="Tab-separated file" subtitle="Bijvoorbeeld voor Excel")
+  ui-card(title="Platte database")
     template(#buttons)
       a(href="/data/tijdloze.tsv")
         v-btn(rounded variant="tonal" size="small")
           span Download #[strong tijdloze.tsv]
       br
       span.lastUpdate(v-if='lastUpdateTsv') Laatst gewijzigd op {{formatDate(lastUpdateTsv)}}
-    p De TSV-export is een bestand met waardes die met tabs gescheiden zijn. Dit bestand bevat een #[em vlakke] versie van de belangrijkste gegevens uit de bovenstaande MySQL-export. Alle artiesten, albums, nummers en noteringen werden hier dus in één tabel samengevat. Dit bestand kan gelezen worden door programma's zoals Microsoft Excel.
+    p De TSV-export ("tab-separated values") is een bestand met waardes die met tabs gescheiden zijn. Dit bestand bevat een #[em platte] versie van de belangrijkste gegevens uit de database van tijdloze.rocks. Alle artiesten, albums, nummers en noteringen worden hier in één tabel samengevat. Dit bestand kan gelezen worden door programma's zoals Microsoft Excel.
 
-  ui-card(title="PostgreSQL" subtitle="Relationele datenbank")
+    ui-alert(title="Microsoft Excel")
+      | De meeste versies van Microsoft Excel kiezen een verkeerde tekencodering als je het TSV-bestand direct opent. Vooral letters met accenten worden dan verkeerd gelezen. Om het bestand wel correct te laden in Excel, kunnen we deze methode aanbevelen: #[a(href="https://support.microsoft.com/nl-nl/office/csv-utf-8-bestanden-correct-openen-in-excel-8a935af5-3416-4edd-ba7e-3dfd2bc4a032") CSV UTF-8-bestanden correct openen in Excel - Microsoft Support] (let erop expliciet "Unicode (UTF-8)" te selecteren).
+
+  ui-card(title="Relationele database")
     template(#buttons)
-      a(href="/data/tijdloze-schema-data.sql")
+      a(href="/data/tijdloze.zip")
         v-btn(rounded variant="tonal" size="small")
-          span Download #[strong tijdloze-schema-data.sql]
+          span Download #[strong tijdloze.zip]
       br
       span.lastUpdate(v-if='lastUpdateSql') Laatst gewijzigd op {{formatDate(lastUpdateSql)}}
-    p De PostgreSQL-export bevat de structuur en de gegevens van vijf tabellen:
-    ul
-      li #[em artist]: alle artiesten.
-      li #[em album]: alle albums, met een foreign key die naar #[em em artist] verwijst.
-      li #[em song]: alle nummers, met foreign keys die naar #[em artist] en #[em album] verwijzen.
-      li #[em year]: alle jaren met een editie van de Tijdloze.
-      li #[em list_entry]: alle noteringen in alle edities van de Tijdloze, met een foreign keys die naar #[em song] en #[em year] verwijzen.
-    p Er is ook een versie van de PostgreSQL-export die alleen maar de gegevens bevat, zonder de structuur van de datenbanktabellen: #[a(href="/data/tijdloze-data.sql") tijdloze-data.sql]. Dit SQL-bestand is nuttig voor wie de datenbank al heeft opgezet, en deze met de nieuwste gegevens wilt vullen.
+    p De belangrijkste tabellen (#[em artist], #[em album], #[em song], #[em list_entry]) van de database van tijdloze.rocks kunnen ook apart, als individuele TSV-bestanden, gedownload worden. Dit is ideaal voor wie de gegevens zelf in een relationele database (bijvoorbeeld SQL) wilt laden. Het schema van deze tabellen is hieronder afgebeeld.
+    p Het ZIP-archief dat je hier kunt downloaden, bevat naast de TSV-bestanden ook nog SQL-scripts om de gegevens in een Postgres-database te laden, en een bestand #[em README.txt] met extra uitleg.
+    a(href="/images/db_schema.png")
+      v-img(src="/images/db_schema.png" cover)
 </template>
 
 <script setup>
