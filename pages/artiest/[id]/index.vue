@@ -1,5 +1,5 @@
 <template lang="pug">
-  v-checkbox.float-right(v-model="byAlbum" density="compact" color="blue" variant="outlined" label="Per album")
+  v-checkbox.checkbox(v-model="byAlbum" density="compact" color="blue" variant="outlined" label="Per album" hide-details)
   div(v-if="!byAlbum")
     in-current-list(:songs='artist.allSongs' :artist='artist')
   div(v-else)
@@ -14,3 +14,10 @@ const props = defineProps({
 
 const byAlbum = ref(false)
 </script>
+
+<style lang="scss" scoped>
+.checkbox {
+  float: right;
+  margin-top: -20px;
+}
+</style>
