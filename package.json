@@ -11,6 +11,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "node": ">=22.0.0",
   "dependencies": {
     "@auth0/auth0-vue": "^2.3.2",
     "@pinia/nuxt": "^0.5.5",
