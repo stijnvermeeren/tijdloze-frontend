@@ -188,8 +188,10 @@ onBeforeUnmount(() =>{
         padding-inline-start: 0 !important;
         padding-inline-end: 0 !important;
         padding: 4px 8px !important;
-        min-width: unset !important;
         margin-right: 5px;
+        .v-list-item__content {
+          min-width: unset !important;
+        }
       }
     }
 
