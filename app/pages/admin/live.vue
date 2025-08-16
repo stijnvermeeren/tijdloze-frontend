@@ -97,7 +97,7 @@ div
 </template>
 
 <script setup>
-import Song from "@/orm/Song";
+import Song from "~/orm/Song";
 import {mdiSearchWeb} from "@mdi/js";
 import {useRepo} from "pinia-orm";
 

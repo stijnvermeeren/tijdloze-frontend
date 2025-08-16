@@ -16,7 +16,6 @@ div
 
 <script setup>
 import _ from 'lodash';
-import { VNumberInput } from 'vuetify/labs/VNumberInput'
 
 const props = defineProps({
   year: Object

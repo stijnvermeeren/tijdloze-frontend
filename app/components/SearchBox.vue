@@ -51,9 +51,9 @@
 
 <script setup>
 import _ from 'lodash';
-import Artist from "@/orm/Artist";
-import Song from "@/orm/Song";
-import Album from "@/orm/Album";
+import Artist from "~/orm/Artist";
+import Song from "~/orm/Song";
+import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 

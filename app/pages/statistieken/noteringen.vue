@@ -11,7 +11,7 @@ div
 </template>
 
 <script setup>
-import Artist from "@/orm/Artist";
+import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
 
 const {years} = storeToRefs(useYearStore())

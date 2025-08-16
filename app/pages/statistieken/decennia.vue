@@ -22,7 +22,7 @@ div
 </template>
 
 <script setup>
-import Album from "@/orm/Album";
+import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
 
 const {songs} = storeToRefs(useRootStore())

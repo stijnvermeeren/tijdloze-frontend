@@ -15,7 +15,8 @@ import {useRootStore} from "~/stores/root";
 definePageMeta({
   validate: async (route) => {
     return !! useYearStore().years.find(year => year.yyyy.toString() === route.params.yyyy);
-  }
+  },
+  noScrollDepth: 2
 })
 
 const {$api} = useNuxtApp()
@@ -89,7 +90,4 @@ const tabs = computed(() => {
   return tabs
 })
 
-definePageMeta({
-  noScrollDepth: 2
-})
 </script>

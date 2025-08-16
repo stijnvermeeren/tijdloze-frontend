@@ -12,7 +12,7 @@ div
 
 <script setup>
   import { idFromSlug } from '~/utils/slug'
-  import Artist from "@/orm/Artist";
+  import Artist from "~/orm/Artist";
   import {useRepo} from "pinia-orm";
 
   const {currentYear, years} = storeToRefs(useYearStore())
