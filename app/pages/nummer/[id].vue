@@ -25,7 +25,7 @@ Title {{song.title}} ({{song.artist.name}})
 
 <script setup>
 import { idFromSlug } from '~/utils/slug'
-import Song from "@/orm/Song";
+import Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
 const songId = computed(() => idFromSlug(useRoute().params?.id))

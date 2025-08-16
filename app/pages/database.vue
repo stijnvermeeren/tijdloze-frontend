@@ -72,7 +72,7 @@ div
 import _ from 'lodash'
 
 import ranking from '~/utils/ranking';
-import Artist from "@/orm/Artist";
+import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
 import {useRepo} from "pinia-orm";
 

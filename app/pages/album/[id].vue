@@ -20,7 +20,7 @@ div
 
 <script setup>
   import { idFromSlug } from '~/utils/slug'
-  import Album from "@/orm/Album";
+  import Album from "~/orm/Album";
   import {useRepo} from "pinia-orm";
 
   const albumId = computed(() => idFromSlug(useRoute().params?.id))

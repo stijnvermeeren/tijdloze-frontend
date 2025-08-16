@@ -10,8 +10,8 @@ span
 </template>
 
 <script setup>
-import SongLink from "./SongLink";
-import ArtistLink from "./ArtistLink";
+import SongLink from "./SongLink.vue";
+import ArtistLink from "./ArtistLink.vue";
 import Song from "../orm/Song";
 import Artist from "../orm/Artist";
 

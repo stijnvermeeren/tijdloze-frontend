@@ -5,6 +5,6 @@ div
   div
     | Ga naar de
     |
-    nuxt-link(to="/") startpagina
+    nuxt-link(to="/public") startpagina
     | .
 </template>

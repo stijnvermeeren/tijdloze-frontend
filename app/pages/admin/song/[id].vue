@@ -76,8 +76,8 @@ div
 </template>
 
 <script setup>
-import Artist from "@/orm/Artist";
-import Album from "@/orm/Album";
+import Artist from "~/orm/Artist";
+import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
 import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
 
