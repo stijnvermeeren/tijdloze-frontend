@@ -1,6 +1,6 @@
 import vuetify from 'vite-plugin-vuetify';
 
-module.exports = defineNuxtConfig({
+export default defineNuxtConfig({
   compatibilityDate: '2025-01-31',
   ssr: true,
   runtimeConfig: {
@@ -42,6 +42,8 @@ module.exports = defineNuxtConfig({
     ]
   },
   modules: [
+    '@nuxt/eslint',
+    '@pinia/nuxt',
     /* Treeshaking: https://next.vuetifyjs.com/en/features/treeshaking/ */
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(
@@ -49,8 +51,7 @@ module.exports = defineNuxtConfig({
           // styles: { configFile: new URL('assets/variables.scss', import.meta.url).pathname }
         })
       ))
-    },
-    '@pinia/nuxt'
+    }
   ],
   devtools: {
     componentInspector: false  // https://github.com/nuxt/devtools/issues/259
