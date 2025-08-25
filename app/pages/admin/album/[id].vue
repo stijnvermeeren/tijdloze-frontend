@@ -68,7 +68,7 @@ div
 
   const processing = ref(false)
 
-  const {data: fullAlbumData} = await useFetch(`album/${useRoute().params.id}`, useFetchOpts())
+  const {data: fullAlbumData} = await useFetch(`album/${useRoute().params.id}`, useFetchOpts({deep:  false}))
   const title = ref(fullAlbumData.value.title)  // not reactive
 
   const artist = computed(() => {

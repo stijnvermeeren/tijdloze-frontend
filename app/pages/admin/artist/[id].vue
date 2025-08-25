@@ -65,7 +65,7 @@ definePageMeta({
 
 const processing = ref(false)
 
-const {data: fullArtistData} = await useFetch(`artist/${useRoute().params.id}`, useFetchOpts())
+const {data: fullArtistData} = await useFetch(`artist/${useRoute().params.id}`, useFetchOpts({deep: true}))
 
 const disabled = computed(() => {
   return processing.value || !fullArtistData.value.name

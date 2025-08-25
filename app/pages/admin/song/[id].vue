@@ -89,7 +89,7 @@ definePageMeta({
 
 const processing  = ref(false)
 
-const {data: fullSongData, status} = await useFetch(`song/${useRoute().params.id}`, useFetchOpts())
+const {data: fullSongData, status} = await useFetch(`song/${useRoute().params.id}`, useFetchOpts({deep: true}))
 const title = ref(fullSongData.value.title)  // not reactive
 
 watch(status, (newValue) => {
