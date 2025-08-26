@@ -26,17 +26,13 @@ export const useYearStore = defineStore('year', () => {
       yearsRaw.value.push(currentYear)
     }
   }
-
-  function setYearsRaw(data) {
-    yearsRaw.value = data;
-  }
     
   return {
     context,
     currentYear,
     previousYear,
     setCurrentYear,
-    setYearsRaw,
+    yearsRaw,  // needs to be exposed for hydration, see https://github.com/vuejs/pinia/discussions/2175
     years
   }
 })

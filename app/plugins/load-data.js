@@ -14,7 +14,7 @@ export default defineNuxtPlugin(async nuxtApp => {
   const configStore = useConfigStore()
   const $api = nuxtApp.$api
 
-  if (!yearStore.years.length) {
+  await callOnce(async () => {
     const [
       chatOnResponse,
       commentsOnResponse,
@@ -26,8 +26,8 @@ export default defineNuxtPlugin(async nuxtApp => {
     ])
     configStore.chatOn = (chatOnResponse.value === 'on')
     configStore.commentsOn = (commentsOnResponse.value === 'on')
-    rootStore.exitSongIds.value = coreDataResponse.exitSongIds
-    yearStore.setYearsRaw(coreDataResponse.years)
+    rootStore.exitSongIds = coreDataResponse.exitSongIds
+    yearStore.yearsRaw = coreDataResponse.years
 
     useRepo(Artist).insert(coreDataResponse.artists);
     useRepo(Album).insert(coreDataResponse.albums);
@@ -39,10 +39,10 @@ export default defineNuxtPlugin(async nuxtApp => {
 
     if (rootStore.listInProgress) {
       const poll = await $api('poll/latest')
-          .catch(err => undefined);
+        .catch(err => undefined);
       if (poll && poll.year === yearStore.currentYear.yyyy) {
         usePollStore().currentPoll = poll;
       }
     }
-  }
+  })
 });
