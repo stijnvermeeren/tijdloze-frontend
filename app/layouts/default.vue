@@ -33,13 +33,26 @@ onMounted(() => {
   @use "../assets/globalStyles";
   @use "../assets/styleConfig";
 
+  html {
+    height: 100%;
+  }
+
   body {
-    width: 100%;
+    width: 100vw;
     min-width: 480px;
+    min-height: 100vh;
+
+    #__nuxt {
+      height: 100vh;
+    }
   }
 
   .router-link-active{
     cursor: auto;
+    color: #000;
+    &:hover {
+      color: #000;
+    }
   }
 
   .v-btn {
@@ -62,12 +75,17 @@ onMounted(() => {
     min-width: 480px;
     width: 100%;
 
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+
     #container2 {
+      flex: 1 1 auto;
+
       @media (min-width: 800px) {
         display: flex;
         justify-content: center;
         align-items: stretch;
-        overflow: auto;
 
         #maincontainer {
           flex-grow: 1;
@@ -102,6 +120,7 @@ onMounted(() => {
   }
 
   #header {
+    flex: 0 1 auto;
     background-color: styleConfig.$headerBackgroundColor;
 
     #logo {
