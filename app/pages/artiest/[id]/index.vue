@@ -9,7 +9,10 @@
 
 <script setup>
 const props = defineProps({
-  artist: Object
+  artist: {
+    type: Object,
+    required: true
+  }
 })
 
 const byAlbum = ref(false)

@@ -40,7 +40,7 @@
 import {useRootStore} from "~/stores/root";
 
 const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
-const {years, xScale, yScale} = useGraph()
+const {years, xBandScale, xScale, yScale} = useGraph()
 
 const yStep = computed(() => {
   return yScale.value(1) - yScale.value(0);
@@ -64,7 +64,7 @@ const points = computed(() => {
   return points;
 })
 
-const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(xScale, yScale, years)
+const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
 
 const tooltipSong = computed(() => {
   if (!!hoverYear.value && !!hoverPosition.value) {

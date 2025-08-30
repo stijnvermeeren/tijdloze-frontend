@@ -39,8 +39,8 @@
   import {useRootStore} from "~/stores/root";
 
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
-  const {years, xScale, yScale, songLine} = useGraph()
-  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xScale, yScale, years)
+  const {years, xBandScale, xScale, yScale, songLine} = useGraph()
+  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
 
   defineProps({
     songs: Array

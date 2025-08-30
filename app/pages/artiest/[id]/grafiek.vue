@@ -1,11 +1,18 @@
 <template lang="pug">
-d3-graph(:songs='top100Songs')
+d3-graph(:entries='entries')
 </template>
 
 <script setup>
+import useGraphEntries from "~/composables/useGraphEntries";
+
 const props = defineProps({
-  top100Songs: Array
+  songs: {
+    type: Array,
+    required: true
+  }
 })
+
+const entries = useGraphEntries(props.songs)
 </script>
 
 <style lang="scss" scoped>

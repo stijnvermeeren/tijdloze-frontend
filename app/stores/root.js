@@ -65,6 +65,14 @@ export const useRootStore = defineStore('root', () => {
     }
   })
 
+  const maxPositionByYyyy = computed(() => {
+    const result = {}
+    useRepo(List).all().forEach(list => {
+      result[list.year] = list.songIds.length
+    })
+    return result
+  })
+
   function list(year, limit, maxPosition) {
     const list = useRepo(List).find(year?.yyyy)
     if (list) {
@@ -113,6 +121,7 @@ export const useRootStore = defineStore('root', () => {
     lastSong,
     list,
     listInProgress,
+    maxPositionByYyyy,
     songIdsByTitle,
     songs,
     usedCountryIds
