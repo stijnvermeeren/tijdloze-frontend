@@ -49,13 +49,7 @@ $color8: rgb(153,153,153);
   &-7 {
     @include color($color7)
   }
-  &-8 {
-    @include color($color8)
-  }
-  &-9 {
-    @include color($color8)
-  }
-  &-10 {
+  &-other {
     @include color($color8)
   }
 }

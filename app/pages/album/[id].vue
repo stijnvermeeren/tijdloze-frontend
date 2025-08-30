@@ -15,7 +15,7 @@ div
     | uit {{ album.releaseYear }}.
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:album="album" :top100-songs="top100Songs" :full-album-data="fullAlbumData")
+    nuxt-page(:album="album" :songs="songs" :full-album-data="fullAlbumData")
 </template>
 
 <script setup>
@@ -41,17 +41,17 @@ div
       .find(albumId.value);
   })
 
-  const top100Songs = computed(() => {
-    return album.value.songsSorted.filter(song => song.listCount(years.value) > 0)
+  const songs = computed(() => {
+    return album.value.songsSorted
   })
 
   const tabs = computed(() => {
-    const tabs = [{ to: `/album/${albumId.value}`, title: `Nummers in de Tijdloze` }]
-    if (top100Songs.value.length) {
-      tabs.push({ to: `/album/${albumId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
-    }
-    tabs.push({ to: `/album/${albumId.value}/info`, title: 'Info' })
-    return tabs
+    const prefix = `/album/${albumId.value}-${album.value.slug}`
+    return [
+      { to: prefix, title: `Nummers in de Tijdloze` },
+      { to: `${prefix}/grafiek`, title: 'Op grafiek' },
+      { to: `${prefix}/info`, title: 'Info' }
+    ]
   })
 
   definePageMeta({

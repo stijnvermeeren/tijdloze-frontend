@@ -1,7 +1,7 @@
 
 import {bisect} from "d3-array";
 
-export default function (xScale, yScale, years) {
+export default function (xBandScale, xScale, yScale, years) {
   const {width, height, margin} = useGraphConstants()
 
   const hoverYear = ref(undefined)
@@ -13,7 +13,7 @@ export default function (xScale, yScale, years) {
     if (hoverYear.value) {
       return xScale.value(hoverYear.value._yy);
     } else {
-      return xScale.value.range()[1];
+      return undefined;
     }
   })
 
@@ -23,11 +23,11 @@ export default function (xScale, yScale, years) {
       const tooltipTopScreen = (tooltipTop * overlayScreenHeight.value / height) + "px";
 
       if (hoverLineX.value > width - 200) {
-        const tooltipRight = (margin.right + width - hoverLineX.value + xScale.value.step() * 4/5);
+        const tooltipRight = (margin.right + width - hoverLineX.value + xBandScale.value.step() * 4/5);
         const tooltipRightScreen = (tooltipRight * overlayScreenWidth.value / width) + "px";
         return {right: tooltipRightScreen, top: tooltipTopScreen};
       } else {
-        const tooltipLeft = (margin.left + hoverLineX.value + xScale.value.step() * 2/3);
+        const tooltipLeft = (margin.left + hoverLineX.value + xBandScale.value.step() * 2/3);
         const tooltipLeftScreen = (tooltipLeft * overlayScreenWidth.value / width) + "px";
         return {left: tooltipLeftScreen, top: tooltipTopScreen};
       }
@@ -58,7 +58,7 @@ export default function (xScale, yScale, years) {
     overlayScreenWidth.value = boundingClientRect.width;
     overlayScreenHeight.value = boundingClientRect.height;
 
-    const starts = years.value.map(year => xScale.value(year._yy) - xScale.value.step() / 2);
+    const starts = years.value.map(year => xScale.value(year._yy) - xBandScale.value.step() / 2);
     const lookup = width / overlayScreenWidth.value * offsetX - margin.left;
     const newHoverYear = years.value[bisect(starts, lookup) - 1];
     if (newHoverYear) {

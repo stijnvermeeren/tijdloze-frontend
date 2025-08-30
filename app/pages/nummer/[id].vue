@@ -43,16 +43,15 @@ const song = computed(() => {
   return useRepo(Song).withAll().find(songId.value);
 })
 const tabs = computed(() => {
+  const prefix = `/nummer/${songId.value}-${song.value.slug}`
   const tabs = [
-      { to: `/nummer/${songId.value}`, title: `In de Tijdloze` }
+    { to: prefix, title: `In de Tijdloze` },
+    { to: `${prefix}/grafiek`, title: 'Op grafiek' }
   ]
-  if (song.value.listCount(years.value) > 0) {
-    tabs.push({ to: `/nummer/${songId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
-  }
   if (fullSongData.value.lyrics) {
-    tabs.push({ to: `/nummer/${songId.value}/lyrics`, title: 'Lyrics' })
+    tabs.push({ to: `${prefix}/lyrics`, title: 'Lyrics' })
   }
-  tabs.push({ to: `/nummer/${songId.value}/info`, title: 'Info' })
+  tabs.push({ to: `${prefix}/info`, title: 'Info' })
   return tabs
 })
 

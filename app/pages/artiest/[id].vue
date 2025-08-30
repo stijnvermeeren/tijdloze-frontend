@@ -7,7 +7,7 @@ div
     ui-admin-link-btn(:to="`/admin/artist/${artist.id}`") Admin: artist aanpassen
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:artist="artist" :top100-songs="top100Songs" :full-artist-data="fullArtistData")
+    nuxt-page(:artist="artist" :songs="songs" :full-artist-data="fullArtistData")
 </template>
 
 <script setup>
@@ -46,17 +46,17 @@ div
         .find(artistId.value);
   })
 
-  const top100Songs = computed(() => {
-    return artist.value.allSongs.filter(song => song.listCount(years.value) > 0)
+  const songs = computed(() => {
+    return artist.value.allSongs
   })
 
   const tabs = computed(() => {
-    const tabs = [{ to: `/artiest/${artistId.value}`, title: `Nummers in de Tijdloze` }]
-    if (top100Songs.value.length) {
-      tabs.push({ to: `/artiest/${artistId.value}/grafiek`, title: 'Op grafiek', subtitle: "top 100" })
-    }
-    tabs.push({ to: `/artiest/${artistId.value}/info`, title: 'Info' })
-    return tabs
+    const prefix = `/artiest/${artistId.value}-${artist.value.slug}`
+    return [
+      { to: prefix, title: `Nummers in de Tijdloze` },
+      { to: `${prefix}/grafiek`, title: 'Op grafiek' },
+      { to: `${prefix}/info`, title: 'Info' }
+    ]
   })
 
   definePageMeta({

@@ -39,13 +39,25 @@ const props = defineProps({
   xScale: Function,
   yScale: Function,
   years: Array,
-  hoverYear: Year
+  hoverYear: Year,
+  extended: {
+    type: Boolean,
+    default: false
+  }
 })
 
-const yTickValues = [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+const {width} = useGraphConstants()
+
+const yTickValues = computed(() => {
+  if (props.extended) {
+    return [1, 100, 250, 500, 750, 1000, 1250, 1500, 1750, 2000]
+  } else {
+    return [1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+  }
+})
 
 const rightX = computed(() => {
-  return props.xScale.range()[1];
+  return width;
 })
 
 function isHoverYear(year) {

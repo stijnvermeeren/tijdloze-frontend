@@ -2,29 +2,90 @@
 import {scaleLinear, scaleBand} from "d3-scale";
 import _ from "lodash";
 import {line} from "d3-shape";
+import {result} from "lodash-es";
 
 export default function () {
-
   const {width, height} = useGraphConstants()
 
   const {years, currentYear} = storeToRefs(useYearStore())
 
-  const xScale = computed(() => {
+  const extended = ref(false)
+
+  const {maxPositionByYyyy} = storeToRefs(useRootStore())
+
+  const cutoffPositionBefore = computed(() => {
+    const result = {}
+    let previousYearCutoff = undefined
+    years.value.forEach(year => {
+      const thisYearCutoff = maxPositionByYyyy.value[year.yyyy] + 1
+      if (previousYearCutoff) {
+        result[year.yyyy] = Math.min(previousYearCutoff, thisYearCutoff);
+      } else {
+        result[year.yyyy] = thisYearCutoff;
+      }
+      previousYearCutoff = thisYearCutoff
+    })
+    return result
+  })
+
+  const cutoffPositionAfter = computed(() => {
+    const result = {}
+    let previousYear = undefined
+    years.value.forEach(year => {
+      const thisYearCutoff = maxPositionByYyyy.value[year.yyyy] + 1
+      if (previousYear) {
+        result[previousYear.yyyy] = Math.min(result[previousYear.yyyy], thisYearCutoff);
+      }
+      result[year.yyyy] = thisYearCutoff;
+      previousYear = year
+    })
+    return result
+  })
+
+  const maxPosition = computed(() => {
+    return Math.max(...Object.values(maxPositionByYyyy.value))
+  })
+
+  const xBandScale = computed(() => {
     return scaleBand()
-      .rangeRound([10, width + 10])
-      .paddingInner(0.1)
+      .rangeRound([0, width])
       .paddingOuter(0.2)
       .domain(years.value.map(year => year._yy));
   })
 
+  const xScale = computed(() => {
+    return (input) => {
+      return xBandScale.value(input) + xBandScale.value.bandwidth() / 2;
+    }
+  })
+
   const yScale = computed(() => {
+    const maxY = extended.value ? maxPosition.value : 100;
     return scaleLinear()
       .range([0, height])
-      .domain([0,101]);
+      .domain([0, maxY + 1]);
+  })
+
+  const greyBackgroundPoints = computed(() => {
+    if (years.value.length) {
+      const points = []
+      years.value.forEach((year, index) => {
+        const y = yScale.value(maxPositionByYyyy.value[year.yyyy] + 1)
+        const xStart = (index === 0) ? 0 : xBandScale.value(year._yy)
+        const xEnd = (index === years.value.length - 1) ? width : xBandScale.value(year._yy) + xBandScale.value.bandwidth()
+        points.push(`${xStart},${y}`)
+        points.push(`${xEnd},${y}`)
+      })
+      points.push(`${width},${yScale.value(maxPosition.value + 1)}`)
+      points.push(`0,${yScale.value(maxPosition.value + 1)}`)
+      return points.join(" ")
+    } else {
+      return ""
+    }
   })
 
   function songLine(song, yearIntervals, suddenEnds) {
-    const halfBandWith = xScale.value.bandwidth() / 2;
+    const halfBandWith = xBandScale.value.bandwidth() / 2;
     const undefinedPoint = {
       x: null,
       y: null,
@@ -32,35 +93,40 @@ export default function () {
     };
 
     const intervalLines = yearIntervals.map(interval => {
+      const intervalYears = interval.filter(year => song.position(year, extended.value))
+      const positions = intervalYears.map(year => song.position(year, extended.value))
+
       let start = [];
       if (!suddenEnds && _.first(interval).yyyy !== 1987) {
+        const firstPosition = _.first(positions)
+        const cutoffPosition = cutoffPositionBefore.value[_.first(interval).yyyy]
         start = [{
-          x: xScale.value(_.first(interval)._yy) - halfBandWith,
-          y: height,
+          x: xScale.value(_.first(interval)._yy) - 9 / 10 * halfBandWith,
+          y: yScale.value(Math.max(firstPosition, cutoffPosition)),
           defined: true
         }];
       }
 
-      const positions = interval
-        .filter(year => song.position(year))
-        .map(year => {
-          return {
-            x: xScale.value(year._yy),
-            y: yScale.value(song.position(year)),
-            defined: true
-          };
-        });
+      const positionPoints = intervalYears.map(year => {
+        return {
+          x: xScale.value(year._yy),
+          y: yScale.value(song.position(year, extended.value)),
+          defined: true
+        };
+      });
 
       const lastYear = _.last(interval);
       if (suddenEnds || lastYear.equals(currentYear.value)) {
-        return _.flatten([start, positions, undefinedPoint]);
+        return _.flatten([start, positionPoints, undefinedPoint]);
       } else {
+        const lastPosition = _.last(positions)
+        const cutoffPosition = cutoffPositionAfter.value[_.last(interval).yyyy]
         const end = {
-          x: xScale.value(lastYear._yy) + halfBandWith,
-          y: height,
+          x: xScale.value(lastYear._yy) + 9 / 10 * halfBandWith,
+          y: yScale.value(Math.max(lastPosition, cutoffPosition)),
           defined: true
         };
-        return _.flatten([start, positions, end, undefinedPoint]);
+        return _.flatten([start, positionPoints, end, undefinedPoint]);
       }
     });
 
@@ -71,7 +137,7 @@ export default function () {
     return songLine(_.flatten(intervalLines));
   }
 
-  return {years, xScale, yScale, songLine}
+  return {years, xBandScale, xScale, yScale, songLine, extended, greyBackgroundPoints}
 }
 
 

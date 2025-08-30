@@ -1,11 +1,14 @@
 <template lang="pug">
 .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+  v-btn-toggle(v-model="extended" mandatory density="compact" color="blue" variant="outlined")
+    v-btn(:disabled="!hasTop100Entry" size="small" :value="false") Top 100
+    v-btn(size="small" :value="true") Volledige lijst
   .tooltip(v-if="!!hoverYear && tooltipEntries.length" :style="tooltipStyle")
     .year
       | {{hoverYear.yyyy}}
     .entry(
       v-for="entry in tooltipEntries"
-      :class="[`color-${entry.index}`, { highlighted: hoverIndex === entry.index }]"
+      :class="[entry.colorClass, { highlighted: hoverIndex === entry.index }]"
     )
       | {{entry.position}}. {{entry.song.title}}
   svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
@@ -15,13 +18,15 @@
         :y-scale='yScale'
         :years='years'
         :hover-year='hoverYear'
+        :extended="extended"
       )
+      polygon.greyBackground(v-if="extended" :points="greyBackgroundPoints")
       line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g(
-        v-for='(song, index) in songs'
+        v-for='({song, isTop100}, index) in entries'
         :class="[\
           'line',\
-          `color-${index}`,\
+          colorClass(index, isTop100),\
           {\
             highlighted: hoverIndex === index,\
             notHighlighted: hoverIndex !== undefined && hoverIndex !== index\
@@ -30,9 +35,9 @@
         path.coloredPath(:d='fullSongLine(song)')
         template(v-for='year in years' key='year.yyyy')
           circle.circle.coloredCircle(
-            v-if='song.position(year)'
+            v-if='song.position(year, extended)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year))'
+            :cy='yScale(song.position(year, extended))'
             r='3'
           )
       rect.overlay(
@@ -46,14 +51,14 @@
       )
 
   .legend(v-if='!noLabel')
-    div(
-      v-for='(song, index) in songs'
-      :key='song.id'
-      :class="['songLegend', `color-${index}`, { highlighted: hoverIndex === index }]"
-      @mouseover='onSongHover(index)'
-      @mouseleave='onSongHover(undefined)'
-    )
-      | {{song.title}}
+    template(v-for='({song, isTop100}, index) in entries' :key='song.id')
+      div(
+        v-if="extended || isTop100"
+        :class="['songLegend', colorClass(index, isTop100), { highlighted: hoverIndex === index }]"
+        @mouseover='onSongHover(index)'
+        @mouseleave='onSongHover(undefined)'
+      )
+        | {{song.title}}
 </template>
 
 <script setup>
@@ -61,7 +66,10 @@ import {probablyInListIntervals} from '~/utils/intervals';
 import _ from "lodash"
 
 const props = defineProps({
-  songs: Array,
+  entries: {
+    type: Array,
+    required: true
+  },
   noLabel: {
     type: Boolean,
     default: false
@@ -69,18 +77,39 @@ const props = defineProps({
 })
 
 const {width, height, fullWidth, fullHeight, margin} = useGraphConstants()
-const {xScale, yScale, years, songLine} = useGraph()
-const {onHover, hoverYear, hoverLineX, tooltipStyle} = useGraphHover(xScale, yScale, years)
+const {xBandScale, xScale, yScale, years, songLine, extended, greyBackgroundPoints} = useGraph()
+const {onHover, hoverYear, hoverLineX, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
 
 const hoverIndex = ref(undefined)
 
+const hasTop100Entry = computed(() => {
+  return props.entries.some(entry => entry.isTop100)
+})
+
+watch(hasTop100Entry, (newValue) => {
+  if (! newValue) {
+    extended.value = true;
+  }
+}, { immediate: true })
+
+const colorClass = computed(() => {
+  return (index, isTop100) => {
+    const maxColorIndex = 7
+    if (props.entries.length <= maxColorIndex || isTop100) {
+      return `color-${Math.min(index, maxColorIndex)}`
+    } else {
+      return 'color-other'
+    }
+  }
+})
+
 const tooltipEntries = computed(() => {
-  if (!!hoverYear.value) {
+  if (hoverYear.value) {
     const entries = [];
-    props.songs.forEach((song, index) => {
-      const position = song.position(hoverYear.value)
+    props.entries.forEach(({song, isTop100}, index) => {
+      const position = song.position(hoverYear.value, extended.value);
       if (position) {
-        entries.push({song, index, position})
+        entries.push({song, index, colorClass: colorClass.value(index, isTop100), position})
       }
     });
     return _.sortBy(entries, entry => entry.position);
@@ -96,7 +125,7 @@ function onSongHover(index) {
 function fullSongLine(song) {
   return songLine(
     song,
-    probablyInListIntervals([song], years.value)
+    probablyInListIntervals([song], years.value, extended.value)
   );
 }
 </script>
@@ -137,6 +166,10 @@ function fullSongLine(song) {
       box-sizing: border-box;
       background-color: white;
       font-size: 11px;
+
+      .greyBackground {
+        fill: rgba(200, 200, 200, 0.5);
+      }
 
       line {
         fill: none;
