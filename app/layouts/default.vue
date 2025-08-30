@@ -38,12 +38,12 @@ onMounted(() => {
   }
 
   body {
-    width: 100vw;
+    width: 100%;
     min-width: 480px;
-    min-height: 100vh;
+    min-height: 100%;
 
     #__nuxt {
-      height: 100vh;
+      height: 100%;
     }
   }
 
@@ -77,7 +77,7 @@ onMounted(() => {
 
     display: flex;
     flex-flow: column;
-    height: 100%;
+    min-height: 100%;
 
     #container2 {
       flex: 1 1 auto;
