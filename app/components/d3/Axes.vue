@@ -2,7 +2,7 @@
 g
   g.x.axis
     path.domain(:d='`M0,0 H ${rightX}`')
-    template(v-for='year in years' key='year.yyyy')
+    template(v-for='year in years' :key='year.yyyy')
       g.tick(
         v-if='year.yyyy % 10 === 0 && !isHoverYear(year)'
         :transform='`translate(${xScale(year._yy)},0)`'

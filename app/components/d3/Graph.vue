@@ -33,7 +33,7 @@
           }]"
       )
         path.coloredPath(:d='fullSongLine(song)')
-        template(v-for='year in years' key='year.yyyy')
+        template(v-for='year in years' :key='year.yyyy')
           circle.circle.coloredCircle(
             v-if='song.position(year, extended)'
             :cx='xScale(year._yy)'

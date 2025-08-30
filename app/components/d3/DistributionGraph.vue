@@ -44,8 +44,8 @@ div
 
 <script setup>
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
-  const {years, xScale, yScale} = useGraph()
-  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xScale, yScale, years)
+  const {years, xBandScale, xScale, yScale} = useGraph()
+  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
 
   const props = defineProps({
     title: {
