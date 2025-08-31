@@ -1,22 +1,25 @@
 <template lang="pug">
-  ui-alert(v-if='fullSongData.notes')
-    make-links(:text='fullSongData.notes')
+  template(v-if="fullSongData")
+    ui-alert(v-if='fullSongData.notes')
+      make-links(:text='fullSongData.notes')
 
-  p(v-if="song.leadVocals")
-    | Lead vocals:
-    |
-    strong {{vocalsGenders[song.leadVocals]}}
-  p(v-if="song.languageId")
-    | Taal:
-    |
-    strong {{languages[song.languageId]}}
-  wikipedia-content(:url="fullSongData['urlWikiNl']" language="Nederlands")
-  wikipedia-content(:url="fullSongData['urlWikiEn']" language="Engels")
-  p.links(v-if="links.length")
-    | Externe links:
-    template(v-for='(link, index) in links' :key='index')
-      br
-      ui-external-link-btn( :href="link.href") {{ link.title }}
+    p(v-if="song.leadVocals")
+      | Lead vocals:
+      |
+      strong {{vocalsGenders[song.leadVocals]}}
+    p(v-if="song.languageId")
+      | Taal:
+      |
+      strong {{languages[song.languageId]}}
+    wikipedia-content(:url="fullSongData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(:url="fullSongData['urlWikiEn']" language="Engels")
+    p.links(v-if="links.length")
+      | Externe links:
+      template(v-for='(link, index) in links' :key='index')
+        br
+        ui-external-link-btn( :href="link.href") {{ link.title }}
+  div(v-else)
+    v-progress-circular(indeterminate)
 </template>
 
 <script setup>

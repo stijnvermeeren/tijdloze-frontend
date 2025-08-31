@@ -1,18 +1,27 @@
 <template lang="pug">
-  wikipedia-content(:url="fullAlbumData['urlWikiNl']" language="Nederlands")
-  wikipedia-content(:url="fullAlbumData['urlWikiEn']" language="Engels")
-  p.links(v-if="links.length")
-    | Externe links:
-    template(v-for='(link, index) in links' :key='index')
-      br
-      ui-external-link-btn( :href="link.href") {{ link.title }}
+  template(v-if="status === 'success'")
+    wikipedia-content(:url="fullAlbumData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(:url="fullAlbumData['urlWikiEn']" language="Engels")
+    p.links(v-if="links.length")
+      | Externe links:
+      template(v-for='(link, index) in links' :key='index')
+        br
+        ui-external-link-btn( :href="link.href") {{ link.title }}
+  div(v-else)
+    v-progress-circular(indeterminate)
 </template>
 
 <script setup>
 const props = defineProps({
-  fullAlbumData: Object
+  album: {
+    type: Object,
+    required: true
+  }
 })
 
+const {data: fullAlbumData, status, error} = await useLazyFetch(
+    `album/${props.album.id}`, useFetchOpts({'key': `album/${props.album.id}`})
+)
 
 const links = computed(() => {
   const links = [];
@@ -21,7 +30,7 @@ const links = computed(() => {
       fn = x => x
     }
 
-    if (props.fullAlbumData[property]) {
+    if (props.fullAlbumData?.[property]) {
       links.push({
         href: fn(props.fullAlbumData[property]),
         title: title

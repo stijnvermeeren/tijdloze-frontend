@@ -16,9 +16,9 @@ Title {{song.title}} ({{song.artist.name}})
       span.ml-2  ({{ song.album.releaseYear }})
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:song="song" :lyrics="fullSongData.lyrics" :full-song-data="fullSongData")
+    nuxt-page(keepalive :song="song" :full-song-data="fullSongData")
 
-  .spotify(v-if='fullSongData.spotifyId')
+  .spotify(v-if='fullSongData?.spotifyId')
     div
       spotify(:spotify-id='fullSongData.spotifyId')
 </template>
@@ -30,12 +30,9 @@ import {useRepo} from "pinia-orm";
 
 const songId = computed(() => idFromSlug(useRoute().params?.id))
 
-const {data: fullSongData, error} = await useFetch(
+const {data: fullSongData, error, status} = await useLazyFetch(
     `song/${songId.value}`, useFetchOpts({'key': `song/${songId.value}`})
 )
-if (error.value) {
-  create404Error()
-}
 
 const {currentYear, years} = storeToRefs(useYearStore())
 
@@ -48,7 +45,7 @@ const tabs = computed(() => {
     { to: prefix, title: `In de Tijdloze` },
     { to: `${prefix}/grafiek`, title: 'Op grafiek' }
   ]
-  if (fullSongData.value.lyrics) {
+  if (fullSongData.value?.lyrics) {
     tabs.push({ to: `${prefix}/lyrics`, title: 'Lyrics' })
   }
   tabs.push({ to: `${prefix}/info`, title: 'Info' })

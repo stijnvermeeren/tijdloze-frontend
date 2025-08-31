@@ -1,10 +1,13 @@
 <template lang="pug">
-  .lyrics {{ lyrics }}
+  .lyrics {{ fullSongData?.lyrics }}
 </template>
 
 <script setup>
 const props = defineProps({
-  lyrics: String
+  fullSongData: {
+    type: Object,
+    required: true
+  }
 })
 </script>
 

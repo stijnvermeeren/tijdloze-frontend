@@ -15,7 +15,7 @@ div
     | uit {{ album.releaseYear }}.
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:album="album" :songs="songs" :full-album-data="fullAlbumData")
+    nuxt-page(keepalive :album="album" :songs="songs")
 </template>
 
 <script setup>
@@ -26,13 +26,6 @@ div
   const albumId = computed(() => idFromSlug(useRoute().params?.id))
 
   const {currentYear, years} = storeToRefs(useYearStore())
-
-  const {data: fullAlbumData, error} = await useFetch(
-      `album/${albumId.value}`, useFetchOpts({'key': `album/${albumId.value}`})
-  )
-  if (error.value) {
-    create404Error()
-  }
 
   const album = computed(() => {
     return useRepo(Album)
