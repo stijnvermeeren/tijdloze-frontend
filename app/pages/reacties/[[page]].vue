@@ -4,7 +4,7 @@ div
   div.flexTitle
     h2 Reageer op de Tijdloze
     ui-admin-link-btn(to="/admin/comments") Admin: verwijderde reacties terugzetten
-  tempate(v-if="paginationReady")
+  template(v-if="paginationReady")
     comments-pager(:page='page' :pages='pages ')
     template(v-if='page === 1')
       template(v-if="!commentsOn")
@@ -30,7 +30,7 @@ div
 
   const {data: commentsOn, status: status1} = await useLazyFetch(
     `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn}'})
+    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn'})
   )
 
   const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useLazyFetch(

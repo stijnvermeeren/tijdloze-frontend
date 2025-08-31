@@ -4,7 +4,7 @@ div
   h2 De Tijdloze van {{year.yyyy}}
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:year='year' :analysis='analysis' :exits="exits" :newSongs="newSongs")
+    nuxt-page(keepalive :year='year' :analysis='analysis' :exits="exits" :newSongs="newSongs")
 </template>
 
 <script setup>

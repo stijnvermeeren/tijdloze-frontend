@@ -28,9 +28,10 @@ const props = defineProps({
   }
 })
 
+const artistApiUrl = computed(() => `artist/${props.artist.id}`)
 // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
 const {data: fullArtistData, status} = await useLazyFetch(
-    `artist/${props.artist.id}`, useFetchOpts({key: `artist/${props.artist.id}`})
+    artistApiUrl, useFetchOpts({key: artistApiUrl})
 )
 
 const links = computed(() => {
@@ -40,9 +41,9 @@ const links = computed(() => {
       fn = x => x
     }
 
-    if (props.fullArtistData?.[property]) {
+    if (fullArtistData.value?.[property]) {
       links.push({
-        href: fn(props.fullArtistData[property]),
+        href: fn(fullArtistData.value[property]),
         title: title
       })
     }

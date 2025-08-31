@@ -19,8 +19,9 @@ const props = defineProps({
   }
 })
 
+const albumApiUrl = computed(() => `album/${props.album.id}`)
 const {data: fullAlbumData, status, error} = await useLazyFetch(
-    `album/${props.album.id}`, useFetchOpts({'key': `album/${props.album.id}`})
+    albumApiUrl, useFetchOpts({'key': albumApiUrl})
 )
 
 const links = computed(() => {
@@ -30,9 +31,9 @@ const links = computed(() => {
       fn = x => x
     }
 
-    if (props.fullAlbumData?.[property]) {
+    if (fullAlbumData.value?.[property]) {
       links.push({
-        href: fn(props.fullAlbumData[property]),
+        href: fn(fullAlbumData.value[property]),
         title: title
       })
     }

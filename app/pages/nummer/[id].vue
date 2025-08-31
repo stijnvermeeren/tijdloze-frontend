@@ -30,8 +30,9 @@ import {useRepo} from "pinia-orm";
 
 const songId = computed(() => idFromSlug(useRoute().params?.id))
 
+const songApiUrl = computed(() => `song/${songId.value}`)
 const {data: fullSongData, error, status} = await useLazyFetch(
-    `song/${songId.value}`, useFetchOpts({'key': `song/${songId.value}`})
+    songApiUrl, useFetchOpts({'key': songApiUrl})
 )
 
 const {currentYear, years} = storeToRefs(useYearStore())
