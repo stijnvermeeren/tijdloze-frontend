@@ -1,5 +1,5 @@
 <template lang="pug">
-d3-graph(:entries='entries')
+d3-graph(:entries="entries")
 </template>
 
 <script setup>
