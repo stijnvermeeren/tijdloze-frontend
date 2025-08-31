@@ -42,9 +42,8 @@ div
     return +useRoute().params.page || +useRoute().query.page || 1;
   })
 
-  const commentsApiUrl = computed(() => `comments/${page.value}`)
   const {data: comments, refresh: refreshComments, status: status3} = await useLazyFetch(
-    commentsApiUrl, useFetchOpts({key: commentsApiUrl})
+      () => `comments/${page.value}`, useFetchOpts()
   )
   useClientDataRefresh(refreshComments)
 

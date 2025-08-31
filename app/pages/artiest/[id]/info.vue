@@ -28,10 +28,9 @@ const props = defineProps({
   }
 })
 
-const artistApiUrl = computed(() => `artist/${props.artist.id}`)
 // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
 const {data: fullArtistData, status} = await useLazyFetch(
-    artistApiUrl, useFetchOpts({key: artistApiUrl})
+    () => `artist/${props.artist.id}`, useFetchOpts()
 )
 
 const links = computed(() => {
