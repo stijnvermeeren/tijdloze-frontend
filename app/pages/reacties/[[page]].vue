@@ -4,18 +4,23 @@ div
   div.flexTitle
     h2 Reageer op de Tijdloze
     ui-admin-link-btn(to="/admin/comments") Admin: verwijderde reacties terugzetten
-  comments-pager(:page='page' :pages='pages ')
-  template(v-if='page === 1')
-    template(v-if="!commentsOn")
-      .message
-        | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
-    template(v-else)
-      comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
+  template(v-if="paginationReady")
+    comments-pager(:page='page' :pages='pages ')
+    template(v-if='page === 1')
+      template(v-if="!commentsOn")
+        .message
+          | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
+      template(v-else)
+        comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
-  div
-    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
+    div(v-if="commentsReady")
+      comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
+    div(v-else)
+      v-progress-circular(indeterminate)
 
-  comments-pager(:page='page' :pages='pages')
+    comments-pager(:page='page' :pages='pages')
+  div(v-else)
+    v-progress-circular(indeterminate)
 </template>
 
 <script setup>
@@ -23,12 +28,12 @@ div
 
   const commentsPerPage = 20;
 
-  const {data: commentsOn} = await useFetch(
+  const {data: commentsOn, status: status1} = await useLazyFetch(
     `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn}'})
+    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn'})
   )
 
-  const {data: commentCount, refresh: reloadCommentCount} = await useFetch(
+  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useLazyFetch(
     `comments/count`,
     useFetchOpts({transform: data => data.commentCount, key: `comments/count`})
   )
@@ -37,11 +42,17 @@ div
     return +useRoute().params.page || +useRoute().query.page || 1;
   })
 
-  const {data: comments, refresh: refreshComments} = await useFetch(
-    `comments/${page.value}`,
-    useFetchOpts({key: `comments/${page.value}`})
+  const {data: comments, refresh: refreshComments, status: status3} = await useLazyFetch(
+      () => `comments/${page.value}`, useFetchOpts()
   )
   useClientDataRefresh(refreshComments)
+
+  const paginationReady = computed(() => {
+    return status1.value === 'success' && status2.value === 'success'
+  })
+  const commentsReady = computed(() => {
+    return paginationReady.value && status3.value === 'success'
+  })
 
   const pages = computed(() => {
     return Math.ceil(commentCount.value / commentsPerPage);
@@ -62,6 +73,7 @@ div
   }
 
   definePageMeta({
-    scrollToTop: true
+    scrollToTop: true,
+    key: "reacties"  // avoid re-rendering the whole page when just switching comments page
   })
 </script>

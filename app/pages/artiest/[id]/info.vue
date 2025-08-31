@@ -1,27 +1,37 @@
 <template lang="pug">
-  ui-alert(v-if='fullArtistData.notes')
-    make-links(:text='fullArtistData.notes')
+  template(v-if="status === 'success'")
+    ui-alert(v-if='fullArtistData.notes')
+      make-links(:text='fullArtistData.notes')
 
-  p
-    | Nationaliteit:
-    |
-    nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
-      strong
-        country-icon(:country-id='artist.countryId' :include-name="true")
-  wikipedia-content(:url="fullArtistData['urlWikiNl']" language="Nederlands")
-  wikipedia-content(:url="fullArtistData['urlWikiEn']" language="Engels")
-  p.links(v-if="links.length")
-    | Externe links:
-    template(v-for='(link, index) in links' :key='index')
-      br
-      ui-external-link-btn( :href="link.href") {{ link.title }}
+    p
+      | Nationaliteit:
+      |
+      nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
+        strong
+          country-icon(:country-id='artist.countryId' :include-name="true")
+    wikipedia-content(:url="fullArtistData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(:url="fullArtistData['urlWikiEn']" language="Engels")
+    p.links(v-if="links.length")
+      | Externe links:
+      template(v-for='(link, index) in links' :key='index')
+        br
+        ui-external-link-btn( :href="link.href") {{ link.title }}
+  div(v-else)
+    v-progress-circular(indeterminate)
 </template>
 
 <script setup>
 const props = defineProps({
-  fullArtistData: Object,
-  artist: Object
+  artist: {
+    type: Object,
+    required: true
+  }
 })
+
+// TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
+const {data: fullArtistData, status} = await useLazyFetch(
+    () => `artist/${props.artist.id}`, useFetchOpts()
+)
 
 const links = computed(() => {
   const links = [];
@@ -30,9 +40,9 @@ const links = computed(() => {
       fn = x => x
     }
 
-    if (props.fullArtistData[property]) {
+    if (fullArtistData.value?.[property]) {
       links.push({
-        href: fn(props.fullArtistData[property]),
+        href: fn(fullArtistData.value[property]),
         title: title
       })
     }

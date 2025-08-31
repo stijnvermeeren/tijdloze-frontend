@@ -7,7 +7,7 @@ div
     ui-admin-link-btn(:to="`/admin/artist/${artist.id}`") Admin: artist aanpassen
 
   ui-tabs(:tabs="tabs")
-    nuxt-page(:artist="artist" :songs="songs" :full-artist-data="fullArtistData")
+    nuxt-page(keepalive :artist="artist" :songs="songs")
 </template>
 
 <script setup>
@@ -18,15 +18,6 @@ div
   const {currentYear, years} = storeToRefs(useYearStore())
 
   const artistId = computed(() => idFromSlug(useRoute().params?.id))
-
-  // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
-  const {data: fullArtistData, error} = await useFetch(
-      `artist/${artistId.value}`, useFetchOpts({key: `artist/${artistId.value}`})
-  )
-
-  if (error.value) {
-    create404Error()
-  }
 
   const artist = computed(() => {
     return useRepo(Artist)

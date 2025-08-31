@@ -1,12 +1,15 @@
 <template lang="pug">
 div.mt-5.mb-7(v-if="url")
   div.title Wikipedia ({{language}})
-  div.details(v-if="sanitizedContent")
-    div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
-    div Laatst geladen: {{wikipediaContentNl['lastUpdate']}}
-  div.px-5.mt-2.wikipediaContent(v-if="sanitizedContent" v-html="sanitizedContent")
+  template(v-if="sanitizedContent")
+    div.details
+      div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
+      div Laatst geladen: {{wikipediaContentNl['lastUpdate']}}
+    div.px-5.mt-2.wikipediaContent(v-html="sanitizedContent")
+  div(v-else)
+    v-progress-circular(indeterminate size="small")
   div.px-5
-    ui-external-link-btn( :href="url") Lees meer op Wikipedia
+    ui-external-link-btn(:href="url") Lees meer op Wikipedia
 </template>
 
 <script setup>
