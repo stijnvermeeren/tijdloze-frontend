@@ -1,19 +1,19 @@
 <template lang="pug">
   template(v-if="status === 'success'")
-    ui-alert(v-if='fullArtistData.notes')
-      make-links(:text='fullArtistData.notes')
+    ui-alert(v-if="fullArtistData.notes")
+      make-links(:text="fullArtistData.notes")
 
     p
       | Nationaliteit:
       |
-      nuxt-link(:to='`/database?type=artiesten&land=${artist.countryId}`')
+      nuxt-link(:to="`/database?type=artiesten&land=${artist.countryId}`")
         strong
-          country-icon(:country-id='artist.countryId' :include-name="true")
+          country-icon(:country-id="artist.countryId" :include-name="true")
     wikipedia-content(:url="fullArtistData['urlWikiNl']" language="Nederlands")
     wikipedia-content(:url="fullArtistData['urlWikiEn']" language="Engels")
     p.links(v-if="links.length")
       | Externe links:
-      template(v-for='(link, index) in links' :key='index')
+      template(v-for="(link, index) in links" :key="index")
         br
         ui-external-link-btn( :href="link.href") {{ link.title }}
   div(v-else)

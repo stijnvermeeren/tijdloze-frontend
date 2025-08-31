@@ -1,11 +1,14 @@
 <template lang="pug">
-in-current-list(:songs='album.songs')
+in-current-list(:songs="album.songs")
 </template>
 
 
 <script setup>
-const props = defineProps({
-  album: Object
+defineProps({
+  album: {
+    type: Object,
+    required: true
+  }
 })
 
 </script>

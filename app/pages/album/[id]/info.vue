@@ -4,7 +4,7 @@
     wikipedia-content(:url="fullAlbumData['urlWikiEn']" language="Engels")
     p.links(v-if="links.length")
       | Externe links:
-      template(v-for='(link, index) in links' :key='index')
+      template(v-for="(link, index) in links" :key="index")
         br
         ui-external-link-btn( :href="link.href") {{ link.title }}
   div(v-else)
@@ -19,8 +19,8 @@ const props = defineProps({
   }
 })
 
-const {data: fullAlbumData, status, error} = await useLazyFetch(
-    () => `album/${props.album.id}`, useFetchOpts()
+const {data: fullAlbumData, status} = await useLazyFetch(
+  () => `album/${props.album.id}`, useFetchOpts()
 )
 
 const links = computed(() => {

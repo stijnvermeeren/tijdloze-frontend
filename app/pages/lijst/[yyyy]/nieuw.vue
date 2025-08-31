@@ -1,5 +1,5 @@
 <template lang="pug">
-div(v-for='entry in newSongs')
+div(v-for='entry in newSongs' :key="entry.position")
   song-with-position(:song="entry.song")
     position-main(:position='entry.position')
     position-annotation(v-if='entry.song.isReEntry(year)') re-entry
