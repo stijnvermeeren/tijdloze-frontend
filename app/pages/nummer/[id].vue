@@ -28,7 +28,8 @@ import { idFromSlug } from '~/utils/slug'
 import Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
-const songId = computed(() => idFromSlug(useRoute().params?.id))
+const route = useRoute()
+const songId = computed(() => idFromSlug(route.params?.id))
 
 const {data: fullSongData, error, status} = await useLazyFetch(
     () => `song/${songId.value}`, useFetchOpts()

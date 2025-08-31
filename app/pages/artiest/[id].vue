@@ -17,7 +17,8 @@ div
 
   const {currentYear, years} = storeToRefs(useYearStore())
 
-  const artistId = computed(() => idFromSlug(useRoute().params?.id))
+  const route = useRoute()
+  const artistId = computed(() => idFromSlug(route.params?.id))
 
   const artist = computed(() => {
     return useRepo(Artist)

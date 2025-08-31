@@ -19,6 +19,10 @@ definePageMeta({
   noScrollDepth: 2
 })
 
+defineOptions({
+  name: 'ListPage',
+})
+
 const {$api} = useNuxtApp()
 const {currentYear, years, context} = storeToRefs(useYearStore())
 const {listInProgress} = storeToRefs(useRootStore())

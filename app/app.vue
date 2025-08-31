@@ -2,7 +2,7 @@
   <NuxtLoadingIndicator :color="false" style="background-color: #ae6525;" />
   <NuxtRouteAnnouncer />
   <NuxtLayout>
-    <NuxtPage />
+    <NuxtPage :keepalive="{include: 'ListPage'}" />
   </NuxtLayout>
 </template>
 
