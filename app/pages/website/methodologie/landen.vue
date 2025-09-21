@@ -1,8 +1,8 @@
 <template lang="pug">
 p
-  make-links(text="In de databank van tijdloze.rocks is het land van herkomst van elke artiest vastgelegd. Hierbij wordt steeds het best passende vandaag bestaande land gekozen. Bands zoals [Scorpions] and [Kraftwerk], die in het voormalige West-Duitsland zijn groot geworden, worden dus gewoon als Duits geteld.")
+  make-links(text="In de databank van tijdloze.rocks is het land van herkomst van elke artiest vastgelegd. Hierbij wordt steeds het best passende vandaag bestaande land gekozen. Bands zoals [Scorpions] en [Kraftwerk], die in het voormalige West-Duitsland zijn groot geworden, worden dus gewoon als Duits geteld.")
 p
-  make-links(text="De nationaliteit van de artiest en/of van de bandleden geeft niet altijd een eenduidig antwoord. Enerzijds hebben sommige mensen meerdere nationaliteiten. Anderzijds kan een band uit leden met verschillende nationaliteit zijn samengesteld. In geval van twijfel houden we daarom ook rekening met het land waar be band is opgericht, of met het land waar de artiest de eerste doorbraak heeft gemaakt. Bijvoorbeeld:")
+  make-links(text="De nationaliteit van de artiest en/of van de bandleden geeft niet altijd een eenduidig antwoord. Enerzijds hebben sommige mensen meerdere nationaliteiten. Anderzijds kan een band uit leden met verschillende nationaliteit zijn samengesteld. In geval van twijfel houden we daarom ook rekening met het land waar de band is opgericht, of met het land waar de artiest de eerste doorbraak heeft gemaakt. Bijvoorbeeld:")
   ul
     li
       make-links(text="[Fleetwood Mac] wordt op deze website als Britse artiest geklasseerd, omdat de groep in Londen werd opgericht en oorspronkelijk alleen maar uit Britse muzikanten bestond, ook al kwamen er later twee heel bekende Amerikaanse leden bij (Lindsey Buckingham en Stevie Nicks).")
@@ -17,5 +17,5 @@ p
     li
       make-links(text="[Buffalo Springfield] was een band met Amerikaanse en Canadese leden. Omdat de band in de Verenigde Staten is opgericht, is hier voor dat land van herkomst gekozen. Een gelijkaardig argument is onder andere van toepassing op [Foreigner], [Traveling Wilburys], [Steppenwolf] en [The Pogues].")
     li
-      make-links(text="De [Bee Gees] worden hier als Britse band geteld, want de bandleden, de drie broers Gibbs, zijn in het Verenigd Koninkrijk geboren en hebben de Britse nationaliteit. De band is echter doorgebroken in Australië terwijl de familie Gibbs daar woonde, en wordt daarom ook soms als Australische band beschouwd. Een gelijkaardige situatie vinden we bij [America].")
+      make-links(text="De [Bee Gees] worden hier als Britse band geteld, want de bandleden, de drie broers Gibb, zijn in het Verenigd Koninkrijk geboren en hebben de Britse nationaliteit. De band is echter doorgebroken in Australië terwijl de familie Gibbs daar woonde, en wordt daarom ook soms als Australische band beschouwd. Een gelijkaardige situatie vinden we bij [America].")
 </template>
