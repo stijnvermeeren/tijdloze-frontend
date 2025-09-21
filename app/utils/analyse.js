@@ -307,18 +307,6 @@ export default [
     ]
   },
   {
-    yyyy: 2016,
-    analyse: [
-      `[*Black] van [Pearl Jam] staat voor het tweede jaar op de eerste plaats. [Smells Like Teen Spirit] klimt terug naar de tweede plek, ten koste van [Mia] en [One;Metallica]`,
-      `[Bohemian Rhapsody] van [*Queen] klimt naar plaats zes; de beste notering sinds 1998. Queen heeft ook voor het eerst een ander nummer in de Tijdloze: [Don't Stop Me Now].`,
-      `Dankzij het stijgen van [Comfortably Numb] staan er voor het eerst twee bands met elk drie verschillende nummers in de top 20: [*Pink Floyd] en [*Metallica].`,
-      `Vele tijdloze sterren lieten het leven in 2016. Dat heeft een duidelijke impact op de Tijdloze. [*Leonard Cohen] staat voor het eerst in de Tijdloze met de originele versie van [Hallelujah;Leonard Cohen]. Samen met de cover [Hallelujah;Jeff Buckley] van [Jeff Buckley] staan zo voor het eerste twee versies van hetzelfde nummer samen in de Tijdloze. [*Prince] stijgt sterk van 53 naar 26 met [Purple Rain]. [*David Bowie] breekt het record van de hoogste re-entry aller tijden met [Space Oddity] op 32. Bovendien springt ["Heroes"] van 28 naar 8 en staat zo voor het eerst sinds [1987] in de top tien.`,
-      `[*Motörhead] staat voor het eerst in de Tijdloze en is meteen de hoogste echte nieuwkomer met [Ace of Spades] op plaats 38.`,
-      `[*Billy Joel] komt nieuw binnen in de Tijdloze met [Piano Man]. De Amerikaan stond in [1991] voor het laatst in de lijst, toen met [Goodnight Saigon]. Met deze terugkeer na 24 jaar afwezigheid breekt Billy Joel het record van [Fleetwood Mac] (terugkeer na 22 jaar afwezigheid in [2014]).`,
-      `[Suds & Soda] en [The End] zijn ex-aequo sterkste daler. Met de andere nummers van [*dEUS] en [*The Doors] gaat het ook slecht: [Instant Street] daalt sterk en [Riders on the Storm] staat zelfs voor het eerst in de geschiedenis helemaal niet in de Tijdloze.`
-    ]
-  },
-  {
     yyyy: 2017,
     analyse: [
       `Achter de eerste plaats van [*Black] zijn er enige verschuivingen. [Mia] springt weer voorbij [Smells Like Teen Spirit] naar de tweede plek. [Bohemian Rhapsody] stond sinds 1993 niet meer zo hoog als dit jaar, en ook [Wish You Were Here] komt weer in de top vijf.`,
