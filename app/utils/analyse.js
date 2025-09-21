@@ -307,18 +307,6 @@ export default [
     ]
   },
   {
-    yyyy: 2016,
-    analyse: [
-      `[*Black] van [Pearl Jam] staat voor het tweede jaar op de eerste plaats. [Smells Like Teen Spirit] klimt terug naar de tweede plek, ten koste van [Mia] en [One;Metallica]`,
-      `[Bohemian Rhapsody] van [*Queen] klimt naar plaats zes; de beste notering sinds 1998. Queen heeft ook voor het eerst een ander nummer in de Tijdloze: [Don't Stop Me Now].`,
-      `Dankzij het stijgen van [Comfortably Numb] staan er voor het eerst twee bands met elk drie verschillende nummers in de top 20: [*Pink Floyd] en [*Metallica].`,
-      `Vele tijdloze sterren lieten het leven in 2016. Dat heeft een duidelijke impact op de Tijdloze. [*Leonard Cohen] staat voor het eerst in de Tijdloze met de originele versie van [Hallelujah;Leonard Cohen]. Samen met de cover [Hallelujah;Jeff Buckley] van [Jeff Buckley] staan zo voor het eerste twee versies van hetzelfde nummer samen in de Tijdloze. [*Prince] stijgt sterk van 53 naar 26 met [Purple Rain]. [*David Bowie] breekt het record van de hoogste re-entry aller tijden met [Space Oddity] op 32. Bovendien springt ["Heroes"] van 28 naar 8 en staat zo voor het eerst sinds [1987] in de top tien.`,
-      `[*Motörhead] staat voor het eerst in de Tijdloze en is meteen de hoogste echte nieuwkomer met [Ace of Spades] op plaats 38.`,
-      `[*Billy Joel] komt nieuw binnen in de Tijdloze met [Piano Man]. De Amerikaan stond in [1991] voor het laatst in de lijst, toen met [Goodnight Saigon]. Met deze terugkeer na 24 jaar afwezigheid breekt Billy Joel het record van [Fleetwood Mac] (terugkeer na 22 jaar afwezigheid in [2014]).`,
-      `[Suds & Soda] en [The End] zijn ex-aequo sterkste daler. Met de andere nummers van [*dEUS] en [*The Doors] gaat het ook slecht: [Instant Street] daalt sterk en [Riders on the Storm] staat zelfs voor het eerst in de geschiedenis helemaal niet in de Tijdloze.`
-    ]
-  },
-  {
     yyyy: 2017,
     analyse: [
       `Achter de eerste plaats van [*Black] zijn er enige verschuivingen. [Mia] springt weer voorbij [Smells Like Teen Spirit] naar de tweede plek. [Bohemian Rhapsody] stond sinds 1993 niet meer zo hoog als dit jaar, en ook [Wish You Were Here] komt weer in de top vijf.`,
@@ -410,14 +398,27 @@ export default [
   {
     yyyy: 2023,
     analyse: [
-      `[*Black] van [Pearl Jam] staat, na twee jaar op de tweede plaats, weer op de eerste plek, en dat voor de zevende keer in totaal. [The Chain] van [Fleedwood Mac] daalt naar de tweede plaats.`,
+      `[*Black] van [Pearl Jam] staat, na twee jaar op de tweede plaats, weer op de eerste plek, en dat voor de zevende keer in totaal. [The Chain] van [Fleetwood Mac] daalt naar de tweede plaats.`,
       `Na het overlijden van [*Sinéad O'Connor] stijgt [Troy] van 27 naar 4. Nog nooit kwam een nummer van zo'n lage positie direct de top vijf binnen.`,
       `Sinds 1994 stond er telkens minstens één nummer van [*Metallica] in de top 20, in 2017 en 2018 hadden ze zelfs drie noteringen in de top 12. Omdat [Master of Puppets] daalt naar positie 21, staat er dus sinds lang geen [Metallica] meer in de top 20.`,
       `[*Cold Little Heart] van [Michael Kiwanuka] kwam vorig jaar nieuw binnen op 96 en stijgt dit jaar meteen 72 plaatsen (naar 24), het nummer is daarmee de sterkste stijger van dit jaar. Slechts twee nummers gingen ooit meer omhoog: [The End] van [The Doors] (78 plaatsen) en [Space Oddity] van [David Bowie] (73 plaatsen), allebei in de editie van 1990.`,
       `Enkele opvallende dalers dit jaar: [The End] van [The Doors] daalt 18 plaatsen en staat zo op 88. Het is van 1988 geleden dat het nummer zo laag stond. [Where Is My Mind?] van [Pixies] daalt 13 plaatsen en staat op de laagste positie sinds 2000. [Temple of Love] van [The Sisters of Mercy] staat op de laagste positie sinds 1990.`,
       `In 2022 was [Kate Bush] met [*Running Up That Hill (A Deal with God)] nog de hoogste nieuwkomer op 37, in 2023 is ze de sterkste daler: ze daalt 23 plaatsen en staat nu op 60.`,
-      `Acht nieuwkomers, waarvan twee goednieuw. [*Florence + the Machine] staat voor het eerst in De Tijdloze met [Dog Days Are Over] op 93. Voor het eerst sinds 1997 staan ook [*Talking Heads] opnieuw bij de bovenste 100, [This Must Be the Place (Naive Melody)] komt nieuw binnen op 76. De opvallendste re-entry is [Nothing Compares 2 U;Sinéad O'Connor] dat na het overlijden van [*Sinéad O'Connor] 206 plaatsen stijgt, naar 82.`,
+      `Acht nieuwkomers, waarvan twee gloednieuw. [*Florence + the Machine] staat voor het eerst in De Tijdloze met [Dog Days Are Over] op 93. Voor het eerst sinds 1997 staan ook [*Talking Heads] opnieuw bij de bovenste 100, [This Must Be the Place (Naive Melody)] komt nieuw binnen op 76. De opvallendste re-entry is [Nothing Compares 2 U;Sinéad O'Connor] dat na het overlijden van [*Sinéad O'Connor] 206 plaatsen stijgt, naar 82.`,
       `Acht nummers vallen uit De Tijdloze. [*Feeling Good;Nina Simone] van [Nina Simone] (vorig jaar nog op 71) en [*Piece of My Heart] van [Big Brother and the Holding Company] vallen na vijf jaar opnieuw uit de lijst. [*Ace of Spades] van [Motörhead] stond zeven jaar in De Tijdloze. Er verdwijnen ook enkele vaste waarden: [*I Can't Live in a Living Room] van [Red Zebra] en [*Losing My Religion] van [R.E.M.] vallen opnieuw weg, [*Wonderwall] van [Oasis] stond 18 jaar onafgebroken in De Tijdloze.`
+    ]
+  },
+  {
+    yyyy: 2024,
+    analyse: [
+      `[*Black] staat voor het tweede jaar op rij (en voor de achtste keer in totaal) op de eerste plek.`,
+      `Tien jaar na het overlijden van Luc De Vos stijgt [*Mia] van [Gorky] van positie 7 naar 2, ten koste van [The Chain] van [Fleetwood Mac].`,
+      `[*Linkin Park], sinds dit jaar opnieuw actief met Emily Armstrong als nieuwe zangeres, stijgt spectaculair met [In the End] van 17 naar 4. Ook [Numb] stijgt sterk van 83 naar 47.`,
+      `Zes nummers zijn volledig nieuw: de hoogste nieuwkomer is [Jubilee Street] van [*Nick Cave] op 58, [Sometimes It Snows in April] (99) stond al een paar jaar aan de poort van de top 100, en ook [O Children] (94), [Lose Yourself] (85) en [Free Bird] (67) stijgen sterk en staan zo in De Tijdloze. De meest opvallende nieuwkomer is wellicht [All Too Well (10 Minute Version)] van [*Taylor Swift]: vorig jaar stond de originele versie uit 2012 nog op positie 1325, nu komt <em>Taylor's Version</em> uit 2021 meteen nieuw binnen op 81.`,
+      `Vier re-entry's dit jaar: [Feeling Good;Nina Simone] (77) en [Wonderwall] (75) zijn terug na een jaar afwezigheid, [Thunderstruck] (100) staat na twee jaar opnieuw in de lijst. Opvallend: [In the Air Tonight] van [*Phil Collins] komt opnieuw binnen op 97, na 33 edities van afwezigheid.`,
+      `Tien platen verdwijnen dit jaar uit de Tijdloze 100. De opvallendste exit is waarschijnlijk [Paranoid Android] van [*Radiohead], dat al 27 jaar onafgebroken in de Tijdloze 100 stond.`,
+      `Het is geen goed jaar voor [*Foo Fighters]: bijna al hun noteringen uit de countdown dalen, [The Pretender] daalt 18 plaatsen en [My Hero] verliest 26 plaatsen. Ook [*The Beatles] kennen geen goede editie: ook hun nummers dalen bijna allemaal, [A Day In The Life] staat nog maar net in de top 100.`,
+      `Voor [*Nick Cave] is het dan weer een goed jaar: zijn nummers uit de countdown stijgen bijna allemaal, [Jubilee Street] en [O Children] komen nieuw binnen en [The Ship Song] en [Into My Arms] stijgen sterk. Ook voor [*Oasis] is dit een goede editie: [Wonderwall] komt opnieuw binnen, en [Champagne Supernova] en [Don't Look Back in Anger] stijgen, hun andere nummers stijgen ook bijna allemaal.`
     ]
   }
 ]
