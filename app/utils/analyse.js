@@ -410,7 +410,7 @@ export default [
   {
     yyyy: 2023,
     analyse: [
-      `[*Black] van [Pearl Jam] staat, na twee jaar op de tweede plaats, weer op de eerste plek, en dat voor de zevende keer in totaal. [The Chain] van [Fleedwood Mac] daalt naar de tweede plaats.`,
+      `[*Black] van [Pearl Jam] staat, na twee jaar op de tweede plaats, weer op de eerste plek, en dat voor de zevende keer in totaal. [The Chain] van [Fleetwood Mac] daalt naar de tweede plaats.`,
       `Na het overlijden van [*Sinéad O'Connor] stijgt [Troy] van 27 naar 4. Nog nooit kwam een nummer van zo'n lage positie direct de top vijf binnen.`,
       `Sinds 1994 stond er telkens minstens één nummer van [*Metallica] in de top 20, in 2017 en 2018 hadden ze zelfs drie noteringen in de top 12. Omdat [Master of Puppets] daalt naar positie 21, staat er dus sinds lang geen [Metallica] meer in de top 20.`,
       `[*Cold Little Heart] van [Michael Kiwanuka] kwam vorig jaar nieuw binnen op 96 en stijgt dit jaar meteen 72 plaatsen (naar 24), het nummer is daarmee de sterkste stijger van dit jaar. Slechts twee nummers gingen ooit meer omhoog: [The End] van [The Doors] (78 plaatsen) en [Space Oddity] van [David Bowie] (73 plaatsen), allebei in de editie van 1990.`,
@@ -425,7 +425,7 @@ export default [
     analyse: [
       `[*Black] staat voor het tweede jaar op rij (en voor de achtste keer in totaal) op de eerste plek.`,
       `Tien jaar na het overlijden van Luc De Vos stijgt [*Mia] van [Gorky] van positie 7 naar 2, ten koste van [The Chain] van [Fleetwood Mac].`,
-      `[*Linkin Park], sinds dit jaar opnieuw actief met Emily Armstrong als nieuwe zangeres, stijgt spectaculair met [In the End] van 17 naar 4. Op [Numb] stijgt sterk van 83 naar 47.`,
+      `[*Linkin Park], sinds dit jaar opnieuw actief met Emily Armstrong als nieuwe zangeres, stijgt spectaculair met [In the End] van 17 naar 4. Ook [Numb] stijgt sterk van 83 naar 47.`,
       `Zes nummers zijn volledig nieuw: de hoogste nieuwkomer is [Jubilee Street] van [*Nick Cave] op 58, [Sometimes It Snows in April] (99) stond al een paar jaar aan de poort van de top 100, en ook [O Children] (94), [Lose Yourself] (85) en [Free Bird] (67) stijgen sterk en staan zo in De Tijdloze. De meest opvallende nieuwkomer is wellicht [All Too Well (10 Minute Version)] van [*Taylor Swift]: vorig jaar stond de originele versie uit 2012 nog op positie 1325, nu komt <em>Taylor's Version</em> uit 2021 meteen nieuw binnen op 81.`,
       `Vier re-entry's dit jaar: [Feeling Good;Nina Simone] (77) en [Wonderwall] (75) zijn terug na een jaar afwezigheid, [Thunderstruck] (100) staat na twee jaar opnieuw in de lijst. Opvallend: [In the Air Tonight] van [*Phil Collins] komt opnieuw binnen op 97, na 33 edities van afwezigheid.`,
       `Tien platen verdwijnen dit jaar uit de Tijdloze 100. De opvallendste exit is waarschijnlijk [Paranoid Android] van [*Radiohead], dat al 27 jaar onafgebroken in de Tijdloze 100 stond.`,
