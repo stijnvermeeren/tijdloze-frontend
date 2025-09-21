@@ -54,6 +54,9 @@ export default defineNuxtConfig({
     }
   ],
   devtools: {
-    componentInspector: false  // https://github.com/nuxt/devtools/issues/259
+    // https://github.com/nuxt/devtools/issues/259
+    componentInspector: false,
+
+    enabled: true,
   },
 });
