@@ -425,7 +425,7 @@ export default [
     analyse: [
       `[*Black] staat voor het tweede jaar op rij (en voor de achtste keer in totaal) op de eerste plek.`,
       `Tien jaar na het overlijden van Luc De Vos stijgt [*Mia] van [Gorky] van positie 7 naar 2, ten koste van [The Chain] van [Fleetwood Mac].`,
-      `[*Linkin Park], sind dit jaar opnieuw actief met Emily Armstrong als nieuwe zangeres, stijgt spectaculair met [In the End] van 17 naar 4. Op [Numb] stijgt sterk van 83 naar 47.`,
+      `[*Linkin Park], sinds dit jaar opnieuw actief met Emily Armstrong als nieuwe zangeres, stijgt spectaculair met [In the End] van 17 naar 4. Op [Numb] stijgt sterk van 83 naar 47.`,
       `Zes nummers zijn volledig nieuw: de hoogste nieuwkomer is [Jubilee Street] van [*Nick Cave] op 58, [Sometimes It Snows in April] (99) stond al een paar jaar aan de poort van de top 100, en ook [O Children] (94), [Lose Yourself] (85) en [Free Bird] (67) stijgen sterk en staan zo in De Tijdloze. De meest opvallende nieuwkomer is wellicht [All Too Well (10 Minute Version)] van [*Taylor Swift]: vorig jaar stond de originele versie uit 2012 nog op positie 1325, nu komt <em>Taylor's Version</em> uit 2021 meteen nieuw binnen op 81.`,
       `Vier re-entry's dit jaar: [Feeling Good;Nina Simone] (77) en [Wonderwall] (75) zijn terug na een jaar afwezigheid, [Thunderstruck] (100) staat na twee jaar opnieuw in de lijst. Opvallend: [In the Air Tonight] van [*Phil Collins] komt opnieuw binnen op 97, na 33 edities van afwezigheid.`,
       `Tien platen verdwijnen dit jaar uit de Tijdloze 100. De opvallendste exit is waarschijnlijk [Paranoid Android] van [*Radiohead], dat al 27 jaar onafgebroken in de Tijdloze 100 stond.`,
