@@ -35,7 +35,7 @@
     "@vue/language-plugin-pug": "^3.0.6",
     "eslint-plugin-vue": "^10.4.0",
     "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
-    "nuxt": "^4.0.3",
+    "nuxt": "^4.1.2",
     "pug": "^3.0.2",
     "sass": "^1.81.0",
     "sass-loader": "^16.0.3",
