@@ -1,7 +1,7 @@
 <template lang="pug">
   template(v-if="status === 'success'")
-    wikipedia-content(:url="fullAlbumData['urlWikiNl']" language="Nederlands")
-    wikipedia-content(:url="fullAlbumData['urlWikiEn']" language="Engels")
+    wikipedia-content(v-if="fullAlbumData['urlWikiNl']" :url="fullAlbumData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(v-if="fullAlbumData['urlWikiEn']" :url="fullAlbumData['urlWikiEn']" language="Engels")
     p.links(v-if="links.length")
       | Externe links:
       template(v-for="(link, index) in links" :key="index")
