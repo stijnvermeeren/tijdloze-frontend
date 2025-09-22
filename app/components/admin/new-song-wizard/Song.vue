@@ -102,10 +102,11 @@ async function loadExistingSong() {
   }
 }
 
-async function loadPreset(title, recordingMBId, workMBId, languageId) {
+async function loadPreset(title, recordingMBId, workMBId, languageId, leadVocalsId) {
   songDetails.value.title = title;
   songDetails.value.recordingMBId = recordingMBId;
   songDetails.value.workMBId = workMBId;
+  songDetails.value.leadVocals = leadVocalsId;
 
   if (languageId === 'zxx') {
     songDetails.value.languageId = 'i';

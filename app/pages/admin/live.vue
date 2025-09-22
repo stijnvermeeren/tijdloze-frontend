@@ -197,6 +197,7 @@ function fillMBData(data) {
   wizard.value.loadPreset({
     songTitle: data.title,
     language: data.language,
+    leadVocals: data.leadVocals,
     recordingMBId: data.recordingMBId,
     workMBId: data.workMBId,
     artistName: data.name,

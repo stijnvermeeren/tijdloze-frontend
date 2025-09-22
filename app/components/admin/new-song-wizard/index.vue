@@ -71,7 +71,7 @@ async function loadPreset(preset) {
   }
 
   await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
-  await songRef.value.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language)
+  await songRef.value.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language, preset.leadVocals)
 }
 
 async function submit() {
