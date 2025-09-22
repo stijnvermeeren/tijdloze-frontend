@@ -80,7 +80,7 @@ export const useRootStore = defineStore('root', () => {
       if (limit > 0) {
         notNullSongIds = _.take(notNullSongIds, limit)
       }
-      const songs = useRepo(Song).with('album').with('artist').with('album').with('artist').find(notNullSongIds)
+      const songs = useRepo(Song).with('album').with('artist').with('secondArtist').find(notNullSongIds)
       const songsById = {}
       songs.forEach(song => {
         songsById[song.id] = song
