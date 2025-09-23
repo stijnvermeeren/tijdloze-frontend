@@ -23,9 +23,10 @@
 import useSetUser from "~/composables/useSetUser";
 import {useAuth0} from "@auth0/auth0-vue";
 
-onMounted(() => {
+onMounted(async () => {
   const auth0 = useAuth0()
-  watch(auth0.user, () => useSetUser(auth0))
+  watch(auth0.user, () => useSetUser(auth0), { immediate: true })
+  await auth0.checkSession()
 })
 </script>
 
