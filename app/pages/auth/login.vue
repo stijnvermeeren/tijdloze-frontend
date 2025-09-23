@@ -5,9 +5,8 @@ p Je wordt aangemeld...
 <script setup>
 import {authGuard, useAuth0} from '@auth0/auth0-vue';
 
-const auth0 = useAuth0()
-
 onMounted( async () => {
+  const auth0 = useAuth0()
   const loggedIn = await authGuard(useRoute())
   if (loggedIn) {
     await useSetUser(auth0)

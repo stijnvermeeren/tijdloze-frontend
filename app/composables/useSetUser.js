@@ -4,7 +4,7 @@ import {useAuthStore} from "~/stores/auth";
 
 export default async function (auth0) {
   const {$api} = useNuxtApp()
-  const user = auth0.user
+  const user = auth0.user.value
   if (user) {
     useAuthStore().accessToken = await auth0.getAccessTokenSilently()
 
