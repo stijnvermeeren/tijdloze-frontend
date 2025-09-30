@@ -33,7 +33,6 @@ p(v-else)
 </template>
 
 <script setup>
-import { useRouteQuery } from "@vueuse/router";
 import Year from "../orm/Year";
 import {mdiMagnify} from "@mdi/js";
 import { useVirtualList } from "@vueuse/core";
@@ -47,7 +46,20 @@ const props = defineProps({
   }
 })
 
-const filterQuery = useRouteQuery('filter', '')
+const filterQuery = ref(useRoute().query.filter || '')
+const scrollPosition = ref(parseInt(useRoute().query.positie) || 0)
+
+function setQueryParams() {
+  useRouter().replace({
+    query: { 
+      ...useRoute().query,
+      filter: filterQuery.value || undefined,
+      positie: scrollPosition.value || undefined
+    }
+  })
+}
+
+watch([filterQuery, scrollPosition], setQueryParams)
 
 const filteredList = computed(() => {
   const queryFragments = useSearchQueryFragments(filterQuery.value)
@@ -59,23 +71,33 @@ const { list: virtualList, containerProps, wrapperProps, scrollTo } = useVirtual
   filteredList, {itemHeight}
 )
 
+watch(filterQuery, () => {
+  scrollTo(0)
+})
+
 onActivated(() => {
-  console.log("activated full list", filterQuery.value, "x")
-  const index = useRoute().query.index
-  if (index) {
-    console.log("scroll")
-    scrollTo(index)
-    // Slight offset, to make clear that we're not at the top
-    containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+  setQueryParams()
+})  
+
+onActivated(() => {
+  if (scrollPosition.value) {
+    const index = filteredList.value.findIndex(entry => entry.position === scrollPosition.value)
+    if (index > -1) {
+      scrollTo(index)
+      // Slight offset, to make clear that we're not at the top
+      containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+    }
   }
 })
 
 function onScroll() {
   const scrollTop = containerProps.ref.value?.scrollTop
-  const index = Math.ceil(scrollTop / itemHeight) || undefined
-  useRouter().replace({
-    query: { ...useRoute().query, index }
-  })
+  const scrollIndex = Math.ceil(scrollTop / itemHeight)
+  if (scrollIndex) {
+    scrollPosition.value = filteredList.value[scrollIndex].position
+  } else {
+    scrollPosition.value = undefined
+  }
 }
 
 </script>
