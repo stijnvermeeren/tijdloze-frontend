@@ -51,7 +51,7 @@ div
     v-no-ssr
       div.listContainer(v-bind="containerProps")
         div(v-bind="wrapperProps" ref="wrapper")
-          div(v-for="{data: item} in virtualList" :key="item.key" style="height: 24px")
+          div(v-for="({data: item}, index) in virtualList" :key="item.key" style="height: 24px")
             div.entry(:class="{lineBelow: index % 5 === 4}")
               div.r
                 | {{ item.position }}

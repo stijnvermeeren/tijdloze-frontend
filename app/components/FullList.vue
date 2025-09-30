@@ -6,7 +6,6 @@ div
     persistent-placeholder
     hide-details
     clearable
-    @click:clear="filterQuery = ''"
     density="compact"
   )
     template(#prepend-inner)
@@ -77,9 +76,6 @@ watch(filterQuery, () => {
 
 onActivated(() => {
   setQueryParams()
-})  
-
-onActivated(() => {
   if (scrollPosition.value) {
     const index = filteredList.value.findIndex(entry => entry.position === scrollPosition.value)
     if (index > -1) {
@@ -94,7 +90,7 @@ function onScroll() {
   const scrollTop = containerProps.ref.value?.scrollTop
   const scrollIndex = Math.ceil(scrollTop / itemHeight)
   if (scrollIndex) {
-    scrollPosition.value = filteredList.value[scrollIndex].position
+    scrollPosition.value = filteredList.value?.[scrollIndex]?.position
   } else {
     scrollPosition.value = undefined
   }
