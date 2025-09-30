@@ -1,7 +1,7 @@
 <template lang="pug">
 ui-card
   v-tabs.mb-6(show-arrows)
-    v-tab(v-for='tab in tabs' :key='tab.to' :to="tab.to")
+    v-tab(v-for='tab in tabs' :key='tab.to' :to="tab.to" exact)
       div {{tab.title}}
       div.subtitle(v-if="tab.subtitle") ({{tab.subtitle}})
   slot
