@@ -17,6 +17,8 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.4.0",
     "@pinia/nuxt": "^0.5.5",
+    "@vueuse/core": "^13.9.0",
+    "@vueuse/router": "^13.9.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
     "lodash-es": "^4.17.21",
@@ -26,7 +28,6 @@
     "sockette": "^2.0.6",
     "url": "^0.11.3",
     "vue-gtag": "^3.5.2",
-    "vue-virtual-scroller": "^2.0.0-beta.8",
     "vuetify": "^3.7.4"
   },
   "devDependencies": {

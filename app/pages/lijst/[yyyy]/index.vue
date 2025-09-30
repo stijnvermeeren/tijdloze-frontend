@@ -1,5 +1,4 @@
 <template lang="pug">
-client-only(placeholder="Loading...")
   full-list(:list='list' :year='year')
 </template>
 
