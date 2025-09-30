@@ -10,12 +10,12 @@ div
   )
     template(#prepend-inner)
       v-icon(:icon="mdiMagnify")
+
 div.fullList(v-if='filteredList.length > 0')
-  div.content(v-if='filteredList.length > 20')
-    div.wrapper
-      RecycleScroller.scroller(:items="filteredList" :item-size="60" key-field="position" :buffer="40")
-        template(#default="{item}")
-          song-with-position(:song="item.song" :attribution="item.attribution" :override-position="item.position" :year="year")
+  div.listContainer(v-if='filteredList.length > 20' v-bind="containerProps" @scrollend="onScroll")
+    div(v-bind="wrapperProps" ref="wrapper")
+      div(v-for="{data: item} in virtualList" :key="item.position" style="height: 60px")
+        song-with-position(:song="item.song" :attribution="item.attribution" :override-position="item.position" :year="year")
   div(v-else)
     song-with-position(
       v-for="entry in filteredList"
@@ -34,6 +34,7 @@ p(v-else)
 <script setup>
 import Year from "../orm/Year";
 import {mdiMagnify} from "@mdi/js";
+import { useVirtualList } from "@vueuse/core";
 
 const props = defineProps({
   year: {
@@ -44,32 +45,61 @@ const props = defineProps({
   }
 })
 
-const filterQuery = ref("")
+const filterQuery = ref(useRoute().query.filter || '')
+const scrollPosition = ref(parseInt(useRoute().query.positie) || 0)
+
+function setQueryParams() {
+  useRouter().replace({
+    query: { 
+      ...useRoute().query,
+      filter: filterQuery.value || undefined,
+      positie: scrollPosition.value || undefined
+    }
+  })
+}
+
+watch([filterQuery, scrollPosition], setQueryParams)
 
 const filteredList = computed(() => {
   const queryFragments = useSearchQueryFragments(filterQuery.value)
   return props.list.filter(entry => useSearchFilter(queryFragments, useSearchSongContent)(entry.song))
 })
+
+const itemHeight = 60
+const { list: virtualList, containerProps, wrapperProps, scrollTo } = useVirtualList(
+  filteredList, {itemHeight}
+)
+
+watch(filterQuery, () => {
+  scrollTo(0)
+})
+
+onActivated(() => {
+  setQueryParams()
+  if (scrollPosition.value) {
+    const index = filteredList.value.findIndex(entry => entry.position === scrollPosition.value)
+    if (index > -1) {
+      scrollTo(index)
+      // Slight offset, to make clear that we're not at the top
+      containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+    }
+  }
+})
+
+function onScroll() {
+  const scrollTop = containerProps.ref.value?.scrollTop
+  const scrollIndex = Math.ceil(scrollTop / itemHeight)
+  if (scrollIndex) {
+    scrollPosition.value = filteredList.value?.[scrollIndex]?.position
+  } else {
+    scrollPosition.value = undefined
+  }
+}
+
 </script>
 
 <style lang="scss">
-div.content {
-  flex: 100% 1 1;
-  position: relative;
+div.listContainer {
   height: 560px;
-
-  .wrapper {
-    overflow: hidden;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    .scroller {
-      width: 100%;
-      height: 100%;
-    }
-  }
 }
 </style>

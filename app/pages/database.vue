@@ -49,23 +49,22 @@ div
       div.p
         v-select(v-model="scoreMethod" :items="scoreMethodOptions" hide-details density="compact")
     v-no-ssr
-      div.content
-        div.wrapper
-          RecycleScroller.scroller(:items="data" :item-size="24" key-field="key" :buffer="40")
-            template(#default="{ item, index }")
-              div.entry(:class="{lineBelow: index % 5 === 4}")
-                div.r
-                  | {{ item.position }}
-                div.c
-                  div.a(v-if="type === 'nummers'")
-                    song-artist-link(:song='item.entry.song')
-                  div.a(v-else)
-                    artist-link(:artist='item.entry.artist')
-                  div(v-if="type === 'nummers'")
-                    song-link(:song='item.entry.song')
-                  div(v-if="type === 'albums'")
-                    album-link(:album='item.entry.album')
-                div.p {{ Math.round(item.entry.points * 10) / 10 }}
+      div.listContainer(v-bind="containerProps")
+        div(v-bind="wrapperProps" ref="wrapper")
+          div(v-for="({data: item}, index) in virtualList" :key="item.key" style="height: 24px")
+            div.entry(:class="{lineBelow: index % 5 === 4}")
+              div.r
+                | {{ item.position }}
+              div.c
+                div.a(v-if="type === 'nummers'")
+                  song-artist-link(:song='item.entry.song')
+                div.a(v-else)
+                  artist-link(:artist='item.entry.artist')
+                div(v-if="type === 'nummers'")
+                  song-link(:song='item.entry.song')
+                div(v-if="type === 'albums'")
+                  album-link(:album='item.entry.album')
+              div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
 <script setup>
@@ -75,6 +74,7 @@ import ranking from '~/utils/ranking';
 import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
 import {useRepo} from "pinia-orm";
+import { useVirtualList } from '@vueuse/core';
 
 const TYPE_SONGS = 'nummers'
 const TYPE_ALBUMS = 'albums'
@@ -233,6 +233,7 @@ const rawData = computed(() => {
     }
   });
 })
+
 const data = computed(() => {
   if (isMounted.value) {
     if (type.value === TYPE_ARTISTS) {
@@ -391,6 +392,11 @@ function applyFilters(songs) {
 
   return result;
 }
+
+const itemHeight = 24
+const { list: virtualList, containerProps, wrapperProps, scrollTo } = useVirtualList(
+  data, {itemHeight}
+)
 </script>
 
 <style lang="scss" scoped>
@@ -450,30 +456,14 @@ function applyFilters(songs) {
       }
     }
 
-    div.content {
-      flex: 100% 1 1;
-      position: relative;
+    div.listContainer {
       height: 400px;
 
-      .wrapper {
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+      div.entry {
+        height: 24px;
 
-        .scroller {
-          width: 100%;
-          height: 100%;
-
-          div.entry {
-            height: 24px;
-
-            &.lineBelow {
-              border-bottom: 1px #888888 dotted;
-            }
-          }
+        &.lineBelow {
+          border-bottom: 1px #888888 dotted;
         }
       }
     }
