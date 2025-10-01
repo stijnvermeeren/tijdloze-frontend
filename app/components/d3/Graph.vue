@@ -1,5 +1,5 @@
 <template lang="pug">
-.graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+.graph(@mouseleave="hoverYear = undefined")
   v-btn-toggle(v-model="extended" mandatory density="compact" color="blue" variant="outlined")
     v-btn(:disabled="!hasTop100Entry" size="small" :value="false") Top 100
     v-btn(size="small" :value="true") Volledige lijst
@@ -138,6 +138,7 @@ function fullSongLine(song) {
     text-align: center;
     margin: 0 auto 20px auto;
     position: relative;
+    width: v-bind('`${fullWidth}px`');
 
     div.tooltip {
       position: absolute;

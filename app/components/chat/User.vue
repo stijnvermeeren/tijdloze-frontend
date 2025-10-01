@@ -6,10 +6,7 @@ span.container
     :class='{isAdmin: user.isAdmin}'
     ref="label"
   ) {{user.displayName}}
-  .info(
-    v-if='showInfo'
-    :style="{ top: contextPosition.top, left: contextPosition.left }"
-  )
+  .info(v-if='showInfo')
     div Unieke ID: {{user.id}}
     div(v-if='user.isAdmin') Moderator
     div(v-if='currentUser.isAdmin && user.id !== currentUser.id && !user.isAdmin')
@@ -79,6 +76,8 @@ watch(() => props.user, () => {
 
     div.info {
       position: absolute;
+      top: v-bind('contextPosition.top');
+      left: v-bind('contextPosition.left');
       background-color: styleConfig.$inputBackgroundColor;
       border: 1px solid gray;
       border-radius: 4px;

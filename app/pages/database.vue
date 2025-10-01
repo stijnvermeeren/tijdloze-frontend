@@ -51,7 +51,7 @@ div
     v-no-ssr
       div.listContainer(v-bind="containerProps")
         div(v-bind="wrapperProps" ref="wrapper")
-          div(v-for="({data: item}, index) in virtualList" :key="item.key" style="height: 24px")
+          div.listEntry(v-for="({data: item}, index) in virtualList" :key="item.key")
             div.entry(:class="{lineBelow: index % 5 === 4}")
               div.r
                 | {{ item.position }}
@@ -459,10 +459,9 @@ const { list: virtualList, containerProps, wrapperProps, scrollTo } = useVirtual
     div.listContainer {
       height: 400px;
 
-      div.entry {
-        height: 24px;
-
-        &.lineBelow {
+      .listEntry {
+        height: v-bind('`${itemHeight}px`');
+        div.entry.lineBelow {
           border-bottom: 1px #888888 dotted;
         }
       }
