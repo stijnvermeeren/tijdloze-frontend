@@ -1,5 +1,5 @@
 <template lang="pug">
-.graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+.graph(@mouseleave="hoverYear = undefined")
   .tooltip(v-if="tooltipSong" :style="tooltipStyle")
     .year
       | {{hoverYear.yyyy}}
@@ -75,6 +75,7 @@
     text-align: center;
     margin: 0 auto 20px auto;
     position: relative;
+    width: v-bind('`${fullWidth}px`');
 
     div.tooltip {
       position: absolute;

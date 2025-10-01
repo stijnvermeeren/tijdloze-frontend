@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  .graph(:style="{width: fullWidth}" @mouseleave="hoverYear = undefined")
+  .graph(@mouseleave="hoverYear = undefined")
     h4(v-if='$slots.default || title')
       slot {{title}}
     .tooltip(v-if="tooltipSong" :style="tooltipStyle")
@@ -90,6 +90,7 @@ div
     text-align: center;
     margin: 0 auto 20px auto;
     position: relative;
+    width: v-bind('`${fullWidth}px`');
 
     div.tooltip {
       position: absolute;

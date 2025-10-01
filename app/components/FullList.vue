@@ -14,7 +14,7 @@ div
 div.fullList(v-if='filteredList.length > 0')
   div.listContainer(v-if='filteredList.length > 20' v-bind="containerProps" @scrollend="onScroll")
     div(v-bind="wrapperProps" ref="wrapper")
-      div(v-for="{data: item} in virtualList" :key="item.position" style="height: 60px")
+      div.listEntry(v-for="{data: item} in virtualList" :key="item.position")
         song-with-position(:song="item.song" :attribution="item.attribution" :override-position="item.position" :year="year")
   div(v-else)
     song-with-position(
@@ -101,5 +101,9 @@ function onScroll() {
 <style lang="scss">
 div.listContainer {
   height: 560px;
+
+  .listEntry {
+    height: v-bind('`${itemHeight}px`');
+  }
 }
 </style>
