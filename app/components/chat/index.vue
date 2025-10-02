@@ -24,7 +24,11 @@
   .messages(ref='messagesContainer')
     .messagesContainer
       template(v-for='message in messages')
-        div(v-if='message.userId' :title='message.created' :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}')
+        div(
+          v-if='message.userId' 
+          :title="useDateFormat(message.created, { format: 'D MMMM YYYY, H:mm:ss'})"
+          :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}'
+        )
           span.userName
             chat-user(:user='messageUser(message)')
           | : {{message.message}}
