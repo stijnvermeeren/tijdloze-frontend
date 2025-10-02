@@ -16,7 +16,7 @@
         :years='years'
         :hover-year='hoverYear'
       )
-      line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+      line(v-if="hoverLineX" :x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g.color-1
         rect.rect.coloredRect(
           v-for='point in points'
@@ -89,7 +89,6 @@ function lineWidth(age) {
       text-align: center;
       margin: 0 auto 20px auto;
       position: relative;
-      width: v-bind('`${fullWidth}px`');
 
       div.tooltip {
         position: absolute;
