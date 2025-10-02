@@ -4,9 +4,9 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
     div.reacinfo
       span.name {{ comment.name }}
       span.created(:title="useDateFormat(comment.created)")
-        | {{ useDateFormat(comment.created, {agoMaxDays: 30}) }}
+        | {{ useDateFormat(comment.created, {agoMaxDays: 7}) }}
       span.updated(v-if="showUpdated" :title="useDateFormat(comment.updated)")
-        | (laatste wijziging: {{ useDateFormat(comment.updated, {agoMaxDays: 30}) }})
+        | (gewijzigd: {{ useDateFormat(comment.updated, {agoMaxDays: 7}) }})
       span.edit(v-if="isMine")
         a(@click="editComment") Wijzigen
       span.delete(v-if="!isDeleted && (isMine || isAdmin)")
