@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  #sideNav(:class='{closed: !isOpen}' @click.stop='menuClick($event)')
+  #sideNav(:class='{closed: !isOpen}' @click.stop='menuClick($event)' ref="menu")
     search-box(@selectSearchResult='selectSearchResult($event)')
 
     nav
@@ -77,6 +77,7 @@ div
 import {useRootStore} from "~/stores/root";
 import {useAuthStore} from "~/stores/auth";
 import {mdiLockOutline, mdiClose} from "@mdi/js";
+import {onClickOutside, onKeyStroke} from "@vueuse/core";
 
 const isOpen = ref(false)
 
@@ -120,11 +121,12 @@ function selectSearchResult(result) {
     navigateTo(path);
   }
 }
-function escapeKeyListener(evt) {
-  if (evt.code === "Escape" && isOpen.value) {
-    isOpen.value = false;
-  }
-}
+
+const menu = useTemplateRef('menu')
+
+onClickOutside(menu, close)
+onKeyStroke('Escape', close)
+
 function close(e) {
   if (isOpen.value) {
     isOpen.value = false;
@@ -135,15 +137,6 @@ function menuClick(event) {
     isOpen.value = false;
   }
 }
-
-onMounted(() => {
-  document.addEventListener('keyup', escapeKeyListener);
-  document.addEventListener('click', close)
-})
-onBeforeUnmount(() =>{
-  document.removeEventListener('keyup', escapeKeyListener);
-  document.removeEventListener('click', close);
-});
 </script>
 
 

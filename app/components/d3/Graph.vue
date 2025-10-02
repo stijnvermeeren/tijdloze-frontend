@@ -21,7 +21,7 @@
         :extended="extended"
       )
       polygon.greyBackground(v-if="extended" :points="greyBackgroundPoints")
-      line(:x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
+      line(v-if="hoverLineX" :x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g(
         v-for='({song, isTop100}, index) in entries'
         :class="[\
@@ -138,7 +138,6 @@ function fullSongLine(song) {
     text-align: center;
     margin: 0 auto 20px auto;
     position: relative;
-    width: v-bind('`${fullWidth}px`');
 
     div.tooltip {
       position: absolute;

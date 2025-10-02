@@ -3,8 +3,10 @@ ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
   template(#title)
     div.reacinfo
       span.name {{ comment.name }}
-      span.created {{ comment.created }}
-      span.updated(v-if="showUpdated") (laatste wijziging: {{ comment.updated }})
+      span.created(:title="useDateFormat(comment.created)")
+        | {{ useDateFormat(comment.created, {agoMaxDays: 30}) }}
+      span.updated(v-if="showUpdated" :title="useDateFormat(comment.updated)")
+        | (laatste wijziging: {{ useDateFormat(comment.updated, {agoMaxDays: 30}) }})
       span.edit(v-if="isMine")
         a(@click="editComment") Wijzigen
       span.delete(v-if="!isDeleted && (isMine || isAdmin)")
@@ -40,20 +42,8 @@ const isMine = computed(() => {
   return isAuthenticated.value && useAuthStore().user.id === props.comment.userId;
 })
 const showUpdated = computed(() => {
-  function parseDate(dateString) {
-    const parts = dateString.split(/[^0-9]+/g);
-    return new Date(
-        parseInt(parts[0]),
-        parseInt(parts[1]) - 1,
-        parseInt(parts[2]),
-        parseInt(parts[3]),
-        parseInt(parts[4]),
-        parseInt(parts[5])
-    )
-  }
-
-  const differenceMillis = parseDate(props.comment.updated) - parseDate(props.comment.created);
-  return !isMine.value && differenceMillis > 10000;
+  const differenceMillis = new Date(props.comment.updated) - new Date(props.comment.created);
+  return differenceMillis > 10000;
 })
 
 function editComment() {
@@ -78,6 +68,7 @@ async function restoreComment() {
     emit("restored")
   }
 }
+
 </script>
 
 <style lang="scss" scoped>

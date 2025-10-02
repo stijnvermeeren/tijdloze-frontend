@@ -56,6 +56,7 @@ import Song from "~/orm/Song";
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
+import {onStartTyping, onKeyStroke, useElementVisibility} from "@vueuse/core";
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
 
@@ -172,17 +173,18 @@ function go(index) {
   }
 }
 
-function escapeKeyListener(evt) {
-  if (evt.code === "Escape" && query.value) {
+onKeyStroke('Escape', () => {
+  if (query.value) {
     query.value = '';
   }
-}
-
-onMounted(() => {
-  document.addEventListener('keyup', escapeKeyListener)
 })
-onBeforeUnmount(() => {
-  document.removeEventListener('keyup', escapeKeyListener)
+
+const isVisible = useElementVisibility(searchBoxContainer)
+
+onStartTyping(() => {
+  if (isVisible.value && !input.value.focused) {
+    input.value.focus()
+  }
 })
 
 defineExpose({
