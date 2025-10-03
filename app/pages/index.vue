@@ -28,12 +28,12 @@ div
       nuxt-link(v-if='listInProgress && exitsKnown' :to='`/lijst/${tableYear.yyyy}/exits`')
         v-btn Uit de top 100 verdwenen
 
-  ui-card(v-if="chatReady && chatOn" title="Chatbox")
+  ui-card(v-if="chatOn" title="Chatbox")
     div.link
       nuxt-link(to="/chat")
         v-btn Ga naar de chatbox!
 
-  ui-card(v-if="commentsReady && commentsOn" title="Reageer en discussieer")
+  ui-card(v-if="commentsOn" title="Reageer en discussieer")
     comments-form(@submitted="refreshComments" @displayNameChanged="refreshComments")
     comments-display(v-for='comment in comments' :key='comment.id' :comment='comment')
     .link
@@ -91,7 +91,6 @@ const {data: chatOn, status: chatStatus} = await useLazyFetch(
   `text/chatOn`,
   useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
 )
-const chatReady = computed(() => chatStatus.value === 'success')
 
 const {data: commentsOn, status: commentsStatus1} = await useLazyFetch(
   `text/commentsOn`,
@@ -109,7 +108,6 @@ const {data: comments, execute: refreshComments, status: commentsStatus2} = awai
   },
   {watch: [commentsOn]}
 )
-const commentsReady = computed(() => commentsStatus1.value === 'success' && commentsStatus2.value === 'success')
 useClientDataRefresh(refreshComments)
 </script>
 

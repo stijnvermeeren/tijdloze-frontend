@@ -29,7 +29,7 @@ const previousYear = computed(() => {
 
 const maxPositionLimit = computed(() => {
   const fullPreviousYearList = useRootStore().list(previousYear.value)
-  return fullPreviousYearList[fullPreviousYearList.length - 1].position
+  return fullPreviousYearList?.[fullPreviousYearList.length - 1]?.position
 })
 
 const list = computed(() => {
