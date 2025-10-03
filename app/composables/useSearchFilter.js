@@ -1,9 +1,6 @@
-import _ from "lodash";
-
 export default function (queryFragments, matchAttribute) {
   return item => {
-    return _.every(
-      queryFragments,
+    return queryFragments.every(
       fragment => !fragment || useSearchNormalize(matchAttribute(item)).indexOf(fragment) > -1
     )
   }

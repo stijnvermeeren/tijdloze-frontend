@@ -1,5 +1,5 @@
 
-import _ from 'lodash'
+import takeWhile from 'ramda/src/takeWhile'
 
 export function createSlug(text) {
   return text
@@ -11,5 +11,5 @@ export function createSlug(text) {
 }
 
 export function idFromSlug(slug) {
-  return _.takeWhile(slug, char => char >= '0' && char <= '9').join("")
+  return takeWhile(char => char >= '0' && char <= '9')(slug)
 }

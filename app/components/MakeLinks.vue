@@ -6,7 +6,8 @@ span
 </template>
 
 <script setup>
-import _ from 'lodash';
+import takeWhile from 'ramda/src/takeWhile';
+import dropWhile from 'ramda/src/dropWhile';
 
 const props = defineProps({
   text: String
@@ -18,14 +19,14 @@ const fragments = computed(() => {
 
   while (unprocessedText.length > 0) {
     fragments.push({
-      text: _.takeWhile(unprocessedText, char => char !== '[').join("")
+      text: takeWhile(char => char !== '[')(unprocessedText)
     });
-    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== '['), 1);
+    unprocessedText = dropWhile(char => char !== '[')(unprocessedText).slice(1);
 
     fragments.push({
-      to: _.takeWhile(unprocessedText, char => char !== ']').join("")
+      to: takeWhile(char => char !== ']')(unprocessedText)
     });
-    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== ']'), 1);
+    unprocessedText = dropWhile(char => char !== ']')(unprocessedText).slice(1);
   }
 
   return fragments;

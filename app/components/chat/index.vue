@@ -47,9 +47,9 @@
 </template>
 
 <script setup>
-import _ from 'lodash'
 import Sockette from 'sockette';
 import {useAuthStore} from "~/stores/auth";
+import sortBy from 'ramda/src/sortBy';
 
 const {$api, $url} = useNuxtApp()
 
@@ -85,10 +85,7 @@ const sendDisabled = computed(() => {
   return !message.value.length || uppercaseMessage.value || !connected.value || error.value || postDelay.value > 0;
 })
 const onlineSorted = computed(() => {
-  return _.sortBy(
-    online.value,
-    onlineUser => onlineUser.displayName.toLowerCase()
-  )
+  return sortBy(onlineUser => onlineUser.displayName.toLowerCase())(online.value);
 })
 const currentUser = computed(() => {
   return useAuthStore().user;
@@ -201,7 +198,7 @@ function loadOnline(newOnlineData) {
     }]
   }
 
-  online.value = _.concat(currentUserEntry, newOnline, stillOnline);
+  online.value = [...currentUserEntry, ...newOnline, ...stillOnline];
 }
 async function send() {
   if (!sendDisabled.value) {

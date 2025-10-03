@@ -1,16 +1,17 @@
-import _ from 'lodash'
+import dropWhile from "ramda/src/dropWhile"
+import takeWhile from "ramda/src/takeWhile"
 
 function createIntervals(years, fn) {
   const intervals = [];
   let unprocessedYears = years;
 
   while (unprocessedYears.length) {
-    unprocessedYears = _.dropWhile(unprocessedYears, year => !fn(year));
+    unprocessedYears = dropWhile(year => !fn(year))(unprocessedYears);
 
-    const interval = _.takeWhile(unprocessedYears, fn);
+    const interval = takeWhile(fn)(unprocessedYears);
     if (interval.length) {
       intervals.push(interval);
-      unprocessedYears = _.dropWhile(unprocessedYears, fn);
+      unprocessedYears = dropWhile(fn)(unprocessedYears);
     }
   }
 
