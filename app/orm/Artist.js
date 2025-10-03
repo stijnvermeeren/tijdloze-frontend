@@ -2,7 +2,9 @@ import { Model } from 'pinia-orm'
 import Song from "./Song";
 import Album from "./Album";
 import { createSlug } from '~/utils/slug'
-import _ from 'lodash'
+import sortBy from 'ramda/src/sortBy';
+import sortWith from 'ramda/src/sortWith';
+import ascend from "ramda/src/ascend";
 
 export default class Artist extends Model {
   static get entity() {
@@ -27,23 +29,17 @@ export default class Artist extends Model {
   }
 
   get songsSorted() {
-    return _.sortBy(
-      this.songs,
-      song => song.title
-    );
+    return sortBy(song => song.title)(this.songs);
   }
 
   get allSongs() {
-    return _.sortBy(
-      this.songs.concat(this.secondarySongs),
-      song => song.title
-    );
+    return sortBy(song => song.title)(this.songs.concat(this.secondarySongs));
   }
 
   get allAlbums() {
-    return _.sortBy(
-      this.albums.concat(this.secondarySongs.map(song => song.album)),
-      [album => album.releaseYear, album => album.title]
-    );
+    return sortWith([
+      ascend(album => album.releaseYear),
+      ascend(album => album.title)
+    ])(this.albums.concat(this.secondarySongs.map(song => song.album)));
   }
 }

@@ -32,10 +32,10 @@ div
 </template>
 
 <script setup>
-import _ from "lodash";
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
+import sortBy from 'ramda/src/sortBy';
 
 const {$api} = useNuxtApp()
 
@@ -90,10 +90,9 @@ const candidateAlbums = computed(() => {
 
   const artist = useRepo(Artist).with('albums').find(props.artistId);
   if (artist) {
-    return _.sortBy(
-        artist.albums,
-        [album => album.releaseYear, album => album.title]
-    )
+    return sortBy(
+      album => [album.releaseYear, album.title]
+    )(artist.albums)
   } else {
     return [];
   }

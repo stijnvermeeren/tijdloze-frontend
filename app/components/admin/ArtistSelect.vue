@@ -13,9 +13,9 @@ v-autocomplete(
 </template>
 
 <script setup>
-import _ from "lodash";
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
+import sortBy from 'ramda/src/sortBy';
 
 const props = defineProps({
   label: {
@@ -43,9 +43,8 @@ watch(artistId, (newArtistId) => {
 
 const candidateArtists = computed(() => {
   const queryFragments = useSearchQueryFragments(query.value)
-  return _.sortBy(
-      useRepo(Artist).all().filter(useSearchFilter(queryFragments, useSearchArtistContent)),
-      artist => -useSearchScore(query.value, useSearchArtistContent(artist))
+  return sortBy(artist => -useSearchScore(query.value, useSearchArtistContent(artist)))(
+    useRepo(Artist).all().filter(useSearchFilter(queryFragments, useSearchArtistContent))
   ).map(artist => {
     return {
       value: artist.id,

@@ -12,7 +12,6 @@ v-select(
 
 <script setup>
 import countries from '~/utils/country'
-import _ from 'lodash';
 import {useRootStore} from "~/stores/root";
 
 const props = defineProps({

@@ -15,8 +15,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
-
 const props = defineProps({
   year: Object
 })
@@ -31,14 +29,14 @@ const previousYear = computed(() => {
 
 const maxPositionLimit = computed(() => {
   const fullPreviousYearList = useRootStore().list(previousYear.value)
-  return _.last(fullPreviousYearList).position
+  return fullPreviousYearList[fullPreviousYearList.length - 1].position
 })
 
 const list = computed(() => {
   const previousYearList = useRootStore().list(previousYear.value, undefined, maxPosition.value)
-  return _.reverse(
-      previousYearList.filter(entry => !entry.song.position(props.year, true) && entry.song.probablyInList(props.year, true))
-  );
+  return previousYearList
+    .filter(entry => !entry.song.position(props.year, true) && entry.song.probablyInList(props.year, true))
+    .reverse()
 })
 </script>
 

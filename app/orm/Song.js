@@ -79,7 +79,7 @@ export default class Song extends Model {
     let unprocessedYears = years;
 
     while (unprocessedYears.length) {
-      const position = this.position(_.first(unprocessedYears));
+      const position = this.position(unprocessedYears[0]);
 
       if (position) {
         const interval = _.takeWhile(unprocessedYears, year => this.position(year) === position);

@@ -49,7 +49,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
 import List from "~/orm/List";
 import {useRepo} from "pinia-orm";
 import useClientDataRefresh from "~/composables/useClientDataRefresh";
@@ -103,7 +102,7 @@ const {data: comments, execute: refreshComments, status: commentsStatus2} = awai
   'comments',
   () => {
     if (commentsOn.value) {
-      return $api(`comments/1`).then(data => _.take(data, 10))
+      return $api(`comments/1`).then(data => data.slice(0, 10))
     } else {
       return Promise.resolve([])
     }
