@@ -35,7 +35,8 @@ div
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
-import sortBy from 'ramda/src/sortBy';
+import sortWith from 'ramda/src/sortBy';
+import ascend from "ramda/src/ascend";
 
 const {$api} = useNuxtApp()
 
@@ -90,9 +91,10 @@ const candidateAlbums = computed(() => {
 
   const artist = useRepo(Artist).with('albums').find(props.artistId);
   if (artist) {
-    return sortBy(
-      album => [album.releaseYear, album.title]
-    )(artist.albums)
+    return sortWith([
+      ascend(album => album.releaseYear),
+      ascend(album => album.title)
+    ])(artist.albums)
   } else {
     return [];
   }

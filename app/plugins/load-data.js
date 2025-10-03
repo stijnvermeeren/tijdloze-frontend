@@ -1,7 +1,6 @@
 import {useRootStore} from "~/stores/root";
 import {useConfigStore} from "~/stores/config";
 import {usePollStore} from "~/stores/poll";
-import _ from "lodash";
 import Song from "~/orm/Song";
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";

@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import _ from 'lodash';
 
 import Year from '~/orm/Year';
 import {YearsIndex} from '~/utils/yearContext';
@@ -14,14 +13,14 @@ export const useYearStore = defineStore('year', () => {
     return new YearsIndex(years.value)
   })
   const currentYear = computed(() => {
-    return _.last(years.value)
+    return years.value?.[years.value.length - 1]
   })
   const previousYear = computed(() => {
     return context.value.forYear(currentYear.value).previous?.year;
   })
 
   function setCurrentYear(currentYear) {
-    if (_.last(yearsRaw.value) !== currentYear) {
+    if (yearsRaw.value?.[yearsRaw.value.length - 1] !== currentYear) {
       yearsRaw.value = yearsRaw.value.filter(year => year < currentYear)
       yearsRaw.value.push(currentYear)
     }

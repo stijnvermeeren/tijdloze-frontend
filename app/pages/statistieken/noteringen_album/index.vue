@@ -22,7 +22,6 @@ div
 
 <script setup>
 import ranking from '~/utils/ranking';
-import _ from 'lodash'
 
 const props = defineProps({
   albums: Array,
@@ -33,7 +32,7 @@ const rankingList = computed(() => {
   const data = props.albums.map(album => {
     return {
       album: album,
-      count: _.sum(album.songs.map(song => song.listCount(props.years)))
+      count: album.songs.map(song => song.listCount(props.years)).reduce((a, b) => a + b, 0)
     };
   }).filter(({ count }) => count > 0);
   return ranking(

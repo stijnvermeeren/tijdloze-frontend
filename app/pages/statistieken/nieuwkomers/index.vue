@@ -20,7 +20,7 @@ table.lijst.perEen
 </template>
 
 <script setup>
-import _ from 'lodash'
+import sortBy from 'ramda/src/sortBy'
 
 const props = defineProps({
   data: Array,
@@ -28,7 +28,7 @@ const props = defineProps({
 })
 
 const listData = computed(() => {
-  const listYears = _.reverse(_.drop(props.years, 1));
+  const listYears = props.years.slice(1).reverse();
   return listYears.map(year => {
     return {
       year,
@@ -38,9 +38,8 @@ const listData = computed(() => {
 })
 
 function entriesPerYear(year) {
-  return _.sortBy(
-    props.data.filter(entry => entry.year.equals(year)),
-    entry => entry.song.position(entry.year)
+  return sortBy(entry => entry.song.position(entry.year))(
+    props.data.filter(entry => entry.year.equals(year))
   );
 }
 </script>

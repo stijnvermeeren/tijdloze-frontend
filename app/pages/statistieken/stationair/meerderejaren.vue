@@ -44,7 +44,7 @@ const byNumberOfYears = computed(() => {
         data.push({
           song,
           years: interval,
-          position: song.position(_.first(interval))
+          position: song.position(interval[0])
         });
       })
   });

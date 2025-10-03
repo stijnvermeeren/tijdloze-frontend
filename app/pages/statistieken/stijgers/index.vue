@@ -20,7 +20,8 @@ table.lijst.perVijf
 </template>
 
 <script setup>
-import _ from 'lodash'
+import sortWith from 'ramda/src/sortWith';
+import ascend from "ramda/src/ascend";
 
 const props = defineProps({
   data: Array,
@@ -28,21 +29,21 @@ const props = defineProps({
 })
 
 const listData = computed(() => {
-  const listYears = _.reverse(_.drop(props.years, 1));
+  const listYears = props.years.slice(1).reverse()
   return listYears.map(year => {
     const entries = entriesPerYear(year);
     return {
       year,
       entries,
-      topEntry: _.first(entries)
+      topEntry: entries?.[0]
     }
   })
 })
 
 function entriesPerYear(year) {
-  return _.sortBy(
-    props.data.filter(entry => entry.year.equals(year)),
-    [entry => entry.newPosition - entry.oldPosition, entry => entry.newPosition]
-  );
+  return sortWith([
+    ascend(entry => entry.newPosition - entry.oldPosition),
+    ascend(entry => entry.newPosition)
+  ])(props.data.filter(entry => entry.year.equals(year)));
 }
 </script>
