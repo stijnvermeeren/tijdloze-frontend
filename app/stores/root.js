@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { useRepo } from 'pinia-orm'
-import _ from 'lodash';
+import sortWith from "ramda/src/sortWith"
+import ascend from "ramda/src/ascend"
 
 import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';
@@ -12,29 +13,27 @@ export const useRootStore = defineStore('root', () => {
 
   const exitSongIds = ref([])
   
-  const songIdsByTitle = computed(() => {
-    return _.mapValues(
-      _.groupBy(useRepo(Song).all(), song => song.title.toLowerCase()),
-      songs => songs.map(song => song.id)
+  function indexByProperty(data, selector) {
+    const grouped = Object.groupBy(data, selector)
+    return Object.fromEntries(
+      Object.entries(grouped).map(([key, entries]) => [key, entries.map(entry => entry.id)])
     )
+  }
+
+  const songIdsByTitle = computed(() => {
+    return indexByProperty(useRepo(Song).all(), song => song.title.toLowerCase())
   })
   const artistIdsByFullName = computed(() => {
-    return _.mapValues(
-      _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
-      artists => artists.map(artist => artist.id)
-    )
+    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
   })
   const artistIdsByName = computed(() => {
-    return _.mapValues(
-      _.groupBy(useRepo(Artist).all(), artist => artist.name.toLowerCase()),
-      artists => artists.map(artist => artist.id)
-    )
+    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
   })
   const songs = computed(() => {
-    return _.sortBy(
-      useRepo(Song).withAll().get(),
-      song => [song.title, song.album.releaseYear]
-    );
+    return sortWith([
+      ascend(song => song.title),
+      ascend(song => song.album.releaseYear)
+    ])(useRepo(Song).withAll().get());
   })
 
   const usedCountryIds = computed(() => {
@@ -42,17 +41,10 @@ export const useRootStore = defineStore('root', () => {
   })
 
   const lastSong = computed(() => {
-    const entry = _.first(list(yearStore.currentYear, 1))
-    if (entry) {
-      return entry.song
-    }
+    return list(yearStore.currentYear, 1)?.[0]?.song
   })
   const lastPosition = computed(() => {
-    if (lastSong.value) {
-      return lastSong.value.position(yearStore.currentYear, true)
-    } else {
-      return undefined
-    }
+    return lastSong.value?.position(yearStore.currentYear, true)
   })
   const listInProgress = computed(() => {
     return lastPosition.value && lastPosition.value !== 1;
@@ -78,7 +70,7 @@ export const useRootStore = defineStore('root', () => {
     if (list) {
       let notNullSongIds = list.songIds.filter(x => x)
       if (limit > 0) {
-        notNullSongIds = _.take(notNullSongIds, limit)
+        notNullSongIds = notNullSongIds.slice(0, limit)
       }
       const songs = useRepo(Song).with('album').with('artist').with('secondArtist').find(notNullSongIds)
       const songsById = {}

@@ -1,5 +1,5 @@
 import dropWhile from "ramda/src/dropWhile"
-import takeWhile from "ramda/src/takeWhile"
+import splitWhen from "ramda/src/splitWhen"
 
 function createIntervals(years, fn) {
   const intervals = [];
@@ -8,10 +8,10 @@ function createIntervals(years, fn) {
   while (unprocessedYears.length) {
     unprocessedYears = dropWhile(year => !fn(year))(unprocessedYears);
 
-    const interval = takeWhile(fn)(unprocessedYears);
+    const [interval, rest] = splitWhen(year => !fn(year))(unprocessedYears);
     if (interval.length) {
       intervals.push(interval);
-      unprocessedYears = dropWhile(fn)(unprocessedYears);
+      unprocessedYears = rest;
     }
   }
 

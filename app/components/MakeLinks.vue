@@ -6,8 +6,7 @@ span
 </template>
 
 <script setup>
-import takeWhile from 'ramda/src/takeWhile';
-import dropWhile from 'ramda/src/dropWhile';
+import splitWhen from 'ramda/src/splitWhen';
 
 const props = defineProps({
   text: String
@@ -18,15 +17,13 @@ const fragments = computed(() => {
   let fragments = [];
 
   while (unprocessedText.length > 0) {
-    fragments.push({
-      text: takeWhile(char => char !== '[')(unprocessedText)
-    });
-    unprocessedText = dropWhile(char => char !== '[')(unprocessedText).slice(1);
+    const [text, rest] = splitWhen(char => char === '[')(unprocessedText)
+    fragments.push({text: text.join('')});
+    unprocessedText = rest.slice(1)
 
-    fragments.push({
-      to: takeWhile(char => char !== ']')(unprocessedText)
-    });
-    unprocessedText = dropWhile(char => char !== ']')(unprocessedText).slice(1);
+    const [to, rest2] = splitWhen(char => char === ']')(unprocessedText)
+    fragments.push({to: to.join('')});
+    unprocessedText = rest2.slice(1)
   }
 
   return fragments;

@@ -31,8 +31,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash'
-
 const props = defineProps({
   albums: Array,
   years: Array
@@ -42,12 +40,12 @@ const data = computed(() => {
   const MAX = 3;
   const MIN = 2;
 
-  return _.reverse([...props.years]).map(year => {
-    const albumsPerCount = _.groupBy(props.albums, album => {
+  return [...props.years].reverse().map(year => {
+    const albumsPerCount = Object.groupBy(props.albums, album => {
       return album.songs.filter(song => song.position(year)).length;
     });
 
-    const range = _.range(MAX, MIN - 1, -1);
+    const range = [...Array(MAX + 1)].slice(MIN).reverse();
     const counts = range.map(count => {
       return {
         count: count,
