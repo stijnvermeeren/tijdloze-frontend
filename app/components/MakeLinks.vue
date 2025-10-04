@@ -6,7 +6,7 @@ span
 </template>
 
 <script setup>
-import _ from 'lodash';
+import { splitWhen } from 'ramda';
 
 const props = defineProps({
   text: String
@@ -17,15 +17,13 @@ const fragments = computed(() => {
   let fragments = [];
 
   while (unprocessedText.length > 0) {
-    fragments.push({
-      text: _.takeWhile(unprocessedText, char => char !== '[').join("")
-    });
-    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== '['), 1);
+    const [text, rest] = splitWhen(char => char === '[')(unprocessedText)
+    fragments.push({text: text.join('')});
+    unprocessedText = rest.slice(1)
 
-    fragments.push({
-      to: _.takeWhile(unprocessedText, char => char !== ']').join("")
-    });
-    unprocessedText = _.drop(_.dropWhile(unprocessedText, char => char !== ']'), 1);
+    const [to, rest2] = splitWhen(char => char === ']')(unprocessedText)
+    fragments.push({to: to.join('')});
+    unprocessedText = rest2.slice(1)
   }
 
   return fragments;

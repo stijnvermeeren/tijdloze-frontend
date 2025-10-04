@@ -24,7 +24,7 @@ table.lijst.perEen
 </template>
 
 <script setup>
-import _ from 'lodash';
+import { sortWith, ascend } from 'ramda'
 
 const props = defineProps({
   years: Array
@@ -44,16 +44,16 @@ const byNumberOfYears = computed(() => {
         data.push({
           song,
           years: interval,
-          position: song.position(_.first(interval))
+          position: song.position(interval[0])
         });
       })
   });
 
-  return _.rangeRight(3, maxYears + 1).map(numberOfYears => {
-    const entries = _.sortBy(
-      data.filter(item => item.years.length === numberOfYears),
-      [data => -data.years[0].yyyy, data => data.song.position(data.years[0])]
-    );
+  return [...Array(maxYears + 1).keys()].slice(3).reverse().map(numberOfYears => {
+    const entries = sortWith([
+      ascend(data => -data.years[0].yyyy),
+      ascend(data => data.song.position(data.years[0]))
+    ])(data.filter(item => item.years.length === numberOfYears));
 
     return {numberOfYears, entries};
   });

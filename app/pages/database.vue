@@ -68,8 +68,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash'
-
 import ranking from '~/utils/ranking';
 import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
@@ -126,7 +124,7 @@ const sumSongsScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE
 function parseScoreMethod(value, type) {
   const validScoreMethodsForType = validScoreMethods[type]
   if  (validScoreMethodsForType) {
-    return new Set(validScoreMethodsForType).has(value) ? value : _.first(validScoreMethodsForType)
+    return new Set(validScoreMethodsForType).has(value) ? value : validScoreMethodsForType[0]
   } else {
     return SCORE_ENTRY_COUNT
   }
@@ -136,7 +134,7 @@ const isMounted = ref(false)
 const type = ref(parseType(useRoute().query.type))
 const filter = ref(parseFilter(useRoute().query.filter))
 const cutoff = ref(parseCutoff(useRoute().query.cutoff))
-const startYear = ref(useRoute().query.start || _.first(useYearStore().years)?.yyyy)
+const startYear = ref(useRoute().query.start || useYearStore().years?.[0]?.yyyy)
 const endYear = ref(useRoute().query.einde || useRootStore().lastCompleteYear?.yyyy)
 const minReleaseYear = ref(parseInt(useRoute().query.minReleaseYear))
 const maxReleaseYear = ref(parseInt(useRoute().query.maxReleaseYear))

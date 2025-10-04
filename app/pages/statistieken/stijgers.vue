@@ -10,15 +10,13 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
-
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   const dataPoints = [];
   songs.value.forEach(song => {
-    _.drop(years.value, 1).forEach((year, index) => {
+    years.value.slice(1).forEach((year, index) => {
       const oldPosition = song.position(years.value[index]);
       const newPosition = song.position(year);
       if (oldPosition && newPosition && oldPosition > newPosition) {

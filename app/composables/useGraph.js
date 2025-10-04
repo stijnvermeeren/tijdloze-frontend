@@ -1,8 +1,6 @@
 
 import {scaleLinear, scaleBand} from "d3-scale";
-import _ from "lodash";
 import {line} from "d3-shape";
-import {result} from "lodash-es";
 
 export default function () {
   const {width, height} = useGraphConstants()
@@ -97,11 +95,11 @@ export default function () {
       const positions = intervalYears.map(year => song.position(year, extended.value))
 
       let start = [];
-      if (!suddenEnds && _.first(interval).yyyy !== 1987) {
-        const firstPosition = _.first(positions)
-        const cutoffPosition = cutoffPositionBefore.value[_.first(interval).yyyy]
+      if (!suddenEnds && interval[0].yyyy !== 1987) {
+        const firstPosition = positions[0]
+        const cutoffPosition = cutoffPositionBefore.value[interval[0].yyyy]
         start = [{
-          x: xScale.value(_.first(interval)._yy) - 9 / 10 * halfBandWith,
+          x: xScale.value(interval[0]._yy) - 9 / 10 * halfBandWith,
           y: yScale.value(Math.max(firstPosition, cutoffPosition)),
           defined: true
         }];
@@ -115,18 +113,18 @@ export default function () {
         };
       });
 
-      const lastYear = _.last(interval);
+      const lastYear = interval[interval.length - 1];
       if (suddenEnds || lastYear.equals(currentYear.value)) {
-        return _.flatten([start, positionPoints, undefinedPoint]);
+        return [start, positionPoints, undefinedPoint].flat();
       } else {
-        const lastPosition = _.last(positions)
-        const cutoffPosition = cutoffPositionAfter.value[_.last(interval).yyyy]
+        const lastPosition = positions[positions.length - 1];
+        const cutoffPosition = cutoffPositionAfter.value[interval[interval.length - 1].yyyy];
         const end = {
           x: xScale.value(lastYear._yy) + 9 / 10 * halfBandWith,
           y: yScale.value(Math.max(lastPosition, cutoffPosition)),
           defined: true
         };
-        return _.flatten([start, positionPoints, end, undefinedPoint]);
+        return [start, positionPoints, end, undefinedPoint].flat();
       }
     });
 
@@ -134,7 +132,7 @@ export default function () {
       .x(function(d) { return d.x; })
       .y(function(d) { return d.y; })
       .defined(function(d) { return d.defined; });
-    return songLine(_.flatten(intervalLines));
+    return songLine(intervalLines.flat());
   }
 
   return {years, xBandScale, xScale, yScale, songLine, extended, greyBackgroundPoints}

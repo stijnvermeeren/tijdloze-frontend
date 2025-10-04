@@ -35,7 +35,6 @@ div.poll
 
 <script setup>
 import {mdiRefresh} from "@mdi/js";
-import _ from 'lodash';
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
 import useFetchOptsPost from "~/composables/useFetchOptsPost";
@@ -77,7 +76,7 @@ const isAuthenticated = computed(() => {
 })
 
 const voteCount = computed(() => {
-  return _.sumBy(livePoll.value.answers, answer => answer.voteCount);
+  return livePoll.value.answers.reduce((sum, answer) => sum + answer.voteCount, 0);
 })
 
 watch(() => props.poll, (newPoll) => {

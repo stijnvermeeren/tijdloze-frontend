@@ -2,7 +2,7 @@ import { Model } from 'pinia-orm'
 import Song from "./Song";
 import Artist from "./Artist";
 import { createSlug } from '~/utils/slug'
-import _ from 'lodash'
+import { sortBy } from 'ramda';
 
 export default class Album extends Model {
   static get entity() {
@@ -29,9 +29,6 @@ export default class Album extends Model {
   }
 
   get songsSorted() {
-    return _.sortBy(
-      this.songs,
-      [song => song.title]
-    )
+    return sortBy(song => song.title, this.songs)
   }
 }

@@ -3,7 +3,6 @@ import Song from '~/orm/Song'
 import Artist from '~/orm/Artist'
 import List from "~/orm/List";
 import Album from "~/orm/Album";
-import _ from 'lodash'
 import {useRootStore} from "~/stores/root";
 import {usePollStore} from "~/stores/poll";
 import {useRepo} from "pinia-orm";

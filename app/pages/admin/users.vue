@@ -38,7 +38,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash'
 import {useAuthStore} from "~/stores/auth";
 import {mdiMagnify} from "@mdi/js";
 
@@ -82,7 +81,7 @@ const tableHeaders = [
     value: 'created',
     headerProps: { style: 'font-weight: bold'},
     sort: (a, b) => {
-      return parseDate(a).getTime() - parseDate(b).getTime()
+      return new Date(a).getTime() - new Date(b).getTime()
     }
   },
   {
@@ -91,7 +90,7 @@ const tableHeaders = [
     value: 'lastSeen',
     headerProps: { style: 'font-weight: bold'},
     sort: (a, b) => {
-      return parseDate(a).getTime() - parseDate(b).getTime()
+      return new Date(a).getTime() - new Date(b).getTime()
     }
   }
 ]
@@ -110,20 +109,10 @@ const blockedCount = computed(() => {
 })
 const activeCount = computed(() => {
   return users.value.filter(user => {
-    return parseDate(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
+    return new Date(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
   }).length;
 })
 
-function parseDate(dateString) {
-  return new Date(
-    parseInt(dateString.substring(6, 10)),
-    parseInt(dateString.substring(3, 5)) - 1,
-    parseInt(dateString.substring(0, 2)),
-    parseInt(dateString.substring(11, 13)),
-    parseInt(dateString.substring(14, 16)),
-    parseInt(dateString.substring(17, 19))
-  )
-}
 async function block(userId) {
   refreshing.value = true;
   await $api(`/user/${userId}/block`, useFetchOptsPost());

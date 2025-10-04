@@ -31,7 +31,7 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash'
+import { range } from 'ramda'
 
 const props = defineProps({
   albums: Array,
@@ -42,13 +42,12 @@ const data = computed(() => {
   const MAX = 3;
   const MIN = 2;
 
-  return _.reverse([...props.years]).map(year => {
-    const albumsPerCount = _.groupBy(props.albums, album => {
+  return [...props.years].reverse().map(year => {
+    const albumsPerCount = Object.groupBy(props.albums, album => {
       return album.songs.filter(song => song.position(year)).length;
     });
 
-    const range = _.range(MAX, MIN - 1, -1);
-    const counts = range.map(count => {
+    const counts = range(MIN, MAX + 1).reverse().map(count => {
       return {
         count: count,
         albums: albumsPerCount[count]

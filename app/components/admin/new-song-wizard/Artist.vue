@@ -27,7 +27,6 @@ div
 </template>
 
 <script setup>
-import _ from "lodash";
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";

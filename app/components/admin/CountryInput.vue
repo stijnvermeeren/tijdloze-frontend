@@ -22,14 +22,11 @@ div.d-flex
 
 <script setup>
 import countries from '~/utils/country'
-import _ from 'lodash';
+import { sortBy } from 'ramda';
 
 const countryId = defineModel()
 
-const countryOptions = _.sortBy(
-  Object.keys(countries),
-  countryId => countries[countryId]
-).map(countryId => {
+const countryOptions = sortBy(countryId => countries[countryId])(Object.keys(countries)).map(countryId => {
   return {
     value: countryId,
     title: countries[countryId]
