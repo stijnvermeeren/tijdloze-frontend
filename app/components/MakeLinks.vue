@@ -6,7 +6,7 @@ span
 </template>
 
 <script setup>
-import splitWhen from 'ramda/src/splitWhen';
+import { splitWhen } from 'ramda';
 
 const props = defineProps({
   text: String

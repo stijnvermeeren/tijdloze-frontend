@@ -35,8 +35,7 @@ div
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
-import sortWith from 'ramda/src/sortWith';
-import ascend from "ramda/src/ascend";
+import { sortWith, ascend } from 'ramda';
 
 const {$api} = useNuxtApp()
 

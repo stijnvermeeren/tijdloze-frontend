@@ -10,7 +10,7 @@ div
 <script setup>
 import analyse from '~/utils/analyse';
 import {useRootStore} from "~/stores/root";
-import sortBy from 'ramda/src/sortBy'
+import { sortBy } from 'ramda'
 
 definePageMeta({
   validate: async (route) => {

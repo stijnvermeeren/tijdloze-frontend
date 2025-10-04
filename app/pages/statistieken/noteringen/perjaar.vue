@@ -32,6 +32,8 @@ div
 </template>
 
 <script setup>
+import { range } from 'ramda'
+
 const props = defineProps({
   artists: Array,
   years: Array
@@ -46,8 +48,7 @@ const data = computed(() => {
       return artist.allSongs.filter(song => song.position(year)).length;
     });
 
-    const range = [...Array(MAX + 1)].slice(MIN).reverse();
-    const counts = range.map(count => {
+    const counts = range(MIN, MAX + 1).reverse().map(count => {
       return {
         count: count,
         artists: artistsPerCount[count]

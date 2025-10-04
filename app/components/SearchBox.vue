@@ -56,7 +56,7 @@ import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 import {onStartTyping, onKeyStroke, useElementVisibility} from "@vueuse/core";
-import sortBy from 'ramda/src/sortBy'
+import { sortBy } from 'ramda'
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
 

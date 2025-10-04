@@ -20,8 +20,7 @@ table.lijst.perVijf
 </template>
 
 <script setup>
-import sortWith from 'ramda/src/sortWith';
-import ascend from "ramda/src/ascend";
+import { sortWith, ascend } from 'ramda';
 
 const props = defineProps({
   data: Array,

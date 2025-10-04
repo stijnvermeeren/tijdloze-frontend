@@ -22,7 +22,7 @@ div.d-flex
 
 <script setup>
 import countries from '~/utils/country'
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 const countryId = defineModel()
 

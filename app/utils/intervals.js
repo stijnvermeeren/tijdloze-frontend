@@ -1,5 +1,4 @@
-import dropWhile from "ramda/src/dropWhile"
-import splitWhen from "ramda/src/splitWhen"
+import { dropWhile, splitWhen } from 'ramda'
 
 function createIntervals(years, fn) {
   const intervals = [];

@@ -1,5 +1,5 @@
 
-import takeWhile from 'ramda/src/takeWhile'
+import { takeWhile } from 'ramda'
 
 export function createSlug(text) {
   return text

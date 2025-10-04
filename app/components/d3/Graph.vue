@@ -63,7 +63,7 @@
 
 <script setup>
 import {probablyInListIntervals} from '~/utils/intervals';
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 const props = defineProps({
   entries: {

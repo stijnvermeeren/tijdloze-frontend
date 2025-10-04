@@ -1,4 +1,4 @@
-import splitWhen from "ramda/src/splitWhen"
+import { splitWhen } from 'ramda'
 
 import { createSlug } from '~/utils/slug'
 import { Model } from 'pinia-orm'

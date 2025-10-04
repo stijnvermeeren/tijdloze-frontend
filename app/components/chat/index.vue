@@ -49,7 +49,7 @@
 <script setup>
 import Sockette from 'sockette';
 import {useAuthStore} from "~/stores/auth";
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 const {$api, $url} = useNuxtApp()
 

@@ -3,8 +3,7 @@ song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year
 </template>
 
 <script setup>
-import sortWith from 'ramda/src/sortWith';
-import ascend from 'ramda/src/ascend';
+import { sortWith, ascend } from 'ramda';
 
 const props = defineProps({
   songs: Array

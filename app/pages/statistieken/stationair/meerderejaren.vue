@@ -24,8 +24,7 @@ table.lijst.perEen
 </template>
 
 <script setup>
-import sortWith from 'ramda/src/sortWith'
-import ascend from 'ramda/src/ascend'
+import { sortWith, ascend } from 'ramda'
 
 const props = defineProps({
   years: Array

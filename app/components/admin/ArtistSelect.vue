@@ -15,7 +15,7 @@ v-autocomplete(
 <script setup>
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 const props = defineProps({
   label: {

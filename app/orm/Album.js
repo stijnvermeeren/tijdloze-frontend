@@ -2,7 +2,7 @@ import { Model } from 'pinia-orm'
 import Song from "./Song";
 import Artist from "./Artist";
 import { createSlug } from '~/utils/slug'
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 export default class Album extends Model {
   static get entity() {

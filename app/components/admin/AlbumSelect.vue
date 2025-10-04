@@ -12,8 +12,7 @@ div
 <script setup>
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
-import sortWith from 'ramda/src/sortWith'
-import ascend from 'ramda/src/ascend'
+import { sortWith, ascend } from 'ramda'
 
 const props = defineProps({
   artistId: {

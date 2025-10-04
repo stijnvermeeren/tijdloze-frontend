@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { useRepo } from 'pinia-orm'
-import sortWith from "ramda/src/sortWith"
-import ascend from "ramda/src/ascend"
+import { sortWith, ascend } from 'ramda'
 
 import Artist from '~/orm/Artist';
 import Song from '~/orm/Song';

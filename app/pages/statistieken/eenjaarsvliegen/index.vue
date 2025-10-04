@@ -28,7 +28,7 @@ table.lijst.perEen
 </template>
 
 <script setup>
-import sortBy from 'ramda/src/sortBy';
+import { sortBy } from 'ramda';
 
 const props = defineProps({
   data: Array,
