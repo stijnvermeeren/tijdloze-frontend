@@ -5,10 +5,11 @@ table.lijst.perEen
       th.r Aantal jaren
       th
         table.valueValueSong
-          tr
-            th.i Jaren
-            th.i Positie
-            th.l Nummer
+          tbody
+            tr
+              th.i Jaren
+              th.i Positie
+              th.l Nummer
     tr(v-for='data in byNumberOfYears')
       td.r {{data.numberOfYears}}
       td
@@ -24,7 +25,7 @@ table.lijst.perEen
 </template>
 
 <script setup>
-import { sortWith, ascend } from 'ramda'
+import { sortWith, ascend, range } from 'ramda'
 
 const props = defineProps({
   years: Array
@@ -49,7 +50,7 @@ const byNumberOfYears = computed(() => {
       })
   });
 
-  return [...Array(maxYears + 1).keys()].slice(3).reverse().map(numberOfYears => {
+  return range(3, maxYears + 1).reverse().map(numberOfYears => {
     const entries = sortWith([
       ascend(data => -data.years[0].yyyy),
       ascend(data => data.song.position(data.years[0]))

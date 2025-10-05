@@ -146,10 +146,10 @@ const leadVocalsFilterValue = ref(useRoute().query.leadVocals)
 const {years, currentYear} = storeToRefs(useYearStore())
 
 const lowestReleaseYear = computed(() => {
-  return _.min(useRepo(Album).all().map(album => album.releaseYear))
+  return Math.min(...useRepo(Album).all().map(album => album.releaseYear))
 })
 const highestReleaseYear = computed(() => {
-  return _.max(useRepo(Album).all().map(album => album.releaseYear))
+  return Math.max(...useRepo(Album).all().map(album => album.releaseYear))
 })
 const releaseYearRange = computed(() => {
   return [minReleaseYear.value, maxReleaseYear.value]
@@ -200,12 +200,11 @@ const sortAscending = computed(() => {
 })
 const songScoreFn = computed(() => {
   if (sumEntriesScoreMethods.has(scoreMethod.value)) {
-    return song => _.sum(
-      selectedYears.value
-        .map(year => song.position(year, extended.value))
-        .filter(position => position)
-        .map(entryScoreFn.value)
-    )
+    return song => selectedYears.value
+      .map(year => song.position(year, extended.value))
+      .filter(position => position)
+      .map(entryScoreFn.value)
+      .reduce((a, b) => a + b, 0)
   } else if (scoreMethod.value === SCORE_YEAR_DESC || scoreMethod.value === SCORE_YEAR_ASC) {
     return song => song.album.releaseYear
   } else {
