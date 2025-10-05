@@ -50,13 +50,13 @@
 </template>
 
 <script setup>
-import _ from 'lodash';
 import Artist from "~/orm/Artist";
 import Song from "~/orm/Song";
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 import {onStartTyping, onKeyStroke, useElementVisibility} from "@vueuse/core";
+import { sortBy } from 'ramda'
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
 
@@ -114,13 +114,12 @@ const results = computed(() => {
   const songs = search(queryFragments, allSongs.value, useSearchSongContent, 'song');
   const albums = search(queryFragments, allAlbums.value, useSearchAlbumContent, 'album');
 
-  return _.sortBy(
-    _.concat(artists, songs, albums),
-    result => -result.score
+  return sortBy(result => -result.score)(
+    [artists, songs, albums].flat()
   );
 })
 const visibleResults = computed(() => {
-  return _.take(results.value, resultsLimit);
+  return results.value.slice(0, resultsLimit);
 })
 const resultsCount = computed(() => {
   return results.value.length;

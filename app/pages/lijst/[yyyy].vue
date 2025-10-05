@@ -8,9 +8,9 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
 import analyse from '~/utils/analyse';
 import {useRootStore} from "~/stores/root";
+import { sortBy } from 'ramda'
 
 definePageMeta({
   validate: async (route) => {
@@ -50,10 +50,9 @@ const newSongs = computed(() => {
 
 const exits = computed(() => {
   if (previousYear.value) {
-    return _.sortBy(
-        useRootStore().list(previousYear.value, 100, 100)
-            .filter(entry => entry.song.notInList(year.value)),
-        entry => entry.song.position(previousYear.value)
+    return sortBy(entry => entry.song.position(previousYear.value))(
+      useRootStore().list(previousYear.value, 100, 100)
+        .filter(entry => entry.song.notInList(year.value))
     );
   } else {
     return [];

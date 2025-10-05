@@ -3,7 +3,6 @@ import Song from '~/orm/Song'
 import Artist from '~/orm/Artist'
 import List from "~/orm/List";
 import Album from "~/orm/Album";
-import _ from 'lodash'
 import {useRootStore} from "~/stores/root";
 import {usePollStore} from "~/stores/poll";
 import {useRepo} from "pinia-orm";
@@ -33,7 +32,7 @@ export default defineNuxtPlugin( nuxtApp => {
       const response = JSON.parse(e.data)
 
       if (response.currentYear) {
-        rootStore.setCurrentYear(response.currentYear)
+        yearStore.setCurrentYear(response.currentYear)
 
         if (!useRepo(List).query().find(response.currentYear)) {
           useRepo(List).save({

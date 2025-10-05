@@ -63,7 +63,7 @@
 
 <script setup>
 import {probablyInListIntervals} from '~/utils/intervals';
-import _ from "lodash"
+import { sortBy } from 'ramda';
 
 const props = defineProps({
   entries: {
@@ -112,7 +112,7 @@ const tooltipEntries = computed(() => {
         entries.push({song, index, colorClass: colorClass.value(index, isTop100), position})
       }
     });
-    return _.sortBy(entries, entry => entry.position);
+    return sortBy(entry => entry.position)(entries);
   } else {
     return [];
   }

@@ -10,9 +10,9 @@ div
 </template>
 
 <script setup>
-import _ from "lodash"
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
+import { sortWith, ascend } from 'ramda'
 
 const props = defineProps({
   artistId: {
@@ -25,10 +25,10 @@ const albumId = defineModel()
 const candidateAlbums = computed(() => {
   const artist = useRepo(Artist).with('albums').find(props.artistId);
   if (artist) {
-    return _.sortBy(
-        artist.albums,
-        [album => album.releaseYear, album => album.title]
-    ).map(album => {
+    return sortWith([
+      ascend(album => album.releaseYear),
+      ascend(album => album.title)
+    ])(artist.albums).map(album => {
       return {
         value: album.id,
         title: `${album.title} (${album.releaseYear})`

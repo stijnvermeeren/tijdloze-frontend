@@ -68,8 +68,6 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash'
-
 import ranking from '~/utils/ranking';
 import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
@@ -126,7 +124,7 @@ const sumSongsScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE
 function parseScoreMethod(value, type) {
   const validScoreMethodsForType = validScoreMethods[type]
   if  (validScoreMethodsForType) {
-    return new Set(validScoreMethodsForType).has(value) ? value : _.first(validScoreMethodsForType)
+    return new Set(validScoreMethodsForType).has(value) ? value : validScoreMethodsForType[0]
   } else {
     return SCORE_ENTRY_COUNT
   }
@@ -136,7 +134,7 @@ const isMounted = ref(false)
 const type = ref(parseType(useRoute().query.type))
 const filter = ref(parseFilter(useRoute().query.filter))
 const cutoff = ref(parseCutoff(useRoute().query.cutoff))
-const startYear = ref(useRoute().query.start || _.first(useYearStore().years)?.yyyy)
+const startYear = ref(useRoute().query.start || useYearStore().years?.[0]?.yyyy)
 const endYear = ref(useRoute().query.einde || useRootStore().lastCompleteYear?.yyyy)
 const minReleaseYear = ref(parseInt(useRoute().query.minReleaseYear))
 const maxReleaseYear = ref(parseInt(useRoute().query.maxReleaseYear))
@@ -148,10 +146,10 @@ const leadVocalsFilterValue = ref(useRoute().query.leadVocals)
 const {years, currentYear} = storeToRefs(useYearStore())
 
 const lowestReleaseYear = computed(() => {
-  return _.min(useRepo(Album).all().map(album => album.releaseYear))
+  return Math.min(...useRepo(Album).all().map(album => album.releaseYear))
 })
 const highestReleaseYear = computed(() => {
-  return _.max(useRepo(Album).all().map(album => album.releaseYear))
+  return Math.max(...useRepo(Album).all().map(album => album.releaseYear))
 })
 const releaseYearRange = computed(() => {
   return [minReleaseYear.value, maxReleaseYear.value]
@@ -202,12 +200,11 @@ const sortAscending = computed(() => {
 })
 const songScoreFn = computed(() => {
   if (sumEntriesScoreMethods.has(scoreMethod.value)) {
-    return song => _.sum(
-      selectedYears.value
-        .map(year => song.position(year, extended.value))
-        .filter(position => position)
-        .map(entryScoreFn.value)
-    )
+    return song => selectedYears.value
+      .map(year => song.position(year, extended.value))
+      .filter(position => position)
+      .map(entryScoreFn.value)
+      .reduce((a, b) => a + b, 0)
   } else if (scoreMethod.value === SCORE_YEAR_DESC || scoreMethod.value === SCORE_YEAR_ASC) {
     return song => song.album.releaseYear
   } else {
@@ -256,8 +253,8 @@ const songData = computed(() => {
   )
 })
 const artistData = computed(() => {
-  const primaryScores = _.groupBy(rawData.value, item => item.song.artistId)
-  const secondaryScores = _.groupBy(
+  const primaryScores = Object.groupBy(rawData.value, item => item.song.artistId)
+  const secondaryScores = Object.groupBy(
     rawData.value.filter(item => item.song.secondArtistId),
     item => item.song.secondArtistId
   )
@@ -266,7 +263,9 @@ const artistData = computed(() => {
     const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
     const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
 
-    const score = _.sum(primaryItems.concat(secondaryItems).map(item => item.points))
+    const score = primaryItems.concat(secondaryItems)
+      .map(item => item.points)
+      .reduce((a, b) => a + b, 0)
 
     return {
       artist: artist,
@@ -282,13 +281,20 @@ const artistData = computed(() => {
   )
 })
 const albumData = computed(() => {
-  const data = _.values(_.groupBy(rawData.value, item => item.song.albumId)).map(items => {
-    const aggregateFunction = sumSongsScoreMethods.has(scoreMethod.value) ? _.sum : _.head;
+  const data = Object.values(
+    Object.groupBy(rawData.value, item => item.song.albumId)
+  ).map(items => {
+    let points
+    if (sumSongsScoreMethods.has(scoreMethod.value)) {
+      points = items.map(item => item.points).reduce((a, b) => a + b, 0)
+    } else {
+      points = items[0].points
+    }
     return {
-      album: _.first(items).song.album,
-      artist: _.first(items).song.artist,
-      key: _.first(items).song.album.id,
-      points: aggregateFunction(items.map(item => item.points))
+      album: items[0].song.album,
+      artist: items[0].song.artist,
+      key: items[0].song.album.id,
+      points
     }
   });
 
@@ -328,7 +334,7 @@ watch(query, (newQuery) => {
   type.value = parseType(newQuery.type);
   filter.value = parseFilter(newQuery.filter);
   cutoff.value = parseCutoff(newQuery.cutoff);
-  startYear.value = newQuery.start ? newQuery.start : _.first(useYearStore().years)?.yyyy;
+  startYear.value = newQuery.start ? newQuery.start : useYearStore().years?.[0]?.yyyy;
   endYear.value = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
   scoreMethod.value = parseScoreMethod(newQuery.score, type.value);
   countryFilterValue.value = newQuery.land;

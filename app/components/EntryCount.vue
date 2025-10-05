@@ -8,7 +8,6 @@ span
 
 <script setup>
 import {probablyInListIntervals} from '~/utils/intervals'
-import _ from 'lodash'
 
 const props = defineProps({
   songs: Array
@@ -17,12 +16,14 @@ const props = defineProps({
 const {years, currentYear} = storeToRefs(useYearStore())
 
 const listCount = computed(() => {
-  return _.sumBy(props.songs, song => song.listCount(years.value))
+  return props.songs.reduce((sum, song) => {
+    return sum + song.listCount(years.value)
+  }, 0)
 })
 const inListSummary = computed(() => {
   const intervalSummaries = probablyInListIntervals(props.songs, years.value).map(interval => {
-    const first = _.first(interval);
-    const last = _.last(interval);
+    const first = interval[0];
+    const last = interval[interval.length - 1];
     if (last.equals(currentYear.value)) {
       return `${first.yyyy}-...`
     } else if (first.equals(last)) {

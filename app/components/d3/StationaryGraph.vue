@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-  import _ from 'lodash';
   import {useRootStore} from "~/stores/root";
 
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
@@ -61,7 +60,7 @@
   }
 
   function stationaryYears(song) {
-    return _.flatten(song.stationaryIntervals(years.value));
+    return song.stationaryIntervals(years.value).flat();
   }
 </script>
 

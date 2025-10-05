@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import { splitWhen } from 'ramda'
+
 import { createSlug } from '~/utils/slug'
 import { Model } from 'pinia-orm'
 import Artist from "./Artist";
@@ -79,17 +80,14 @@ export default class Song extends Model {
     let unprocessedYears = years;
 
     while (unprocessedYears.length) {
-      const position = this.position(_.first(unprocessedYears));
+      const position = this.position(unprocessedYears[0]);
 
-      if (position) {
-        const interval = _.takeWhile(unprocessedYears, year => this.position(year) === position);
-
-        if (interval.length > 1) {
-          intervals.push(interval);
-        }
+      const [interval, rest] = splitWhen(year => this.position(year) !== position)(unprocessedYears);
+      if (position && interval.length > 1) {
+        intervals.push(interval);
       }
 
-      unprocessedYears = _.dropWhile(unprocessedYears, year => this.position(year) === position);
+      unprocessedYears = rest;
     }
 
     return intervals;

@@ -23,15 +23,13 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
-
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
   const dataPoints = [];
 
-  _.dropRight(_.drop(years.value, 1), 1).forEach((year, index) => {
+  years.value.slice(1, -1).forEach((year, index) => {
     const previousYear = years.value[index]
     const nextYear = years.value[index + 2]
     const top100 = useRootStore().list(year, 100, 100)

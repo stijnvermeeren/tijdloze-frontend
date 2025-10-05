@@ -3,8 +3,6 @@ ui-data-table(:data="data" total-name="Gemiddeld")
 </template>
 
 <script setup>
-import _ from 'lodash'
-
 const cutoffs = [3, 10, 20, 50, 100]
 
 const {songs} = storeToRefs(useRootStore())
@@ -24,12 +22,12 @@ const data = computed(() => {
       return {
         year: year,
         size: ages.length,
-        sum: _.sum(ages)
+        sum: ages.reduce((a, b) => a + b, 0)
       }
     });
 
-    const agesSum = _.sumBy(cutoffData, yearData => yearData.sum);
-    const sizeSum = _.sumBy(cutoffData, yearData => yearData.size);
+    const agesSum = cutoffData.reduce((sum, yearData) => sum + yearData.sum, 0);
+    const sizeSum = cutoffData.reduce((sum, yearData) => sum + yearData.size, 0);
 
     return {
       entry: `Top ${cutoff}`,

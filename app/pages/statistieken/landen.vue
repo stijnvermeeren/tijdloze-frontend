@@ -21,16 +21,15 @@ div
 </template>
 
 <script setup>
-import _ from 'lodash';
 import countries from '~/utils/country'
+import { sortBy } from 'ramda'
 
 const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
-  const sortedUsedCountryIds = _.sortBy(
-      [...usedCountryIds.value],
-      countryId => countries[countryId]
+  const sortedUsedCountryIds = sortBy(countryId => countries[countryId])(
+    [...usedCountryIds.value]  // convert set to sortable array
   )
   const dataPoints = {};
 
