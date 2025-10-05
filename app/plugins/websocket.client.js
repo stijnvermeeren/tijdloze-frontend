@@ -32,7 +32,7 @@ export default defineNuxtPlugin( nuxtApp => {
       const response = JSON.parse(e.data)
 
       if (response.currentYear) {
-        rootStore.setCurrentYear(response.currentYear)
+        yearStore.setCurrentYear(response.currentYear)
 
         if (!useRepo(List).query().find(response.currentYear)) {
           useRepo(List).save({
