@@ -253,8 +253,8 @@ const songData = computed(() => {
   )
 })
 const artistData = computed(() => {
-  const primaryScores = _.groupBy(rawData.value, item => item.song.artistId)
-  const secondaryScores = _.groupBy(
+  const primaryScores = Object.groupBy(rawData.value, item => item.song.artistId)
+  const secondaryScores = Object.groupBy(
     rawData.value.filter(item => item.song.secondArtistId),
     item => item.song.secondArtistId
   )
@@ -263,7 +263,9 @@ const artistData = computed(() => {
     const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
     const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
 
-    const score = _.sum(primaryItems.concat(secondaryItems).map(item => item.points))
+    const score = primaryItems.concat(secondaryItems)
+      .map(item => item.points)
+      .reduce((a, b) => a + b, 0)
 
     return {
       artist: artist,
@@ -279,13 +281,20 @@ const artistData = computed(() => {
   )
 })
 const albumData = computed(() => {
-  const data = _.values(_.groupBy(rawData.value, item => item.song.albumId)).map(items => {
-    const aggregateFunction = sumSongsScoreMethods.has(scoreMethod.value) ? _.sum : _.head;
+  const data = Object.values(
+    Object.groupBy(rawData.value, item => item.song.albumId)
+  ).map(items => {
+    let points
+    if (sumSongsScoreMethods.has(scoreMethod.value)) {
+      points = items.map(item => item.points).reduce((a, b) => a + b, 0)
+    } else {
+      points = items[0].points
+    }
     return {
-      album: _.first(items).song.album,
-      artist: _.first(items).song.artist,
-      key: _.first(items).song.album.id,
-      points: aggregateFunction(items.map(item => item.points))
+      album: items[0].song.album,
+      artist: items[0].song.artist,
+      key: items[0].song.album.id,
+      points
     }
   });
 
@@ -325,7 +334,7 @@ watch(query, (newQuery) => {
   type.value = parseType(newQuery.type);
   filter.value = parseFilter(newQuery.filter);
   cutoff.value = parseCutoff(newQuery.cutoff);
-  startYear.value = newQuery.start ? newQuery.start : _.first(useYearStore().years)?.yyyy;
+  startYear.value = newQuery.start ? newQuery.start : useYearStore().years?.[0]?.yyyy;
   endYear.value = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
   scoreMethod.value = parseScoreMethod(newQuery.score, type.value);
   countryFilterValue.value = newQuery.land;
