@@ -77,7 +77,6 @@ div
 import {useRootStore} from "~/stores/root";
 import {useAuthStore} from "~/stores/auth";
 import {mdiLockOutline, mdiClose} from "@mdi/js";
-import {onClickOutside, onKeyStroke} from "@vueuse/core";
 
 const isOpen = ref(false)
 

@@ -72,7 +72,6 @@ import ranking from '~/utils/ranking';
 import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
 import {useRepo} from "pinia-orm";
-import { useVirtualList } from '@vueuse/core';
 
 const TYPE_SONGS = 'nummers'
 const TYPE_ALBUMS = 'albums'

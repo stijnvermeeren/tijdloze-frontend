@@ -34,7 +34,6 @@ p(v-else)
 <script setup>
 import Year from "../orm/Year";
 import {mdiMagnify} from "@mdi/js";
-import { useVirtualList } from "@vueuse/core";
 
 const props = defineProps({
   year: {
