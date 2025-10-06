@@ -18,6 +18,7 @@
     "@auth0/auth0-vue": "^2.4.0",
     "@pinia/nuxt": "^0.5.5",
     "@vueuse/core": "^13.9.0",
+    "@vueuse/nuxt": "^13.9.0",
     "@vueuse/router": "^13.9.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",

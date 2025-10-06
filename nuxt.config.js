@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@pinia/nuxt',
+    '@vueuse/nuxt',
     /* Treeshaking: https://next.vuetifyjs.com/en/features/treeshaking/ */
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(
