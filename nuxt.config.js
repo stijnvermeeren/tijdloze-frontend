@@ -1,6 +1,18 @@
 import vuetify from 'vite-plugin-vuetify';
 
 export default defineNuxtConfig({
+  site: { 
+    url: 'https://tijdloze.rocks', 
+    name: 'tijdloze.rocks' 
+  },
+  sitemap: {
+    sources: [
+      '/api/__sitemap__/urls',
+    ]
+  },
+  routeRules: {
+    '/admin/**': { robots: false },
+  },
   compatibilityDate: '2025-01-31',
   ssr: true,
   runtimeConfig: {
@@ -30,10 +42,6 @@ export default defineNuxtConfig({
   css: [
     { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
   ],
-  routeRules: {
-    // '**': { swr: true },
-    // '/admin/**': { ssr: false }
-  },
   build: {
     transpile: [
       'vuetify',
@@ -45,6 +53,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@pinia/nuxt',
     '@vueuse/nuxt',
+    '@nuxtjs/seo',
     /* Treeshaking: https://next.vuetifyjs.com/en/features/treeshaking/ */
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(
