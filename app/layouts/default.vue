@@ -94,7 +94,7 @@ onMounted(async () => {
     grid: 
       "header header header header" 68px
       "left sitemenu main right" 1fr
-      / 1fr 300px 900px 1fr;
+      / 1fr 300px 900px 2fr;
     
     #header {
       grid-area: header;
