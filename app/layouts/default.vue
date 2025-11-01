@@ -8,8 +8,8 @@
         span.domain .rocks
       div.subtitle Tijdloze muziek-klassiekers + data-analyse
   #left
-  #sitemenu(:class='{closed: !menuOpen}')
-    site-menu(ref="menu" @close="menuOpen = false")
+  #sitemenu(:class='{closed: !menuOpen}' ref="menuContainer")
+    site-menu(@close="menuOpen = false")
   #maincontainer
     .hidden
       | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
@@ -24,8 +24,10 @@
 import useSetUser from "~/composables/useSetUser";
 import {useAuth0} from "@auth0/auth0-vue";
 
-const menu = useTemplateRef('menu')
+const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
+
+onClickOutside(menuContainer, () => menuOpen.value = false)
 
 onMounted(async () => {
   const auth0 = useAuth0()
@@ -134,6 +136,7 @@ onMounted(async () => {
         left: 0;
         bottom: 0;
         width: 300px;
+        transition: left 0.2s ease-in-out;
 
         &.closed {
           left: -300px;

@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  #sideNav(@click.stop='menuClick($event)' ref="menu")
+  #sideNav(@click.stop='menuClick($event)')
     search-box(@selectSearchResult='selectSearchResult($event)')
 
     nav
@@ -119,16 +119,13 @@ function selectSearchResult(result) {
   }
 }
 
-const menu = useTemplateRef('menu')
-
-onClickOutside(menu, close)
 onKeyStroke('Escape', close)
 
 function close(e) {
   emit('close');
 }
 function menuClick(event) {
-  if (event.target.parentElement?.tagName?.toLowerCase() === 'a') {
+  if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement?.tagName?.toLowerCase() === 'a') {
     close();
   }
 }
@@ -195,8 +192,6 @@ function menuClick(event) {
 
   #sideNav {
     padding: 1em 1em;
-    transition: 0.3s;
-
     font-size: 115%;
 
     @media (max-width: 1199px) {
