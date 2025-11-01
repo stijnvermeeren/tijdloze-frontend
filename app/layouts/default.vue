@@ -1,27 +1,33 @@
 <template lang="pug">
 #container
+  v-app-bar-nav-icon.burger-button(variant="text" @click.stop="menuOpen = !menuOpen")
+  div.overlay(v-if="menuOpen")
   #header
-    #burgerButtonContainer
     #logo(@click="$router.push('/')")
       h1 tijdloze
         span.domain .rocks
       div.subtitle Tijdloze muziek-klassiekers + data-analyse
-  #container2
-    #left
-    site-menu
-    #maincontainer
-      .hidden
-        | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
-      #main
-        #inhoud
-          slot
-    #right
+  #left
+  #sitemenu(:class='{closed: !menuOpen}' ref="menuContainer")
+    site-menu(@close="menuOpen = false")
+  #maincontainer
+    .hidden
+      | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
+    #main
+      #inhoud
+        slot
+  #right
   snackbar
 </template>
 
 <script setup>
 import useSetUser from "~/composables/useSetUser";
 import {useAuth0} from "@auth0/auth0-vue";
+
+const menuContainer = useTemplateRef('menuContainer')
+const menuOpen = ref(false)
+
+onClickOutside(menuContainer, () => menuOpen.value = false)
 
 onMounted(async () => {
   const auth0 = useAuth0()
@@ -71,39 +77,69 @@ onMounted(async () => {
     margin-left: 2em;
   }
 
+  .burger-button {
+    position: absolute;
+    left: 26px;
+    top: 10px;
+
+    @media (min-width: 1200px) {
+      display: none;
+    }
+  }
+
   #container {
-    position: relative;
+    display: grid;
     min-width: 480px;
     width: 100%;
+    min-height: 100vh;
 
-    display: flex;
-    flex-flow: column;
-    min-height: 100%;
+    grid: 
+      "header header header header" 68px
+      "left sitemenu main right" 1fr
+      / 1fr 300px 900px 2fr;
+    
+    #header {
+      grid-area: header;
+    }
 
-    #container2 {
-      flex: 1 1 auto;
+    #maincontainer {
+      grid-area: main;
+    }
 
-      @media (min-width: 800px) {
-        display: flex;
-        justify-content: center;
-        align-items: stretch;
+    #sitemenu {
+      grid-area: sitemenu;
+      background-color: styleConfig.$menuBackgroundColor;
+      overflow-x: hidden;
+    }
+    
+    #left {
+      grid-area: left;
+      background-color: styleConfig.$menuBackgroundColor;
+    }
 
-        #maincontainer {
-          flex-grow: 1;
-        }
-      }
+    #right {
+      grid-area: right;
+    }
 
-      @media (min-width: 1200px) {
-        #left {
-          background-color: styleConfig.$menuBackgroundColor;
-          flex-grow: 1;
-        }
-        #maincontainer {
-          width: 900px;
-          flex-grow: 0;
-        }
-        #right {
-          flex-grow: 2;
+
+    @media (max-width: 1199px) {
+      grid: 
+        "header" 68px
+        "main" 1fr
+        / 1fr;
+
+      #sitemenu {
+        grid-area: auto;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 300px;
+        transition: left 0.2s ease-in-out;
+
+        &.closed {
+          left: -300px;
         }
       }
     }
@@ -148,6 +184,20 @@ onMounted(async () => {
         font-size: 12px;
         color: #444;
       }
+    }
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.3);
+
+    @media (min-width: 1200px) {
+      display: none;
     }
   }
 </style>

@@ -1,6 +1,6 @@
 <template lang="pug">
 div
-  #sideNav(:class='{closed: !isOpen}' @click.stop='menuClick($event)' ref="menu")
+  #sideNav(@click.stop='menuClick($event)')
     search-box(@selectSearchResult='selectSearchResult($event)')
 
     nav
@@ -67,10 +67,8 @@ div
         img(src="https://storage.ko-fi.com/cdn/cup-border.png" alt="Ko-fi donations" class="kofiimg")
         | Steun ons op Ko-fi
 
-    v-btn.cross-button(@click='isOpen = false' circle size="small" variant="text" :icon="mdiClose")
+    v-btn.cross-button(@click='close' circle size="small" variant="text" :icon="mdiClose")
 
-  v-app-bar-nav-icon.burger-button(variant="text" @click.stop="isOpen = !isOpen")
-  div.overlay(v-if="isOpen")
 </template>
 
 <script setup>
@@ -78,7 +76,7 @@ import {useRootStore} from "~/stores/root";
 import {useAuthStore} from "~/stores/auth";
 import {mdiLockOutline, mdiClose} from "@mdi/js";
 
-const isOpen = ref(false)
+const emit = defineEmits(["close"])
 
 const openeds = computed(() => {
   return [groupMap(useRoute().path)]
@@ -116,24 +114,19 @@ function selectSearchResult(result) {
     path = `/album/${result.item.id}-${result.item.slug}`
   }
   if (path) {
-    isOpen.value = false;
+    close();
     navigateTo(path);
   }
 }
 
-const menu = useTemplateRef('menu')
-
-onClickOutside(menu, close)
 onKeyStroke('Escape', close)
 
 function close(e) {
-  if (isOpen.value) {
-    isOpen.value = false;
-  }
+  emit('close');
 }
 function menuClick(event) {
-  if (event.target.parentElement?.tagName?.toLowerCase() === 'a') {
-    isOpen.value = false;
+  if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement?.tagName?.toLowerCase() === 'a') {
+    close();
   }
 }
 </script>
@@ -198,42 +191,11 @@ function menuClick(event) {
   }
 
   #sideNav {
-    box-sizing: border-box;
-    height: 100%;
-    width: 300px;
-    position: fixed;
-    z-index: 1000;
-    top: 0;
-    left: 0;
-    background-color: styleConfig.$menuBackgroundColor;
-    overflow-x: hidden;
     padding: 1em 1em;
-    transition: 0.3s;
-
     font-size: 115%;
-
-    @media (min-width: 1200px) {
-      height: 100%;
-      min-height: 800px;
-      position: relative;
-    }
 
     @media (max-width: 1199px) {
       padding-top: 50px;
-
-      &.closed {
-        left: -300px;
-      }
-    }
-  }
-
-  .burger-button {
-    position: absolute;
-    left: 26px;
-    top: 10px;
-
-    @media (min-width: 1200px) {
-      display: none;
     }
   }
 
@@ -243,19 +205,6 @@ function menuClick(event) {
     top: 10px;
     right: 10px;
     cursor: pointer;
-
-    @media (min-width: 1200px) {
-      display: none;
-    }
-  }
-  .overlay {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1;
-    background: rgba(0, 0, 0, 0.3);
 
     @media (min-width: 1200px) {
       display: none;
