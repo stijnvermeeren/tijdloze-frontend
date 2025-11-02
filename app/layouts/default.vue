@@ -10,12 +10,10 @@
   #left
   #sitemenu(:class='{closed: !menuOpen}' ref="menuContainer")
     site-menu(@close="menuOpen = false")
-  #maincontainer
+  #main
     .hidden
       | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
-    #main
-      #inhoud
-        slot
+    slot
   #right
   snackbar
 </template>
@@ -102,8 +100,19 @@ onMounted(async () => {
       grid-area: header;
     }
 
-    #maincontainer {
+    #main {
       grid-area: main;
+      justify-self: center;
+
+      padding: 10px 10px 20px 10px;
+      width: 100%;
+      max-width: 900px;
+      box-sizing: border-box;
+
+      @media (min-width: 1200px) {
+        width: 900px;
+        padding: 10px 50px 20px 50px;
+      }
     }
 
     #sitemenu {
@@ -142,17 +151,6 @@ onMounted(async () => {
           left: -300px;
         }
       }
-    }
-  }
-
-  #main {
-    box-sizing: border-box;
-    padding: 10px 10px 20px 10px;
-    margin: 0 auto;
-    max-width: 840px;
-
-    @media (min-width: 1200px) {
-      padding: 10px 30px 20px 30px;
     }
   }
 

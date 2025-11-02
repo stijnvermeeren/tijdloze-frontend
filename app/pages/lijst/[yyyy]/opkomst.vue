@@ -11,7 +11,7 @@ div
       reverse
       :max-width="270"
     )
-  full-list(:list='list' :year='previousYear')
+  full-list(:list='list' :year='previousYear' height="calc(100vh - 480px)")
 </template>
 
 <script setup>
@@ -41,5 +41,4 @@ const list = computed(() => {
 </script>
 
 <style scoped>
-
 </style>

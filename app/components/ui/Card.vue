@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   span(ref='top')
-  div(:class="['container', {open: isOpen, closed: !isOpen}]")
+  div.container(:class="{open: isOpen, closed: !isOpen}")
     v-card.overflow-visible.my-5
       v-card-item
         div.cardTitle
@@ -37,10 +37,10 @@ const isOpen = ref(!props.collapseHeight)
 const top = ref(null);
 
 const innerContainerStyle = computed(() => {
-  if (props.collapseHeight && isOpen.value) {
-    return "";
-  } else {
+  if (props.collapseHeight && !isOpen.value) {
     return `max-height: ${props.collapseHeight}px;`
+  } else {
+    return "";
   }
 })
 

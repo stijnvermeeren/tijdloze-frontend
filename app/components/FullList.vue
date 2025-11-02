@@ -11,8 +11,13 @@ div
     template(#prepend-inner)
       v-icon(:icon="mdiMagnify")
 
-div.fullList(v-if='filteredList.length > 0')
-  div.listContainer(v-if='filteredList.length > 20' v-bind="containerProps" @scrollend="onScroll")
+div.fulllist(v-if='filteredList.length > 0')
+  div.listContainer(
+    v-if='filteredList.length > 20'
+    v-bind="containerProps" 
+    :style="`height: ${props.height}`"
+    @scrollend="onScroll"
+  )
     div(v-bind="wrapperProps" ref="wrapper")
       div.listEntry(v-for="{data: item} in virtualList" :key="item.position")
         song-with-position(:song="item.song" :attribution="item.attribution" :override-position="item.position" :year="year")
@@ -41,6 +46,10 @@ const props = defineProps({
   },
   list: {
     type: Array
+  },
+  height: {
+    type: String,
+    default: '600px'
   }
 })
 
@@ -99,7 +108,7 @@ function onScroll() {
 
 <style lang="scss">
 div.listContainer {
-  height: 560px;
+  min-height: 320px;
 
   .listEntry {
     height: v-bind('`${itemHeight}px`');
