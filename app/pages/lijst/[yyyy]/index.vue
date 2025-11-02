@@ -1,5 +1,5 @@
 <template lang="pug">
-  full-list(:list='list' :year='year')
+  full-list(:list='list' :year='year' height="calc(100vh - 330px)")
 </template>
 
 <script setup>
