@@ -25,7 +25,7 @@
           :width='lineWidth(point.age)'
           :height='yStep'
         )
-      rect.overlay(
+      rect(
         :x="0"
         :y="0"
         :width="width"

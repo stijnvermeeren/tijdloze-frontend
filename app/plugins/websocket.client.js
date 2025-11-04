@@ -48,32 +48,33 @@ export default defineNuxtPlugin( nuxtApp => {
 
       if (response.year && response.position) {
         const yearShort = response.year % 100
+        const list = useRepo(List).find(response.year)
 
-        if (response.songId) {
-          const song = useRepo(Song).find(response.songId)
-          if (song) {
-            song.positions[yearShort] = response.position
-            useRepo(Song).save(song)
-          }
-
-          const list = useRepo(List).find(response.year)
-          list.songIds[response.position - 1] = response.songId
-          useRepo(List).save(list)
-
-          if (list.songIds.length > response.position && !list.songIds[response.position]) {
-            await reloadCoreData()
-          }
-        } else {
-          const list = useRepo(List).find(response.year)
-          const songId = list.songIds[response.position - 1]
-          list.songIds[response.position - 1] = null
-          useRepo(List).save(list)
-
-          if (songId) {
-            const song = useRepo(Song).find(songId)
-            if (song?.positions[yearShort] === response.position) {
-              delete song.positions[yearShort]
+        if (list) {
+          if (response.songId) {
+            const song = useRepo(Song).find(response.songId)
+            if (song) {
+              song.positions[yearShort] = response.position
               useRepo(Song).save(song)
+            }
+
+            list.songIds[response.position - 1] = response.songId
+            useRepo(List).save(list)
+
+            if (list.songIds.length > response.position && !list.songIds[response.position]) {
+              await reloadCoreData()
+            }
+          } else {
+            const songId = list.songIds[response.position - 1]
+            list.songIds[response.position - 1] = null
+            useRepo(List).save(list)
+
+            if (songId) {
+              const song = useRepo(Song).find(songId)
+              if (song?.positions[yearShort] === response.position) {
+                delete song.positions[yearShort]
+                useRepo(Song).save(song)
+              }
             }
           }
         }
