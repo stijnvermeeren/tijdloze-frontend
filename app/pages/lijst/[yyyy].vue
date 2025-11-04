@@ -1,8 +1,17 @@
 <template lang="pug">
 Title {{year.yyyy}}
 div
-  h2 De Tijdloze van {{year.yyyy}}
-
+  div.flexTitle
+    h2 De Tijdloze van {{year.yyyy}}
+    div
+      v-menu.downloadMenu
+        template(v-slot:activator="{ props }")
+          v-btn(v-bind="props" :icon="mdiDownload" rounded size="x-small")
+        v-list(density="compact" :lines="false")
+          v-list-item(link @click="download")
+            v-list-item-title Download deze lijst ({{year.yyyy}}.tsv)
+          v-list-item(to="/website/opendata")
+            v-list-item-title Meer downloads
   ui-tabs(:tabs="tabs")
     nuxt-page(keepalive :year='year' :analysis='analysis' :exits="exits" :new-songs="newSongs")
 </template>
@@ -10,7 +19,8 @@ div
 <script setup>
 import analyse from '~/utils/analyse';
 import {useRootStore} from "~/stores/root";
-import { sortBy } from 'ramda'
+import {sortBy} from 'ramda'
+import {mdiDownload} from "@mdi/js";
 
 definePageMeta({
   validate: async (route) => {
@@ -89,4 +99,27 @@ const tabs = computed(() => {
   return tabs
 })
 
+function download() {
+  let output = 'positie\tartiest\ttweede artiest\ttitel\tjaartal\n';
+  const list = useRootStore().list(year.value, 0, 0)
+  for (const {position, song} of list) {
+    output += `${position}\t${song.artist.name}\t${song.secondArtist?.name || ''}\t${song.title}\t${song.album.releaseYear}\n`
+  }
+  const blob = new Blob([output], { type: 'text/tab-separated-values;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', `${year.value.yyyy}.tsv`);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
 </script>
+
+<style scoped>
+.downloadMenu .v-list-item-title {
+  font-size: 0.8rem;
+}
+</style>
