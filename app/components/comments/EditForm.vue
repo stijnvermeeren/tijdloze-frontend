@@ -4,12 +4,17 @@ div
     v-textarea(
       :disabled='submitting'
       label='Reactie'
-      rows='4'
+      rows="1"
+      auto-grow
       v-model='editMessage'
       hide-details
+      density="comfortable"
     )
   div
-    v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
+    v-btn.formsubmit(
+      :disabled='submitting || invalidMessage' @click='submit()'
+      density="comfortable"
+    )
       | Bericht wijzigen
 </template>
 

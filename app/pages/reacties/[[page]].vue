@@ -14,7 +14,7 @@ div
         comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
     div(v-if="commentsReady")
-      comments-display(v-for='comment in comments' :key='comment.id' :comment='comment' @deleted="reload()")
+      comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread' @updated="reload")
     div(v-else)
       v-progress-circular(indeterminate)
 

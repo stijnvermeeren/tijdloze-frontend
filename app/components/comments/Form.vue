@@ -20,10 +20,12 @@ div.commentForm(:class="{expanded: isExpanded}")
           v-textarea(
             :disabled='submitting'
             label='Schrijf een nieuwe reactie...'
-            :rows='isExpanded ? 4 : 1'
             v-model='message'
             @click.once="onFocus($event)"
             hide-details
+            rows="1"
+            auto-grow
+            density="comfortable"
           )
         div(v-if="isExpanded")
           v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
@@ -42,6 +44,10 @@ const props = defineProps({
   "expanded": {
     type: Boolean,
     default: false
+  },
+  "parentId": {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -97,7 +103,8 @@ async function submit() {
   submitting.value = true;
 
   const data = {
-    message: message.value
+    message: message.value,
+    parentId: props.parentId
   };
   await $api(`comment`, useFetchOptsPost(data))
   submitting.value = false;

@@ -1,24 +1,25 @@
 <template lang="pug">
-ui-card.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
-  template(#title)
-    div.reacinfo
-      span.name {{ comment.name }}
-      span.created(:title="useDateFormat(comment.created)")
-        | {{ useDateFormat(comment.created, {agoMaxDays: 7}) }}
-      span.updated(v-if="showUpdated" :title="useDateFormat(comment.updated)")
-        | (gewijzigd: {{ useDateFormat(comment.updated, {agoMaxDays: 7}) }})
-      span.edit(v-if="isMine")
-        a(@click="editComment") Wijzigen
-      span.delete(v-if="!isDeleted && (isMine || isAdmin)")
-        a(@click="deleteComment") Verwijderen
-      span.delete(v-if="isDeleted && isAdmin")
-        a(@click="restoreComment") Terugzetten
+v-sheet.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}" :elevation="1" rounded outlined)
+  div.commentHeader
+    span.name {{ comment.name }}
+    span.created(:title="useDateFormat(comment.created)")
+      | {{ useDateFormat(comment.created, {agoMaxDays: 7}) }}
+    span.updated(v-if="showUpdated" :title="useDateFormat(comment.updated)")
+      | (gewijzigd: {{ useDateFormat(comment.updated, {agoMaxDays: 7}) }})
+    span.icons
+      span(v-if="isMine")
+        v-btn(:icon="mdiPencil" @click="editComment" title="Wijzigen" density="comfortable" size="x-small" color="blue" variant="outlined")
+      span(v-if="!isDeleted && (isMine || isAdmin)")
+        v-btn(:icon="mdiDelete" @click="deleteComment" title="Verwijderen" density="comfortable" size="x-small" color="orange" variant="outlined")
+      span(v-if="isDeleted && isAdmin")
+        v-btn(:icon="mdiRestore" @click="restoreComment" title="Terugzetten" density="comfortable" size="x-small" color="green" variant="outlined")
   div
     div.bericht(v-if="!editing") {{message.trim()}}
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
 <script setup>
+import {mdiDelete, mdiPencil, mdiRestore} from "@mdi/js";
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
@@ -75,19 +76,33 @@ async function restoreComment() {
   @use "../../assets/styleConfig";
 
   .comment {
-    margin: 1em 3em;
-
+    padding: 0.5em 2em;
+    margin-bottom: 2px;
     &.mine {
-      border-width: 4px;
+      .commentHeader span.name {
+        font-style: italic;
+      }
     }
-
-    div.reacinfo {
+    div.commentHeader {
       margin-bottom: 0.2em;
+      span.name {
+        font-weight: bold;
+      }
 
-      span.created, span.updated, span.edit, span.delete {
-        margin-left: 2em;
+      span.created {
+        margin-left: 30px;
         color: #444;
-        font-size: 65%;
+      }
+      span.updated {
+        margin-left: 10px;
+        color: #444;
+      }
+
+      span.icons {
+        margin-left: 20px;
+        span {
+          margin-left: 10px;
+        }
       }
     }
 
