@@ -21,7 +21,7 @@ v-sheet.comment(:elevation="1" rounded outlined)
       }
     }
     div.commentHeader {
-      margin-bottom: 0.2em;
+      margin-bottom: 0.4em;
       :deep(span.name) {
         font-weight: bold;
       }

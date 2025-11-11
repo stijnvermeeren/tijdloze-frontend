@@ -74,7 +74,7 @@ div.thread {
   margin: 1em auto;
 
   .indent {
-    margin-left: 4em;
+    margin-left: 48px;
   }
 }
 </style>

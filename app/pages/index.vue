@@ -35,7 +35,7 @@ div
 
   ui-card(v-if="commentsOn" title="Reageer en discussieer")
     comments-form.commentForm(@submitted="refreshComments" @displayNameChanged="refreshComments")
-    comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread')
+    comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread' @updated="refreshComments")
     .link
       nuxt-link(to='/reacties')
         v-btn Meer reacties
