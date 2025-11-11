@@ -4,8 +4,18 @@ div(v-if='isAuthenticated')
     template(#header)
       .displayName(v-if='!displayName || editingDisplayName')
         div.d-flex
-          v-text-field.mr-4(:disabled='submittingDisplayName' v-model='name' label="Kies een gebruikersnaam" hide-details)
-          v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
+          v-text-field.mr-4(
+            :disabled='submittingDisplayName'
+             v-model='name' 
+             label="Kies een gebruikersnaam" 
+             hide-details
+             density="comfortable"
+          )
+          v-btn(
+            :disabled='submittingDisplayName || invalidDisplayName' 
+            @click='submitDisplayName()'
+            density="comfortable"
+          )
             | Ok
         div.changeDisplayNameInfo(v-if='editingDisplayName')
           | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
@@ -28,7 +38,7 @@ div(v-if='isAuthenticated')
               auto-grow
               density="comfortable"
             )
-    div(v-if="isExpanded")
+    div(v-if="isExpanded && !editingDisplayName")
       v-btn.formsubmit(
         :prepend-icon="mdiSend"
         :disabled='submitting || invalidMessage' @click='submit()'

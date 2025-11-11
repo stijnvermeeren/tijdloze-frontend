@@ -11,10 +11,10 @@ div.thread
         density="comfortable"
       ) Nog {{unloadedReplyCount}} antwoord{{ unloadedReplyCount === 1 ? "" : "en" }} tonen
     comments-display-reply(v-for="reply in shownReplies" :key="reply.id")
-      comments-display.flex-grow-1(:comment="reply" @deleted="updated")
+      comments-display(:comment="reply" @deleted="updated")
     v-btn.indent(v-if="!replying" :prepend-icon="mdiMessageReplyText" @click="replying = true" density="comfortable") Beantwoorden
     comments-display-reply(v-if="replying")
-      comments-form.flex-grow-1(expanded :parent-id="threadSummary.mainComment.id" @submitted="submitted")
+      comments-form(expanded :parent-id="threadSummary.mainComment.id" @submitted="submitted")
 </template>
 
 <script setup>
