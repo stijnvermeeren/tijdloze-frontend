@@ -1,38 +1,56 @@
 <template lang="pug">
-div.commentForm(:class="{expanded: isExpanded}")
-  div(v-if='isAuthenticated')
-    .displayName(v-if='!displayName || editingDisplayName')
-      div.d-flex
-        v-text-field.mr-4(:disabled='submittingDisplayName' v-model='name' label="Kies een gebruikersnaam" hide-details)
-        v-btn(:disabled='submittingDisplayName || invalidDisplayName' @click='submitDisplayName()')
-          | Ok
-      div.changeDisplayNameInfo(v-if='editingDisplayName')
-        | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
-    div(v-else)
-      div
-        div.commentHeader(v-if="isExpanded")
-          span.name {{ displayName }}
-          span.changeName
-            | (
-            a(@click='editDisplayName') Gebruikersnaam aanpassen
-            | )
-        div
-          v-textarea(
-            :disabled='submitting'
-            label='Schrijf een nieuwe reactie...'
-            :rows='isExpanded ? 4 : 1'
-            v-model='message'
-            @click.once="onFocus($event)"
-            hide-details
+div(v-if='isAuthenticated')
+  comments-sheet
+    template(#header)
+      .displayName(v-if='!displayName || editingDisplayName')
+        div.d-flex
+          v-text-field.mr-4(
+            :disabled='submittingDisplayName'
+             v-model='name' 
+             label="Kies een gebruikersnaam" 
+             hide-details
+             density="comfortable"
           )
-        div(v-if="isExpanded")
-          v-btn.formsubmit(:disabled='submitting || invalidMessage' @click='submit()')
-            | Verzenden
+          v-btn(
+            :disabled='submittingDisplayName || invalidDisplayName' 
+            @click='submitDisplayName()'
+            density="comfortable"
+          )
+            | Ok
+        div.changeDisplayNameInfo(v-if='editingDisplayName')
+          | De nieuwe gebruikersnaam wordt ook getoond bij alle berichten die je reeds met deze account geschreven hebt.
+      div(v-else)
+        div
+          div.commentHeader(v-if="isExpanded")
+            span.name {{ displayName }}
+            span.changeName
+              | (
+              a(@click='editDisplayName') Gebruikersnaam aanpassen
+              | )
+          div
+            v-textarea(
+              :disabled='submitting'
+              label='Schrijf een nieuwe reactie...'
+              v-model='message'
+              @click.once="onFocus($event)"
+              hide-details
+              rows="1"
+              auto-grow
+              density="comfortable"
+            )
+    div(v-if="isExpanded && !editingDisplayName")
+      v-btn.formsubmit(
+        :prepend-icon="mdiSend"
+        :disabled='submitting || invalidMessage' @click='submit()'
+        density="comfortable"
+      )
+        | Verzenden
   .message(v-if='!isAuthenticated')
     | Om reacties the plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
 <script setup>
+import {mdiSend} from "@mdi/js";
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
@@ -42,6 +60,10 @@ const props = defineProps({
   "expanded": {
     type: Boolean,
     default: false
+  },
+  "parentId": {
+    type: Number,
+    default: undefined
   }
 })
 
@@ -97,7 +119,8 @@ async function submit() {
   submitting.value = true;
 
   const data = {
-    message: message.value
+    message: message.value,
+    parentId: props.parentId
   };
   await $api(`comment`, useFetchOptsPost(data))
   submitting.value = false;
@@ -113,28 +136,19 @@ async function submit() {
     align-items: center;
   }
 
-  div.commentForm {
-    padding: 0.3em 1em;
-    margin: 0.7em 3em;
+  span.name {
+    font-weight: bold;
+  }
 
-    div.commentHeader {
-      margin-bottom: 0.2em;
+  span.changeName {
+    margin-left: 1em;
+    color: #888;
+    font-size: 80%;
+  }
 
-      span.name {
-        font-weight: bold;
-      }
-
-      span.changeName {
-        margin-left: 1em;
-        color: #888;
-        font-size: 80%;
-      }
-    }
-
-    div.changeDisplayNameInfo {
-      margin-top: 0.5em;
-      font-style: italic;
-      color: #888;
-    }
+  div.changeDisplayNameInfo {
+    margin-top: 0.5em;
+    font-style: italic;
+    color: #888;
   }
 </style>

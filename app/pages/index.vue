@@ -34,8 +34,8 @@ div
         v-btn Ga naar de chatbox!
 
   ui-card(v-if="commentsOn" title="Reageer en discussieer")
-    comments-form(@submitted="refreshComments" @displayNameChanged="refreshComments")
-    comments-display(v-for='comment in comments' :key='comment.id' :comment='comment')
+    comments-form.commentForm(@submitted="refreshComments" @displayNameChanged="refreshComments")
+    comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread' @updated="refreshComments")
     .link
       nuxt-link(to='/reacties')
         v-btn Meer reacties
@@ -101,7 +101,7 @@ const {data: comments, execute: refreshComments, status: commentsStatus2} = awai
   'comments',
   () => {
     if (commentsOn.value) {
-      return $api(`comments/1`).then(data => data.slice(0, 10))
+      return $api(`comments/1`).then(data => data.slice(0, 6))
     } else {
       return Promise.resolve([])
     }
@@ -129,5 +129,10 @@ useClientDataRefresh(refreshComments)
     @media (max-width: 660px) {
       display: none;
     }
+  }
+
+  .commentForm {
+    max-width: 780px;
+    margin: 1em auto 2em;
   }
 </style>
