@@ -11,7 +11,7 @@ div
         .message
           | Het plaatsen van reacties is niet mogelijk tijdens de uitzending van de Tijdloze.
       template(v-else)
-        comments-form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
+        comments-form.form(:expanded="true" @submitted="onSubmitted" @displayNameChanged="onDisplayNameChanged")
 
     div(v-if="commentsReady")
       comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread' @updated="reload")
@@ -77,3 +77,10 @@ div
     key: "reacties"  // avoid re-rendering the whole page when just switching comments page
   })
 </script>
+
+<style lang="scss" scoped>
+.form {
+  max-width: 780px;
+  margin: 1em auto 2em;
+}
+</style>

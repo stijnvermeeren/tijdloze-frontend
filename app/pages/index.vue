@@ -34,7 +34,7 @@ div
         v-btn Ga naar de chatbox!
 
   ui-card(v-if="commentsOn" title="Reageer en discussieer")
-    comments-form(@submitted="refreshComments" @displayNameChanged="refreshComments")
+    comments-form.commentForm(@submitted="refreshComments" @displayNameChanged="refreshComments")
     comments-thread(v-for='thread in comments' :key='thread.mainComment.id' :thread-summary='thread')
     .link
       nuxt-link(to='/reacties')
@@ -129,5 +129,10 @@ useClientDataRefresh(refreshComments)
     @media (max-width: 660px) {
       display: none;
     }
+  }
+
+  .commentForm {
+    max-width: 780px;
+    margin: 1em auto 2em;
   }
 </style>

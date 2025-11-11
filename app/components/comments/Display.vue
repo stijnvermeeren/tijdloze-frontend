@@ -1,6 +1,6 @@
 <template lang="pug">
-v-sheet.comment(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}" :elevation="1" rounded outlined)
-  div.commentHeader
+comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
+  template(#header)
     span.name {{ comment.name }}
     span.created(:title="useDateFormat(comment.created)")
       | {{ useDateFormat(comment.created, {agoMaxDays: 7}) }}
@@ -75,44 +75,28 @@ async function restoreComment() {
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
-  .comment {
-    padding: 0.5em 2em;
-    margin-bottom: 2px;
-    &.mine {
-      .commentHeader span.name {
-        font-style: italic;
-      }
-    }
-    div.commentHeader {
-      margin-bottom: 0.2em;
-      span.name {
-        font-weight: bold;
-      }
+  span.created {
+    margin-left: 30px;
+    color: #444;
+  }
+  span.updated {
+    margin-left: 10px;
+    color: #444;
+  }
 
-      span.created {
-        margin-left: 30px;
-        color: #444;
-      }
-      span.updated {
-        margin-left: 10px;
-        color: #444;
-      }
-
-      span.icons {
-        margin-left: 20px;
-        span {
-          margin-left: 10px;
-        }
-      }
-    }
-
-    div.bericht {
-      white-space: pre-wrap;
-      overflow: auto;
+  span.icons {
+    margin-left: 20px;
+    span {
+      margin-left: 10px;
     }
   }
 
-  div.deleted {
+  div.bericht {
+    white-space: pre-wrap;
+    overflow: auto;
+  }
+
+  .deleted {
     font-style: italic;
   }
 </style>

@@ -4,20 +4,22 @@ div.thread
   div
     div.indent(v-if="!isExpanded")
       v-btn(
+        :prepend-icon="mdiDotsVertical"
         @click="expand"
         v-if="unloadedReplyCount > 0"
         :disabled="fullCommentStatus === 'pending'"
         density="comfortable"
       ) Nog {{unloadedReplyCount}} antwoord{{ unloadedReplyCount === 1 ? "" : "en" }} tonen
-    comments-display-reply(v-for="reply in shownReplies" :key="reply.id" :comment="reply" @deleted="updated")
-    div.indent
-      v-btn(v-if="!replying" @click="replying = true" density="comfortable") Beantwoorden
-      comments-form(v-if="replying" expanded :parent-id="threadSummary.mainComment.id" @submitted="submitted")
+    comments-display-reply(v-for="reply in shownReplies" :key="reply.id")
+      comments-display.flex-grow-1(:comment="reply" @deleted="updated")
+    v-btn.indent(v-if="!replying" :prepend-icon="mdiMessageReplyText" @click="replying = true" density="comfortable") Beantwoorden
+    comments-display-reply(v-if="replying")
+      comments-form.flex-grow-1(expanded :parent-id="threadSummary.mainComment.id" @submitted="submitted")
 </template>
 
 <script setup>
-import _ from 'lodash';
-import * as repl from "node:repl";
+import { mdiMessageReplyText, mdiDotsVertical } from '@mdi/js';
+
 const {$api} = useNuxtApp()
 const emit = defineEmits(["updated"])
 const props = defineProps({
@@ -41,7 +43,7 @@ const shownReplies = computed(() => {
     if (isExpanded.value) {
       return fullComment.value.replies
     } else {
-      return _.takeRight(fullComment.value.replies, initialReplyCount)
+      return fullComment.value.replies.slice(fullComment.value.replies.length - initialReplyCount)
     }
   } else {
     return [props.threadSummary.lastReply2, props.threadSummary.lastReply1].filter(x => x)
@@ -68,7 +70,9 @@ async function submitted() {
 
 <style lang="scss" scoped>
 div.thread {
-  margin: 1em 3em;
+  max-width: 780px;
+  margin: 1em auto;
+
   .indent {
     margin-left: 4em;
   }

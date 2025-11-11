@@ -12,6 +12,7 @@ div
     )
   div
     v-btn.formsubmit(
+      :prepend-icon="mdiSend"
       :disabled='submitting || invalidMessage' @click='submit()'
       density="comfortable"
     )
@@ -19,6 +20,7 @@ div
 </template>
 
 <script setup>
+import {mdiSend} from "@mdi/js";
 const {$api} = useNuxtApp()
 const emit = defineEmits(['submitted'])
 
