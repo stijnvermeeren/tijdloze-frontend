@@ -45,7 +45,7 @@
       )
         | Verzenden
     .message(v-if='!isAuthenticated')
-      | Om reacties the plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
+      | Om reacties te plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
 <script setup>
