@@ -1,7 +1,6 @@
 <template lang="pug">
-div(v-if='isAuthenticated')
   comments-sheet
-    template(#header)
+    template(#header v-if='isAuthenticated')
       .displayName(v-if='!displayName || editingDisplayName')
         div.d-flex
           v-text-field.mr-4(
@@ -38,15 +37,15 @@ div(v-if='isAuthenticated')
               auto-grow
               density="comfortable"
             )
-    div(v-if="isExpanded && !editingDisplayName")
+    div(v-if="isAuthenticated && isExpanded && !editingDisplayName")
       v-btn.formsubmit(
         :prepend-icon="mdiSend"
         :disabled='submitting || invalidMessage' @click='submit()'
         density="comfortable"
       )
         | Verzenden
-  .message(v-if='!isAuthenticated')
-    | Om reacties the plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
+    .message(v-if='!isAuthenticated')
+      | Om reacties te plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
 <script setup>
