@@ -82,9 +82,11 @@ async function submit() {
   inProgress.value = true;
   error.value = "";
 
+  const route = useRoute();
   const payLoad = {
     name: name.value.trim(),
-    message: message.value
+    message: message.value,
+    debug: route.query.debug !== undefined
   };
   if (email.value.trim()) {
     payLoad.email = email.value.trim();
