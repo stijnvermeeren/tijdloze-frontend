@@ -1,7 +1,7 @@
 <template lang="pug">
   span.userAvatar
     span(v-tooltip="`Unieke ID: ${id.substring(id.length - 6)}`")
-      Avatar.avatar(:name="id" variant="sunset" :colors='["#fa2e59", "#ff703f", "#f7bc05", "#ecf6bb", "#76bcad"]' :size="20")
+      Avatar.avatar(:name="id" variant="marble" :colors='colors' :size="20")
       span.name {{ userName }}
     span.admin(v-if="isAdmin")
       v-icon(:icon="mdiCheckDecagram" v-tooltip="'tijdloze.rocks admin'" size="16")
@@ -26,6 +26,9 @@ const props = defineProps({
     default: false
   }
 })
+
+const colors = ["#336699","#33aabb","#44ddee","#aaeeff","#ffeeaa","#ffcc33","#ff9944","#ff6655","#ee5566","#dd4477"]
+
 </script>
 
 <style scoped lang="scss">
