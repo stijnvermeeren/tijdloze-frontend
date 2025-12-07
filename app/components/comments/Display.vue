@@ -38,14 +38,10 @@ const isDeleted = ref(!!props.comment.deleted)
 const message = ref(props.comment.message)
 const editing = ref(false)
 
-const isAuthenticated = computed(() => {
-  return useAuthStore().isAuthenticated;
-})
-const isAdmin = computed(() => {
-  return useAuthStore().isAdmin;
-})
+const { isAuthenticated, isAdmin, user } = storeToRefs(useAuthStore())
+
 const isMine = computed(() => {
-  return isAuthenticated.value && useAuthStore().user.id === props.comment.userId;
+  return isAuthenticated.value && user.value.id === props.comment.userId;
 })
 const showUpdated = computed(() => {
   const differenceMillis = new Date(props.comment.updated) - new Date(props.comment.created);

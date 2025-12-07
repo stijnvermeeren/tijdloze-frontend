@@ -33,12 +33,6 @@ const props = defineProps({
 
 const blocking = ref(false)
 const isBlocked = ref(!!props.user.isBlocked)
-const contextPosition = ref({
-  top: 0,
-  left: 0
-})
-
-const label = useTemplateRef('label')
 
 async function block() {
   blocking.value = true;
