@@ -1,18 +1,21 @@
 <template lang="pug">
 comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
   template(#header)
-    span.name {{ comment.name }}
-    span.created(:title="useDateFormat(comment.created)")
-      | {{ useDateFormat(comment.created, {agoMaxDays: 7}) }}
-    span.updated(v-if="showUpdated" :title="useDateFormat(comment.updated)")
-      | (gewijzigd: {{ useDateFormat(comment.updated, {agoMaxDays: 7}) }})
-    span.icons
-      span(v-if="isMine")
-        v-btn(:icon="mdiPencil" @click="editComment" title="Wijzigen" density="comfortable" size="x-small" color="blue" variant="outlined")
-      span(v-if="!isDeleted && (isMine || isAdmin)")
-        v-btn(:icon="mdiDelete" @click="deleteComment" title="Verwijderen" density="comfortable" size="x-small" color="orange" variant="outlined")
-      span(v-if="isDeleted && isAdmin")
-        v-btn(:icon="mdiRestore" @click="restoreComment" title="Terugzetten" density="comfortable" size="x-small" color="green" variant="outlined")
+    div.commentHeader
+      user-avatar(:id="comment.userId" :user-name="comment.name" :is-admin="comment.isAdmin")
+      span.created(v-tooltip="`Gepubliceerd: ${useDateFormat(comment.created)}`")
+        | {{ useDateFormat(comment.created, {agoMaxDays}) }}
+      span.updated(v-if="showUpdated")
+        | (
+        span(v-tooltip="`Laatste wijziging: ${useDateFormat(comment.updated)}`") gewijzigd
+        | )
+      span.icons
+        span(v-if="isMine")
+          v-btn(:icon="mdiPencil" @click="editComment" title="Wijzigen" density="comfortable" size="x-small" color="blue" variant="outlined")
+        span(v-if="!isDeleted && (isMine || isAdmin)")
+          v-btn(:icon="mdiDelete" @click="deleteComment" title="Verwijderen" density="comfortable" size="x-small" color="orange" variant="outlined")
+        span(v-if="isDeleted && isAdmin")
+          v-btn(:icon="mdiRestore" @click="restoreComment" title="Terugzetten" density="comfortable" size="x-small" color="green" variant="outlined")
   div
     div.bericht(v-if="!editing") {{message.trim()}}
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
@@ -28,6 +31,8 @@ const emit = defineEmits(['deleted', 'restored'])
 const props = defineProps({
   comment: Object
 })
+
+const agoMaxDays = 7
 
 const isDeleted = ref(!!props.comment.deleted)
 const message = ref(props.comment.message)
@@ -75,19 +80,24 @@ async function restoreComment() {
 <style lang="scss" scoped>
   @use "../../assets/styleConfig";
 
-  span.created {
-    margin-left: 30px;
-    color: #444;
-  }
-  span.updated {
-    margin-left: 10px;
-    color: #444;
-  }
-
-  span.icons {
-    margin-left: 20px;
-    span {
+  div.commentHeader {
+    > * {
+      vertical-align: middle
+    }
+    span.created {
+      margin-left: 30px;
+      color: #444;
+    }
+    span.updated {
       margin-left: 10px;
+      color: #444;
+    }
+
+    span.icons {
+      margin-left: 20px;
+      span {
+        margin-left: 10px;
+      }
     }
   }
 

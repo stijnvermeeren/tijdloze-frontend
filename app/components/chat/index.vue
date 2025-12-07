@@ -2,37 +2,41 @@
 .chat
   .header
     span(v-if='changeName')
-      v-text-field(v-model='displayNameEdit' placeholder='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()' hide-details)
+      v-text-field(v-model='displayNameEdit' label='Kies een gebruikersnaam' @keypress.enter='saveDisplayName()' hide-details)
       v-btn(@click='saveDisplayName()' :disabled='!displayNameValid || savingDisplayName') Wijzigen
       v-btn(@click='cancelDisplayName()') Terug
+    span(v-else)
+      span.mr-3
+        | Hallo #[strong {{currentUser.displayName}}]
+        v-btn(:icon="mdiPencil" @click='changeName = true' title="Naam veranderen" density="comfortable" size="x-small" color="blue" variant="plain")
+        | .
+      span
+        |
+        | Er zijn {{online.length}} aanwezigen in de chat
+      span(v-if='!showAllOnline')
+        |  (
+        a(@click='showAllOnline = true') toon iedereen
+        | )
       | .
-    span(v-else) Hallo #[strong {{currentUser.displayName}}] (#[a(@click='changeName = true') naam veranderen]).
-    |
-    | Er zijn {{online.length}} aanwezigen in de chat
-    span(v-if='!showAllOnline')
-      |  (
-      a(@click='showAllOnline = true') toon iedereen
-      | )
-    | .
   .online(v-if='showAllOnline')
     | Online
     |
     a(@click='showAllOnline = false') (lijst verbergen)
     | :
-    div(v-for='onlineUser in onlineSorted' :class="['user', {isAdmin: onlineUser.isAdmin}]")
+    div.user(v-for='onlineUser in onlineSorted')
       chat-user(:user='onlineUser')
   .messages(ref='messagesContainer')
     .messagesContainer
       template(v-for='message in messages')
-        div(
+        div.entry(
           v-if='message.userId' 
           :title="useDateFormat(message.created, { format: 'D MMMM YYYY, H:mm:ss'})"
           :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}'
         )
-          span.userName
+          div.userName
             chat-user(:user='messageUser(message)')
-          | : {{message.message}}
-        .systemMessage(v-else)
+          span.message {{message.message}}
+        div.entry.systemMessage(v-else)
           | {{message.message}}
   .input
     v-text-field(v-model='message' @keypress.enter='send()' label='Schrijf je berichtje...' maxlength='500' hide-details)
@@ -50,6 +54,7 @@
 import Sockette from 'sockette';
 import {useAuthStore} from "~/stores/auth";
 import { sortBy } from 'ramda';
+import { mdiPencil } from '@mdi/js';
 
 const {$api, $url} = useNuxtApp()
 
@@ -292,6 +297,7 @@ onBeforeUnmount(() => {
     border-radius: 4px;
 
     div.header {
+      display: block;
       background-color: styleConfig.$inputBackgroundColor;
       padding: 4px 8px;
       border-bottom: 1px solid grey;
@@ -316,15 +322,8 @@ onBeforeUnmount(() => {
 
       div.user {
         display: inline-block;
-        border: 1px solid lightgray;
-        border-radius: 4px;
-        padding: 1px 4px;
-        margin: 1px 4px;
+        margin: 1px 16px;
         white-space: nowrap;
-
-        &.isAdmin {
-          color: darkred;
-        }
       }
     }
 
@@ -345,20 +344,20 @@ onBeforeUnmount(() => {
           /* use !important to prevent breakage from child margin settings */
         }
 
-        div {
+        div.entry {
           /* reduce right margin when `scrollbar-gutter: stable;` becomes supported be browsers */
-          padding: 2px 25px 2px 20px;
-          text-indent: -10px;
+          padding: 2px 20px 2px 40px;
+          text-indent: -26px;
 
-          span.userName {
-            font-weight: bold;
+          > * {
+            vertical-align: middle;
+            text-indent: 0;
           }
 
-        }
-
-        div.isAdmin {
-          span.userName {
-            color: darkred;
+          .userName {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 16px;
           }
         }
 

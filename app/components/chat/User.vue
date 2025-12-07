@@ -1,28 +1,29 @@
 <template lang="pug">
 span.container
-  span(
-    @click.ctrl='showInfo = !showInfo'
-    @click.alt='showInfo = !showInfo'
-    :class='{isAdmin: user.isAdmin}'
-    ref="label"
-  ) {{user.displayName}}
-  .info(v-if='showInfo')
-    div Unieke ID: {{user.id}}
-    div(v-if='user.isAdmin') Moderator
-    div(v-if='currentUser.isAdmin && user.id !== currentUser.id && !user.isAdmin')
-      div(v-if='!isBlocked')
-        button(@click='block()' :disabled='blocking')
-          | Blokkeren
-      div(v-else)
-        | Gebruiker geblokkeerd!
-        button(@click='unblock()' :disabled='blocking')
-          | Opnieuw toelaten
-    div
-      a(@click='showInfo = false') Sluiten
+  UserAvatar(x
+    :id="user.id"
+    :user-name="user.displayName"
+    :is-admin="user.isAdmin"
+  )
+  v-menu(v-if="isAdmin")
+    template(v-slot:activator="{ props }")
+      v-btn.adminButton(:icon="mdiChevronDown" v-bind="props" size="small" density="compact" variant="plain")
+    v-sheet
+      div Volledige ID: {{user.id}}
+      div(v-if='isAdmin && user.id !== currentUser.id && !user.isAdmin')
+        div(v-if='!isBlocked')
+          v-btn(@click='block()' :disabled='blocking' density="compact") Blokkeren
+        template(v-else)
+          div Gebruiker geblokkeerd!
+          div 
+            v-btn(@click='unblock()' :disabled='blocking' density="compact") Opnieuw toelaten
 </template>
 
 <script setup>
+import { mdiChevronDown } from "@mdi/js";
 import {useAuthStore} from "~/stores/auth";
+
+const { isAdmin, user: currentUser } = storeToRefs(useAuthStore())
 
 const {$api} = useNuxtApp()
 
@@ -30,7 +31,6 @@ const props = defineProps({
   user: Object
 })
 
-const showInfo = ref(false)
 const blocking = ref(false)
 const isBlocked = ref(!!props.user.isBlocked)
 const contextPosition = ref({
@@ -39,10 +39,6 @@ const contextPosition = ref({
 })
 
 const label = useTemplateRef('label')
-
-const currentUser = computed(() => {
-  return useAuthStore().user;
-})
 
 async function block() {
   blocking.value = true;
@@ -56,14 +52,6 @@ async function unblock() {
   isBlocked.value = false;
   blocking.value = false;
 }
-
-watch(showInfo, () => {
-  const boundingBox = label.value.getBoundingClientRect()
-  contextPosition.value = {
-    top: boundingBox.bottom,
-    left: boundingBox.left + 20
-  }
-})
 watch(() => props.user, () => {
   isBlocked.value = !!props.user.isBlocked;
 })
@@ -73,26 +61,8 @@ watch(() => props.user, () => {
   @use "../../assets/styleConfig";
 
   span.container {
-
-    div.info {
-      position: absolute;
-      top: v-bind('contextPosition.top');
-      left: v-bind('contextPosition.left');
-      background-color: styleConfig.$inputBackgroundColor;
-      border: 1px solid gray;
-      border-radius: 4px;
-      padding: 1px 4px;
-      z-index: 1;
-      text-align: left;
-      font-weight: normal;
-      color: black;
-
-      white-space: nowrap;
-      font-size: 14px;
-
-      div.close {
-        text-align: right;
-      }
+    .adminButton {
+      color: #888;
     }
   }
 </style>
