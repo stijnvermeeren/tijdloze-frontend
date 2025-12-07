@@ -1,8 +1,10 @@
 <template lang="pug">
 #login
   div(v-if='isAuthenticated')
-    div Aangemeld als {{userName}}
-    v-btn(rounded @click='logout()' size="small") Afmelden
+    div.label Aangemeld als 
+    div
+      user-avatar(:id="user.id" :user-name="userName" :is-admin="isAdmin")
+    v-btn.mt-2(rounded @click='logout()' size="small") Afmelden
   div(v-else)
     v-btn(rounded :to="{path: '/auth/login', query: {redirect: route.fullPath}}") Aanmelden
 </template>
@@ -15,12 +17,7 @@
 
   const route = useRoute()
 
-  const isAuthenticated = computed(() => {
-    return useAuthStore().isAuthenticated;
-  })
-  const userName = computed(() => {
-    return useAuthStore().displayNameWithFallback;
-  })
+  const {isAuthenticated, displayNameWithFallback: userName, isAdmin, user } = storeToRefs(useAuthStore())
 
   onMounted(() => {
     auth0 = useAuth0()
@@ -38,5 +35,10 @@
     margin-top: 30px;
     text-align: center;
     font-size: 14px;
+
+    .label {
+      font-size: 12px;
+      color: #444;
+    }
   }
 </style>
