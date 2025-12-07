@@ -1,6 +1,6 @@
 <template lang="pug">
 span.container
-  UserAvatar(x
+  UserAvatar(
     :id="user.id"
     :user-name="user.displayName"
     :is-admin="user.isAdmin"
