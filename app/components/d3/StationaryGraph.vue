@@ -23,7 +23,7 @@
             :cy='yScale(song.position(year))'
             r='3'
           )
-      rect.overlay(
+      rect(
         :x="0"
         :y="0"
         :width="width"
