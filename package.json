@@ -35,6 +35,7 @@
   "devDependencies": {
     "@mdi/js": "^7.3.67",
     "@nuxt/eslint": "^1.9.0",
+    "@nuxtjs/seo": "^3.2.2",
     "@vue/language-plugin-pug": "^3.0.6",
     "eslint-plugin-vue": "^10.4.0",
     "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
