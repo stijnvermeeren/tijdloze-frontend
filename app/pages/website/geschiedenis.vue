@@ -16,7 +16,6 @@ div
     li #[strong 2022] - De website krijgt een #[em rebranding] van "De Tijdloze Website" naar "tijdloze.rocks", wat ook de nieuwe domeinnaam is. Dit geeft de site een herkenbare identiteit en URL, die duidelijker losstaat van de Studio Brussel en de VRT, waar #[em De Tijdloze] ondertussen niet alleen een allertijdenlijst is, maar ook een digitaal radiostation.
     li #[strong 2023] - Het aantal unieke bezoekers van tijdloze.rocks op de dag van de Tijdloze 100 ligt al vele jaren rond de 10 000, maar nu zijn het er opeens 28 000. Dit veroorzaakt enige technische problemen en de website is soms onbereikbaar. De belangrijkste oorzaak is waarschijnlijk het feit dat Studio Brussel geen eigen website meer heeft, en op de nieuwe website van VRT MAX de informatie over de Tijdloze minder gemakkelijk te vinden is, zodat veel bezoekers naar tijdloze.rocks uitwijken.
     li #[strong 2024] - Op de #[a(href='https://www.instagram.com/p/DEKANLQi_fg/') Instgram]- en #[a(href='https://www.facebook.com/photo.php?fbid=994661486042984&id=100064974240435&set=a.601482202027583') Facebook]pagina's van Studio Brussel wordt tijdloze.rocks in de kijker gezet. Het bezoekersrecord van 2023 wordt niet geëvenaard, maar 19 600 unieke bezoekers op de 31ste december is nog steeds een mooi getal.
-  p 
 
   ui-card(title="De toekomst")
     p Elk jaar steekt webmaster Stijn enkele dagen werk in de website. Zo is er elk jaar tijd voor enkele kleine vernieuwingen. Dit is alvast een voorsmaakje van wat er de volgende jaren gepland is:
