@@ -95,6 +95,7 @@ async function submit() {
   songRef.value.reset()
 
   emit('newSong', song)
+  submitting.value = false;
 }
 
 defineExpose({
