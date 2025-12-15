@@ -2,7 +2,8 @@
 comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
   template(#header)
     div.commentHeader
-      user-avatar(:id="comment.userId" :user-name="comment.name" :is-admin="comment.isAdmin")
+      user-avatar(v-if="comment.userId" :id="comment.userId" :user-name="comment.name" :is-admin="comment.isAdmin")
+      span.legacyName(v-else) {{ comment.name }}
       span.created(v-tooltip="`Gepubliceerd: ${useDateFormat(comment.created)}`")
         | {{ useDateFormat(comment.created, {agoMaxDays}) }}
       span.updated(v-if="showUpdated")
@@ -79,6 +80,9 @@ async function restoreComment() {
   div.commentHeader {
     > * {
       vertical-align: middle
+    }
+    span.legacyName {
+      font-weight: bold;
     }
     span.created {
       margin-left: 30px;
