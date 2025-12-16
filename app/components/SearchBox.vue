@@ -104,8 +104,6 @@ const allAlbums = computed(() => {
   return useRepo(Album).with('artist').get().filter(props.albumFilter);
 })
 
-const { gtag } = useGtag()
-
 const results = computed(() => {
   if (!query.value) {
     return []
@@ -116,17 +114,9 @@ const results = computed(() => {
   const songs = search(queryFragments, allSongs.value, useSearchSongContent, 'song');
   const albums = search(queryFragments, allAlbums.value, useSearchAlbumContent, 'album');
 
-  const results = sortBy(result => -result.score)(
+  return sortBy(result => -result.score)(
     [artists, songs, albums].flat()
   );
-
-  gtag('event', 'search', {
-    query: query.value,
-    result_count: results.length,
-    path: useRoute().path
-  })
-
-  return results
 })
 const visibleResults = computed(() => {
   return results.value.slice(0, resultsLimit);
@@ -135,11 +125,19 @@ const resultsCount = computed(() => {
   return results.value.length;
 })
 
-
+const { gtag } = useGtag()
 watch(query, () => {
   selectedIndex.value = undefined;
   input.value.focus();
   emit('initialResults', results.value);
+
+  if (query.value) {
+    gtag('event', 'search', {
+      query: query.value,
+      result_count: resultsCount.value,
+      path: useRoute().path
+    })
+  }
 })
 
 function onBlur(event) {
