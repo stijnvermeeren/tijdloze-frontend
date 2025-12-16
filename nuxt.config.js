@@ -23,8 +23,7 @@ export default defineNuxtConfig({
       auth0ClientDomain: "stijnvermeeren-tijdloze-dev.eu.auth0.com",
       auth0Audience: "dev.tijdloze.stijnshome.be",
       auth0CallbackUri: "http://localhost:3000/auth/callback",
-      auth0LogoutUri: "http://localhost:3000/",
-      googleAnalyticsId: ''
+      auth0LogoutUri: "http://localhost:3000/"
     }
   },
   /*
@@ -54,6 +53,7 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@vueuse/nuxt',
     '@nuxtjs/seo',
+    'nuxt-gtag',
     /* Treeshaking: https://next.vuetifyjs.com/en/features/treeshaking/ */
     async (options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(

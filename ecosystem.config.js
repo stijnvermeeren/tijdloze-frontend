@@ -14,7 +14,7 @@ module.exports = {
                 "NUXT_PUBLIC_AUTH0_AUDIENCE": "",
                 "NUXT_PUBLIC_AUTH0_CALLBACK_URI": "",
                 "NUXT_PUBLIC_AUTH0_LOGOUT_URI": "",
-                "NUXT_PUBLIC_GOOGLE_ANALYTICS_ID": ""
+                "NUXT_PUBLIC_GTAG_ID": ""
             }
         }
     ]

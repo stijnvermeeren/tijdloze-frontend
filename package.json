@@ -29,7 +29,6 @@
     "sockette": "^2.0.6",
     "url": "^0.11.3",
     "vue-boring-avatars": "^1.4.0",
-    "vue-gtag": "^3.5.2",
     "vuetify": "^3.10.0"
   },
   "devDependencies": {
@@ -40,6 +39,7 @@
     "eslint-plugin-vue": "^10.4.0",
     "eslint-plugin-vue-pug": "^1.0.0-alpha.4",
     "nuxt": "^4.1.2",
+    "nuxt-gtag": "^4.1.0",
     "pug": "^3.0.2",
     "sass": "^1.81.0",
     "sass-loader": "^16.0.3",

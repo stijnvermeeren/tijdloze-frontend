@@ -103,6 +103,7 @@ const allSongs = computed(() => {
 const allAlbums = computed(() => {
   return useRepo(Album).with('artist').get().filter(props.albumFilter);
 })
+
 const results = computed(() => {
   if (!query.value) {
     return []
@@ -124,11 +125,19 @@ const resultsCount = computed(() => {
   return results.value.length;
 })
 
-
+const { gtag } = useGtag()
 watch(query, () => {
   selectedIndex.value = undefined;
   input.value.focus();
   emit('initialResults', results.value);
+
+  if (query.value) {
+    gtag('event', 'search', {
+      query: query.value,
+      result_count: resultsCount.value,
+      path: useRoute().path
+    })
+  }
 })
 
 function onBlur(event) {
