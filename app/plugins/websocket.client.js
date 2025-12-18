@@ -43,7 +43,7 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.exitSongIds) {
-        rootStore.exitSongIds.value = response.exitSongIds
+        rootStore.exitSongIds = response.exitSongIds
       }
 
       if (response.year && response.position) {
