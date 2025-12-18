@@ -51,29 +51,31 @@ export default defineNuxtPlugin( nuxtApp => {
         const list = useRepo(List).find(response.year)
 
         if (list) {
-          if (response.songId) {
-            const song = useRepo(Song).find(response.songId)
-            if (song) {
-              song.positions[yearShort] = response.position
-              useRepo(Song).save(song)
-            }
-
-            list.songIds[response.position - 1] = response.songId
-            useRepo(List).save(list)
-
-            if (list.songIds.length > response.position && !list.songIds[response.position]) {
-              await reloadCoreData()
-            }
+          if (list.songIds.length > response.position && !list.songIds[response.position]) {
+            await reloadCoreData()
           } else {
-            const songId = list.songIds[response.position - 1]
-            list.songIds[response.position - 1] = null
-            useRepo(List).save(list)
-
-            if (songId) {
-              const song = useRepo(Song).find(songId)
-              if (song?.positions[yearShort] === response.position) {
-                delete song.positions[yearShort]
+            if (response.songId) {
+              const song = useRepo(Song).find(response.songId)
+              if (song) {
+                song.positions[yearShort] = response.position
                 useRepo(Song).save(song)
+
+                list.songIds[response.position - 1] = response.songId
+                useRepo(List).save(list)
+              } else {
+                await reloadCoreData()
+              }
+            } else {
+              const songId = list.songIds[response.position - 1]
+              list.songIds[response.position - 1] = null
+              useRepo(List).save(list)
+
+              if (songId) {
+                const song = useRepo(Song).find(songId)
+                if (song?.positions[yearShort] === response.position) {
+                  delete song.positions[yearShort]
+                  useRepo(Song).save(song)
+                }
               }
             }
           }
@@ -94,7 +96,12 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.album) {
-        useRepo(Album).save(response.album)
+        const artist = useRepo(Artist).find(response.album.artistId)
+        if (artist) {
+          useRepo(Album).save(response.album)
+        } else {
+          await reloadCoreData()
+        }
       }
 
       if (response.deletedAlbumId) {
@@ -107,7 +114,16 @@ export default defineNuxtPlugin( nuxtApp => {
 
       if (response.song) {
         response.song.secondArtistId = response.song.secondArtistId || undefined
-        useRepo(Song).save(response.song)
+
+        const artist = useRepo(Artist).find(response.song.artistId)
+        const album = useRepo(Artist).find(response.song.albumId)
+        const secondArtist = useRepo(Artist).find(response.song.secondArtistId)
+ 
+        if (artist && (response.song.secondArtistId === undefined || secondArtist) && album) {
+          useRepo(Song).save(response.song)
+        } else {
+          await reloadCoreData()
+        }
       }
 
       if (response.deletedSongId) {
