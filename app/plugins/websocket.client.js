@@ -113,7 +113,7 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.song) {
-        response.song.secondArtistId = response.song.secondArtistId || undefined
+        response.song.secondArtistId = response.song.secondArtistId ?? undefined
 
         const artist = useRepo(Artist).find(response.song.artistId)
         const secondArtist = response.song.secondArtistId ? useRepo(Artist).find(response.song.secondArtistId) : undefined
