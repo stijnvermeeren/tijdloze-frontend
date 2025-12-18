@@ -14,8 +14,8 @@ export default defineNuxtPlugin( nuxtApp => {
 
   async function reloadCoreData() {
     const coreDataResponse = await nuxtApp.$api('core-data')
-    rootStore.exitSongIds.value = coreDataResponse.exitSongIds
-    yearStore.setYearsRaw(coreDataResponse.years)
+    rootStore.exitSongIds = coreDataResponse.exitSongIds
+    yearStore.yearsRaw = coreDataResponse.years
 
     useRepo(Artist).save(coreDataResponse.artists);
     useRepo(Album).save(coreDataResponse.albums);
@@ -43,7 +43,7 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.exitSongIds) {
-        rootStore.exitSongIds.value = response.exitSongIds
+        rootStore.exitSongIds = response.exitSongIds
       }
 
       if (response.year && response.position) {
