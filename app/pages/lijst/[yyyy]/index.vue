@@ -9,5 +9,5 @@ const props = defineProps({
   year: Object
 })
 
-const list = useRootStore().list(props.year, 0, 0)
+const list = computed(() => useRootStore().list(props.year, 0, 0))
 </script>
