@@ -2,7 +2,7 @@
 div
   v-text-field(
     v-model="filterQuery"
-    label="Zoeken in de lijst"
+    :label="`Zoeken in de lijst (${songCount} nummers)`"
     persistent-placeholder
     hide-details
     clearable
@@ -103,6 +103,14 @@ function onScroll() {
     scrollPosition.value = undefined
   }
 }
+
+const songCount = computed(() => {
+  if (filterQuery.value) {
+    return `${filteredList.value.length} van ${props.list.length}`
+  } else {
+    return props.list.length.toString()
+  }
+})
 
 </script>
 
