@@ -21,6 +21,7 @@
 <script setup>
 import useSetUser from "~/composables/useSetUser";
 import {useAuth0} from "@auth0/auth0-vue";
+import { reloadCoreData } from "~/utils/loadCoreData";
 
 const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
@@ -31,6 +32,13 @@ onMounted(async () => {
   const auth0 = useAuth0()
   watch(auth0.user, () => useSetUser(auth0), { immediate: true })
   await auth0.checkSession()
+
+  const nuxtApp = useNuxtApp()
+  const rootStore = useRootStore()
+  const coreDataResponse = await nuxtApp.$api('core-data/id')
+  if (coreDataResponse?.id !== rootStore.coreDataId) {
+    await reloadCoreData()
+  }
 })
 </script>
 

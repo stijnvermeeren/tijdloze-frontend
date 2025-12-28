@@ -25,6 +25,7 @@ export default defineNuxtPlugin(async nuxtApp => {
     ])
     configStore.chatOn = (chatOnResponse.value === 'on')
     configStore.commentsOn = (commentsOnResponse.value === 'on')
+    rootStore.coreDataId = coreDataResponse.id
     rootStore.exitSongIds = coreDataResponse.exitSongIds
     yearStore.yearsRaw = coreDataResponse.years
 

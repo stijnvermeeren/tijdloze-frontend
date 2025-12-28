@@ -6,22 +6,12 @@ import Album from "~/orm/Album";
 import {useRootStore} from "~/stores/root";
 import {usePollStore} from "~/stores/poll";
 import {useRepo} from "pinia-orm";
+import { reloadCoreData } from "~/utils/loadCoreData";
 
 export default defineNuxtPlugin( nuxtApp => {
   const rootStore = useRootStore()
   const yearStore = useYearStore()
   const pollStore = usePollStore()
-
-  async function reloadCoreData() {
-    const coreDataResponse = await nuxtApp.$api('core-data')
-    rootStore.exitSongIds = coreDataResponse.exitSongIds
-    yearStore.yearsRaw = coreDataResponse.years
-
-    useRepo(Artist).save(coreDataResponse.artists);
-    useRepo(Album).save(coreDataResponse.albums);
-    useRepo(Song).save(coreDataResponse.songs);
-    useRepo(List).save(coreDataResponse.lists);
-  }
 
   new Sockette(nuxtApp.$url.websocket("ws/current-list"), {
     timeout: 5e3,
