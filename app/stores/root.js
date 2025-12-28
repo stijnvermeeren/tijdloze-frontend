@@ -11,6 +11,7 @@ export const useRootStore = defineStore('root', () => {
   const yearStore = useYearStore()
 
   const exitSongIds = ref([])
+  const coreDataId = ref(null)
   
   function indexByProperty(data, selector) {
     const grouped = Object.groupBy(data, selector)
@@ -104,6 +105,7 @@ export const useRootStore = defineStore('root', () => {
   }
     
   return {
+    coreDataId,
     artistIdsByName,
     artistIdsByFullName,
     exitSongIds,
