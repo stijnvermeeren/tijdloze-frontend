@@ -6,6 +6,7 @@ import {useRepo} from "pinia-orm";
 
 export async function reloadCoreData() {
   const coreDataResponse = await useNuxtApp().$api('core-data')
+  useRootStore().coreDataId = coreDataResponse.id
   useRootStore().exitSongIds = coreDataResponse.exitSongIds
   useYearStore().yearsRaw = coreDataResponse.years
 
