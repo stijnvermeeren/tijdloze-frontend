@@ -124,7 +124,9 @@ export default defineNuxtPlugin( nuxtApp => {
         pollStore.currentPoll = response.poll
       }
     },
-    onreconnect: e => {},
+    onreconnect: async e => {
+      await reloadCoreData()
+    },
     onmaximum: e => {},
     onclose: e => {},
     onerror: e => {}
