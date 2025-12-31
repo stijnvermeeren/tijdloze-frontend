@@ -46,12 +46,6 @@ onMounted(async () => {
       await reloadCoreData()
     }
   }
-  const nuxtApp = useNuxtApp()
-  const rootStore = useRootStore()
-  const coreDataResponse = await nuxtApp.$api('core-data/id')
-  if (coreDataResponse?.id !== rootStore.coreDataId) {
-    await reloadCoreData()
-  }
 })
 </script>
 
