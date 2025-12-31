@@ -147,7 +147,26 @@ function messageUser(message) {
 }
 
 function addMessage(message) {
-  messages.value.push(message);
+  function isNewMessage(message) {
+    return !message.userId && message.message?.startsWith("Nieuw in de chat: ")
+  }
+
+  let merged = false
+  if (messages.value.length) {
+    const lastMessage = messages.value[messages.value.length - 1]
+    if (isNewMessage(lastMessage) && isNewMessage(message)) {
+      // merge new user join messages
+      merged = true
+      // temporary workaround with string manipulation until the websockets sends this data in a more structured format
+      const oldMessage = lastMessage.message.replace(/\.$/, '');
+      const newTail = message.message.replace("Nieuw in de chat: ", "");
+      lastMessage.message =  `${oldMessage}, ${newTail}`;
+    }
+  }
+
+  if (!merged) {
+    messages.value.push(message);
+  }
 
   if (messages.value.length > 1000) {
     messages.value = messages.value.slice(500);
