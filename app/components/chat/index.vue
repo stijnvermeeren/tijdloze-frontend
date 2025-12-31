@@ -148,7 +148,7 @@ function messageUser(message) {
 
 function addMessage(message) {
   function isNewMessage(message) {
-    return !message.userId && message.message.startsWith("Nieuw in de chat: ")
+    return !message.userId && message.message?.startsWith("Nieuw in de chat: ")
   }
 
   let merged = false
@@ -160,7 +160,6 @@ function addMessage(message) {
       // temporary workaround with string manipulation until the websockets sends this data in a more structured format
       const oldMessage = lastMessage.message.replace(/\.$/, '');
       const newTail = message.message.replace("Nieuw in de chat: ", "");
-      console.log(oldMessage, newTail);
       lastMessage.message =  `${oldMessage}, ${newTail}`;
     }
   }
