@@ -22,6 +22,8 @@
 import useSetUser from "~/composables/useSetUser";
 import {useAuth0} from "@auth0/auth0-vue";
 import { reloadCoreData } from "~/utils/loadCoreData";
+import { useRepo } from "pinia-orm";
+import Song from "~/orm/Song";
 
 const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
@@ -33,6 +35,17 @@ onMounted(async () => {
   watch(auth0.user, () => useSetUser(auth0), { immediate: true })
   await auth0.checkSession()
 
+  if (useRepo(Song).limit(1).get().length === 0) {
+    // workaround until we find the reason why the pinia-orm repos are sometimes empty from SSR
+    await reloadCoreData()
+  } else {
+    const nuxtApp = useNuxtApp()
+    const rootStore = useRootStore()
+    const coreDataResponse = await nuxtApp.$api('core-data/id')
+    if (coreDataResponse?.id !== rootStore.coreDataId) {
+      await reloadCoreData()
+    }
+  }
   const nuxtApp = useNuxtApp()
   const rootStore = useRootStore()
   const coreDataResponse = await nuxtApp.$api('core-data/id')
