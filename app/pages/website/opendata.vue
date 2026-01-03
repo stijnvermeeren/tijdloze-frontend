@@ -6,7 +6,7 @@ div
 
   ui-card(title="Platte database")
     template(#buttons)
-      a(:href="tvsPath")
+      a(:href="tsvPath")
         v-btn(rounded variant="tonal" size="small")
           span Download #[strong tijdloze.tsv]
       br
@@ -34,7 +34,7 @@ let lastUpdateSql = ref()
 let lastUpdateTsv = ref()
 
 const zipPath = '/data/tijdloze.zip'
-const tvsPath = '/data/tijdloze.tsv'
+const tsvPath = '/data/tijdloze.tsv'
 
 function formatDate(date) {
   return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
@@ -52,7 +52,7 @@ onMounted(async () => {
       }
     })
 
-    fetch(tvsPath, {method: 'HEAD'}).then(result => {
+    fetch(tsvPath, {method: 'HEAD'}).then(result => {
       const lastModified = result?.headers?.get('last-modified')
       if (lastModified) {
         lastUpdateTsv.value = new Date(lastModified);
