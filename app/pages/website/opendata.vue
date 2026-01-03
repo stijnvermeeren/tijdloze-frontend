@@ -6,7 +6,7 @@ div
 
   ui-card(title="Platte database")
     template(#buttons)
-      a(href="/data/tijdloze.tsv")
+      a(:href="tvsPath")
         v-btn(rounded variant="tonal" size="small")
           span Download #[strong tijdloze.tsv]
       br
@@ -18,7 +18,7 @@ div
 
   ui-card(title="Relationele database")
     template(#buttons)
-      a(href="/data/tijdloze.zip")
+      a(:href="zipPath")
         v-btn(rounded variant="tonal" size="small")
           span Download #[strong tijdloze.zip]
       br
@@ -33,6 +33,9 @@ div
 let lastUpdateSql = ref()
 let lastUpdateTsv = ref()
 
+const zipPath = '/data/tijdloze.zip'
+const tvsPath = '/data/tijdloze.tsv'
+
 function formatDate(date) {
   return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
 }
@@ -42,14 +45,14 @@ onMounted(async () => {
   // https://stackoverflow.com/questions/71609027
   // Maybe the root issue is this: https://github.com/nuxt/nuxt/issues/13471
   await nextTick(async () => {
-    fetch('/data/tijdloze-schema-data.sql', {method: 'HEAD'}).then(result => {
+    fetch(zipPath, {method: 'HEAD'}).then(result => {
       const lastModified = result?.headers?.get('last-modified')
       if (lastModified) {
         lastUpdateSql.value = new Date(lastModified);
       }
     })
 
-    fetch('/data/tijdloze.tsv', {method: 'HEAD'}).then(result => {
+    fetch(tvsPath, {method: 'HEAD'}).then(result => {
       const lastModified = result?.headers?.get('last-modified')
       if (lastModified) {
         lastUpdateTsv.value = new Date(lastModified);
