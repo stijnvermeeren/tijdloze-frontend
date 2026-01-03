@@ -41,23 +41,18 @@ function formatDate(date) {
 }
 
 onMounted(async () => {
-  // I'm not sure why nextTick is needed, but I'm not the first one to run into this:
-  // https://stackoverflow.com/questions/71609027
-  // Maybe the root issue is this: https://github.com/nuxt/nuxt/issues/13471
-  await nextTick(async () => {
-    fetch(zipPath, {method: 'HEAD'}).then(result => {
-      const lastModified = result?.headers?.get('last-modified')
-      if (lastModified) {
-        lastUpdateSql.value = new Date(lastModified);
-      }
-    })
+  fetch(zipPath, {method: 'HEAD'}).then(result => {
+    const lastModified = result?.headers?.get('last-modified')
+    if (lastModified) {
+      lastUpdateSql.value = new Date(lastModified);
+    }
+  })
 
-    fetch(tsvPath, {method: 'HEAD'}).then(result => {
-      const lastModified = result?.headers?.get('last-modified')
-      if (lastModified) {
-        lastUpdateTsv.value = new Date(lastModified);
-      }
-    })
+  fetch(tsvPath, {method: 'HEAD'}).then(result => {
+    const lastModified = result?.headers?.get('last-modified')
+    if (lastModified) {
+      lastUpdateTsv.value = new Date(lastModified);
+    }
   })
 })
 </script>
