@@ -49,7 +49,7 @@ const importStart = ref(props.startPosition)
 const importStep = ref(-1)
 const reverse = ref(true)
 
-const regex = '(?<position>[0-9]+)\\n\\n.+\\n(?<title>.+)\\n\\n(?<artist>.+)'
+const regex = ref('(?<position>[0-9]+)\\n\\n.+\\n(?<title>.+)\\n\\n(?<artist>.+)')
 
 const importPlaceholder = computed(() => {
   if (importMode.value === 'auto') {
@@ -64,7 +64,7 @@ const importPlaceholder = computed(() => {
 function startImport() {
   const importSongs = []
   if (importMode.value === 'regex') {
-    importText.value.matchAll(regex).forEach(matchObject => {
+    importText.value.matchAll(regex.value).forEach(matchObject => {
       const query = `${matchObject.groups.artist} ${matchObject.groups.title}`
       const overridePosition = parseInt(matchObject.groups.position)
       importSongs.push({
