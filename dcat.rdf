@@ -2,7 +2,6 @@
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:dcat="http://www.w3.org/ns/dcat#"
          xmlns:dcatap="http://data.europa.eu/r5r/"
-         xmlns:eli="http://data.europa.eu/eli/ontology#"
          xmlns:dc="http://purl.org/dc/terms/"
          xmlns:foaf="http://xmlns.com/foaf/0.1/"
          xmlns:skos="http://www.w3.org/2004/02/skos/core#"
@@ -103,13 +102,13 @@ Tijdloze.rocks is volledig onafhankelijk van Studio Brussel en de VRT. Tijdloze.
   </skos:Concept>
   
   <foaf:Agent rdf:about="https://org.belgif.be/id/CbeRegisteredEntity/0244142664">
-    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/foaf/Organization"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
     <dc:type rdf:resource="http://purl.org/adms/publishertype/Company"/>
     <foaf:name xml:lang="nl">Vlaamse Radio- en Televisieomroeporganisatie</foaf:name>
   </foaf:Agent>
   
   <foaf:Agent rdf:about="http://id.tijdloze.rocks/org">
-    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/foaf/Organization"/>
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Organization"/>
     <dc:type rdf:resource="http://purl.org/adms/publishertype/PrivateIndividual(s)"/>
     <foaf:name xml:lang="nl">Tijdloze.Rocks</foaf:name>
   </foaf:Agent>
@@ -129,7 +128,7 @@ Tijdloze.rocks is volledig onafhankelijk van Studio Brussel en de VRT. Tijdloze.
 
   <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/text/tab-separated-values">
     <rdf:type rdf:resource="http://purl.org/dc/terms/MediaType"/>
-    <skos:prefLabel>text/tsv</skos:prefLabel>
+    <skos:prefLabel>tab-separated-values</skos:prefLabel>
   </skos:Concept>
   
   <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/application/zip">
