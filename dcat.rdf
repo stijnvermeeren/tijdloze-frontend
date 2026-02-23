@@ -56,14 +56,15 @@ Tijdloze.rocks is volledig onafhankelijk van Studio Brussel en de VRT. Tijdloze.
             <dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
             <dc:title xml:lang="nl">Platte database</dc:title>
             <dc:description xml:lang="nl">Dit bestand bevat een platte versie van de belangrijkste gegevens uit de database van tijdloze.rocks. Alle artiesten, albums, nummers en noteringen worden hier in één tabel samengevat. Dit bestand kan gelezen worden door programma's zoals Microsoft Excel.</dc:description>
-            <dcat:mediaType rdf:resource="https://www.iana.org/assignments/media-types/text/tsv"/>
+            <dcat:mediaType rdf:resource="https://www.iana.org/assignments/media-types/text/tab-separated-values"/>
             <dc:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/TSV"/>
             <dcat:accessURL rdf:resource="https://tijdloze.rocks/website/opendata"/>
             <dcat:downloadURL rdf:resource="https://tijdloze.rocks/data/tijdloze.tsv"/>
             <dc:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
             <dcatap:availability rdf:resource="http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE"/>
           </dcat:Distribution>
-
+      </dcat:distribution>
+	  <dcat:distribution>
 		  <dcat:Distribution rdf:about="http://id.tijdloze.rocks/dist/stats/sql">
             <dc:identifier>tijdloze-rocks-stats-sql</dc:identifier>
             <dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
@@ -126,7 +127,7 @@ Tijdloze.rocks is volledig onafhankelijk van Studio Brussel en de VRT. Tijdloze.
     <skos:prefLabel>application/sql</skos:prefLabel>
   </skos:Concept>
 
-  <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/text/tsv">
+  <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/text/tab-separated-values">
     <rdf:type rdf:resource="http://purl.org/dc/terms/MediaType"/>
     <skos:prefLabel>text/tsv</skos:prefLabel>
   </skos:Concept>
