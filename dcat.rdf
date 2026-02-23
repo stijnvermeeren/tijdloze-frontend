@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:dcat="http://www.w3.org/ns/dcat#"
+         xmlns:dcatap="http://data.europa.eu/r5r/"
+         xmlns:eli="http://data.europa.eu/eli/ontology#"
+         xmlns:dc="http://purl.org/dc/terms/"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/"
+         xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+         xmlns:vcard="http://www.w3.org/2006/vcard/ns#">
+
+  <dcat:Catalog rdf:about="http://id.tijdloze.rocks/catalog">
+    <dc:title xml:lang="en">Catalog of Tijdloze.Rocks</dc:title>
+    <dc:publisher rdf:resource="http://id.tijdloze.rocks/org"/>
+    <dc:spatial rdf:resource="https://sws.geonames.org/3337388/"/>
+
+    <dcat:dataset>
+      <dcat:Dataset rdf:about="http://id.tijdloze.rocks/dataset/stats">
+		<dc:title xml:lang="nl">Hitlijsten De Tijdloze</dc:title>
+        <dc:description xml:lang="nl">Tijdloze.rocks verzamelt alle lijsten en bijhorende statistieken van De Tijdloze. De Tijdloze is sinds 1987 de allertijdenlijst van de Vlaamse radiozender Studio Brussel. De Tijdloze wordt bepaald door stemmen van de luisteraars van Studio Brussel en wordt op het einde van elk jaar uitgezonden.
+
+Tijdloze.rocks is volledig onafhankelijk van Studio Brussel en de VRT. Tijdloze.rocks heeft niets te maken met de samenstelling of het uitzenden van de Tijdloze. Tijdloze.rocks dankt wel Studio Brussel voor de hulp met het vervolledigen van de database van deze website.</dc:description>
+
+        <dc:identifier>tijdloze-rocks-stats</dc:identifier>
+		<dc:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2026-02-21</dc:modified>
+
+        <dcat:theme rdf:resource="http://publications.europa.eu/resource/authority/data-theme/EDUC"/>
+        <dcat:keyword xml:lang="nl">hitparade</dcat:keyword>
+        <dcat:keyword xml:lang="nl">rockmuziek</dcat:keyword>
+
+        <dc:creator rdf:resource="https://org.belgif.be/id/CbeRegisteredEntity/0244142664"/>		
+        <dc:publisher rdf:resource="http://id.tijdloze.rocks/org"/>
+        <dcat:contactPoint rdf:resource="http://opendata.bosa.be/contact"/>
+
+        <dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
+
+        <dcat:landingPage rdf:resource="https://tijdloze.rocks/website/opendata"/>
+		<foaf:page rdf:resource="https://tijdloze.rocks/website/methodologie"/>
+        
+        <dc:accessRights rdf:resource="http://publications.europa.eu/resource/authority/access-right/PUBLIC"/>
+
+        <dc:spatial rdf:resource="https://sws.geonames.org/3337388/"/>
+
+		<dc:temporal>
+			<dc:PeriodOfTime>
+				<dcat:startDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">1987-01-01</dcat:startDate>
+				<dcat:endDate rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2025-12-31</dcat:endDate>
+			</dc:PeriodOfTime>
+		</dc:temporal>
+
+		<dcat:temporalResolution rdf:datatype="http://www.w3.org/2001/XMLSchema#duration">P1Y</dcat:temporalResolution>
+        <dc:accrualPeriodicity rdf:resource="http://publications.europa.eu/resource/authority/frequency/ANNUAL"/>
+		
+        <dcat:distribution>
+          <dcat:Distribution rdf:about="http://id.tijdloze.rocks/dist/stats/tsv">
+            <dc:identifier>tijdloze-rocks-stats-tsv</dc:identifier>
+            <dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
+            <dc:title xml:lang="nl">Platte database</dc:title>
+            <dc:description xml:lang="nl">Dit bestand bevat een platte versie van de belangrijkste gegevens uit de database van tijdloze.rocks. Alle artiesten, albums, nummers en noteringen worden hier in één tabel samengevat. Dit bestand kan gelezen worden door programma's zoals Microsoft Excel.</dc:description>
+            <dcat:mediaType rdf:resource="https://www.iana.org/assignments/media-types/text/tsv"/>
+            <dc:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/TSV"/>
+            <dcat:accessURL rdf:resource="https://tijdloze.rocks/website/opendata"/>
+            <dcat:downloadURL rdf:resource="https://tijdloze.rocks/data/tijdloze.tsv"/>
+            <dc:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dcatap:availability rdf:resource="http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE"/>
+          </dcat:Distribution>
+
+		  <dcat:Distribution rdf:about="http://id.tijdloze.rocks/dist/stats/sql">
+            <dc:identifier>tijdloze-rocks-stats-sql</dc:identifier>
+            <dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
+            <dc:title xml:lang="nl">Relationele database</dc:title>
+            <dc:description xml:lang="nl">Het ZIP-archief dat je hier kunt downloaden, bevat naast de TSV-bestanden ook nog SQL-scripts om de gegevens in een Postgres-database te laden, en een bestand README.txt met extra uitleg.</dc:description>
+            <dcat:mediaType rdf:resource="https://www.iana.org/assignments/media-types/application/sql"/>
+            <dcat:compressFormat rdf:resource="https://www.iana.org/assignments/media-types/application/zip"/>
+            <dc:format rdf:resource="http://publications.europa.eu/resource/authority/file-type/SQL"/>
+            <dcat:accessURL rdf:resource="https://tijdloze.rocks/website/opendata"/>
+            <dcat:downloadURL rdf:resource="https://tijdloze.rocks/data/tijdloze.zip"/>
+            <dc:license rdf:resource="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0"/>
+            <dcatap:availability rdf:resource="http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE"/>
+          </dcat:Distribution>
+        </dcat:distribution>
+      </dcat:Dataset>
+    </dcat:dataset>
+
+  </dcat:Catalog>
+
+  <vcard:Organization rdf:about="http://opendata.bosa.be/contact">
+    <rdf:type rdf:resource="http://www.w3.org/2006/vcard/ns#Kind"/>
+    <vcard:fn xml:lang="en">Open Data FPS BOSA DG SD</vcard:fn>
+    <vcard:fn xml:lang="nl">Open Data FOD BOSA DG VD</vcard:fn>
+    <vcard:fn xml:lang="fr">Open Data SPF BOSA DG SD</vcard:fn>
+    <vcard:fn xml:lang="de">Open Data FÖD BOSA DG VD</vcard:fn>
+    <vcard:hasURL rdf:resource="https://opendata.bosa.be"/>
+    <vcard:hasEmail rdf:resource="mailto:opendata@bosa.belgium.be"/>
+  </vcard:Organization>
+	
+  <skos:Concept rdf:about="https://sws.geonames.org/3337388/">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Location"/>
+	<skos:prefLabel xml:lang="nl">Vlaanderen</skos:prefLabel>
+	<skos:prefLabel xml:lang="fr">Flandre</skos:prefLabel>
+	<skos:prefLabel xml:lang="en">Flanders</skos:prefLabel>
+	<dcat:bbox rdf:datatype="http://www.opengis.net/ont/geosparql#wktLiteral">POLYGON((2.54 51.51,5.92 51.51,5.92 50.67,2.54 50.67,2.54 51.51))</dcat:bbox>
+  </skos:Concept>
+  
+  <foaf:Agent rdf:about="https://org.belgif.be/id/CbeRegisteredEntity/0244142664">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/foaf/Organization"/>
+    <dc:type rdf:resource="http://purl.org/adms/publishertype/Company"/>
+    <foaf:name xml:lang="nl">Vlaamse Radio- en Televisieomroeporganisatie</foaf:name>
+  </foaf:Agent>
+  
+  <foaf:Agent rdf:about="http://id.tijdloze.rocks/org">
+    <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/foaf/Organization"/>
+    <dc:type rdf:resource="http://purl.org/adms/publishertype/PrivateIndividual(s)"/>
+    <foaf:name xml:lang="nl">Tijdloze.Rocks</foaf:name>
+  </foaf:Agent>
+ 
+  <foaf:Document rdf:about="https://tijdloze.rocks/website/opendata">
+	<dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
+  </foaf:Document>
+  
+  <foaf:Document rdf:about="https://tijdloze.rocks/website/methodologie">
+  	<dc:language rdf:resource="http://publications.europa.eu/resource/authority/language/NLD"/>
+  </foaf:Document>
+		
+  <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/application/sql">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/MediaType"/>
+    <skos:prefLabel>application/sql</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/text/tsv">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/MediaType"/>
+    <skos:prefLabel>text/tsv</skos:prefLabel>
+  </skos:Concept>
+  
+  <skos:Concept rdf:about="https://www.iana.org/assignments/media-types/application/zip">
+    <rdf:type rdf:resource="http://purl.org/dc/terms/MediaType"/>
+    <skos:prefLabel>application/zip</skos:prefLabel>
+  </skos:Concept>
+  
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/file-type/SQL">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/file-type"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/MediaTypeOrExtent"/>
+    <skos:prefLabel>SQL</skos:prefLabel>	
+  </skos:Concept>
+  
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/file-type/TSV">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/file-type"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/MediaTypeOrExtent"/>
+    <skos:prefLabel>TSV</skos:prefLabel>	
+  </skos:Concept>
+  
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/frequency/ANNUAL">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/frequency"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/Frequency"/>
+    <skos:prefLabel xml:lang="en">annual</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/data-theme/EDUC">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/data-theme"/>
+    <skos:prefLabel xml:lang="en">Education, culture and sport</skos:prefLabel>
+  </skos:Concept>
+ 
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/language/NLD">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/language"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/LinguisticSystem"/>
+    <skos:prefLabel xml:lang="en">Dutch</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/licence/CC_BY_4_0">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/licence"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/LicenseDocument"/>
+    <dc:type rdf:resource="http://purl.org/adms/licencetype/Attribution"/>
+    <skos:prefLabel xml:lang="en">Creative Commons Attribution 4.0 International</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://purl.org/adms/licencetype/Attribution">
+    <skos:prefLabel xml:lang="en">Attribution</skos:prefLabel>
+    <skos:inScheme rdf:resource="http://purl.org/adms/licencetype/1.0"/>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/planned-availability/AVAILABLE">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/planned-availability"/>
+    <skos:prefLabel xml:lang="en">available</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://publications.europa.eu/resource/authority/access-right/PUBLIC">
+    <skos:inScheme rdf:resource="http://publications.europa.eu/resource/authority/access-right"/>
+    <rdf:type rdf:resource="http://purl.org/dc/terms/RightsStatement"/>
+    <skos:prefLabel xml:lang="en">public</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://purl.org/adms/publishertype/PrivateIndividual(s)">
+    <skos:inScheme rdf:resource="http://purl.org/adms/publishertype/1.0"/>
+    <skos:prefLabel xml:lang="en">Private Individual(s)</skos:prefLabel>
+  </skos:Concept>
+
+  <skos:Concept rdf:about="http://purl.org/adms/publishertype/Company">
+    <skos:inScheme rdf:resource="http://purl.org/adms/publishertype/1.0"/>
+    <skos:prefLabel xml:lang="en">Company</skos:prefLabel>
+  </skos:Concept>
+        
+</rdf:RDF>
