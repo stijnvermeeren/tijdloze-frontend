@@ -49,20 +49,6 @@ h2 {
   margin: 15px 0 20px 0;
 }
 
-ul.info {
-  margin: 5px 30px 35px 0;
-  margin: 0;
-  padding: 0;
-  & li {
-    list-style-type: none;
-    list-style-position: outside;
-  }
-  & img {
-    padding-right: 20px;
-    vertical-align: bottom;
-  }
-}
-
 div.toelichting {
   margin: 0 auto 2em auto;
   max-width: 54em;
@@ -83,60 +69,8 @@ select {
   border-color: #f9bc85;
 }
 
-button[type=submit] {
-  width: 360px;
-  padding: 0;
-  font-weight: bold;
-}
-
 textarea {
   font-family: Arial, sans-serif;
-}
-
-table.info {
-  table-layout: fixed;
-
-  & > tbody > tr {
-    vertical-align: top;
-
-    &:not(:first-child) {
-      & > td, & > th {
-        border-top: 1px solid grey;
-      }
-    }
-
-    & > th {
-      width: 120px;
-      font-weight: normal;
-      text-align: right;
-      padding: 2px 10px;
-      border-right: 1px solid grey;
-
-      @media (min-width: 1200px) {
-        width: 200px;
-      }
-    }
-    & > td {
-      padding: 2px 10px;
-    }
-  }
-
-  & tr.important {
-    & th, & td {
-      font-weight: bold;
-    }
-  }
-
-  & tr.unimportant {
-    & th, & td {
-      font-size: 14px;
-    }
-  }
-
-  & input, & textarea {
-    box-sizing: border-box;
-    width: 100%;
-  }
 }
 
 .clear {
