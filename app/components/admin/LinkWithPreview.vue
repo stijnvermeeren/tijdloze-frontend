@@ -72,7 +72,7 @@ function onload() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .iframecontainer {
   border-radius: 12px;
   background-color: #eee;

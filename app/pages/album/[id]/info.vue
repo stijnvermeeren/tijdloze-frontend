@@ -44,7 +44,7 @@ const links = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .links {
   a {
     margin: 0 5px;

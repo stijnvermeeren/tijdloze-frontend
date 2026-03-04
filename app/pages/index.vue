@@ -111,7 +111,7 @@ const {data: comments, execute: refreshComments, status: commentsStatus2} = awai
 useClientDataRefresh(refreshComments)
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.description {
     margin-top: 20px;
   }

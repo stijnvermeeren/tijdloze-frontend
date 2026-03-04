@@ -13,7 +13,7 @@ defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 :deep(.v-btn) {
   font-weight: bold;
 }

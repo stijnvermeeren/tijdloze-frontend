@@ -9,8 +9,8 @@ v-sheet.comment(:elevation="1" rounded outlined)
 <script setup>
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   .comment {
     padding: 0.5em 2em;

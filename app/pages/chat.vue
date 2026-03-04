@@ -62,7 +62,7 @@ async function submitDisplayName() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     div.displayName {
       padding: 0.3em 4em;
       margin: 1em 0;

@@ -107,7 +107,7 @@ function validateEmail(email) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     p.message {
         white-space: pre-line;
     }

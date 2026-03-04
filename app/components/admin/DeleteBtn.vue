@@ -16,7 +16,7 @@ function click() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-btn {
   float: right;
 }

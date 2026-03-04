@@ -68,7 +68,7 @@ async function submitted() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.thread {
   max-width: 780px;
   margin: 1em auto;

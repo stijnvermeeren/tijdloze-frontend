@@ -11,7 +11,7 @@ defineProps({
 })
 </script>
 
-<style lang="scss">
+<style>
 .cover {
   height: 56px;
   width: 56px;

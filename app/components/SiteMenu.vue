@@ -132,8 +132,8 @@ function menuClick(event) {
 </script>
 
 
-<style lang="scss" scoped>
-  @use "../assets/styleConfig";
+<style scoped>
+  @import "../assets/styleConfig.css";
 
   .kofi {
     margin-top: 30px;
@@ -147,10 +147,10 @@ function menuClick(event) {
   .v-list {
     font-size: 16px;
     font-weight: bold;
-    color: styleConfig.$hoverLinkColor;
+    color: var(--hover-link-color);
 
     a {
-      color: styleConfig.$hoverLinkColor;
+      color: var(--hover-link-color);
     }
 
     .v-list-item:not(:only-child) {

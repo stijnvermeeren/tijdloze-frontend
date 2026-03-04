@@ -117,7 +117,7 @@ const songCount = computed(() => {
 
 </script>
 
-<style lang="scss">
+<style>
 div.listContainer {
   min-height: 320px;
 

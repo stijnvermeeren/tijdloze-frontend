@@ -49,9 +49,9 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss">
-  @use "../assets/globalStyles";
-  @use "../assets/styleConfig";
+<style>
+  @import "../assets/globalStyles.css";
+  @import "../assets/styleConfig.css";
 
   html {
     height: 100%;
@@ -132,13 +132,13 @@ onMounted(async () => {
 
     #sitemenu {
       grid-area: sitemenu;
-      background-color: styleConfig.$menuBackgroundColor;
+      background-color: var(--menu-background-color);
       overflow-x: hidden;
     }
     
     #left {
       grid-area: left;
-      background-color: styleConfig.$menuBackgroundColor;
+      background-color: var(--menu-background-color);
     }
 
     #right {
@@ -171,7 +171,7 @@ onMounted(async () => {
 
   #header {
     flex: 0 1 auto;
-    background-color: styleConfig.$headerBackgroundColor;
+    background-color: var(--header-background-color);
 
     #logo {
       display: flex;

@@ -74,8 +74,8 @@ async function restoreComment() {
 
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   div.commentHeader {
     > * {

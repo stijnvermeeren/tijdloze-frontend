@@ -52,9 +52,9 @@ function toggle() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-card {
-  z-index: auto; // avoiding a new "stacking context" for the v-card, so that search results can overflow correctly
+  z-index: auto; /* avoiding a new "stacking context" for the v-card, so that search results can overflow correctly */
 }
 
 .cardTitle {

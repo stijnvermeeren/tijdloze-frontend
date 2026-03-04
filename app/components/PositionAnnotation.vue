@@ -3,7 +3,7 @@ div.annotation
   slot
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
 div.annotation {
   font-size: 80%;
   display: flex;

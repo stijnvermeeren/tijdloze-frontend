@@ -10,7 +10,7 @@ div.container
 import {mdiArrowRightBottom} from "@mdi/js";
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .container {
   display: grid;
   grid-template-columns: 48px 1fr;

@@ -46,7 +46,7 @@ function cancel() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.question {
     font-weight: bold;
   }

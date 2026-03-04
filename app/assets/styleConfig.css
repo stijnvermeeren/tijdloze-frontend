@@ -1,0 +1,31 @@
+:root {
+  --background-color: #ffffff;
+  --header-background-color: #fabf8b;
+  --menu-background-color: #fadfbb;
+  --input-background-color: #fdf0e0;
+  --input-border-color: #f9bc85;
+  --link-color: #000088;
+  --hover-link-color: #003388;
+  --song-color: #001177;
+  --hover-song-color: #004477;
+  --artist-color: #110077;
+  --hover-artist-color: #113377;
+  --menu-link-color: #001188;
+  --border-radius: 5px;
+  --black-line: 1px solid black;
+  --search-box-width: 18em;
+}
+
+.no-bullets {
+  margin: 0;
+  padding: 0;
+  & li {
+    list-style-type: none;
+    list-style-position: outside;
+  }
+}
+
+.border {
+  border: var(--black-line);
+  border-radius: var(--border-radius);
+}

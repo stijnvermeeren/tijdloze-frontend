@@ -62,7 +62,7 @@ function albumSongs(album) {
 </script>
 
 
-<style lang="scss" scoped>
+<style scoped>
 div.currentListHeader {
   font-weight: bold;
   margin: 0.3em 0 0.1em;

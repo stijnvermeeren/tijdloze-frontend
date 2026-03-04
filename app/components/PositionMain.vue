@@ -15,7 +15,7 @@ defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 span.position {
   font-weight: bold;
 }

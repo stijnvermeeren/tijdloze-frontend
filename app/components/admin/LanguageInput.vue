@@ -27,7 +27,7 @@ const selectOptions = Object.entries(languages).map(([languageId, languageName])
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.d-flex {
   align-items: center;
 }

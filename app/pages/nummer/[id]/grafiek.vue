@@ -12,5 +12,5 @@ const props = defineProps({
 const entries = useGraphEntries([props.song])
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 </style>

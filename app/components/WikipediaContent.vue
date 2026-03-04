@@ -45,7 +45,7 @@ const sanitizedContent = computed(() => {
 })
 </script>
 
-<style lang="scss">
+<style>
 .title {
   font-weight: bold;
 }

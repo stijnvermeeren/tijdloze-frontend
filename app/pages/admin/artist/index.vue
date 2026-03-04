@@ -44,7 +44,7 @@ async function submit() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .flex {
     display: flex;
     margin:  5px 0;

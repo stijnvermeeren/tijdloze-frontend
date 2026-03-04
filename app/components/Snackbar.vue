@@ -26,8 +26,8 @@ watch(song, (newSong, oldSong) => {
 })
 </script>
 
-<style lang="scss" scoped>
-  @use "../assets/styleConfig";
+<style scoped>
+  @import "../assets/styleConfig.css";
 
   div.snackbarContent {
     display: flex;

@@ -96,7 +96,7 @@ function findSongId(input) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
     span.bold {
         font-weight: bold;
     }

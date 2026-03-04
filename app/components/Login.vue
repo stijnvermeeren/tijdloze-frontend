@@ -30,7 +30,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   #login {
     margin-top: 30px;
     text-align: center;

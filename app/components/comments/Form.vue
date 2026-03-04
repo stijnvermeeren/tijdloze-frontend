@@ -128,8 +128,8 @@ async function submit() {
 }
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   .d-flex {
     align-items: center;

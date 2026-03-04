@@ -17,7 +17,7 @@ import {mdiClose} from "@mdi/js";
 const genderId = defineModel()
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.d-flex {
   align-items: center;
 }

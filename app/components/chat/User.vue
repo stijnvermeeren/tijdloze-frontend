@@ -51,8 +51,8 @@ watch(() => props.user, () => {
 })
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   span.container {
     .adminButton {
