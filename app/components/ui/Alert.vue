@@ -38,7 +38,7 @@ switch(props.type) {
 
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 :deep(.v-alert-title) {
   font-size: 1rem;
   font-weight: bold;

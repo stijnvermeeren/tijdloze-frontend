@@ -29,7 +29,7 @@ const intervals = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.allPositions {
   text-align: center;
   display: flex;

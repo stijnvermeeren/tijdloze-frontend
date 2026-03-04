@@ -78,7 +78,7 @@ div
   })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .form {
   max-width: 780px;
   margin: 1em auto 2em;

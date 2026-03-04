@@ -13,7 +13,7 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.icon {
     display: inline-block;
     vertical-align: baseline;

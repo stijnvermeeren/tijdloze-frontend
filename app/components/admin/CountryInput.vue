@@ -34,7 +34,7 @@ const countryOptions = sortBy(countryId => countries[countryId])(Object.keys(cou
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.d-flex {
   align-items: center;
 }

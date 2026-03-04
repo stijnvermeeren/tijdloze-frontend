@@ -9,8 +9,8 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/graphColors";
+<style scoped>
+  @import "../../assets/graphColors.css";
 
   svg.colorLabel {
     width: 30px;

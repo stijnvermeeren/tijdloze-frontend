@@ -1,0 +1,30 @@
+
+/* Base color class with shared styling */
+[class*="color-"] {
+  color: var(--current-color);
+  
+  .coloredRect {
+    fill: var(--current-color);
+  }
+  
+  .coloredPath {
+    fill: none;
+    stroke: var(--current-color);
+  }
+  
+  .coloredCircle {
+    fill: var(--current-color);
+    stroke: var(--current-color);
+  }
+}
+
+/* Individual color classes with direct color values */
+.color-0 { --current-color: rgb(228,26,28); }
+.color-1 { --current-color: rgb(55,126,184); }
+.color-2 { --current-color: rgb(77,175,74); }
+.color-3 { --current-color: rgb(152,78,163); }
+.color-4 { --current-color: rgb(255,127,0); }
+.color-5 { --current-color: rgb(155,155,51); }
+.color-6 { --current-color: rgb(166,86,40); }
+.color-7 { --current-color: rgb(247,129,191); }
+.color-other { --current-color: rgb(153,153,153); }

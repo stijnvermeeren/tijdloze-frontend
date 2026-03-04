@@ -32,7 +32,7 @@ function pagePath(page) {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.pager {
     text-align: right;
   }

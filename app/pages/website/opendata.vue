@@ -57,7 +57,7 @@ onMounted(async () => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .lastUpdate {
   font-size: 12px;
 }

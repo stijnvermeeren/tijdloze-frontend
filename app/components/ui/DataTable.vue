@@ -110,7 +110,7 @@ const headers = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .v-table {
   padding: 0 2em;
   th {

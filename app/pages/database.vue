@@ -404,7 +404,7 @@ const { list: virtualList, containerProps, wrapperProps, scrollTo } = useVirtual
 )
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .list {
     margin: 20px 0;
 

@@ -103,7 +103,7 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .heading {
     margin-bottom: 10px;
     font-size: 20px;

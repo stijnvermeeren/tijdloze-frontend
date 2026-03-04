@@ -7,21 +7,25 @@ div
         | Hoe breder het lijntje, hoe ouder het nummer, relatief met het jaar van de Tijdloze.
 </template>
 
-<style lang="scss" scoped>
-  @use "../../../assets/styleConfig";
+<style scoped>
+  @import "../../../assets/styleConfig.css";
 
   div.legende {
     ul {
-      @include styleConfig.noBullets;
+      margin: 0;
+      padding: 0;
       max-width: 40em;
       margin: 0 auto;
       li {
+        list-style-type: none;
+        list-style-position: outside;
         text-align: left;
       }
       img {
         margin-right: 2em;
         vertical-align: bottom;
-        @include styleConfig.border;
+        border: var(--black-line);
+        border-radius: var(--border-radius);
       }
     }
   }

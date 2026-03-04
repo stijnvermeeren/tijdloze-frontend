@@ -180,7 +180,7 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .releaseYear{
     width: 100px;
     flex-grow: 0.2;

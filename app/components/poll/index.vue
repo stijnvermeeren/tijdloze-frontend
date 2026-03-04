@@ -139,14 +139,14 @@ function login() {
 }
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   div.poll {
     margin: 10px 0;
     padding: 5px 10px;
     border: 1px solid grey;
-    background-color: styleConfig.$inputBackgroundColor;
+    background-color: var(--input-background-color);
 
     .reload {
       float: right;
@@ -184,7 +184,7 @@ function login() {
           left: 0;
           top: 0;
           bottom: 0;
-          background-color: styleConfig.$headerBackgroundColor;
+          background-color: var(--header-background-color);
           z-index: -1;
         }
 

@@ -31,7 +31,7 @@ const colors = ["#336699","#33aabb","#44ddee","#aaeeff","#ffeeaa","#ffcc33","#ff
 
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 span.userAvatar {
   * {
     vertical-align: middle;

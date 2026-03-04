@@ -54,7 +54,7 @@ const nextPosition = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.container {
   display: flex;
   flex-direction: column;

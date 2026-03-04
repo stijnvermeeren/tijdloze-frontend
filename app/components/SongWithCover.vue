@@ -31,7 +31,7 @@ onMounted(() => {
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.songWithCover {
   display: flex;
   height: 64px;

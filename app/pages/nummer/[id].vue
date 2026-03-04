@@ -57,7 +57,7 @@ definePageMeta({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.spotify {
     margin-top: 30px;
 

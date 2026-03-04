@@ -18,7 +18,7 @@ const props = defineProps({
 const byAlbum = ref(false)
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .checkbox {
   float: right;
   margin-top: -20px;

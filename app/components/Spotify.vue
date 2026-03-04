@@ -16,7 +16,7 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   iframe {
     border-radius: 12px;
     max-width: 100%;

@@ -130,11 +130,11 @@ function fullSongLine(song) {
 }
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/graphColors";
-  $hoverColor: #AAAAAA;
-
+<style scoped>
+  @import "../../assets/graphColors.css";
+  
   div.graph {
+    --hover-color: #AAAAAA;
     text-align: center;
     margin: 0 auto 20px auto;
     position: relative;
@@ -173,7 +173,7 @@ function fullSongLine(song) {
 
       line {
         fill: none;
-        stroke: $hoverColor;
+        stroke: var(--hover-color);
         shape-rendering: crispEdges;
         vector-effect: non-scaling-stroke;
       }

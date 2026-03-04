@@ -114,7 +114,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.analyse {
     font-size: 14px;
   }

@@ -199,8 +199,8 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped>
-  @use "../assets/styleConfig";
+<style scoped>
+  @import "../assets/styleConfig.css";
 
   .searchBox {
     position: relative;
@@ -213,7 +213,7 @@ defineExpose({
       height: 28px;
       text-indent: 30px;
 
-      background: styleConfig.$inputBackgroundColor;
+      background: var(--input-background-color);
       border: 1px solid #aaa;
       border-radius: 5px;
       box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
@@ -225,7 +225,7 @@ defineExpose({
     #searchResults {
       width: 100%;
       border: 1px solid #999;
-      background: styleConfig.$inputBackgroundColor;
+      background: var(--input-background-color);
       overflow: auto;
 
       position: absolute;
@@ -258,7 +258,7 @@ defineExpose({
           }
 
           &.selected {
-            background: styleConfig.$headerBackgroundColor;
+            background: var(--header-background-color);
           }
         }
 

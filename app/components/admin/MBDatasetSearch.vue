@@ -98,7 +98,7 @@ defineExpose({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   table {
     margin: 10px auto 10px 0;
 

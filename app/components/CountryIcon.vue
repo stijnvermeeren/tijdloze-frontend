@@ -23,7 +23,7 @@ const countryName = computed(() => {
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 img {
   vertical-align: middle;
 }

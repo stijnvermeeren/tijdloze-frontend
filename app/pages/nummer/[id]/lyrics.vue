@@ -11,7 +11,7 @@ const props = defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div.lyrics {
   padding: 0 20px 10px 20px;
   white-space: pre-line;

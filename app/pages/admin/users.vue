@@ -132,7 +132,7 @@ async function refresh() {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.displayName {
     font-weight: bold;
   }

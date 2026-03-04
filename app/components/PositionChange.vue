@@ -29,7 +29,7 @@ const down = computed(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 div {
   font-size: 90%;
   font-style: italic;

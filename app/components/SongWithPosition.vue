@@ -32,7 +32,7 @@ defineProps({
 })
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   div.entry {
     display: flex;
     height: 64px;

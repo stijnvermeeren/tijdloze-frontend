@@ -72,31 +72,31 @@ function isNextToHoverYear(year) {
 }
 </script>
 
-<style lang="scss" scoped>
-  $axisColor: #777;
-  $lightAxisColor: #ddd;
-
+<style scoped>
   .axis {
+    --axis-color: #777;
+    --light-axis-color: #ddd;
+
     .tick {
-      fill: $axisColor;
+      fill: var(--axis-color);
 
       &.highlighted {
         font-weight: bold;
       }
 
       &.nextToHighlighted {
-        fill: $lightAxisColor;
+        fill: var(--light-axis-color);
       }
     }
 
     path, line {
       fill: none;
-      stroke: $axisColor;
+      stroke: var(--axis-color);
       shape-rendering: crispEdges;
     }
   }
 
   .y.axis .tick line {
-    stroke: $lightAxisColor;
+    stroke: var(--light-axis-color);
   }
 </style>

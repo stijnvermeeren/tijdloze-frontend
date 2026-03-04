@@ -304,8 +304,8 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<style lang="scss" scoped>
-  @use "../../assets/styleConfig";
+<style scoped>
+  @import "../../assets/styleConfig.css";
 
   div.chat {
     display: flex;
@@ -317,7 +317,7 @@ onBeforeUnmount(() => {
 
     div.header {
       display: block;
-      background-color: styleConfig.$inputBackgroundColor;
+      background-color: var(--input-background-color);
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       border-radius: 4px 4px 0 0;
@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
     }
 
     div.online {
-      background-color: styleConfig.$inputBackgroundColor;
+      background-color: var(--input-background-color);
       padding: 4px 8px;
       border-bottom: 1px solid grey;
       text-align: left;
@@ -381,7 +381,7 @@ onBeforeUnmount(() => {
         }
 
         div.myMessage {
-          background-color: styleConfig.$inputBackgroundColor;
+          background-color: var(--input-background-color);
         }
 
         div.systemMessage {
@@ -401,7 +401,7 @@ onBeforeUnmount(() => {
         margin: 4px 5px;
         padding: 3px 8px;
         flex: 1;
-        background-color: styleConfig.$inputBackgroundColor;
+        background-color: var(--input-background-color);
         font-size: 16px;
         border-radius: 4px;
         border: 2px solid grey;

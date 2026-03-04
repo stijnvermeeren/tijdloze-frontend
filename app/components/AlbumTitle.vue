@@ -23,7 +23,7 @@ const suffix = computed(() => {
 
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
   .suffix {
     font-size: 90%;
   }

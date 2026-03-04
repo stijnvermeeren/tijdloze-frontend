@@ -1,5 +1,5 @@
 
-@use "styleConfig";
+@import "./styleConfig.css";
 
 table {
   margin: 0 auto;
@@ -12,33 +12,33 @@ table {
 table.lijst {
   margin: 0 auto 20px auto;
 
-  tr:first-child {
-    th, td {
+  & tr:first-child {
+    & th, & td {
       border-bottom: 1px solid black;
     }
   }
-  tr:last-child {
-    th, td {
+  & tr:last-child {
+    & th, & td {
       border-bottom: none !important;
     }
   }
-  td, th {
+  & td, & th {
     text-align: center;
     padding: 0.16em 0.5em;
   }
-  th {
+  & th {
     font-weight: bold;
   }
-  td.l, th.l, th.headerl {
+  & td.l, & th.l, & th.headerl {
     text-align: left;
   }
-  td.a, th.a {
+  & td.a, & th.a {
     text-align: right;
   }
-  td.a + td, th.a + th {
+  & td.a + td, & th.a + th {
     text-align: left;
   }
-  td.r, th.r {
+  & td.r, & th.r {
     white-space: nowrap;
     font-weight: bold;
     width: 2.5em;
@@ -49,7 +49,7 @@ table.lijst {
       border-right: 1px solid black;
     }
   }
-  td.y, th.y {
+  & td.y, & th.y {
     width: 3em;
     &:not(:first-child) {
       border-left: 1px solid black;
@@ -58,86 +58,89 @@ table.lijst {
       border-right: 1px solid black;
     }
   }
-  td.n, th.n {
+  & td.n, & th.n {
     color: #555555;
   }
-  td.i {
+  & td.i {
     font-style: italic;
     white-space: nowrap;
   }
-  td.s {
+  & td.s {
     font-size: 85%;
-    ul {
-      @include styleConfig.noBullets;
-      li {
+    & ul {
+      margin: 0;
+      padding: 0;
+      & li {
+        list-style-type: none;
+        list-style-position: outside;
         padding: 0 0 0 15px;
         display: inline;
-        a {
+        & a {
           display: inline;
         }
       }
     }
 
   }
-  td.wrap {
+  & td.wrap {
     white-space: normal;
   }
 
-  &.perEen tr, &.perVijf tr:nth-child(5n+1), tr.lineAfter {
-    td {
+  &.perEen tr, &.perVijf tr:nth-child(5n+1), & tr.lineAfter {
+    & td {
       border-bottom: 1px #888888 dotted;
     }
   }
 
-  tr.inCurrentList {
-    td:nth-child(2), td:last-child {
+  & tr.inCurrentList {
+    & td:nth-child(2), & td:last-child {
       font-weight: bold;
     }
   }
 
-  table.valueSongValue {
+  & table.valueSongValue {
     margin: 0.3em 0;
 
-    td:first-child, th:first-child {
+    & td:first-child, & th:first-child {
       width: 15%;
     }
-    td:nth-child(2), th:nth-child(2) {
+    & td:nth-child(2), & th:nth-child(2) {
       width: 70%;
     }
-    td:nth-child(3), th:nth-child(3) {
+    & td:nth-child(3), & th:nth-child(3) {
       width: 15%;
     }
-    td {
+    & td {
       border: none !important;
     }
   }
-  table.valueSong {
+  & table.valueSong {
     margin: 0.3em 0;
 
-    td:first-child, th:first-child {
+    & td:first-child, & th:first-child {
       width: 15%;
     }
-    td:nth-child(2), th:nth-child(2) {
+    & td:nth-child(2), & th:nth-child(2) {
       width: 85%;
     }
-    td {
+    & td {
       border: none !important;
     }
   }
 
-  table.valueValueSong {
+  & table.valueValueSong {
     margin: 0.3em 0;
 
-    td:first-child, th:first-child {
+    & td:first-child, & th:first-child {
       width: 15%;
     }
-    td:nth-child(2), th:nth-child(2) {
+    & td:nth-child(2), & th:nth-child(2) {
       width: 15%;
     }
-    td:nth-child(3), th:nth-child(3) {
+    & td:nth-child(3), & th:nth-child(3) {
       width: 85%;
     }
-    td {
+    & td {
       border: none !important;
     }
   }
