@@ -49,47 +49,45 @@
       | Geen resultaten gevonden.
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Artist from "~/orm/Artist";
 import Song from "~/orm/Song";
 import Album from "~/orm/Album";
+import type Year from "~/orm/Year";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 import { sortBy } from 'ramda'
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
 
+type SearchResultArtist = { type: 'artist'; item: Artist; score: number; query?: string }
+type SearchResultSong = { type: 'song'; item: Song; score: number; query?: string }
+type SearchResultAlbum = { type: 'album'; item: Album; score: number; query?: string }
+type SearchResult = SearchResultArtist | SearchResultSong | SearchResultAlbum
+type SearchType = SearchResult['type']
+
 const query = defineModel({
   type: String,
   default: ''
 })
 
-const props = defineProps({
-  placeholder: {
-    type: String,
-    default: 'Zoek artiest, album of nummer'
-  },
-  songFilter: {
-    type: Function,
-    default: song => true
-  },
-  artistFilter: {
-    type: Function,
-    default: artist => true
-  },
-  albumFilter: {
-    type: Function,
-    default: album => true
-  },
-  songsYear: {
-    type: Object
-  }
+const props = withDefaults(defineProps<{
+  placeholder?: string
+  songFilter?: (song: Song) => boolean
+  artistFilter?: (artist: Artist) => boolean
+  albumFilter?: (album: Album) => boolean
+  songsYear?: Year
+}>(), {
+  placeholder: 'Zoek artiest, album of nummer',
+  songFilter: () => true,
+  artistFilter: () => true,
+  albumFilter: () => true,
 })
 
 const input = useTemplateRef('input')
 const searchBoxContainer = useTemplateRef('searchBoxContainer')
 
-const selectedIndex = ref(undefined)
+const selectedIndex = ref<number | undefined>(undefined)
 const searchActive = ref(false)
 
 const resultsLimit = 10
@@ -106,17 +104,15 @@ const allAlbums = computed(() => {
 
 const results = computed(() => {
   if (!query.value) {
-    return []
+    return [] as SearchResult[]
   }
 
-  const queryFragments = useSearchQueryFragments(query.value)
+  const queryFragments = useSearchQueryFragments(query.value) as string[]
   const artists = search(queryFragments, allArtists.value, useSearchArtistContent, 'artist');
   const songs = search(queryFragments, allSongs.value, useSearchSongContent, 'song');
   const albums = search(queryFragments, allAlbums.value, useSearchAlbumContent, 'album');
 
-  return sortBy(result => -result.score)(
-    [artists, songs, albums].flat()
-  );
+  return sortBy((result: SearchResult) => -result.score, [artists, songs, albums].flat())
 })
 const visibleResults = computed(() => {
   return results.value.slice(0, resultsLimit);
@@ -128,7 +124,7 @@ const resultsCount = computed(() => {
 const { gtag } = useGtag()
 watch(query, () => {
   selectedIndex.value = undefined;
-  input.value.focus();
+  input.value?.focus();
   emit('initialResults', results.value);
 
   if (query.value) {
@@ -140,24 +136,32 @@ watch(query, () => {
   }
 })
 
-function onBlur(event) {
+function onBlur(event: FocusEvent) {
   if (searchBoxContainer.value) {
-    if (!searchBoxContainer.value.contains(event.relatedTarget)) {
+    if (!searchBoxContainer.value.contains(event.relatedTarget as Node | null)) {
       searchActive.value = false
     }
   }
 }
-function search(queryFragments, data, matchAttribute, type) {
+function search<T extends Artist | Song | Album>(
+  queryFragments: string[],
+  data: T[],
+  matchAttribute: (item: T) => string,
+  type: SearchType
+): SearchResult[] {
   return data.filter(useSearchFilter(queryFragments, matchAttribute)).map(item => {
     let score = useSearchScore(query.value, matchAttribute(item));
     if (props.songsYear && type === 'song') {
-      score = score / 100 + item.position(props.songsYear);
+      score = score / 100 + ((item as Song).position(props.songsYear) ?? 0);
     }
 
-    return {type, item, score}
+    return {type, item: item as any, score} as SearchResult
   });
 }
-function move(offset) {
+function move(offset: number) {
+  if (!visibleResults.value.length) {
+    return
+  }
   if (selectedIndex.value === undefined) {
     if (offset >= 0) {
       selectedIndex.value = -1;
@@ -167,12 +171,15 @@ function move(offset) {
   }
   selectedIndex.value = mod(selectedIndex.value + offset, visibleResults.value.length);
 }
-function mod(n, m) {
+function mod(n: number, m: number) {
   return ((n % m) + m) % m;
 }
-function go(index) {
+function go(index: number | undefined) {
   if (index !== undefined) {
     const result = results.value[index];
+    if (!result) {
+      return
+    }
     result.query = query.value;
     emit('selectSearchResult', result);
     query.value = '';
@@ -189,8 +196,8 @@ onKeyStroke('Escape', () => {
 const isVisible = useElementVisibility(searchBoxContainer)
 
 onStartTyping(() => {
-  if (isVisible.value && !input.value.focused) {
-    input.value.focus()
+  if (isVisible.value && !input.value?.focused) {
+    input.value?.focus()
   }
 })
 

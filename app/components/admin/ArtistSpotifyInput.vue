@@ -4,7 +4,7 @@ div.d-flex
   v-btn.ml-2(v-if='spotifyId' :icon="mdiOpenInNew" :href="link" target="_blank")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiOpenInNew} from "@mdi/js";
 
 const spotifyId = defineModel()

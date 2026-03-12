@@ -31,7 +31,7 @@ div
       )
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
@@ -39,13 +39,19 @@ import { sortWith, ascend } from 'ramda';
 
 const {$api} = useNuxtApp()
 
-const props = defineProps({
-  artistId: {
-    type: Number
-  }
-})
+interface AlbumDetails {
+  title: string
+  musicbrainzId?: string
+  releaseYear?: number
+  isSingle: boolean
+  isSoundtrack: boolean
+}
 
-function defaultAlbumDetails() {
+const props = defineProps<{
+  artistId?: number
+}>()
+
+function defaultAlbumDetails(): AlbumDetails {
   return {
     title: '',
     musicbrainzId: undefined,
@@ -55,8 +61,8 @@ function defaultAlbumDetails() {
   }
 }
 
-const albumId = ref(undefined)
-const albumDetails = ref(defaultAlbumDetails())
+const albumId = ref<number | undefined>(undefined)
+const albumDetails = ref<AlbumDetails>(defaultAlbumDetails())
 
 const albumTitle = computed(() => {
   if (albumId.value && album.value) {
@@ -66,6 +72,9 @@ const albumTitle = computed(() => {
   }
 })
 const album = computed(() => {
+  if (albumId.value === undefined) {
+    return undefined
+  }
   return useRepo(Album).find(albumId.value);
 })
 const albumValid = computed(() => {
@@ -91,15 +100,15 @@ const candidateAlbums = computed(() => {
   const artist = useRepo(Artist).with('albums').find(props.artistId);
   if (artist) {
     return sortWith([
-      ascend(album => album.releaseYear),
-      ascend(album => album.title)
-    ])(artist.albums)
+      ascend((album: Album) => album.releaseYear),
+      ascend((album: Album) => album.title)
+    ], artist.albums)
   } else {
     return [];
   }
 })
 
-async function loadPreset(title, musicbrainzId, year, isSingle, isSoundtrack) {
+async function loadPreset(title: string, musicbrainzId: string | undefined, year: number | undefined, isSingle: boolean, isSoundtrack: boolean) {
   const matchedAlbum = props.artistId
       ? await albumMatch(props.artistId, title, year, musicbrainzId)
       : undefined;
@@ -126,22 +135,24 @@ async function loadPreset(title, musicbrainzId, year, isSingle, isSoundtrack) {
  *        "Sign 'O' the Times" matches with "Sign "O" the Times"
  *        BUT "Use Your Illusion I" does not match with "Use Your Illusion II"
  */
-async function albumMatch(artistId, albumName, releaseYear, albumMBId) {
-  const album = await $api(`/album/musicbrainz/${albumMBId}`).catch(
-      () => undefined
-  );
-  if (album)  {
-    return useRepo(Album).find(album.id)
+async function albumMatch(artistId: number, albumName: string, releaseYear: number | undefined, albumMBId?: string) {
+  if (albumMBId) {
+    const apiAlbum = await $api<{id: number}>(`/album/musicbrainz/${albumMBId}`).catch(
+        () => undefined
+    );
+    if (apiAlbum)  {
+      return useRepo(Album).find(apiAlbum.id)
+    }
   }
 
-  function tokenize(title) {
-    return [...title.toLowerCase().matchAll(/\w+/g)];
+  function tokenize(title: string): string[] {
+    return Array.from(title.toLowerCase().matchAll(/\w+/g), match => match[0] ?? '');
   }
 
   if (artistId && albumName && releaseYear) {
     const queryTokens = tokenize(albumName);
 
-    return useRepo(Album).all().find(album => {
+    return useRepo(Album).all().find((album: Album) => {
       const matchTokens = tokenize(album.title);
       const minLength = Math.min(queryTokens.length, matchTokens.length);
       return album.artistId === artistId &&
@@ -153,7 +164,7 @@ async function albumMatch(artistId, albumName, releaseYear, albumMBId) {
   }
 }
 
-async function submit(artistId) {
+async function submit(artistId: number) {
   let payloadAlbumId = albumId.value;
   if (!payloadAlbumId) {
     const albumData = {
@@ -164,7 +175,7 @@ async function submit(artistId) {
       isSingle: albumDetails.value.isSingle,
       isSoundtrack: albumDetails.value.isSoundtrack,
     }
-    const album = await $api('/album', useFetchOptsPost(albumData));
+    const album = await $api<{id: number}>('/album', { method: 'POST', body: albumData });
     payloadAlbumId = album.id;
   }
   return payloadAlbumId

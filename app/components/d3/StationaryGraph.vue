@@ -1,6 +1,6 @@
 <template lang="pug">
 .graph(@mouseleave="hoverYear = undefined")
-  .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+  .tooltip(v-if="tooltipSong && hoverYear" :style="tooltipStyle")
     .year
       | {{hoverYear.yyyy}}
     .entry
@@ -15,12 +15,12 @@
       )
       line(v-if="hoverLineX" :x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g.color-1(v-for='song in songs')
-        path.coloredPath(:d='stationarySongLine(song)')
+        path.coloredPath(:d='stationarySongLine(song) ?? undefined')
         template(v-for='year in stationaryYears(song)' :key="year.yyyy")
           circle.circle.coloredCircle(
             v-if='song.position(year)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year))'
+            :cy='yScale(song.position(year) ?? 0)'
             r='3'
           )
       rect(
@@ -34,33 +34,42 @@
       )
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type Year from "~/orm/Year";
+  import type Song from "~/orm/Song";
   import {useRootStore} from "~/stores/root";
 
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
   const {years, xBandScale, xScale, yScale, songLine} = useGraph()
-  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
+  const hover = useGraphHover(xBandScale, xScale, yScale, years)
+  const onHover = hover.onHover
+  const hoverYear = hover.hoverYear as Ref<Year | undefined>
+  const hoverLineX = hover.hoverLineX as Ref<number | undefined>
+  const hoverPosition = hover.hoverPosition as Ref<number | undefined>
+  const tooltipStyle = hover.tooltipStyle
 
-  defineProps({
-    songs: Array
-  })
+  defineProps<{
+    songs: Song[]
+  }>()
 
   const tooltipSong = computed(() => {
-    if (!!hoverYear.value && !!hoverPosition.value) {
-      return useRootStore().list(hoverYear.value, 100, 100).find(entry => {
-        return entry.position === hoverPosition.value
-          && stationaryYears(entry.song).find(year => year.yyyy === hoverYear.value.yyyy);
+    const hoveredYear = hoverYear.value
+    const hoveredPosition = hoverPosition.value
+    if (hoveredYear && hoveredPosition) {
+      return useRootStore().list(hoveredYear, 100, 100).find(entry => {
+        return entry.position === hoveredPosition
+            && stationaryYears(entry.song).find((year: Year) => year.yyyy === hoveredYear.yyyy);
       })?.song
     }
     return undefined;
   })
 
-  function stationarySongLine(song) {
+  function stationarySongLine(song: Song) {
     return songLine(song, song.stationaryIntervals(years.value), true);
   }
 
-  function stationaryYears(song) {
-    return song.stationaryIntervals(years.value).flat();
+  function stationaryYears(song: Song): Year[] {
+    return song.stationaryIntervals(years.value).flat() as Year[];
   }
 </script>
 

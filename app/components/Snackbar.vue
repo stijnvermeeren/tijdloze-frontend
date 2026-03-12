@@ -1,12 +1,12 @@
 <template lang="pug">
-v-snackbar(:close-on-back="false" v-model="isOpen" :timeout="10000" timer="#f9bc85" v-if='song' color="#fdf0e0")
+v-snackbar(:close-on-back="false" v-model="isOpen" :timeout="10000" timer="#f9bc85" v-if='song && year' color="#fdf0e0")
   div.snackbarContent
     .snackbarHeader
       | Op positie {{position}} in de Tijdloze van #[year-link(:year='year')]
     song-with-cover(:song="song")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRootStore} from "~/stores/root";
 
 const {currentYear: year} = storeToRefs(useYearStore())
@@ -15,12 +15,12 @@ const {lastSong: song} = storeToRefs(useRootStore())
 const isOpen = ref(false)
 
 const position = computed(() => {
-  if (song.value) {
+  if (song.value && year.value) {
     return song.value.position(year.value, true);
   }
 })
 watch(song, (newSong, oldSong) => {
-  if (newSong && (!oldSong || oldSong.id !== newSong.id) && position.value <= 100) {
+  if (newSong && (!oldSong || oldSong.id !== newSong.id) && position.value !== undefined && position.value <= 100) {
     isOpen.value = true
   }
 })

@@ -2,12 +2,12 @@
 v-btn(@click='click' color="amber" :icon="mdiDelete" :disabled='disabled' size="small")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiDelete} from "@mdi/js";
 
-defineProps({
-  disabled: Boolean
-})
+defineProps<{
+  disabled?: boolean
+}>()
 
 const emit = defineEmits(['click'])
 

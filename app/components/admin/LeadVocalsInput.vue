@@ -10,7 +10,7 @@ div.d-flex
   v-btn(:icon="mdiClose" v-if="genderId" @click="genderId = undefined" size="small")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import vocalsGenders from '~/utils/leadVocals'
 import {mdiClose} from "@mdi/js";
 

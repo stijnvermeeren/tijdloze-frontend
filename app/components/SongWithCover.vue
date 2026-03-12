@@ -1,27 +1,24 @@
 <template lang="pug">
 div.songWithCover
   div
-    album-cover(:cover="song.album.cover" :key="mounted")
+    album-cover(:cover="song.album?.cover ?? undefined" :key="mounted ? 'mounted' : 'initial'")
   div
     div.title
       song-link(:song='song')
-    div.artist van #[song-artist-link(:song='song')] uit {{song.album.releaseYear}}
+    div.artist van #[song-artist-link(:song='song')] uit {{song.album?.releaseYear}}
     div.attribution(v-if="attribution")
       | In de officiële lijst als "
       span {{attribution}}
       | "
 </template>
 
-<script setup>
-const props = defineProps({
-  song: {
-    type: Object,
-  },
-  attribution: {
-    type: String,
-    default: undefined
-  }
-})
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+
+const props = defineProps<{
+  song: Song
+  attribution?: string
+}>()
 
 // Fix for wrong covers on hydration mismatch on homepage. Better solution would be to avoid hydration mismatch...
 const mounted = ref(false)

@@ -5,13 +5,12 @@ div
   span(v-else) -
 </template>
 
-<script setup>
-defineProps({
-  position: Number,
-  probablyInList: {
-    type: Boolean,
-    default: false
-  }
+<script setup lang="ts">
+withDefaults(defineProps<{
+  position?: number
+  probablyInList?: boolean
+}>(), {
+  probablyInList: false
 })
 </script>
 

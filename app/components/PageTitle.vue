@@ -6,11 +6,11 @@ div.pageTitleContainer
     slot
 </template>
 
-<script setup>
-const props = defineProps({
-  icon: String,
-  iconAlt: String
-})
+<script setup lang="ts">
+defineProps<{
+  icon?: string
+  iconAlt?: string
+}>()
 </script>
 
 <style scoped>

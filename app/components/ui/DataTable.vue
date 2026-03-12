@@ -22,26 +22,31 @@ v-data-table(
 
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Year from "~/orm/Year";
+
 const CHUNK_LENGTH = 8
 
-const props = defineProps({
-  data: Array,
-  propertyName: {
-    type: String,
-    default: ""
-  },
-  totalName: {
-    type: String,
-    default: "Totaal"
-  }
+type DataRow = {
+  name: string
+  total: number
+  perYear: Record<string, number>
+}
+
+const props = withDefaults(defineProps<{
+  data: DataRow[]
+  propertyName?: string
+  totalName?: string
+}>(), {
+  propertyName: "",
+  totalName: "Totaal"
 })
 
 const {years} = storeToRefs(useYearStore())
 
 const yearGroups = computed(() => {
   const yearsLength = years.value.length
-  const results = []
+  const results: Array<Array<Pick<Year, 'yyyy' | '_yy'>>> = []
   for (let i = 0; i <= (yearsLength - 1) / CHUNK_LENGTH; i++) {
     const yearsChunk = years.value.slice(
         Math.max(0, yearsLength - CHUNK_LENGTH * (i + 1)),
@@ -62,7 +67,7 @@ const yearGroupsOptions = computed(() => {
     const firstYear = yearsChunk[0]
     const lastYear = yearsChunk[yearsChunk.length - 1]
     return {
-      title: `${firstYear.yyyy} - ${lastYear.yyyy}`,
+      title: firstYear && lastYear ? `${firstYear.yyyy} - ${lastYear.yyyy}` : "",
       value: index
     }
   })
@@ -70,10 +75,11 @@ const yearGroupsOptions = computed(() => {
 
 const selectedYearGroupIndex = ref(0)
 
-const selectedYears = computed(() => {
+const selectedYears = computed<Array<Pick<Year, 'yyyy' | '_yy'>>>(() => {
   if (yearGroups.value.length > selectedYearGroupIndex.value) {
-    return yearGroups.value[selectedYearGroupIndex.value]
+    return yearGroups.value[selectedYearGroupIndex.value] ?? []
   }
+  return []
 })
 
 const headers = computed(() => {
@@ -81,7 +87,7 @@ const headers = computed(() => {
     return {
       title: year._yy,
       value: `perYear.${year.yyyy}`,
-      align: 'center',
+      align: 'center' as const,
       headerProps: { style: 'font-weight: bold'}
     }
   })
@@ -90,19 +96,19 @@ const headers = computed(() => {
       title: props.propertyName,
       key: 'name',
       value: 'entry',
-      align: 'center',
+      align: 'center' as const,
       cellProps: { style: 'font-weight: bold'},
       headerProps: { style: 'font-weight: bold'}
     },
     {
       key: 'yearsGroup',
-      align: 'center',
+      align: 'center' as const,
       children: yearHeaders,
     },
     {
       title: props.totalName,
       value: 'total',
-      align: 'center',
+      align: 'center' as const,
       cellProps: { style: 'font-weight: bold'},
       headerProps: { style: 'font-weight: bold'}
     }

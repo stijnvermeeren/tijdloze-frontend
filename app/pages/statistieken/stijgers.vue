@@ -2,14 +2,16 @@
 Title Stijgers
 div
   h2 Tijdloze stijgers
-  ui-tabs(:tabs="[
-    { to: '/statistieken/stijgers', title: 'Per jaar' },
-    { to: '/statistieken/stijgers/lijst', title: 'Grootste aller tijden' }
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
 <script setup>
+const tabs = [
+  { to: '/statistieken/stijgers', title: 'Per jaar' },
+  { to: '/statistieken/stijgers/lijst', title: 'Grootste aller tijden' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 

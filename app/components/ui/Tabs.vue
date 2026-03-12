@@ -7,10 +7,16 @@ ui-card
   slot
 </template>
 
-<script setup>
-defineProps({
-  tabs: Array
-})
+<script setup lang="ts">
+type TabItem = {
+  to: string
+  title: string
+  subtitle?: string
+}
+
+defineProps<{
+  tabs: TabItem[]
+}>()
 </script>
 
 <style scoped>

@@ -2,8 +2,10 @@
 nuxt-link(:to='`/lijst/${year.yyyy}`') {{year._yy}}
 </template>
 
-<script setup>
-const props = defineProps({
-  year: Object
-})
+<script setup lang="ts">
+import type Year from "~/orm/Year";
+
+defineProps<{
+  year: Year
+}>()
 </script>

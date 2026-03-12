@@ -1,11 +1,11 @@
 <template lang="pug">
 ui-card(v-if="crawl")
   template(#title)
-    artist-link(v-if="type === 'artist'" :artist="storeModel")
-    span(v-if="type === 'album'")
-      album-link(:album="storeModel")
-      |  ({{storeModel.releaseYear}})
-    song-link(v-if="type === 'song'" :song="storeModel")
+    artist-link(v-if="artistModel" :artist="artistModel")
+    span(v-if="albumModel")
+      album-link(:album="albumModel")
+      |  ({{albumModel.releaseYear}})
+    song-link(v-if="songModel" :song="songModel")
     span : {{crawl.field}}
   template(#subtitle)
     div Gecrawled: {{crawl.crawlDate}}
@@ -36,63 +36,96 @@ ui-card(v-if="crawl")
 div(v-else) Niets meer gevonden...
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
 import Song from "~/orm/Song";
+import type ArtistModel from '~/orm/Artist'
+import type AlbumModel from '~/orm/Album'
+import type SongModel from '~/orm/Song'
 
 const {$api} = useNuxtApp()
 
-const props = defineProps({
-  type: String
-})
+type CrawlType = 'artist' | 'album' | 'song'
+
+interface CrawlEntry {
+  id: number
+  artistId?: number
+  albumId?: number
+  songId?: number
+  field: string
+  value?: string
+  comment?: string
+  crawlDate?: string
+}
+
+const props = defineProps<{
+  type: CrawlType
+}>()
 
 const apiPath = `crawl-${props.type}`
-const idSelector = `${props.type}Id`
-const repoModel = function(){
-  switch(props.type) {
-    case "artist": return Artist
-    case "album": return Album
-    case "song": return Song
+
+function getModelId(entry: CrawlEntry | null | undefined): number | undefined {
+  if (!entry) {
+    return undefined
   }
-}()
+  if (props.type === 'artist') {
+    return entry.artistId
+  }
+  if (props.type === 'album') {
+    return entry.albumId
+  }
+  return entry.songId
+}
 
 const submitting = ref(false)
 
-const {data: crawl, refresh: refreshCrawl} = await useFetch(apiPath, useFetchOpts())
-const modelFetchPath = computed(() => {
-  const modelId = crawl?.value?.[idSelector]
-  return modelId ? `${props.type}/${modelId}` : undefined
-})
-const {data: model} = await useFetch(modelFetchPath, useFetchOpts())
+const {data: crawl, refresh: refreshCrawl} = await useFetch<CrawlEntry | null>(apiPath, useFetchOpts())
 
-const currentValue = computed(() => {
-  return model?.value?.[crawl?.value?.field]
-})
-
-const storeModel = computed(() => {
-  if (crawl.value) {
-    return useRepo(repoModel).find(crawl.value[idSelector])
-  } else {
+const storeModel = computed<ArtistModel | AlbumModel | SongModel | undefined>(() => {
+  const modelId = getModelId(crawl.value)
+  if (!modelId) {
     return undefined
   }
+
+  if (props.type === 'artist') {
+    return useRepo(Artist).find(modelId) ?? undefined
+  }
+  if (props.type === 'album') {
+    return useRepo(Album).find(modelId) ?? undefined
+  }
+  return useRepo(Song).find(modelId) ?? undefined
+})
+
+const artistModel = computed(() => props.type === 'artist' ? storeModel.value as ArtistModel | undefined : undefined)
+const albumModel = computed(() => props.type === 'album' ? storeModel.value as AlbumModel | undefined : undefined)
+const songModel = computed(() => props.type === 'song' ? storeModel.value as SongModel | undefined : undefined)
+
+const currentValue = computed(() => {
+  const field = crawl.value?.field
+  const model = storeModel.value as Record<string, unknown> | undefined
+  if (!field || !model) {
+    return undefined
+  }
+  const value = model[field]
+  return value === undefined || value === null ? undefined : String(value)
 })
 
 async function refresh() {
   await refreshCrawl()
 }
 
-async function accept(id) {
+async function accept(id: number) {
   submitting.value = true
-  await $api(`${apiPath}/${id}`, useFetchOptsPost())
+  await $api(`${apiPath}/${id}`, { method: 'POST' })
   refresh()
   submitting.value = false
 }
 
-async function reject(id) {
+async function reject(id: number) {
   submitting.value = true
-  await $api(`${apiPath}/${id}`, useFetchOptsDelete())
+  await $api(`${apiPath}/${id}`, { method: 'DELETE' })
   refresh()
   submitting.value = false
 }

@@ -4,10 +4,10 @@ a(:href="href")
     slot
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { mdiLink } from '@mdi/js'
 
-defineProps({
-  href: String
-})
+defineProps<{
+  href: string
+}>()
 </script>

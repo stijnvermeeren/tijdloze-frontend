@@ -4,16 +4,16 @@ iframe(
   width="500"
   height="80"
   frameBorder="0"
-  allowfullscreen=""
+  allowfullscreen="true"
   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
   loading="lazy"
 )
 </template>
 
-<script setup>
-const props = defineProps({
-  spotifyId: String
-})
+<script setup lang="ts">
+defineProps<{
+  spotifyId: string
+}>()
 </script>
 
 <style scoped>

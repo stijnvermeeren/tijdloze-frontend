@@ -12,40 +12,44 @@ v-autocomplete(
 )
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
-import { sortBy } from 'ramda';
+import type ArtistModel from '~/orm/Artist'
+import { sortBy } from 'ramda'
 
-const props = defineProps({
-  label: {
-    type: String,
-    default: "Artiest"
-  },
-  required: {
-    type: Boolean,
-    default: true
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  }
+withDefaults(defineProps<{
+  label?: string
+  required?: boolean
+  disabled?: boolean
+}>(), {
+  label: "Artiest",
+  required: true,
+  disabled: false
 })
 
-const artistId = defineModel()
+const artistId = defineModel<number | undefined>()
 
 const query = ref('')
 
 watch(artistId, (newArtistId) => {
+  if (!newArtistId) {
+    return
+  }
   const artist = useRepo(Artist).find(newArtistId)
-  query.value = artist.name
+  if (artist) {
+    query.value = artist.name
+  }
 })
 
 const candidateArtists = computed(() => {
   const queryFragments = useSearchQueryFragments(query.value)
-  return sortBy(artist => -useSearchScore(query.value, useSearchArtistContent(artist)))(
-    useRepo(Artist).all().filter(useSearchFilter(queryFragments, useSearchArtistContent))
-  ).map(artist => {
+  return sortBy(
+    (artist: ArtistModel) => -useSearchScore(query.value, useSearchArtistContent(artist)),
+    useRepo(Artist).all()
+    .filter(useSearchFilter(queryFragments, useSearchArtistContent))
+  )
+    .map((artist: ArtistModel) => {
     return {
       value: artist.id,
       title: artist.name

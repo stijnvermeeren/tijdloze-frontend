@@ -7,7 +7,7 @@ div
       v-list(bg-color="#fadfbb" density="comfortable" :opened="openeds")
         v-list-item(to="/") Home
         v-list-item(v-if='commentsOn' to="/reacties") Reageer en discussieer
-        template(v-if='listInProgress')
+        template(v-if='listInProgress && currentYear')
           v-list-item(:to="`/lijst/${currentYear.yyyy}`" value="inProgress") De Tijdloze {{currentYear.yyyy}}
           v-list-item.subItem(v-if="chatOn" to="/chat") Chatbox
           v-list-item.subItem(v-if="top100InProgress" to="/polls") Polls
@@ -71,7 +71,7 @@ div
 
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useRootStore} from "~/stores/root";
 import {useAuthStore} from "~/stores/auth";
 import {mdiLockOutline, mdiClose} from "@mdi/js";
@@ -93,7 +93,7 @@ const sortedYears = computed(() => {
   return [...years.value].reverse();
 })
 
-function groupMap(path) {
+function groupMap(path: string) {
   const firstPart = path.split('/').slice(0, 2).join('/')
   switch (path) {
     case '/polls':
@@ -103,7 +103,15 @@ function groupMap(path) {
       return `group-${firstPart}`
   }
 }
-function selectSearchResult(result) {
+type SearchResult = {
+  type: 'song' | 'artist' | 'album'
+  item: {
+    id: number
+    slug: string
+  }
+}
+
+function selectSearchResult(result: SearchResult) {
   let path = ''
 
   if (result.type === 'song') {
@@ -121,11 +129,12 @@ function selectSearchResult(result) {
 
 onKeyStroke('Escape', close)
 
-function close(e) {
+function close(_e?: Event) {
   emit('close');
 }
-function menuClick(event) {
-  if (event.target.tagName.toLowerCase() === 'a' || event.target.parentElement?.tagName?.toLowerCase() === 'a') {
+function menuClick(event: MouseEvent) {
+  const target = event.composedPath()[0] as HTMLElement | undefined
+  if (target?.tagName?.toLowerCase() === 'a' || target?.parentElement?.tagName?.toLowerCase() === 'a') {
     close();
   }
 }

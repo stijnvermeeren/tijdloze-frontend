@@ -5,15 +5,15 @@ div.d-flex
   v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiOpenInNew, mdiSearchWeb} from "@mdi/js";
 
-const wikiUrl = defineModel()
+const wikiUrl = defineModel<string>()
 
-const props = defineProps({
-  lang: String,
-  query: String
-})
+const props = defineProps<{
+  lang: string
+  query: string
+}>()
 
 const label = computed(() => {
   switch (props.lang) {

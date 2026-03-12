@@ -5,22 +5,22 @@ div.d-flex
   v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiOpenInNew, mdiSearchWeb} from "@mdi/js";
 
-const musicbrainzId = defineModel()
+const musicbrainzId = defineModel<string>()
 
-const props = defineProps({
-  musicbrainzCategory: String,
-  query: String
-})
+const props = defineProps<{
+  musicbrainzCategory: string
+  query?: string
+}>()
 
 const visitUrl = computed(() => {
   return `https://musicbrainz.org/${props.musicbrainzCategory}/${musicbrainzId.value}`
 })
 
 const searchUrl = computed(() => {
-  const encodedQuery = encodeURIComponent(props.query).replaceAll("%20", "+")
+  const encodedQuery = encodeURIComponent(props.query ?? '').replaceAll("%20", "+")
   let type = props.musicbrainzCategory
   if (type === 'release-group') {
     type = 'release_group'

@@ -10,21 +10,22 @@ v-select(
 )
 </template>
 
-<script setup>
+<script setup lang="ts">
 import countries from '~/utils/country'
 import {useRootStore} from "~/stores/root";
-import { sortBy } from 'ramda';
+import { sortBy } from 'ramda'
 
-const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  }
+withDefaults(defineProps<{
+  disabled?: boolean
+}>(), {
+  disabled: false
 })
 
 const model = defineModel()
 
-const sortedCountryIds = sortBy(countryId => countries[countryId])(Object.keys(countries))
+const countryMap = countries
+
+const sortedCountryIds = sortBy((countryId: string) => countryMap[countryId] || '', Object.keys(countryMap))
 
 const usedCountryIds = computed(() => {
   return sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId))
@@ -33,7 +34,7 @@ const usedCountryIds = computed(() => {
 const items = computed(() => {
   return usedCountryIds.value.map(countryId => {
     return {
-      title: countries[countryId],
+      title: countryMap[countryId],
       value: countryId,
     }
   })

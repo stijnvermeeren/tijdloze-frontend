@@ -5,13 +5,14 @@
       position-change(:position="position" :previous-position="previousPosition")
 </template>
 
-<script setup>
-import Year from "~/orm/Year";
+<script setup lang="ts">
+import type Year from "~/orm/Year";
+import type Song from "~/orm/Song";
 
-const props = defineProps({
-  song: Object,
+const props = defineProps<{
+  song: Song
   year: Year
-})
+}>()
 
 const position = computed(() => {
   return props.song.position(props.year, true);

@@ -32,18 +32,20 @@ g
         | {{position}}
 </template>
 
-<script setup>
-import Year from "../../orm/Year";
+<script setup lang="ts">
+import type Year from "~/orm/Year";
 
-const props = defineProps({
-  xScale: Function,
-  yScale: Function,
-  years: Array,
-  hoverYear: Year,
-  extended: {
-    type: Boolean,
-    default: false
-  }
+type XScale = (value: string) => number
+type YScale = ((value: number) => number) & { range: () => number[] }
+
+const props = withDefaults(defineProps<{
+  xScale: XScale
+  yScale: YScale
+  years: Year[]
+  hoverYear?: Year
+  extended?: boolean
+}>(), {
+  extended: false,
 })
 
 const {width} = useGraphConstants()
@@ -60,10 +62,10 @@ const rightX = computed(() => {
   return width;
 })
 
-function isHoverYear(year) {
+function isHoverYear(year: Year) {
   return !!props.hoverYear && year.yyyy === props.hoverYear.yyyy;
 }
-function isNextToHoverYear(year) {
+function isNextToHoverYear(year: Year) {
   const yearContext = useYearStore().context.forYear(year)
   return !!props.hoverYear && (
       (yearContext.previous?.year.yyyy === props.hoverYear.yyyy) ||

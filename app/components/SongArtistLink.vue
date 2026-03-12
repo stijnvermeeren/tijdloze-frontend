@@ -1,6 +1,6 @@
 <template lang="pug">
 span
-  artist-link(:artist="song.artist")
+  artist-link(v-if="song.artist" :artist="song.artist")
   template(v-if='song.secondArtist')
     |
     | en
@@ -8,8 +8,10 @@ span
     artist-link(:artist='song.secondArtist')
 </template>
 
-<script setup>
-defineProps({
-  song: Object
-})
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+
+defineProps<{
+  song: Song
+}>()
 </script>

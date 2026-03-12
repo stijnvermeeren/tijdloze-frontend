@@ -23,8 +23,22 @@ div
       | Geen resultaten in de MusicBrainz dataset. Controlleer de query.
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+
 const {$api} = useNuxtApp()
+
+interface SearchBoxRef {
+  searchActive: boolean
+}
+
+interface MBDatasetHit {
+  [key: string]: unknown
+}
+
+interface MBDatasetSearchResponse {
+  hit?: MBDatasetHit
+}
 
 const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
 
@@ -32,10 +46,10 @@ const waitingForResults = ref(false)
 const query = ref("")
 const processing = ref(false)
 const showingResults = ref(false)
-const mbHit = ref(undefined)
+const mbHit = ref<MBDatasetHit | undefined>(undefined)
 const requestError = ref(false)
 
-const searchBoxRef = useTemplateRef('searchBox')
+const searchBoxRef = useTemplateRef<SearchBoxRef>('searchBox')
 
 watch(query, () => {
   showingResults.value = false
@@ -43,25 +57,29 @@ watch(query, () => {
 
 const {currentYear, previousYear} = storeToRefs(useYearStore())
 
-function initialResults(results) {
+function initialResults(results: unknown[]) {
   if (waitingForResults.value) {
     waitingForResults.value = false
     if (results.length === 0) {
       searchMusicbrainz()
-      searchBoxRef.value.searchActive = false
+      if (searchBoxRef.value) {
+        searchBoxRef.value.searchActive = false
+      }
     } else if (results.length === 1) {
       selectSearchResult(results[0])
-      searchBoxRef.value.searchActive = false
+      if (searchBoxRef.value) {
+        searchBoxRef.value.searchActive = false
+      }
     }
   }
 }
-function setQuery(newQuery) {
+function setQuery(newQuery: string) {
   query.value = newQuery;
   showingResults.value = false
   mbHit.value = undefined
   waitingForResults.value = true
 }
-function selectSearchResult(result) {
+function selectSearchResult(result: unknown) {
   emit("selectSearchResult", result)
 }
 async function searchMusicbrainz() {
@@ -70,9 +88,9 @@ async function searchMusicbrainz() {
   showingResults.value = false;
   processing.value = true;
 
-  const result = await $api(
+  const result = await $api<MBDatasetSearchResponse>(
       '/mbdata/search-query',
-      useFetchOpts({params: {query: query.value}})
+      { method: 'GET', params: {query: query.value} }
   ).catch(err => {
     requestError.value = true;
     processing.value = false;
@@ -89,8 +107,8 @@ async function searchMusicbrainz() {
   }
 }
 
-function possibleSong(song) {
-  return !song.position(currentYear.value, true);
+function possibleSong(song: Song) {
+  return !currentYear.value || !song.position(currentYear.value, true);
 }
 
 defineExpose({

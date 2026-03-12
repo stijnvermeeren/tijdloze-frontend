@@ -32,24 +32,33 @@ div
     v-btn(@click="startImport") Import beginnen
 </template>
 
-<script setup>
+<script setup lang="ts">
 
-const props = defineProps({
-  startPosition: {
-    type: Number,
-    default: 1
-  }
+interface ImportSong {
+  overridePosition: number | undefined
+  query: string
+}
+
+type ImportMode = 'manual' | 'auto' | 'regex'
+
+const props = withDefaults(defineProps<{
+  startPosition?: number
+}>(), {
+  startPosition: 1
 })
 
-const emit = defineEmits(['startImport'])
+const emit = defineEmits<{
+  startImport: [songs: ImportSong[]]
+}>()
 
 const importText = ref('')
-const importMode = ref('regex')
+const importMode = ref<ImportMode>('regex')
 const importStart = ref(props.startPosition)
 const importStep = ref(-1)
 const reverse = ref(true)
 
 const regex = ref('(?<position>[0-9]+)\\n\\n.+\\n(?<title>.+)\\n\\n(?<artist>.+)')
+const parsedRegex = computed(() => new RegExp(regex.value, 'gm'))
 
 const importPlaceholder = computed(() => {
   if (importMode.value === 'auto') {
@@ -62,28 +71,32 @@ const importPlaceholder = computed(() => {
 })
 
 function startImport() {
-  const importSongs = []
+  const importSongs: ImportSong[] = []
   if (importMode.value === 'regex') {
-    importText.value.matchAll(regex.value).forEach(matchObject => {
-      const query = `${matchObject.groups.artist} ${matchObject.groups.title}`
-      const overridePosition = parseInt(matchObject.groups.position)
+    for (const matchObject of importText.value.matchAll(parsedRegex.value)) {
+      const groups = matchObject.groups
+      if (!groups) {
+        continue
+      }
+      const query = `${groups.artist} ${groups.title}`
+      const overridePosition = parseInt(groups.position ?? '0', 10)
       importSongs.push({
         overridePosition,
         query
       })
-    })
+    }
   } else {
     const fragments = importText.value.split("\n")
 
-    let overridePosition = importStart.value
+    let overridePosition: number | undefined = importStart.value
 
     fragments.forEach(fragment => {
       let cleanFragment = fragment
       if (importMode.value === 'manual') {
         overridePosition = undefined
         const positionMatch = fragment.match(/^[0-9]+/g);
-        if (positionMatch && positionMatch.length) {
-          overridePosition = parseInt(positionMatch[0]);
+        if (positionMatch && positionMatch.length && positionMatch[0]) {
+          overridePosition = parseInt(positionMatch[0], 10);
         }
         cleanFragment = fragment
             .replace(/^[0-9]*[\.]?/g, "")
@@ -97,7 +110,7 @@ function startImport() {
         })
       }
 
-      if (importMode.value === 'auto') {
+      if (importMode.value === 'auto' && overridePosition !== undefined) {
         overridePosition += importStep.value
       }
     })

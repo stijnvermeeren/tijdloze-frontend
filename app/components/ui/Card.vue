@@ -22,19 +22,18 @@ div
               a(v-else) Minder tonen
 </template>
 
-<script setup>
-const props = defineProps({
-  title: String,
-  subtitle: String,
-  collapseHeight: Number,
-  collapseMessage: {
-    type: String,
-    default: "Meer tonen"
-  }
+<script setup lang="ts">
+const props = withDefaults(defineProps<{
+  title?: string
+  subtitle?: string
+  collapseHeight?: number
+  collapseMessage?: string
+}>(), {
+  collapseMessage: "Meer tonen"
 })
 
 const isOpen = ref(!props.collapseHeight)
-const top = ref(null);
+const top = useTemplateRef<HTMLElement>('top')
 
 const innerContainerStyle = computed(() => {
   if (props.collapseHeight && !isOpen.value) {
@@ -46,7 +45,7 @@ const innerContainerStyle = computed(() => {
 
 function toggle() {
   isOpen.value = !isOpen.value;
-  if (!isOpen.value) {
+  if (!isOpen.value && top.value) {
     top.value.scrollIntoView({ behavior: "smooth" });
   }
 }

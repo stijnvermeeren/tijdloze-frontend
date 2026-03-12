@@ -2,15 +2,17 @@
 Title Nieuwkomers
 div
   h2 Tijdloze nieuwkomers
-  ui-tabs(:tabs="[
-    { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
-    { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
-    { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
 <script setup>
+const tabs = [
+  { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
+  { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
+  { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 

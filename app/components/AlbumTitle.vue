@@ -5,13 +5,15 @@ span
     |  ({{suffix}})
 </template>
 
-<script setup>
-const props = defineProps({
-  album: Object
-})
+<script setup lang="ts">
+import type Album from "~/orm/Album";
+
+const props = defineProps<{
+  album: Album
+}>()
 
 const suffix = computed(() => {
-  const elements = []
+  const elements: string[] = []
   if (props.album.isSingle) {
     elements.push("single")
   }

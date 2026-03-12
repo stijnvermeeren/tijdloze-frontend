@@ -9,7 +9,7 @@ v-select(
 )
 </template>
 
-<script setup>
+<script setup lang="ts">
 import vocalsGenders from '~/utils/leadVocals'
 
 const model = defineModel()

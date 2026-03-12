@@ -4,7 +4,7 @@ div.mt-5.mb-7
   template(v-if="sanitizedContent")
     div.details
       div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
-      div Laatst geladen: {{useDateFormat(wikipediaContent['lastUpdate'], {ago: true})}}
+      div Laatst geladen: {{useDateFormat(wikipediaContent?.lastUpdate, {ago: true})}}
     div.px-5.mt-2.wikipediaContent(v-html="sanitizedContent")
   div(v-else)
     v-progress-circular(indeterminate size="small")
@@ -12,28 +12,27 @@ div.mt-5.mb-7
     ui-external-link-btn(:href="url") Lees meer op Wikipedia
 </template>
 
-<script setup>
+<script setup lang="ts">
 import sanitizeHtml from 'sanitize-html';
 
-const props = defineProps({
-  language: {
-    type: String,
-    required: true
-  },
-  url: {
-    type: String,
-    required: true
-  }
-})
+const props = defineProps<{
+  language: string
+  url: string
+}>()
 
-const {data: wikipediaContent, error} = await useLazyFetch(
+type WikipediaPayload = {
+  content?: string
+  lastUpdate?: string
+}
+
+const {data: wikipediaContent} = await useLazyFetch<WikipediaPayload>(
   `wikipedia/find`, useFetchOpts({
     query: {url: props.url}
   })
 )
 
 const sanitizedContent = computed(() => {
-  const content = wikipediaContent.value?.['content']
+  const content = wikipediaContent.value?.content
   if (content) {
     return sanitizeHtml(content, {
       allowedTags: ['p', 'i', 'b'],

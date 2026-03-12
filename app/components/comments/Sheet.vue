@@ -6,7 +6,7 @@ v-sheet.comment(:elevation="1" rounded outlined)
     slot
 </template>
 
-<script setup>
+<script setup lang="ts">
 </script>
 
 <style scoped>

@@ -7,24 +7,16 @@
       v-icon(:icon="mdiCheckDecagram" v-tooltip="'tijdloze.rocks admin'" size="16")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Avatar from 'vue-boring-avatars'
 import { mdiCheckDecagram } from "@mdi/js";
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  userName: {
-    type: String,
-    required: true
-  },
-  isAdmin: {
-    type: Boolean,
-    required: false,
-    default: false
-  }
+withDefaults(defineProps<{
+  id: string
+  userName: string
+  isAdmin?: boolean
+}>(), {
+  isAdmin: false
 })
 
 const colors = ["#336699","#33aabb","#44ddee","#aaeeff","#ffeeaa","#ffcc33","#ff9944","#ff6655","#ee5566","#dd4477"]

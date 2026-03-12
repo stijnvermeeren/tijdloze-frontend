@@ -9,23 +9,22 @@ span
     | )
 </template>
 
-<script setup>
+<script setup lang="ts">
 import SongLink from "./SongLink.vue";
 import ArtistLink from "./ArtistLink.vue";
-import Song from "../orm/Song";
-import Artist from "../orm/Artist";
+import type Song from "~/orm/Song";
+import type Artist from "~/orm/Artist";
 
-const props = defineProps({
-  song: Song,
-  artist: Artist
-})
+const props = defineProps<{
+  song: Song
+  artist?: Artist
+}>()
 
-const secondArtist = computed(() => {
+const secondArtist = computed<Artist | null>(() => {
   if (props.artist && props.song.secondArtistId && props.artist.id === props.song.secondArtistId) {
     return props.song.artist
-  } else {
-    return props.song.secondArtist
   }
+  return props.song.secondArtist
 })
 </script>
 

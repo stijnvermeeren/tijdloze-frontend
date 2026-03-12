@@ -1,11 +1,13 @@
 <template lang="pug">
-nuxt-link(:to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
+nuxt-link(v-if="song" :to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
 </template>
 
-<script setup>
-defineProps({
-  song: Object
-})
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+
+defineProps<{
+  song: Song | null
+}>()
 </script>
 
 <style scoped>

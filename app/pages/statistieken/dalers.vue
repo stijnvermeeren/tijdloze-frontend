@@ -2,14 +2,16 @@
 Title Dalers
 div
   h2 Tijdloze dalers
-  ui-tabs(:tabs="[
-    { to: '/statistieken/dalers', title: 'Per jaar' },
-    { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
 <script setup>
+const tabs = [
+  { to: '/statistieken/dalers', title: 'Per jaar' },
+  { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 

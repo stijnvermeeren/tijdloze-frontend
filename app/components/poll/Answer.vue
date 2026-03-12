@@ -10,16 +10,16 @@ div(v-else)
     v-btn(v-if='isAdmin' size="x-small" @click='editing = true') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
 const {$api} = useNuxtApp()
 
-const props = defineProps({
-  pollId: Number,
-  pollAnswerId: Number,
-  isAdmin: Boolean
-})
+const props = defineProps<{
+  pollId: number
+  pollAnswerId: number
+  isAdmin?: boolean
+}>()
 
-const answer = defineModel()
+const answer = defineModel<string>()
 
 const answerEdit = ref(answer.value)
 const editing = ref(false)

@@ -36,25 +36,39 @@ p(v-else)
   template(v-else="filterQuery") Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
-<script setup>
-import Year from "../orm/Year";
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+import type Year from "~/orm/Year";
 import {mdiMagnify} from "@mdi/js";
 
-const props = defineProps({
-  year: {
-    type: Year
-  },
-  list: {
-    type: Array
-  },
-  height: {
-    type: String,
-    default: '600px'
-  }
+type ListEntry = {
+  position: number
+  song: Song
+  attribution?: string
+}
+
+const props = withDefaults(defineProps<{
+  year: Year
+  list: ListEntry[]
+  height?: string
+}>(), {
+  height: '600px'
 })
 
-const filterQuery = ref(useRoute().query.filter || '')
-const scrollPosition = ref(parseInt(useRoute().query.positie) || 0)
+const route = useRoute()
+const queryFilter = route.query.filter
+const initialFilter = Array.isArray(queryFilter)
+  ? (queryFilter[0] ?? '')
+  : (queryFilter ?? '')
+
+const queryPosition = route.query.positie
+const rawPosition = Array.isArray(queryPosition)
+  ? queryPosition[0]
+  : queryPosition
+const parsedPosition = rawPosition ? parseInt(rawPosition, 10) : 0
+
+const filterQuery = ref<string>(initialFilter)
+const scrollPosition = ref<number | undefined>(Number.isFinite(parsedPosition) && parsedPosition > 0 ? parsedPosition : undefined)
 
 function setQueryParams() {
   useRouter().replace({
@@ -69,7 +83,7 @@ function setQueryParams() {
 watch([filterQuery, scrollPosition], setQueryParams)
 
 const filteredList = computed(() => {
-  const queryFragments = useSearchQueryFragments(filterQuery.value)
+  const queryFragments = useSearchQueryFragments(filterQuery.value) as string[]
   return props.list.filter(entry => useSearchFilter(queryFragments, useSearchSongContent)(entry.song))
 })
 
@@ -89,13 +103,15 @@ onActivated(() => {
     if (index > -1) {
       scrollTo(index)
       // Slight offset, to make clear that we're not at the top
-      containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+      if (containerProps.ref.value) {
+        containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+      }
     }
   }
 })
 
 function onScroll() {
-  const scrollTop = containerProps.ref.value?.scrollTop
+  const scrollTop = containerProps.ref.value?.scrollTop ?? 0
   const scrollIndex = Math.ceil(scrollTop / itemHeight)
   if (scrollIndex) {
     scrollPosition.value = filteredList.value?.[scrollIndex]?.position

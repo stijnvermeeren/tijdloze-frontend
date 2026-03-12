@@ -18,12 +18,12 @@
   snackbar
 </template>
 
-<script setup>
-import useSetUser from "~/composables/useSetUser";
-import {useAuth0} from "@auth0/auth0-vue";
-import { reloadCoreData } from "~/utils/loadCoreData";
-import { useRepo } from "pinia-orm";
-import Song from "~/orm/Song";
+<script setup lang="ts">
+import { useAuth0 } from '@auth0/auth0-vue'
+import { useRepo } from 'pinia-orm'
+import useSetUser from '~/composables/useSetUser'
+import Song from '~/orm/Song'
+import { reloadCoreData } from '~/utils/loadCoreData'
 
 const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
@@ -42,7 +42,11 @@ onMounted(async () => {
     const nuxtApp = useNuxtApp()
     const rootStore = useRootStore()
     const coreDataResponse = await nuxtApp.$api('core-data/id')
-    if (coreDataResponse?.id !== rootStore.coreDataId) {
+    const coreDataId =
+      coreDataResponse && typeof coreDataResponse === 'object' && 'id' in coreDataResponse
+        ? (coreDataResponse as { id: unknown }).id
+        : null
+    if (coreDataId !== rootStore.coreDataId) {
       await reloadCoreData()
     }
   }

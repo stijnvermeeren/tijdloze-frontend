@@ -39,23 +39,38 @@ v-container
           | &nbsp;uit de database
 </template>
 
-<script setup>
+<script setup lang="ts">
 import languages from '~/utils/language'
 import Artist from "~/orm/Artist";
+import type Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
 const {$api} = useNuxtApp()
 const emit = defineEmits(['existingSong'])
 
-const spotifyRef = useTemplateRef('spotify')
+interface SpotifyRef {
+  search: () => Promise<void> | void
+}
 
-const props = defineProps({
-  artistId: Number,
-  artistName: String,
-  albumTitle: String
-})
+interface SongDetails {
+  title: string
+  languageId?: string
+  leadVocals?: string
+  recordingMBId?: string
+  workMBId?: string
+  spotifyId?: string
+}
 
-function defaultSongDetails() {
+const spotifyRef = useTemplateRef<SpotifyRef>('spotify')
+const languageMap = languages
+
+const props = defineProps<{
+  artistId?: number
+  artistName?: string
+  albumTitle?: string
+}>()
+
+function defaultSongDetails(): SongDetails {
   return {
     title: '',
     languageId: undefined,
@@ -66,8 +81,8 @@ function defaultSongDetails() {
   }
 }
 
-const songDetails = ref(defaultSongDetails())
-const existingSong = ref(undefined)
+const songDetails = ref<SongDetails>(defaultSongDetails())
+const existingSong = ref<Song | undefined>(undefined)
 
 const songValid = computed(() => {
   return !! songDetails.value.title;
@@ -91,7 +106,7 @@ async function loadExistingSong() {
         .find(props.artistId)
     if (artist) {
       for (const song of artist.songs) {
-        const fullSongData = await $api(`song/${song.id}`)
+        const fullSongData = await $api<{spotifyId?: string}>(`song/${song.id}`)
         if (fullSongData) {
           if (fullSongData.spotifyId === songDetails.value.spotifyId) {
             return song
@@ -102,7 +117,7 @@ async function loadExistingSong() {
   }
 }
 
-async function loadPreset(title, recordingMBId, workMBId, languageId, leadVocalsId) {
+async function loadPreset(title: string, recordingMBId?: string, workMBId?: string, languageId?: string, leadVocalsId?: string) {
   songDetails.value.title = title;
   songDetails.value.recordingMBId = recordingMBId;
   songDetails.value.workMBId = workMBId;
@@ -110,16 +125,16 @@ async function loadPreset(title, recordingMBId, workMBId, languageId, leadVocals
 
   if (languageId === 'zxx') {
     songDetails.value.languageId = 'i';
-  } else if (languages[languageId]) {
+  } else if (languageId && languageMap[languageId]) {
     songDetails.value.languageId = languageId;
   } else {
     songDetails.value.languageId = undefined;
   }
 
-  await nextTick(spotifyRef.value.search)
+  await nextTick(() => spotifyRef.value?.search())
 }
 
-async function submit(artistId, secondArtistId, albumId) {
+async function submit(artistId: number, secondArtistId: number | undefined, albumId: number) {
   const songData = {
     artistId: artistId,
     secondArtistId: secondArtistId,
@@ -131,7 +146,7 @@ async function submit(artistId, secondArtistId, albumId) {
     musicbrainzRecordingId: songDetails.value.recordingMBId,
     musicbrainzWorkId: songDetails.value.workMBId
   }
-  return await $api('/song', useFetchOptsPost(songData));
+  return await $api('/song', { method: 'POST', body: songData });
 }
 
 function reset() {

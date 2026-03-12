@@ -5,9 +5,9 @@ div
       slot {{title}}
     .tooltip(v-if="tooltipSong" :style="tooltipStyle")
       .year
-        | {{hoverYear.yyyy}}
+        | {{hoverYear!.yyyy}}
       .entry
-        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}}
+        | {{tooltipSong.position(hoverYear!)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}}
     svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
       g(:transform='`translate(${margin.left},${margin.top})`')
         d3-axes(
@@ -21,14 +21,14 @@ div
           circle.circle.coloredCircle(
             v-for='point in points'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year))'
+            :cy='yScale(point.song.position(point.year) ?? 0)'
             r='3'
           )
         g.color-2
           circle.circle.coloredCircle(
             v-for='point in secondaryPoints'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year))'
+            :cy='yScale(point.song.position(point.year) ?? 0)'
             r='3'
           )
         rect(
@@ -42,30 +42,40 @@ div
         )
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type Song from "~/orm/Song";
+  import type Year from "~/orm/Year";
+
+  type DistributionPoint = {
+    year: Year
+    song: Song
+  }
+
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
   const {years, xBandScale, xScale, yScale} = useGraph()
-  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
+  const hover = useGraphHover(xBandScale, xScale, yScale, years)
+  const onHover = hover.onHover
+  const hoverYear = hover.hoverYear as Ref<Year | undefined>
+  const hoverLineX = hover.hoverLineX as Ref<number | undefined>
+  const hoverPosition = hover.hoverPosition as Ref<number | undefined>
+  const tooltipStyle = hover.tooltipStyle
 
-  const props = defineProps({
-    title: {
-      type: String
-    },
-    points: {
-      type: Array,
-      default: () => []
-    },
-    secondaryPoints: {
-      type: Array,
-      default: () => []
-    }
+  const props = withDefaults(defineProps<{
+    title?: string
+    points?: DistributionPoint[]
+    secondaryPoints?: DistributionPoint[]
+  }>(), {
+    points: () => [],
+    secondaryPoints: () => []
   })
 
   const tooltipSong = computed(() => {
-    if (!!hoverYear.value && !!hoverPosition.value) {
+    const hoveredYear = hoverYear.value
+    const hoveredPosition = hoverPosition.value
+    if (hoveredYear && hoveredPosition) {
       const allPoints = props.points.concat(props.secondaryPoints)
-      const matchingEntry = allPoints.find(point => {
-        return point.year.yyyy === hoverYear.value.yyyy && point.song.position(hoverYear.value) === hoverPosition.value;
+      const matchingEntry = allPoints.find((point: DistributionPoint) => {
+        return point.year.yyyy === hoveredYear.yyyy && point.song.position(hoveredYear) === hoveredPosition;
       });
       if (matchingEntry) {
         return matchingEntry.song;

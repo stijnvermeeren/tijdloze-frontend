@@ -22,16 +22,27 @@ comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiDelete, mdiPencil, mdiRestore} from "@mdi/js";
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
 const emit = defineEmits(['deleted', 'restored'])
 
-const props = defineProps({
-  comment: Object
-})
+type CommentItem = {
+  id: number
+  userId: string | null
+  name: string
+  isAdmin?: boolean
+  created: string | Date
+  updated: string | Date
+  message: string
+  deleted?: boolean
+}
+
+const props = defineProps<{
+  comment: CommentItem
+}>()
 
 const agoMaxDays = 7
 
@@ -42,10 +53,11 @@ const editing = ref(false)
 const { isAuthenticated, isAdmin, user } = storeToRefs(useAuthStore())
 
 const isMine = computed(() => {
-  return isAuthenticated.value && user.value.id === props.comment.userId;
+  const userId = user.value?.id
+  return isAuthenticated.value && userId === props.comment.userId;
 })
 const showUpdated = computed(() => {
-  const differenceMillis = new Date(props.comment.updated) - new Date(props.comment.created);
+  const differenceMillis = new Date(props.comment.updated).getTime() - new Date(props.comment.created).getTime();
   return differenceMillis > 10000;
 })
 
@@ -53,20 +65,20 @@ function editComment() {
   editing.value = true;
 }
 
-function commentEdited(newMessage) {
+function commentEdited(newMessage: string) {
   message.value = newMessage;
   editing.value = false;
 }
 async function deleteComment() {
   if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-    await $api(`comment/${props.comment.id}`, useFetchOptsDelete())
+    await $api(`comment/${props.comment.id}`, { method: 'DELETE' })
     isDeleted.value = true
     emit("deleted")
   }
 }
 async function restoreComment() {
   if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-    await $api(`comment/${props.comment.id}`, useFetchOptsPost())
+    await $api(`comment/${props.comment.id}`, { method: 'POST' })
     isDeleted.value = false
     emit("restored")
   }

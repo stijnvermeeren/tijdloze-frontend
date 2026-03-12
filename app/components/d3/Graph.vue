@@ -24,20 +24,14 @@
       line(v-if="hoverLineX" :x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g(
         v-for='({song, isTop100}, index) in entries'
-        :class="[
-          'line',
-          colorClass(index, isTop100),
-          {
-            highlighted: hoverIndex === index,
-            notHighlighted: hoverIndex !== undefined && hoverIndex !== index
-          }]"
+        :class="lineClasses(index, isTop100)"
       )
-        path.coloredPath(:d='fullSongLine(song)')
+        path.coloredPath(:d='fullSongLine(song) ?? undefined')
         template(v-for='year in years' :key='year.yyyy')
           circle.circle.coloredCircle(
             v-if='song.position(year, extended)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year, extended))'
+            :cy='yScale(song.position(year, extended) ?? 0)'
             r='3'
           )
       rect(
@@ -61,26 +55,40 @@
         | {{song.title}}
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song';
+import type Year from '~/orm/Year';
 import {probablyInListIntervals} from '~/utils/intervals';
 import { sortBy } from 'ramda';
 
-const props = defineProps({
-  entries: {
-    type: Array,
-    required: true
-  },
-  noLabel: {
-    type: Boolean,
-    default: false
-  }
+type GraphEntry = {
+  song: Song
+  isTop100: boolean
+}
+
+type TooltipEntry = {
+  song: Song
+  index: number
+  colorClass: string
+  position: number
+}
+
+const props = withDefaults(defineProps<{
+  entries: GraphEntry[]
+  noLabel?: boolean
+}>(), {
+  noLabel: false
 })
 
 const {width, height, fullWidth, fullHeight, margin} = useGraphConstants()
 const {xBandScale, xScale, yScale, years, songLine, extended, greyBackgroundPoints} = useGraph()
-const {onHover, hoverYear, hoverLineX, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
+const hover = useGraphHover(xBandScale, xScale, yScale, years)
+const onHover = hover.onHover
+const hoverYear = hover.hoverYear as Ref<Year | undefined>
+const hoverLineX = hover.hoverLineX as Ref<number | undefined>
+const tooltipStyle = hover.tooltipStyle
 
-const hoverIndex = ref(undefined)
+const hoverIndex = ref<number | undefined>(undefined)
 
 const hasTop100Entry = computed(() => {
   return props.entries.some(entry => entry.isTop100)
@@ -93,7 +101,7 @@ watch(hasTop100Entry, (newValue) => {
 }, { immediate: true })
 
 const colorClass = computed(() => {
-  return (index, isTop100) => {
+  return (index: number, isTop100: boolean) => {
     const maxColorIndex = 7
     if (props.entries.length <= maxColorIndex || isTop100) {
       return `color-${Math.min(index, maxColorIndex)}`
@@ -104,25 +112,37 @@ const colorClass = computed(() => {
 })
 
 const tooltipEntries = computed(() => {
-  if (hoverYear.value) {
-    const entries = [];
+  const hoveredYear = hoverYear.value
+  if (hoveredYear) {
+    const tooltipEntries: TooltipEntry[] = [];
     props.entries.forEach(({song, isTop100}, index) => {
-      const position = song.position(hoverYear.value, extended.value);
+      const position = song.position(hoveredYear, extended.value);
       if (position) {
-        entries.push({song, index, colorClass: colorClass.value(index, isTop100), position})
+        tooltipEntries.push({song, index, colorClass: colorClass.value(index, isTop100), position})
       }
     });
-    return sortBy(entry => entry.position)(entries);
+    return sortBy((entry: TooltipEntry) => entry.position, tooltipEntries)
   } else {
-    return [];
+    return [] as TooltipEntry[];
   }
 })
 
-function onSongHover(index) {
+function onSongHover(index: number | undefined) {
   hoverIndex.value = index;
 }
 
-function fullSongLine(song) {
+function lineClasses(index: number, isTop100: boolean) {
+  return [
+    'line',
+    colorClass.value(index, isTop100),
+    {
+      highlighted: hoverIndex.value === index,
+      notHighlighted: hoverIndex.value !== undefined && hoverIndex.value !== index
+    }
+  ]
+}
+
+function fullSongLine(song: Song) {
   return songLine(
     song,
     probablyInListIntervals([song], years.value, extended.value)
