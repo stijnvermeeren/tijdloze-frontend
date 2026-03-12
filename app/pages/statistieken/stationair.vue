@@ -2,10 +2,10 @@
 Title Stationaire nummers
 div
   h2 Stationaire nummers in de Tijdloze
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/stationair', title: 'Per jaar' },\
-    { to: '/statistieken/stationair/meerderejaren', title: 'Meerdere jaren op rij' },\
-    { to: '/statistieken/stationair/grafiek', title: 'Op grafiek' }\
+  ui-tabs(:tabs="[
+    { to: '/statistieken/stationair', title: 'Per jaar' },
+    { to: '/statistieken/stationair/meerderejaren', title: 'Meerdere jaren op rij' },
+    { to: '/statistieken/stationair/grafiek', title: 'Op grafiek' }
   ]")
     nuxt-page(:data='data' :years='years')
 </template>

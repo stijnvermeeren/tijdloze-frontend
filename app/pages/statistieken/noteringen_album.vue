@@ -2,10 +2,10 @@
 Title Noteringen (albums)
 div
   h2 Tijdloze Noteringen (Albums)
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/noteringen_album', title: 'In totaal' },\
-    { to: '/statistieken/noteringen_album/perjaar', title: 'Per jaar' },\
-    { to: '/statistieken/noteringen_album/nummers', title: 'Verschillende nummers' }\
+  ui-tabs(:tabs="[
+    { to: '/statistieken/noteringen_album', title: 'In totaal' },
+    { to: '/statistieken/noteringen_album/perjaar', title: 'Per jaar' },
+    { to: '/statistieken/noteringen_album/nummers', title: 'Verschillende nummers' }
   ]")
     nuxt-page(:albums='albums' :years='years')
 </template>

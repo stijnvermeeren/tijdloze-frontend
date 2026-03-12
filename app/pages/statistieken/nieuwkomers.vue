@@ -2,10 +2,10 @@
 Title Nieuwkomers
 div
   h2 Tijdloze nieuwkomers
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/nieuwkomers', title: 'Per jaar' },\
-    { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },\
-    { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }\
+  ui-tabs(:tabs="[
+    { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
+    { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
+    { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }
   ]")
     nuxt-page(:data='data' :years='years')
 </template>

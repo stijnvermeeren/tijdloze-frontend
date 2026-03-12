@@ -24,12 +24,12 @@
       line(v-if="hoverLineX" :x1="hoverLineX" :x2="hoverLineX" :y1="0" :y2="height")
       g(
         v-for='({song, isTop100}, index) in entries'
-        :class="[\
-          'line',\
-          colorClass(index, isTop100),\
-          {\
-            highlighted: hoverIndex === index,\
-            notHighlighted: hoverIndex !== undefined && hoverIndex !== index\
+        :class="[
+          'line',
+          colorClass(index, isTop100),
+          {
+            highlighted: hoverIndex === index,
+            notHighlighted: hoverIndex !== undefined && hoverIndex !== index
           }]"
       )
         path.coloredPath(:d='fullSongLine(song)')

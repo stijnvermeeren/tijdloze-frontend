@@ -2,10 +2,10 @@
 Title Noteringen
 div
   h2 Tijdloze Noteringen
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/noteringen', title: 'In totaal' },\
-    { to: '/statistieken/noteringen/perjaar', title: 'Per jaar' },\
-    { to: '/statistieken/noteringen/nummers', title: 'Verschillende nummers' }\
+  ui-tabs(:tabs="[
+    { to: '/statistieken/noteringen', title: 'In totaal' },
+    { to: '/statistieken/noteringen/perjaar', title: 'Per jaar' },
+    { to: '/statistieken/noteringen/nummers', title: 'Verschillende nummers' }
   ]")
     nuxt-page(:artists='artists' :years='years')
 </template>
