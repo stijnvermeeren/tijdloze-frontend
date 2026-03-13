@@ -38,7 +38,7 @@ const isBlocked = ref(!!props.user.isBlocked)
 
 async function block() {
   blocking.value = true;
-  await $api(apiEndpoints.user.block(props.user.id));
+  await $api(apiEndpoints.user.block(props.user.id), undefined);
   isBlocked.value = true;
   blocking.value = false;
 }

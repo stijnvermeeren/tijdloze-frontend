@@ -1,7 +1,6 @@
-import { defineSitemapEventHandler } from '#imports';
 import type { SitemapUrlInput } from '#sitemap/types'
 import type { CoreDataResponse } from '~/api/contracts'
-import { createSlug } from '@/utils/slug.js'
+import { createSlug } from '@/utils/slug'
 
 
 export default defineSitemapEventHandler(async () => {

@@ -105,7 +105,7 @@ async function refresh() {
 
 async function accept(id: number) {
   submitting.value = true
-  await $api(apiEndpoints.crawlProcess.accept(props.type, id))
+  await $api(apiEndpoints.crawlProcess.accept(props.type, id), undefined)
   refresh()
   submitting.value = false
 }

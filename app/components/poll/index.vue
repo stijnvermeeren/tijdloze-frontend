@@ -97,7 +97,7 @@ async function reload() {
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await $api(apiEndpoints.poll.vote(props.poll.id, myVoteEdit.value!));
+    await $api(apiEndpoints.poll.vote(props.poll.id, myVoteEdit.value!), undefined);
 
     await reload();
     voting.value = false;
@@ -118,7 +118,7 @@ function percentage(answerVotes: number) {
 
 async function deletePoll() {
   deleting.value = true;
-  await $api(apiEndpoints.poll.hide(props.poll.id));
+  await $api(apiEndpoints.poll.hide(props.poll.id), undefined);
   isDeleted.value = true;
   deleting.value = false;
 }

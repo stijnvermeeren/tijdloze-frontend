@@ -69,7 +69,7 @@ async function deleteComment() {
 }
 async function restoreComment() {
   if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-    await $api(apiEndpoints.comment.restore(props.comment.id))
+    await $api(apiEndpoints.comment.restore(props.comment.id), undefined)
     isDeleted.value = false
     emit("restored")
   }
