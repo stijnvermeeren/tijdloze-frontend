@@ -31,30 +31,9 @@ div
 </template>
 
 <script setup lang="ts">
-interface ArtistWizardRef {
-  artistId?: number
-  artistType?: 'existing' | 'new'
-  artistName: string
-  artistValid: boolean
-  loadPreset: (name: string, musicbrainzId?: string, countryId?: string) => Promise<void>
-  submit: () => Promise<number>
-  reset: () => void
-}
-
-interface AlbumWizardRef {
-  albumTitle: string
-  albumValid: boolean
-  loadPreset: (title: string, musicbrainzId?: string, year?: number, isSingle?: boolean, isSoundtrack?: boolean) => Promise<void>
-  submit: (artistId: number) => Promise<number>
-  reset: () => void
-}
-
-interface SongWizardRef {
-  songValid: boolean
-  loadPreset: (title: string, recordingMBId?: string, workMBId?: string, languageId?: string, leadVocalsId?: string) => Promise<void>
-  submit: (artistId: number, secondArtistId: number | undefined, albumId: number) => Promise<unknown>
-  reset: () => void
-}
+import type ArtistWizard from './Artist.vue'
+import type AlbumWizard from './Album.vue'
+import type SongWizard from './Song.vue'
 
 interface SongPreset {
   artistName: string
@@ -66,8 +45,8 @@ interface SongPreset {
   albumTitle: string
   albumMBId?: string
   albumYear?: number
-  albumIsSingle?: boolean
-  albumIsSoundtrack?: boolean
+  albumIsSingle: boolean
+  albumIsSoundtrack: boolean
   songTitle: string
   recordingMBId?: string
   workMBId?: string
@@ -78,10 +57,10 @@ interface SongPreset {
 const emit = defineEmits(['existingSong', 'newSong'])
 const {$api} = useNuxtApp()
 
-const artistRef = useTemplateRef<ArtistWizardRef>('artistRef')
-const secondArtistRef = useTemplateRef<ArtistWizardRef>('secondArtistRef')
-const albumRef = useTemplateRef<AlbumWizardRef>('albumRef')
-const songRef = useTemplateRef<SongWizardRef>('songRef')
+const artistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('artistRef')
+const secondArtistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('secondArtistRef')
+const albumRef = useTemplateRef<InstanceType<typeof AlbumWizard>>('albumRef')
+const songRef = useTemplateRef<InstanceType<typeof SongWizard>>('songRef')
 
 const hasSecondArtist = ref(false)
 const submitting = ref(false)
@@ -129,6 +108,10 @@ async function submit() {
   submitting.value = true;
 
   let payloadArtistId = await artistRef.value.submit()
+  if (!payloadArtistId) {
+    submitting.value = false;
+    return
+  }
 
   let payloadSecondArtistId = undefined;
   if (hasSecondArtist.value) {

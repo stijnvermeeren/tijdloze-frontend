@@ -7,10 +7,10 @@ type ApiFetchOptions = Record<string, unknown>
 type ApiPathInput = string | (() => string)
 
 function apiFetch<TResponse>(path: ApiPathInput, opts: ApiFetchOptions) {
-  const { $api } = useNuxtApp()
+  const { $rawApi } = useNuxtApp()
   return useFetch<TResponse>(path, {
     ...opts,
-    $fetch: $api as unknown as typeof $fetch,
+    $fetch: $rawApi,
   })
 }
 

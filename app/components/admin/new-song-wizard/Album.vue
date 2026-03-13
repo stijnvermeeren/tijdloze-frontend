@@ -147,7 +147,7 @@ async function albumMatch(artistId: number, albumName: string, releaseYear: numb
   }
 
   function tokenize(title: string): string[] {
-    return Array.from(title.toLowerCase().matchAll(/\w+/g), match => match[0] ?? '');
+    return Array.from(title.toLowerCase().matchAll(/\w+/g), match => match[0]);
   }
 
   if (artistId && albumName && releaseYear) {
