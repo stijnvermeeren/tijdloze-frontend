@@ -35,12 +35,6 @@ export default defineNuxtConfig({
       title: 'tijdloze.rocks'
     }
   },
-  /*
-  ** Customize the progress bar color
-  */
-  css: [
-    'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-  ],
   build: {
     transpile: [
       'vuetify',
