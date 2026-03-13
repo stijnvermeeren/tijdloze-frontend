@@ -6,7 +6,12 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type DropEntry = { song: Song; year: Year; oldPosition: number; newPosition: number }
+
 const tabs = [
   { to: '/statistieken/dalers', title: 'Per jaar' },
   { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }
@@ -15,11 +20,15 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<DropEntry[]>(() => {
+  const dataPoints: DropEntry[] = [];
+  const allYears = years.value
   songs.value.forEach(song => {
-    years.value.slice(1).forEach((year, index) => {
-      const previousYear = years.value[index]
+    allYears.slice(1).forEach((year, index) => {
+      const previousYear = allYears[index]
+      if (!previousYear) {
+        return
+      }
       const oldPosition = song.position(previousYear);
       const newPosition = song.position(year);
       if (oldPosition && newPosition && oldPosition < newPosition) {

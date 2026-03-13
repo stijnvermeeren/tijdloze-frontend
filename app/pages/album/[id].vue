@@ -18,20 +18,28 @@ div
     nuxt-page(keepalive :album="album" :songs="songs")
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { idFromSlug } from '~/utils/slug'
   import Album from "~/orm/Album";
   import {useRepo} from "pinia-orm";
 
-  const albumId = computed(() => idFromSlug(useRoute().params?.id))
+  const route = useRoute()
+  const routeId = (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) || ''
+  const albumId = computed(() => idFromSlug(routeId))
 
   const {currentYear, years} = storeToRefs(useYearStore())
 
-  const album = computed(() => {
-    return useRepo(Album)
+  const album = computed<Album>(() => {
+    const foundAlbum = useRepo(Album)
       .with('artist')
       .with('songs', query => query.with("artist").with("secondArtist").with("album"))
-      .find(albumId.value);
+      .find(albumId.value)
+
+    if (!foundAlbum) {
+      throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+    }
+
+    return foundAlbum
   })
 
   const songs = computed(() => {

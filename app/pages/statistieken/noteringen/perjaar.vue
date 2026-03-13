@@ -31,20 +31,19 @@ div
                 td.l(v-else) /
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { range } from 'ramda'
+import type Artist from '~/orm/Artist'
+import type Year from '~/orm/Year'
 
-const props = defineProps({
-  artists: Array,
-  years: Array
-})
+const props = defineProps<{ artists: Artist[]; years: Year[] }>()
 
 const data = computed(() => {
   const MAX = 6;
   const MIN = 3;
 
   return [...props.years].reverse().map(year => {
-    const artistsPerCount = Object.groupBy(props.artists, artist => {
+    const artistsPerCount = Object.groupBy(props.artists, (artist: Artist) => {
       return artist.allSongs.filter(song => song.position(year)).length;
     });
 

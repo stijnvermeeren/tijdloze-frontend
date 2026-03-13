@@ -2,7 +2,7 @@
 d3-stationary-graph(:songs='songs')
 </template>
 
-<script setup>
+<script setup lang="ts">
 const songs = computed(() => {
   return useRootStore().songs;
 })

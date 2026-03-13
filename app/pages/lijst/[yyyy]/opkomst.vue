@@ -14,17 +14,21 @@ div
   full-list(:list='list' :year='previousYear' height="calc(100vh - 480px)")
 </template>
 
-<script setup>
-const props = defineProps({
-  year: Object
-})
+<script setup lang="ts">
+import type Year from '~/orm/Year'
+
+const props = defineProps<{ year: Year }>()
 
 const maxPosition = ref(100)
 
 const {context} = storeToRefs(useYearStore())
 
-const previousYear = computed(() => {
-  return context.value.forYear(props.year).previous?.year
+const previousYear = computed<Year>(() => {
+  const previous = context.value.forYear(props.year).previous?.year
+  if (!previous) {
+    throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+  }
+  return previous
 })
 
 const maxPositionLimit = computed(() => {

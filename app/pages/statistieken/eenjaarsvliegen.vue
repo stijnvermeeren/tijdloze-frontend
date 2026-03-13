@@ -18,7 +18,12 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+
 const tabs = [
   { to: '/statistieken/eenjaarsvliegen', title: 'Per jaar' },
   { to: '/statistieken/eenjaarsvliegen/lijst', title: 'Hoogste aller tijden' },
@@ -28,19 +33,23 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<OneHitEntry[]>(() => {
+  const dataPoints: OneHitEntry[] = [];
+  const allYears = years.value
 
-  years.value.slice(1, -1).forEach((year, index) => {
-    const previousYear = years.value[index]
-    const nextYear = years.value[index + 2]
+  allYears.slice(1, -1).forEach((year, index) => {
+    const previousYear = allYears[index]
+    const nextYear = allYears[index + 2]
+    if (!previousYear || !nextYear) {
+      return
+    }
     const top100 = useRootStore().list(year, 100, 100)
     top100.forEach(({song}) => {
       if (song.notInList(previousYear) && song.notInList(nextYear)) {
         dataPoints.push({
           song: song,
           year: year,
-          isFinal: (years.value.filter(year => song.position(year)).length === 1)
+          isFinal: (allYears.filter(year => song.position(year)).length === 1)
         });
       }
     })

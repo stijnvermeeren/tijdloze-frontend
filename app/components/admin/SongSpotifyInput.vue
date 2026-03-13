@@ -13,13 +13,10 @@ div.d-flex.align-center
 </template>
 
 <script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import {mdiOpenInNew} from "@mdi/js";
 
 const {$api} = useNuxtApp()
-
-interface SpotifyTrack {
-  spotifyId: string
-}
 
 const spotifyId = defineModel<string>()
 
@@ -45,7 +42,7 @@ async function search() {
   }
   const query = queryParts.join(" ")
   processing.value = true
-  const spotifyTracks = await $api<SpotifyTrack[]>('/spotify/find', { method: 'GET', params: {query} }).catch(err => {
+  const spotifyTracks = await $api(apiEndpoints.spotify.find(), { params: {query} }).catch(err => {
     processing.value = false
     spotifyMessage.value = "Probleem bij het zoeken op Spotify";
     return undefined

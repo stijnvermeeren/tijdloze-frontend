@@ -8,7 +8,7 @@ import List from '~/orm/List';
 import type Year from '~/orm/Year';
 import {useYearStore} from "~/stores/year";
 
-type ListEntry = {
+export type ListEntry = {
   position: number
   song: Song
   attribution: string | undefined
@@ -28,13 +28,13 @@ export const useRootStore = defineStore('root', () => {
   }
 
   const songIdsByTitle = computed<Record<string, number[]>>(() => {
-    return indexByProperty(useRepo(Song).all() as Song[], song => song.title.toLowerCase())
+    return indexByProperty(useRepo(Song).all(), song => song.title.toLowerCase())
   })
   const artistIdsByFullName = computed<Record<string, number[]>>(() => {
-    return indexByProperty(useRepo(Artist).all() as Artist[], artist => artist.name.toLowerCase())
+    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
   })
   const artistIdsByName = computed<Record<string, number[]>>(() => {
-    return indexByProperty(useRepo(Artist).all() as Artist[], artist => artist.name.toLowerCase())
+    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
   })
   const songs = computed<Song[]>(() => {
     return sortWith([
@@ -44,10 +44,13 @@ export const useRootStore = defineStore('root', () => {
   })
 
   const usedCountryIds = computed<Set<string | null>>(() => {
-    return new Set((useRepo(Artist).all() as Artist[]).map(artist => artist.countryId))
+    return new Set(useRepo(Artist).all().map(artist => artist.countryId))
   })
 
   const lastSong = computed<Song | undefined>(() => {
+    if (!yearStore.currentYear) {
+      return undefined
+    }
     return list(yearStore.currentYear, 1)?.[0]?.song
   })
   const lastPosition = computed<number>(() => {
@@ -69,24 +72,20 @@ export const useRootStore = defineStore('root', () => {
 
   const maxPositionByYyyy = computed<Record<number, number>>(() => {
     const result: Record<number, number> = {}
-    ;(useRepo(List).all() as List[]).forEach(listEntry => {
+    useRepo(List).all().forEach(listEntry => {
       result[listEntry.year] = listEntry.songIds.length
     })
     return result
   })
 
-  function list(year?: Year, limit?: number, maxPosition?: number): ListEntry[] {
-    if (!year) {
-      return []
-    }
-
-    const yearList = useRepo(List).find(year.yyyy) as List | null
+  function list(year: Year, limit?: number, maxPosition?: number): ListEntry[] {
+    const yearList = useRepo(List).find(year.yyyy)
     if (yearList) {
       let notNullSongIds = yearList.songIds.filter((x): x is number => x !== null)
       if ((limit ?? 0) > 0) {
         notNullSongIds = notNullSongIds.slice(0, limit)
       }
-      const songs = useRepo(Song).with('album').with('artist').with('secondArtist').find(notNullSongIds) as Song[]
+      const songs = useRepo(Song).with('album').with('artist').with('secondArtist').find(notNullSongIds)
       const songsById: Record<number, Song> = {}
       songs.forEach(song => {
         songsById[song.id] = song

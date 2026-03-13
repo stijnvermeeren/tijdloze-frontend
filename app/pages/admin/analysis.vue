@@ -1,7 +1,7 @@
 <template lang="pug">
-Title Admin: interessante feiten {{currentYear.yyyy}}
+Title Admin: interessante feiten {{currentYearYyyy}}
 div
-  h2 "Interessante feiten" {{currentYear.yyyy}}
+  h2 "Interessante feiten" {{currentYearYyyy}}
 
   ui-card(title="Aanpassen")
     ui-alert
@@ -50,7 +50,9 @@ div
             make-links(:text='text')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { TextValueResponse } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
 definePageMeta({
@@ -60,16 +62,17 @@ definePageMeta({
 const textExample = "<strong>vet</strong> <em>scheef</em>"
 
 const {currentYear} = storeToRefs(useYearStore())
+const currentYearYyyy = computed(() => currentYear.value?.yyyy ?? new Date().getFullYear())
 
-const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useFetch(
-    `text/analysis_${currentYear.value.yyyy}`,
-    useFetchOpts({transform: data => data.value})
+const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetchByPath<string>(
+  apiEndpoints.text.byKey(`analysis_${currentYearYyyy.value}`).path,
+  { transform: (data: TextValueResponse) => data.value }
 );
 const initialAnalysis = ref(lastLoadedAnalysis.value)
 
 const refreshing = ref(false)
 const saving = ref(false)
-const interval = ref(undefined)
+const interval = ref<ReturnType<typeof setInterval> | undefined>(undefined)
 const analysis = ref(initialAnalysis.value)
 
 
@@ -80,19 +83,12 @@ const analysisPreview = computed(() => {
   if (analysis.value) {
     return analysis.value.split(/\r?\n/);
   } else {
-    return "";
+    return [];
   }
 })
-const apiPath = computed(() => {
-  return `text/analysis_${currentYear.value.yyyy}`
-})
-
 async function save() {
   saving.value = true;
-  const data = {
-    text: analysis.value
-  };
-  await $api(apiPath.value, useFetchOptsPost(data));
+  await $api(apiEndpoints.text.updateAnalysis(currentYearYyyy.value), { text: analysis.value });
   await refresh()
   saving.value = false;
 }

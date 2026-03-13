@@ -40,6 +40,7 @@ v-container
 </template>
 
 <script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import languages from '~/utils/language'
 import Artist from "~/orm/Artist";
 import type Song from "~/orm/Song";
@@ -106,7 +107,7 @@ async function loadExistingSong() {
         .find(props.artistId)
     if (artist) {
       for (const song of artist.songs) {
-        const fullSongData = await $api<{spotifyId?: string}>(`song/${song.id}`)
+        const fullSongData = await $api(apiEndpoints.song.byId(song.id))
         if (fullSongData) {
           if (fullSongData.spotifyId === songDetails.value.spotifyId) {
             return song
@@ -146,7 +147,7 @@ async function submit(artistId: number, secondArtistId: number | undefined, albu
     musicbrainzRecordingId: songDetails.value.recordingMBId,
     musicbrainzWorkId: songDetails.value.workMBId
   }
-  return await $api('/song', { method: 'POST', body: songData });
+  return await $api(apiEndpoints.song.create(), songData);
 }
 
 function reset() {

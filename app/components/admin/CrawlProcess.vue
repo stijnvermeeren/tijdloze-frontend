@@ -37,6 +37,8 @@ div(v-else) Niets meer gevonden...
 </template>
 
 <script setup lang="ts">
+import type { CrawlEntry, CrawlType } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
@@ -47,24 +49,9 @@ import type SongModel from '~/orm/Song'
 
 const {$api} = useNuxtApp()
 
-type CrawlType = 'artist' | 'album' | 'song'
-
-interface CrawlEntry {
-  id: number
-  artistId?: number
-  albumId?: number
-  songId?: number
-  field: string
-  value?: string
-  comment?: string
-  crawlDate?: string
-}
-
 const props = defineProps<{
   type: CrawlType
 }>()
-
-const apiPath = `crawl-${props.type}`
 
 function getModelId(entry: CrawlEntry | null | undefined): number | undefined {
   if (!entry) {
@@ -81,7 +68,7 @@ function getModelId(entry: CrawlEntry | null | undefined): number | undefined {
 
 const submitting = ref(false)
 
-const {data: crawl, refresh: refreshCrawl} = await useFetch<CrawlEntry | null>(apiPath, useFetchOpts())
+const {data: crawl, refresh: refreshCrawl} = await useApiFetch(apiEndpoints.crawlProcess.next(props.type))
 
 const storeModel = computed<ArtistModel | AlbumModel | SongModel | undefined>(() => {
   const modelId = getModelId(crawl.value)
@@ -118,14 +105,14 @@ async function refresh() {
 
 async function accept(id: number) {
   submitting.value = true
-  await $api(`${apiPath}/${id}`, { method: 'POST' })
+  await $api(apiEndpoints.crawlProcess.accept(props.type, id))
   refresh()
   submitting.value = false
 }
 
 async function reject(id: number) {
   submitting.value = true
-  await $api(`${apiPath}/${id}`, { method: 'DELETE' })
+  await $api(apiEndpoints.crawlProcess.reject(props.type, id))
   refresh()
   submitting.value = false
 }

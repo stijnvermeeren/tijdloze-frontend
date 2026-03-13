@@ -2,7 +2,7 @@ import { sortWith, ascend } from 'ramda'
 
 interface RankingEntry<T> {
   position: number | '='
-  key: unknown
+  key: PropertyKey
   entry: T
 }
 
@@ -24,14 +24,14 @@ export default function ranking<T extends object>(
     if (lastEntry && rankBy(entry) === rankBy(lastEntry)) {
       results.push({
         position: '=' as const,
-        key: (entry as Record<string, unknown>).key,
+        key: (entry as { key: PropertyKey }).key,
         entry
       })
     } else {
       const position = index + 1;
       results.push({
         position,
-        key: (entry as Record<string, unknown>).key,
+        key: (entry as { key: PropertyKey }).key,
         entry
       });
       lastEntry = entry;

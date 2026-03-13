@@ -1,6 +1,6 @@
 <template lang="pug">
 Title Admin: Album: {{title}}
-div
+div(v-if="fullAlbumData")
   h2 Album aanpassen
 
   v-container
@@ -25,41 +25,42 @@ div
         admin-wiki-url-input(
           v-model='fullAlbumData.urlWikiNl'
           lang='nl'
-          :query='`${fullAlbumData.title} ${artist.name}`'
+          :query='`${fullAlbumData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
         admin-wiki-url-input(
           v-model='fullAlbumData.urlWikiEn'
           lang='en'
-          :query='`${fullAlbumData.title} ${artist.name}`'
+          :query='`${fullAlbumData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
         admin-all-music-url-input(
           v-model='fullAlbumData.urlAllMusic'
-          :query='`${fullAlbumData.title} ${artist.name}`'
+          :query='`${fullAlbumData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
         admin-musicbrainz-input(
           v-model='fullAlbumData.musicbrainzId'
           musicbrainz-category="release-group"
-          :query='`${fullAlbumData.title} ${artist.name}`'
+          :query='`${fullAlbumData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
-        admin-wikidata-input(v-model='fullAlbumData.wikidataId' :query='`${fullAlbumData.title} ${artist.name}`')
+        admin-wikidata-input(v-model='fullAlbumData.wikidataId' :query='`${fullAlbumData.title} ${artist?.name ?? ""}`')
     v-row
       v-col
         admin-delete-btn(@click='submitDelete' :disabled='processing')
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type { AlbumFormData } from '~/api/contracts'
+  import { apiEndpoints } from '~/api/endpoints'
   import Artist from "~/orm/Artist";
   import {useRepo} from "pinia-orm";
-
   const {$api} = useNuxtApp()
 
   definePageMeta({
@@ -67,28 +68,30 @@ div
   })
 
   const processing = ref(false)
+  const route = useRoute()
+  const albumId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
 
-  const {data: fullAlbumData} = await useFetch(`album/${useRoute().params.id}`, useFetchOpts({deep:  true}))
-  const title = ref(fullAlbumData.value.title)  // not reactive
+  const {data: fullAlbumData} = await useApiFetch(apiEndpoints.album.byId(Number(albumId)), {deep:  true})
+  const title = ref(fullAlbumData.value!.title)  // not reactive
 
   const artist = computed(() => {
-    return useRepo(Artist).find(fullAlbumData.value.artistId);
+    return useRepo(Artist).find(fullAlbumData.value!.artistId);
   })
   const disabled = computed(() => {
-    return processing.value || !fullAlbumData.value.title || !fullAlbumData.value.artistId || !fullAlbumData.value.releaseYear
+    return processing.value || !fullAlbumData.value!.title || !fullAlbumData.value!.artistId || !fullAlbumData.value!.releaseYear
   })
 
   async function submit() {
     processing.value = true;
-    await $api(`album/${fullAlbumData.value.id}`, useFetchOptsPut(fullAlbumData.value))
-    await useRouter().push(`/album/${fullAlbumData.value.id}`);
+    await $api(apiEndpoints.album.update(fullAlbumData.value!.id), fullAlbumData.value!)
+    await useRouter().push(`/album/${fullAlbumData.value!.id}`);
   }
 
   async function submitDelete() {
     if (confirm("Dit album (en alle bijhorende nummers) echt volledig verwijderen uit de database?")) {
       processing.value = true;
-      await $api(`album/${fullAlbumData.value.id}`, useFetchOptsDelete())
-      await useRouter().push(`/artiest/${fullAlbumData.value.artistId}`);
+      await $api(apiEndpoints.album.delete(fullAlbumData.value!.id))
+      await useRouter().push(`/artiest/${fullAlbumData.value!.artistId}`);
     }
   }
 </script>

@@ -35,27 +35,16 @@ div.poll
 
 <script setup lang="ts">
 import {mdiRefresh} from "@mdi/js";
+import type { PollAnswer, PollRecord } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
 
 const auth = inject('auth', {}) // provide default value for server-side
 const {$api} = useNuxtApp()
 
-type PollAnswer = {
-  id: number
-  answer: string
-  voteCount: number
-}
-
-type Poll = {
-  id: number
-  question: string
-  answers: PollAnswer[]
-  isDeleted: boolean
-}
-
 const props = withDefaults(defineProps<{
-  poll: Poll
+  poll: PollRecord
   isAdmin?: boolean
   isActive?: boolean
 }>(), {
@@ -63,7 +52,7 @@ const props = withDefaults(defineProps<{
   isActive: false,
 })
 
-const livePoll = ref<Poll>(props.poll)
+const livePoll = ref<PollRecord>(props.poll)
 const isDeleted = ref(props.poll.isDeleted)
 const deleting = ref(false)
 const voting = ref(false)
@@ -97,18 +86,18 @@ watch(myVote, () => {
 async function reload() {
   isLoading.value = true;
   if (isAuthenticated.value) {
-    const result = await $api<{ votes: Array<{ pollId: number; answerId: number }> }>(`poll/my-votes`)
+    const result = await $api(apiEndpoints.poll.myVotes())
     usePollStore().votes = result.votes;
   }
 
-  livePoll.value = await $api<Poll>(`poll/${props.poll.id}`)
+  livePoll.value = await $api(apiEndpoints.poll.byId(props.poll.id))
   isLoading.value = false;
 }
 
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await $api(`poll/${props.poll.id}/${myVoteEdit.value}`, { method: 'POST' });
+    await $api(apiEndpoints.poll.vote(props.poll.id, myVoteEdit.value!));
 
     await reload();
     voting.value = false;
@@ -129,14 +118,14 @@ function percentage(answerVotes: number) {
 
 async function deletePoll() {
   deleting.value = true;
-  await $api(`poll/${props.poll.id}/hide`, { method: 'POST' });
+  await $api(apiEndpoints.poll.hide(props.poll.id));
   isDeleted.value = true;
   deleting.value = false;
 }
 
 async function restore() {
   deleting.value = true;
-  await $api(`poll/${props.poll.id}/hide`, { method: 'DELETE' });
+  await $api(apiEndpoints.poll.restore(props.poll.id));
   isDeleted.value = false;
   deleting.value = false;
 }

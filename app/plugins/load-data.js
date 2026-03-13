@@ -1,3 +1,4 @@
+import { apiEndpoints } from "~/api/endpoints";
 import {useRootStore} from "~/stores/root";
 import {useConfigStore} from "~/stores/config";
 import {usePollStore} from "~/stores/poll";
@@ -19,9 +20,9 @@ export default defineNuxtPlugin(async nuxtApp => {
       commentsOnResponse,
       coreDataResponse
     ] = await Promise.all([
-      $api(`text/chatOn`),
-      $api(`text/commentsOn`),
-      $api('core-data')
+      $api(apiEndpoints.text.chatOn()),
+      $api(apiEndpoints.text.commentsOn()),
+      $api(apiEndpoints.coreData.root())
     ])
     configStore.chatOn = (chatOnResponse.value === 'on')
     configStore.commentsOn = (commentsOnResponse.value === 'on')
@@ -38,7 +39,7 @@ export default defineNuxtPlugin(async nuxtApp => {
     useRepo(List).insert(coreDataResponse.lists);
 
     if (rootStore.listInProgress) {
-      const poll = await $api('poll/latest')
+      const poll = await $api(apiEndpoints.poll.latest())
         .catch(err => undefined);
       if (poll && poll.year === yearStore.currentYear.yyyy) {
         usePollStore().currentPoll = poll;

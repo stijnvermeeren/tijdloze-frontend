@@ -65,6 +65,11 @@ type SearchResultSong = { type: 'song'; item: Song; score: number; query?: strin
 type SearchResultAlbum = { type: 'album'; item: Album; score: number; query?: string }
 type SearchResult = SearchResultArtist | SearchResultSong | SearchResultAlbum
 type SearchType = SearchResult['type']
+type SearchResultByType = {
+  artist: SearchResultArtist
+  song: SearchResultSong
+  album: SearchResultAlbum
+}
 
 const query = defineModel({
   type: String,
@@ -102,12 +107,12 @@ const allAlbums = computed(() => {
   return useRepo(Album).with('artist').get().filter(props.albumFilter);
 })
 
-const results = computed(() => {
+const results = computed<SearchResult[]>(() => {
   if (!query.value) {
-    return [] as SearchResult[]
+    return []
   }
 
-  const queryFragments = useSearchQueryFragments(query.value) as string[]
+  const queryFragments = useSearchQueryFragments(query.value)
   const artists = search(queryFragments, allArtists.value, useSearchArtistContent, 'artist');
   const songs = search(queryFragments, allSongs.value, useSearchSongContent, 'song');
   const albums = search(queryFragments, allAlbums.value, useSearchAlbumContent, 'album');
@@ -143,19 +148,19 @@ function onBlur(event: FocusEvent) {
     }
   }
 }
-function search<T extends Artist | Song | Album>(
+function search<T extends Artist | Song | Album, K extends SearchType>(
   queryFragments: string[],
   data: T[],
   matchAttribute: (item: T) => string,
-  type: SearchType
-): SearchResult[] {
+  type: K
+): SearchResultByType[K][] {
   return data.filter(useSearchFilter(queryFragments, matchAttribute)).map(item => {
     let score = useSearchScore(query.value, matchAttribute(item));
     if (props.songsYear && type === 'song') {
       score = score / 100 + ((item as Song).position(props.songsYear) ?? 0);
     }
 
-    return {type, item: item as any, score} as SearchResult
+    return {type, item, score} as SearchResultByType[K]
   });
 }
 function move(offset: number) {

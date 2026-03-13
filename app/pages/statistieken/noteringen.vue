@@ -6,7 +6,7 @@ div
     nuxt-page(:artists='artists' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
 

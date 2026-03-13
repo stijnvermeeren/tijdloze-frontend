@@ -16,11 +16,13 @@ div
     nuxt-page(keepalive :year='year' :analysis='analysis' :exits="exits" :new-songs="newSongs")
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import analyse from '~/utils/analyse';
 import {useRootStore} from "~/stores/root";
-import {sortBy} from 'ramda'
 import {mdiDownload} from "@mdi/js";
+import type { ListEntry } from '~/stores/root'
+import type Year from '~/orm/Year'
 
 definePageMeta({
   validate: async (route) => {
@@ -33,37 +35,48 @@ const {$api} = useNuxtApp()
 const {currentYear, years, context} = storeToRefs(useYearStore())
 const {listInProgress} = storeToRefs(useRootStore())
 
-const yyyyParam = useRoute().params.yyyy
+const route = useRoute()
+const routeYyyyParam = route.params.yyyy
+const yyyyParam = Array.isArray(routeYyyyParam) ? routeYyyyParam[0] : routeYyyyParam
+if (!yyyyParam) {
+  throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+}
+
 const analysisCurrentYear = ref('')
-if (yyyyParam === currentYear.value.yyyy.toString()) {
-  const analysisCurrentYearResponse = await $api(`text/analysis_${yyyyParam}`).catch(err => '');
+if (currentYear.value && yyyyParam === currentYear.value.yyyy.toString()) {
+  const analysisCurrentYearResponse = await $api(apiEndpoints.text.analysis(Number(yyyyParam))).catch(() => null);
   analysisCurrentYear.value = analysisCurrentYearResponse?.value ?? ''
 }
 
-const year = computed(() => {
-  return years.value.find(year => year.yyyy.toString() === useRoute().params.yyyy);
+const year = computed<Year>(() => {
+  const foundYear = years.value.find(year => year.yyyy.toString() === yyyyParam)
+  if (!foundYear) {
+    throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+  }
+  return foundYear
 })
 const previousYear = computed(() => {
   return context.value.forYear(year.value).previous?.year
 })
 
-const top100 = computed(() => {
+const top100 = computed<ListEntry[]>(() => {
   return useRootStore().list(year.value, 100, 100);
 })
-const newSongs = computed(() => {
+const newSongs = computed<ListEntry[]>(() => {
   if (previousYear.value) {
-    return top100.value.filter(entry => !entry.song.position(previousYear.value));
+    const prev = previousYear.value
+    return top100.value.filter(entry => !entry.song.position(prev));
   } else {
     return [];
   }
 })
 
-const exits = computed(() => {
+const exits = computed<ListEntry[]>(() => {
   if (previousYear.value) {
-    return sortBy(entry => entry.song.position(previousYear.value))(
-      useRootStore().list(previousYear.value, 100, 100)
-        .filter(entry => entry.song.notInList(year.value))
-    );
+    const prev = previousYear.value
+    return useRootStore().list(prev, 100, 100)
+      .filter(entry => entry.song.notInList(year.value))
+      .sort((a, b) => (a.song.position(prev) ?? Number.POSITIVE_INFINITY) - (b.song.position(prev) ?? Number.POSITIVE_INFINITY));
   } else {
     return [];
   }
@@ -83,7 +96,7 @@ const analysis = computed(() => {
 })
 
 const tabs = computed(() => {
-  const tabs = [{ to: `/lijst/${year.value.yyyy}`, title: 'De lijst' }]
+  const tabs: { to: string; title: string; subtitle?: string }[] = [{ to: `/lijst/${year.value.yyyy}`, title: 'De lijst' }]
   if (exits.value.length) {
     tabs.push({ to: `/lijst/${year.value.yyyy}/exits`, title: 'Exits', subtitle: "top 100" })
   }
@@ -93,7 +106,7 @@ const tabs = computed(() => {
   if (analysis.value) {
     tabs.push({ to: `/lijst/${year.value.yyyy}/analyse`, title: 'Analyse' })
   }
-  if (year.value.equals(currentYear.value) && listInProgress.value) {
+  if (currentYear.value && year.value.equals(currentYear.value) && listInProgress.value) {
     tabs.push({ to: `/lijst/${year.value.yyyy}/opkomst`, title: 'Nog op komst?' })
   }
   return tabs

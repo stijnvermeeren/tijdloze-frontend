@@ -21,6 +21,7 @@ div
 
 <script setup lang="ts">
 import {mdiSend} from "@mdi/js";
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 const emit = defineEmits(['submitted'])
 
@@ -42,7 +43,7 @@ async function submit() {
   const data = {
     message: editMessage.value
   };
-  await $api(`comment/${props.commentId}`, { method: 'PUT', body: data })
+  await $api(apiEndpoints.comment.update(props.commentId), data)
   submitting.value = false;
   emit('submitted', editMessage.value)
 }

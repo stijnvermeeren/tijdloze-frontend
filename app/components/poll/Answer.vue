@@ -11,6 +11,7 @@ div(v-else)
 </template>
 
 <script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
 const props = defineProps<{
@@ -34,7 +35,7 @@ async function send() {
   const data = {
     answer: answerEdit.value
   };
-  await $api(`poll/${props.pollId}/${props.pollAnswerId}`, useFetchOptsPut(data));
+  await $api(apiEndpoints.poll.answer(props.pollId, props.pollAnswerId), data);
   answer.value = answerEdit.value;
   submitting.value = false;
   editing.value = false;

@@ -24,20 +24,14 @@ div
 </template>
 
 <script setup lang="ts">
+import type { MBDatasetHit, MBDatasetSearchResponse } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import type Song from '~/orm/Song'
 
 const {$api} = useNuxtApp()
 
 interface SearchBoxRef {
   searchActive: boolean
-}
-
-interface MBDatasetHit {
-  [key: string]: unknown
-}
-
-interface MBDatasetSearchResponse {
-  hit?: MBDatasetHit
 }
 
 const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
@@ -88,10 +82,7 @@ async function searchMusicbrainz() {
   showingResults.value = false;
   processing.value = true;
 
-  const result = await $api<MBDatasetSearchResponse>(
-      '/mbdata/search-query',
-      { method: 'GET', params: {query: query.value} }
-  ).catch(err => {
+  const result = await $api(apiEndpoints.mbdata.searchQuery(), { params: {query: query.value} }).catch(err => {
     requestError.value = true;
     processing.value = false;
   })

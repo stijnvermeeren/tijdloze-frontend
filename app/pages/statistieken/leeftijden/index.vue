@@ -2,20 +2,23 @@
 ui-data-table(:data="data" total-name="Gemiddeld")
 </template>
 
-<script setup>
+<script setup lang="ts">
 const cutoffs = [3, 10, 20, 50, 100]
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
+  const allYears = years.value
   return cutoffs.map(cutoff => {
-    const cutoffData = years.value.map(year => {
-      const ages = [];
+    const cutoffData = allYears.map(year => {
+      const ages: number[] = [];
 
       songs.value.forEach(song => {
-        if (song.position(year) && song.position(year) <= cutoff) {
-          ages.push(year.yyyy - song.album.releaseYear);
+        const position = song.position(year)
+        const releaseYear = song.album?.releaseYear
+        if (position && position <= cutoff && releaseYear !== undefined) {
+          ages.push(year.yyyy - releaseYear);
         }
       });
 
@@ -42,7 +45,7 @@ const data = computed(() => {
   });
 })
 
-function displayAverage(sum, size) {
+function displayAverage(sum: number, size: number): string | number {
   return size === 0 ? '-' : Math.round(sum / size * 10) / 10
 }
 </script>

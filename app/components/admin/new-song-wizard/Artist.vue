@@ -27,6 +27,7 @@ div
 </template>
 
 <script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
@@ -107,7 +108,7 @@ function preProcessArtistName(artistName: string) {
 
 async function artistMatch(artistName: string, artistMBId?: string) {
   if (artistMBId) {
-    const mbArtist = await $api<{id: number}>(`/artist/musicbrainz/${artistMBId}`).catch(
+    const mbArtist = await $api(apiEndpoints.musicbrainz.artistById(artistMBId)).catch(
         () => undefined
     );
     if (mbArtist)  {
@@ -130,7 +131,7 @@ async function artistMatch(artistName: string, artistMBId?: string) {
 async function submit() {
   let payloadArtistId: number | undefined;
   if (artistNew.value) {
-    const artist = await $api<{id: number}>('/artist', { method: 'POST', body: artistDetails.value });
+    const artist = await $api(apiEndpoints.artist.create(), artistDetails.value);
     payloadArtistId = artist.id;
   } else {
     payloadArtistId = artistId.value;

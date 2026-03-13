@@ -6,7 +6,12 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type NewcomerEntry = { song: Song; year: Year }
+
 const tabs = [
   { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
   { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
@@ -16,11 +21,15 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
-  const firstTijdlozeYear = years.value[0];
+const data = computed<NewcomerEntry[]>(() => {
+  const dataPoints: NewcomerEntry[] = [];
+  const allYears = years.value
+  const firstTijdlozeYear = allYears[0]
+  if (!firstTijdlozeYear) {
+    return dataPoints
+  }
   songs.value.forEach(song => {
-    const firstYear = years.value.find(year => song.position(year));
+    const firstYear = allYears.find(year => song.position(year));
     if (firstYear && !firstYear.equals(firstTijdlozeYear)) {
       dataPoints.push({
         song: song,

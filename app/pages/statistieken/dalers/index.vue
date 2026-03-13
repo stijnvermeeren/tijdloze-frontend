@@ -20,13 +20,14 @@ table.lijst.perVijf
         | /
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { sortWith, ascend } from 'ramda'
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+type DropEntry = { song: Song; year: Year; oldPosition: number; newPosition: number }
+
+const props = defineProps<{ data: DropEntry[]; years: Year[] }>()
 
 const listData = computed(() => {
   const listYears = props.years.slice(1).reverse();
@@ -40,12 +41,12 @@ const listData = computed(() => {
   })
 })
 
-function entriesPerYear(year) {
-  return sortWith([
-    ascend(entry => entry.oldPosition - entry.newPosition),
-    ascend(entry => entry.newPosition)
+function entriesPerYear(year: Year): DropEntry[] {
+  return sortWith<DropEntry>([
+    ascend((entry: DropEntry) => entry.oldPosition - entry.newPosition),
+    ascend((entry: DropEntry) => entry.newPosition)
   ])(
-    props.data.filter(entry => entry.year.equals(year))
+    props.data.filter((entry: DropEntry) => entry.year.equals(year))
   );
 }
 </script>

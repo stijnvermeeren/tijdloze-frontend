@@ -24,21 +24,12 @@ comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
 
 <script setup lang="ts">
 import {mdiDelete, mdiPencil, mdiRestore} from "@mdi/js";
+import type { CommentItem } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
 const emit = defineEmits(['deleted', 'restored'])
-
-type CommentItem = {
-  id: number
-  userId: string | null
-  name: string
-  isAdmin?: boolean
-  created: string | Date
-  updated: string | Date
-  message: string
-  deleted?: boolean
-}
 
 const props = defineProps<{
   comment: CommentItem
@@ -71,14 +62,14 @@ function commentEdited(newMessage: string) {
 }
 async function deleteComment() {
   if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-    await $api(`comment/${props.comment.id}`, { method: 'DELETE' })
+    await $api(apiEndpoints.comment.delete(props.comment.id))
     isDeleted.value = true
     emit("deleted")
   }
 }
 async function restoreComment() {
   if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-    await $api(`comment/${props.comment.id}`, { method: 'POST' })
+    await $api(apiEndpoints.comment.restore(props.comment.id))
     isDeleted.value = false
     emit("restored")
   }

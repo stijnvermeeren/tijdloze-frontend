@@ -23,27 +23,33 @@ div
     v-progress-circular(indeterminate)
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type { CommentCountResponse, TextValueResponse, ThreadSummary } from '~/api/contracts'
+  import { apiEndpoints } from '~/api/endpoints'
+  import { queryKeys } from '~/api/queryKeys'
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
   const commentsPerPage = 20;
 
-  const {data: commentsOn, status: status1} = await useLazyFetch(
-    `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn'})
+  const {data: commentsOn, status: status1} = await useApiFetchByPath<boolean>(
+    apiEndpoints.text.commentsOn().path,
+    {transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true}
   )
 
-  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useLazyFetch(
-    `comments/count`,
-    useFetchOpts({transform: data => data.commentCount, key: `comments/count`})
+  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useApiFetchByPath<number>(
+    apiEndpoints.comment.count().path,
+    {transform: (data: CommentCountResponse) => data.commentCount, key: queryKeys.comments.count, lazy: true}
   )
 
   const page = computed(() => {
-    return +useRoute().params.page || +useRoute().query.page || 1;
+    const route = useRoute()
+    const paramsPage = Array.isArray(route.params.page) ? route.params.page[0] : route.params.page
+    const queryPage = Array.isArray(route.query.page) ? route.query.page[0] : route.query.page
+    return +(paramsPage ?? queryPage ?? 1)
   })
 
-  const {data: comments, refresh: refreshComments, status: status3} = await useLazyFetch(
-      () => `comments/${page.value}`, useFetchOpts()
+    const {data: comments, refresh: refreshComments, status: status3} = await useApiFetchByPath<ThreadSummary[]>(
+      () => apiEndpoints.comment.list(page.value).path, { lazy: true }
   )
   useClientDataRefresh(refreshComments)
 
@@ -55,7 +61,7 @@ div
   })
 
   const pages = computed(() => {
-    return Math.ceil(commentCount.value / commentsPerPage);
+    return Math.ceil((commentCount.value ?? 0) / commentsPerPage);
   })
 
   async function reload() {
@@ -74,7 +80,7 @@ div
 
   definePageMeta({
     scrollToTop: true,
-    key: "reacties"  // avoid re-rendering the whole page when just switching comments page
+    key: 'reacties'  // avoid re-rendering the whole page when just switching comments page
   })
 </script>
 

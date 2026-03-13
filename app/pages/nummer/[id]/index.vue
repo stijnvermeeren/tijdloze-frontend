@@ -15,12 +15,11 @@
           position-with-change(:song='song' :year='year')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {allEntriesIntervals} from "~/utils/intervals";
+import type Song from '~/orm/Song'
 
-const props = defineProps({
-  song: Object
-})
+const props = defineProps<{ song: Song }>()
 
 const {years} = storeToRefs(useYearStore())
 
@@ -40,10 +39,6 @@ div.allPositions {
     min-width: 45px;
     display: flex;
     flex-direction: column;
-
-    > div {
-
-    }
   }
 }
 </style>

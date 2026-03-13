@@ -18,7 +18,7 @@
     "baseline widely available"
   ],
   "dependencies": {
-    "@auth0/auth0-vue": "^2.4.0",
+    "@auth0/auth0-vue": "^2.5.0",
     "@pinia/nuxt": "^0.5.5",
     "@vueuse/core": "^13.9.0",
     "@vueuse/nuxt": "^13.9.0",

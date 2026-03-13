@@ -9,7 +9,7 @@ div
   admin-crawl-process(type="song")
 </template>
 
-<script setup>
+<script setup lang="ts">
 definePageMeta({ middleware: 'admin' })
 
 const {$api} = useNuxtApp()

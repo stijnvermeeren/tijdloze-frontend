@@ -22,27 +22,26 @@
     v-progress-circular(indeterminate)
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SongFormData } from '~/api/contracts'
+import type Song from '~/orm/Song'
 import vocalsGenders from '~/utils/leadVocals'
 import languages from '~/utils/language'
 
-const props = defineProps({
-  fullSongData: Object,
-  song: Object
-})
+const props = defineProps<{
+  fullSongData: SongFormData | null | undefined
+  song: Song
+}>()
+
+type SongLinkProperty = keyof Pick<SongFormData, 'musicbrainzRecordingId' | 'musicbrainzWorkId'>
 
 const links = computed(() => {
-  const links = [];
-  const addLink = (property, title, fn) => {
-    if (!fn) {
-      fn = x => x
-    }
-
-    if (props.fullSongData[property]) {
-      links.push({
-        href: fn(props.fullSongData[property]),
-        title: title
-      })
+  const links: { href: string; title: string }[] = [];
+  const addLink = (property: SongLinkProperty, title: string, fn?: (value: string) => string) => {
+    const resolved = fn ?? ((x: string) => x)
+    const val = props.fullSongData?.[property]
+    if (val) {
+      links.push({ href: resolved(val), title })
     }
   };
 

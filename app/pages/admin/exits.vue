@@ -1,10 +1,10 @@
 <template lang="pug">
 Title Admin: Exits markeren
 div(style="min-height: 30em")
-  h2 Exits markeren ({{currentYear.yyyy}})
+  h2 Exits markeren ({{currentYear?.yyyy}})
   div
     search-box(
-      :placeholder='`Zoek nummer uit de Tijdloze van ${previousYear.yyyy}`'
+      :placeholder='`Zoek nummer uit de Tijdloze van ${previousYear?.yyyy}`'
       :song-filter='songValid', :songs-year='previousYear'
       :album-filter='album => false'
       :artist-filter='artist => false'
@@ -27,7 +27,8 @@ div(style="min-height: 30em")
     v-btn(@click='unmarkAll()') Alle exits terugzetten
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import Song from '~/orm/Song'
 import {useRepo} from "pinia-orm";
 
@@ -38,27 +39,26 @@ definePageMeta({ middleware: 'admin' })
 const {currentYear, previousYear} = storeToRefs(useYearStore())
 const {exitSongIds} = storeToRefs(useRootStore())
 
-const exits = computed(() => {
-  return exitSongIds.value.map(id => {
-    return useRepo(Song).with('artist').with('secondArtist').find(id)
-  });
+const exits = computed<Song[]>(() => {
+  return exitSongIds.value
+    .map(id => useRepo(Song).with('artist').with('secondArtist').find(id))
+    .filter((song): song is Song => song !== null)
 })
 
 
-function songValid(song) {
-  const inPreviousYear = song.position(previousYear.value);
-
+function songValid(song: Song): boolean {
+  const inPreviousYear = previousYear.value ? song.position(previousYear.value) : false
   const notYetInCurrentYear = currentYear.value ? !song.position(currentYear.value) : true;
   const notYetMarked = !exitSongIds.value.includes(song.id);
-  return inPreviousYear && notYetInCurrentYear && notYetMarked;
+  return !!inPreviousYear && notYetInCurrentYear && notYetMarked;
 }
 async function unmarkAll() {
-  await $api(`/list-exit/${currentYear.value.yyyy}`, useFetchOptsDelete());
+  await $api(apiEndpoints.listExit.clear(currentYear.value!.yyyy));
 }
-async function unmarkExit(song) {
-  await $api(`/list-exit/${currentYear.value.yyyy}/${song.id}`, useFetchOptsDelete());
+async function unmarkExit(song: Song) {
+  await $api(apiEndpoints.listExit.remove(currentYear.value!.yyyy, song.id));
 }
-async function markExit(song) {
-  await $api(`/list-exit/${currentYear.value.yyyy}/${song.id}`, useFetchOptsPost());
+async function markExit(song: Song) {
+  await $api(apiEndpoints.listExit.add(currentYear.value!.yyyy, song.id));
 }
 </script>

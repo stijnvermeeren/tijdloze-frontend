@@ -4,10 +4,8 @@
     make-links(:text='text')
 </template>
 
-<script setup>
-const props = defineProps({
-  analysis: Array
-})
+<script setup lang="ts">
+defineProps<{ analysis: string[] }>()
 </script>
 
 

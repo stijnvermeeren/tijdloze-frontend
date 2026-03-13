@@ -11,10 +11,13 @@ div
         |  Niet-definitieve eenjaarsvliegen
 </template>
 
-<script setup>
-const props = defineProps({
-  data: Array
-})
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+
+const props = defineProps<{ data: OneHitEntry[] }>()
 
 const finalPoints = computed(() => {
   return props.data.filter(point => point.isFinal);

@@ -28,9 +28,9 @@ import type Year from "~/orm/Year";
 const CHUNK_LENGTH = 8
 
 type DataRow = {
-  name: string
-  total: number
-  perYear: Record<string, number>
+  entry: string
+  total: string | number
+  perYear: Record<string, string | number>
 }
 
 const props = withDefaults(defineProps<{

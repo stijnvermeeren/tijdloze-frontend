@@ -50,21 +50,33 @@ export default function (
     }
   })
 
-  function onHover(event: any) {
+  function onHover(event: MouseEvent | TouchEvent) {
     let offsetX: number;
     let offsetY: number;
     let boundingClientRect: DOMRect;
 
-    if (event.offsetX) {
+    if ('offsetX' in event) {
       // mouse event
-      boundingClientRect = event.target.getBoundingClientRect();
+      const target = event.target as HTMLElement | null
+      if (!target) {
+        return
+      }
+      boundingClientRect = target.getBoundingClientRect();
       offsetX = event.offsetX;
       offsetY = event.offsetY;
-    } else if (event.touches) {
+    } else if (event.touches.length > 0) {
       // touch event
-      boundingClientRect = event.touches[0].target.getBoundingClientRect();
-      offsetX = event.touches[0].pageX - boundingClientRect.x;
-      offsetY = event.touches[0].pageY - boundingClientRect.y;
+      const touch = event.touches[0]
+      if (!touch) {
+        return
+      }
+      const target = touch.target as HTMLElement | null
+      if (!target) {
+        return
+      }
+      boundingClientRect = target.getBoundingClientRect();
+      offsetX = touch.pageX - boundingClientRect.x;
+      offsetY = touch.pageY - boundingClientRect.y;
     } else {
       return;
     }

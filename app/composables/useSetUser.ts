@@ -1,4 +1,5 @@
 import {useAuth0} from "@auth0/auth0-vue";
+import { apiEndpoints } from '~/api/endpoints'
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
 
@@ -11,7 +12,7 @@ interface UserPayload {
   email_verified?: boolean
 }
 
-export default async function (auth0: any) {
+export default async function (auth0: ReturnType<typeof useAuth0>) {
   const {$api} = useNuxtApp()
   const user = auth0.user.value as UserPayload | undefined
   if (user) {
@@ -25,10 +26,10 @@ export default async function (auth0: any) {
       email: user.email,
       emailVerified: user.email_verified
     };
-    useAuthStore().user = await $api('user', useFetchOptsPost(data))
+    useAuthStore().user = await $api(apiEndpoints.user.current(), data)
 
     // TODO don't do await, do it in the background instead
-    const pollData = await $api<{votes: { pollId: number; answerId: number }[]}>('poll/my-votes')
+    const pollData = await $api(apiEndpoints.poll.myVotes())
     usePollStore().votes = pollData.votes;
   } else {
     useAuthStore().user = null;

@@ -21,17 +21,19 @@ div
     div Sorry, de chatbox is (nog) niet toegankelijk op dit moment. Probeer later nog eens.
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { TextValueResponse } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
+import { queryKeys } from '~/api/queryKeys'
 import {useAuthStore} from "~/stores/auth";
-
 const {$api} = useNuxtApp()
 
-const name = ref(useAuthStore().displayName)
+const name = ref<string>(useAuthStore().displayName ?? '')
 const submittingDisplayName = ref(false)
 
-const {data: chatEnabled} = await useFetch(
-    `text/chatOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
+const {data: chatEnabled} = await useApiFetch(
+  apiEndpoints.text.chatOn(),
+  { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.chatOn }
 )
 
 const route = computed(() => {
@@ -56,7 +58,7 @@ async function submitDisplayName() {
   const data = {
     displayName: name.value
   };
-  const user = await $api(`user/display-name`, useFetchOptsPost(data))
+  const user = await $api(apiEndpoints.user.displayName(), data)
   submittingDisplayName.value = false;
   useAuthStore().user = user;
 }

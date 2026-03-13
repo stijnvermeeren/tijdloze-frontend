@@ -2,8 +2,11 @@
 d3-distribution-graph(:points='data')
 </template>
 
-<script setup>
-defineProps({
-  data: Array
-})
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type ReentryEntry = { song: Song; year: Year; absenceYears: number }
+
+defineProps<{ data: ReentryEntry[] }>()
 </script>

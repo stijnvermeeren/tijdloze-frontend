@@ -19,31 +19,10 @@ div.thread
 
 <script setup lang="ts">
 import { mdiMessageReplyText, mdiDotsVertical } from '@mdi/js';
+import type { CommentItem, FullComment, ThreadSummary } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 
-const {$api} = useNuxtApp()
 const emit = defineEmits(["updated"])
-
-type CommentItem = {
-  id: number
-  userId: string | null
-  name: string
-  isAdmin?: boolean
-  created: string | Date
-  updated: string | Date
-  message: string
-  deleted?: boolean
-}
-
-type FullComment = CommentItem & {
-  replies: CommentItem[]
-}
-
-type ThreadSummary = {
-  mainComment: CommentItem
-  lastReply1?: CommentItem
-  lastReply2?: CommentItem
-  replyCount: number
-}
 
 const props = defineProps<{
   threadSummary: ThreadSummary
@@ -51,11 +30,9 @@ const props = defineProps<{
 const replying = ref(false)
 const isExpanded = ref(false)
 const initialReplyCount = 2
-const {data: fullComment, refresh: fullCommentRefresh, status: fullCommentStatus} = useFetch<FullComment>(
-    `comment/${props.threadSummary.mainComment.id}/full`,
-    useFetchOpts({
-      immediate: false
-    })
+const {data: fullComment, refresh: fullCommentRefresh, status: fullCommentStatus} = useApiFetch(
+  apiEndpoints.comment.full(props.threadSummary.mainComment.id),
+  { immediate: false }
 )
 async function expand() {
   await fullCommentRefresh()

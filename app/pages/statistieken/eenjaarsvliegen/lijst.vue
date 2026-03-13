@@ -18,18 +18,19 @@ table.lijst.perVijf
         template(v-if='entry.isFinal') *
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ranking from '~/utils/ranking';
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+
+const props = defineProps<{ data: OneHitEntry[]; years: Year[] }>()
 
 const rankingList = computed(() => {
   return ranking(
     props.data,
-    ({song, year}) => song.position(year),
+    ({song, year}) => song.position(year) ?? Number.MAX_SAFE_INTEGER,
     ({year}) => year.yyyy,
     50
   );

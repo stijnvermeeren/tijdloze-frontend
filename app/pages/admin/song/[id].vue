@@ -22,7 +22,7 @@ div
         admin-artist-select(v-model='fullSongData.secondArtistId' :required='false' label="Tweede artiest" density="compact")
     v-row(dense)
       v-col
-        admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
+        admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId ?? 0')
     v-row(dense)
       v-col
         admin-language-input(v-model='fullSongData.languageId')
@@ -37,10 +37,10 @@ div
         v-textarea(v-model='fullSongData.lyrics' label="Lyrics" rows="5" hide-details)
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.name}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist?.name ?? ""}`')
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.name}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist?.name ?? ""}`')
     v-row(dense)
       v-col
         song-spotify-input(
@@ -54,7 +54,7 @@ div
         admin-musicbrainz-input(
           v-model='fullSongData.musicbrainzRecordingId'
           musicbrainz-category="recording"
-          :query='`${fullSongData.title} ${artist.name}`'
+          :query='`${fullSongData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
@@ -67,7 +67,7 @@ div
       v-col
         admin-wikidata-input(
           v-model='fullSongData.wikidataId'
-          :query='`${fullSongData.title} ${artist.name}`'
+          :query='`${fullSongData.title} ${artist?.name ?? ""}`'
         )
     v-row
       v-col
@@ -75,12 +75,13 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SongFormData } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
 import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
-
 const {$api} = useNuxtApp()
 
 definePageMeta({
@@ -89,12 +90,19 @@ definePageMeta({
 
 const processing  = ref(false)
 
-const {data: fullSongData, status} = await useFetch(`song/${useRoute().params.id}`, useFetchOpts({deep: true}))
-const title = ref(fullSongData.value.title)  // not reactive
+const route = useRoute()
+const songId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+const fullSongData = ref<SongFormData>({
+  id: 0,
+  title: ''
+})
+const {data: fetchedSongData, status} = await useApiFetch(apiEndpoints.song.byId(Number(songId)), { deep: true })
+const title = ref('')  // not reactive
 
 watch(status, (newValue) => {
-  if (newValue === 'success') {
-    title.value = fullSongData.value.title
+  if (newValue === 'success' && fetchedSongData.value) {
+    fullSongData.value = fetchedSongData.value
+    title.value = fetchedSongData.value.title
   }
 })
 
@@ -102,10 +110,10 @@ const artistId = computed(() => {
   return fullSongData.value.artistId;
 })
 const album = computed(() => {
-  return useRepo(Album).find(fullSongData.value.albumId);
+  return useRepo(Album).find(fullSongData.value.albumId ?? 0);
 })
 const artist = computed(() => {
-  return useRepo(Artist).find(fullSongData.value.artistId);
+  return useRepo(Artist).find(fullSongData.value.artistId ?? 0);
 })
 const disabled = computed(() => {
   return processing.value || !fullSongData.value.title || !fullSongData.value.artistId ||
@@ -117,14 +125,20 @@ watch(artistId, () => {
 })
 
 async function submit() {
+  if (!fullSongData.value.id) {
+    return
+  }
   processing.value = true;
-  await $api(`song/${fullSongData.value.id}`, useFetchOptsPut(fullSongData.value))
+  await $api(apiEndpoints.song.update(fullSongData.value.id), fullSongData.value)
   await navigateTo(`/nummer/${fullSongData.value.id}`)
 }
 async function submitDelete() {
+  if (!fullSongData.value.id || !fullSongData.value.artistId) {
+    return
+  }
   if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
     processing.value = true;
-    await $api(`song/${fullSongData.value.id}`, useFetchOptsDelete())
+    await $api(apiEndpoints.song.delete(fullSongData.value.id))
     await useRouter().push(`/artiest/${fullSongData.value.artistId}`);
   }
 }

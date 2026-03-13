@@ -6,7 +6,12 @@ div
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+import type Year from '~/orm/Year'
+
+type StationaryEntry = { song: Song; year: Year }
+
 const tabs = [
   { to: '/statistieken/stationair', title: 'Per jaar' },
   { to: '/statistieken/stationair/meerderejaren', title: 'Meerdere jaren op rij' },
@@ -16,11 +21,15 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<StationaryEntry[]>(() => {
+  const dataPoints: StationaryEntry[] = [];
+  const allYears = years.value
   songs.value.forEach(song => {
-    years.value.slice(1).forEach((year, index) => {
-      const previousYear = years.value[index]
+    allYears.slice(1).forEach((year, index) => {
+      const previousYear = allYears[index]
+      if (!previousYear) {
+        return
+      }
       if (song.position(year) && song.position(year) === song.position(previousYear)) {
         dataPoints.push({
           song: song,

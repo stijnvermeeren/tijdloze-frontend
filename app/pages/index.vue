@@ -4,7 +4,7 @@ div
     ui-alert.alert(v-if="listInProgress")
       | De Tijdloze is een radioprogramma van Studio Brussel. Officiële informatie vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
       br
-      | De Tijdloze van {{currentYear.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
+      | De Tijdloze van {{currentYear?.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
 
     ui-alert(v-else title="Officiële informatie / stemmen")
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
@@ -48,7 +48,11 @@ div
         v-btn Alle polls
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { TextValueResponse } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
+import { queryKeys } from '~/api/queryKeys'
+
 import List from "~/orm/List";
 import {useRepo} from "pinia-orm";
 import useClientDataRefresh from "~/composables/useClientDataRefresh";
@@ -69,10 +73,16 @@ const tableYear = computed(() => {
   }
 })
 const yearBeforeTableYear = computed(() => {
+  if (!tableYear.value) {
+    return undefined
+  }
   return context.value.forYear(tableYear.value).previous?.year
 })
 
 const top5 = computed(() => {
+  if (!tableYear.value) {
+    return []
+  }
   const list = useRootStore().list(tableYear.value, 5)
   if (list) {
     return list
@@ -82,26 +92,31 @@ const top5 = computed(() => {
 })
 
 const exitsKnown = computed(() => {
-  return !! useRootStore().list(yearBeforeTableYear.value)
+  const selectedYear = tableYear.value
+  const previousListedYear = yearBeforeTableYear.value
+  if (!selectedYear || !previousListedYear) {
+    return false
+  }
+  return !! useRootStore().list(previousListedYear)
       .filter(entry => entry.position <= 100)
-      .find(entry => entry.song.notInList(tableYear.value))
+      .find(entry => entry.song.notInList(selectedYear))
 })
 
-const {data: chatOn, status: chatStatus} = await useLazyFetch(
-  `text/chatOn`,
-  useFetchOpts({transform: data => data.value === 'on', key: 'text/chatOn'})
+const {data: chatOn, status: chatStatus} = await useApiFetchByPath<boolean>(
+  apiEndpoints.text.chatOn().path,
+  { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.chatOn, lazy: true }
 )
 
-const {data: commentsOn, status: commentsStatus1} = await useLazyFetch(
-  `text/commentsOn`,
-  useFetchOpts({transform: data => data.value === 'on', key: 'text/commentsOn'})
+const {data: commentsOn, status: commentsStatus1} = await useApiFetchByPath<boolean>(
+  apiEndpoints.text.commentsOn().path,
+  { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true }
 )
 
 const {data: comments, execute: refreshComments, status: commentsStatus2} = await useLazyAsyncData(
-  'comments',
+  queryKeys.comments.homepage,
   () => {
     if (commentsOn.value) {
-      return $api(`comments/1`).then(data => data.slice(0, 6))
+      return $api(apiEndpoints.comment.list(1)).then(data => data.slice(0, 6))
     } else {
       return Promise.resolve([])
     }

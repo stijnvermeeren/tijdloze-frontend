@@ -29,7 +29,7 @@ div
       .anonymous(v-else) Geen gebruikernaam
       .admin(v-if='user.isAdmin') Admin
     template(v-slot:item.block="{ item: user }")
-      div(v-if='user.id !== currentUser.id')
+      div(v-if='user.id !== currentUser?.id')
         .blocked(v-if='user.isBlocked')
           div Geblokkeerd
           v-btn(@click='unblock(user.id)', :disabled='refreshing' density="compact" ) weer toelaten
@@ -37,7 +37,9 @@ div
           v-btn(@click='block(user.id)', :disabled='refreshing' density="compact") blokkeren
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { UserListItem } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 import {mdiMagnify} from "@mdi/js";
 
@@ -50,7 +52,7 @@ definePageMeta({
 const refreshing = ref(false)
 const searchQuery = ref('')
 
-const {data: users, refresh: refreshUsers} = await useFetch(`user/list`, useFetchOpts());
+const {data: users, refresh: refreshUsers} = await useApiFetch(apiEndpoints.user.list());
 
 const tableHeaders = [
   {
@@ -80,7 +82,7 @@ const tableHeaders = [
     key: 'created',
     value: 'created',
     headerProps: { style: 'font-weight: bold'},
-    sort: (a, b) => {
+    sort: (a: string, b: string) => {
       return new Date(a).getTime() - new Date(b).getTime()
     }
   },
@@ -89,7 +91,7 @@ const tableHeaders = [
     key: 'lastSeen',
     value: 'lastSeen',
     headerProps: { style: 'font-weight: bold'},
-    sort: (a, b) => {
+    sort: (a: string, b: string) => {
       return new Date(a).getTime() - new Date(b).getTime()
     }
   }
@@ -98,30 +100,31 @@ const tableHeaders = [
 const currentUser = computed(() => {
   return useAuthStore().user;
 })
+const safeUsers = computed(() => users.value ?? [])
 const userCount = computed(() => {
-  return users.value.length;
+  return safeUsers.value.length;
 })
 const adminCount = computed(() => {
-  return users.value.filter(user => user.isAdmin).length;
+  return safeUsers.value.filter(user => user.isAdmin).length;
 })
 const blockedCount = computed(() => {
-  return users.value.filter(user => user.isBlocked).length;
+  return safeUsers.value.filter(user => user.isBlocked).length;
 })
 const activeCount = computed(() => {
-  return users.value.filter(user => {
-    return new Date(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
+  return safeUsers.value.filter(user => {
+    return new Date(user.lastSeen ?? 0) > new Date(Date.now() - 24 * 3600 * 1000)
   }).length;
 })
 
-async function block(userId) {
+async function block(userId: string) {
   refreshing.value = true;
-  await $api(`/user/${userId}/block`, useFetchOptsPost());
+  await $api(apiEndpoints.user.block(userId));
   await refreshUsers()
   refreshing.value = false;
 }
-async function unblock(userId) {
+async function unblock(userId: string) {
   refreshing.value = true;
-  await $api(`/user/${userId}/block`, useFetchOptsDelete());
+  await $api(apiEndpoints.user.unblock(userId));
   await refreshUsers()
   refreshing.value = false;
 }

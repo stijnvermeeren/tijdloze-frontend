@@ -1,12 +1,5 @@
 import { defineStore } from 'pinia'
-
-interface AuthUser {
-  id?: string
-  isAdmin?: boolean
-  displayName?: string
-  name?: string
-  email?: string
-}
+import type { AuthUser } from '~/api/contracts'
 
 export const useAuthStore = defineStore('auth', () => {
   const accessToken = ref<string | null>(null)
@@ -16,7 +9,7 @@ export const useAuthStore = defineStore('auth', () => {
     return user.value !== null
   })
   const isAdmin = computed<boolean>(() => {
-    return isAuthenticated.value && user.value?.isAdmin === true
+    return isAuthenticated.value && !!user.value && user.value.isAdmin
   })
   const displayName = computed<string | undefined>(() => {
     return user.value?.displayName

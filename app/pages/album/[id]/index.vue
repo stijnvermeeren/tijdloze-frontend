@@ -3,7 +3,7 @@ in-current-list(:songs="album.songs")
 </template>
 
 
-<script setup>
+<script setup lang="ts">
 defineProps({
   album: {
     type: Object,

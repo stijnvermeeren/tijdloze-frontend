@@ -10,17 +10,21 @@ div
     nuxt-page(keepalive :artist="artist" :songs="songs")
 </template>
 
-<script setup>
+<script setup lang="ts">
   import { idFromSlug } from '~/utils/slug'
   import Artist from "~/orm/Artist";
   import {useRepo} from "pinia-orm";
 
   const {currentYear, years} = storeToRefs(useYearStore())
 
-  const artistId = computed(() => idFromSlug(useRoute().params?.id))
+  const artistId = computed(() => {
+    const rawId = useRoute().params?.id
+    const normalizedId = Array.isArray(rawId) ? rawId[0] : rawId
+    return idFromSlug(normalizedId || '')
+  })
 
-  const artist = computed(() => {
-    return useRepo(Artist)
+  const artist = computed<Artist>(() => {
+    const foundArtist = useRepo(Artist)
         .with('albums', q1 => q1
             .with('songs', q2 => q2
                 .with('secondArtist').with('artist').with('album')))
@@ -34,7 +38,13 @@ div
             .with('album', q2 => q2
                 .with('songs', q3 => q3
                     .with('artist').with('secondArtist').with('album'))))
-        .find(artistId.value);
+        .find(artistId.value)
+
+    if (!foundArtist) {
+      throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+    }
+
+    return foundArtist
   })
 
   const songs = computed(() => {

@@ -52,37 +52,28 @@
 
 <script setup lang="ts">
 import Sockette from 'sockette';
+import type { ChatTicketResponse, ChatUser } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 import { mdiPencil } from '@mdi/js';
 import { sortBy } from 'ramda';
 
-const {$api, $url} = useNuxtApp()
-
-interface ChatUser {
-  id: string
-  displayName: string
-  isAdmin?: boolean
-}
-
-interface ChatMessage {
+type ChatMessageForComponent = {
   userId?: string
   displayName?: string
   message: string
-  created?: string | Date
+  created?: string
 }
 
-interface TicketResponse {
-  ticket: string
-}
+const {$api, $url} = useNuxtApp()
 
-const messages = ref<ChatMessage[]>([])
+const messages = ref<ChatMessageForComponent[]>([])
 const online = ref<ChatUser[]>([])
 const displayNames = ref<Record<string, string>>({})
 const connected = ref(false)
 const error = ref(false)
 const closing = ref(false)
 const postDelay = ref(0)
-const lastId = ref(0)
 const message = ref('')
 const showAllOnline = ref(false)
 const changeName = ref(false)
@@ -128,7 +119,7 @@ async function saveDisplayName() {
   const data = {
     displayName: displayNameEdit.value.trim()
   };
-  useAuthStore().user = await $api(`user/display-name`, { method: 'POST', body: data });
+  useAuthStore().user = await $api(apiEndpoints.user.displayName(), data);
   // TODO replace this
   // await this.loadOnlineOnce();
   savingDisplayName.value = false;
@@ -150,7 +141,7 @@ function isAdmin(userId: string) {
   return user ? user.isAdmin : false;
 }
 
-function messageUser(message: ChatMessage): ChatUser {
+function messageUser(message: ChatMessageForComponent): ChatUser {
   const user = online.value.find(user => user.id === message.userId);
   if (user) {
     return user;
@@ -164,8 +155,8 @@ function messageUser(message: ChatMessage): ChatUser {
   }
 }
 
-function addMessage(message: ChatMessage) {
-  function isNewMessage(entry: ChatMessage) {
+function addMessage(message: ChatMessageForComponent) {
+  function isNewMessage(entry: ChatMessageForComponent) {
     return !entry.userId && entry.message?.startsWith("Nieuw in de chat: ")
   }
 
@@ -271,7 +262,7 @@ async function reconnect() {
     ws.value.close()
   }
 
-  const ticketResponse = await $api<TicketResponse>('chat/ticket').catch(err => {
+  const ticketResponse = await $api(apiEndpoints.chat.ticket()).catch(err => {
     console.log("Unable to obtain ticket for chat.")
     error.value = true;
     ticketBackoff.value = ticketBackoff.value * 1.5  // exponential backoff

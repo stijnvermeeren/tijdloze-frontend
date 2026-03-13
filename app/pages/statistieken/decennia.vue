@@ -21,36 +21,48 @@ div
       d3-distribution-graph(:title='decade.name' :points='dataPoints')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Album from "~/orm/Album";
+import Song from '~/orm/Song'
+import type Year from '~/orm/Year'
 import {useRepo} from "pinia-orm";
 
 const {songs} = storeToRefs(useRootStore())
 const {currentYear, years} = storeToRefs(useYearStore())
 
+type DataPoint = {
+  song: Song
+  year: Year
+}
+
 const decades = computed(() => {
   const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));
-  const endYear = currentYear.value.yyyy;
-  const decades = [];
+  const endYear = currentYear.value?.yyyy ?? new Date().getFullYear();
+  const decades: Array<{ decadeYear: number; name: string }> = [];
   for (let decadeYear = yearInDecade(startYear); decadeYear <= endYear; decadeYear += 10) {
     decades.push({ decadeYear, name: `De jaren '${decadeYear.toString().substring(2,4)}` })
   }
   return decades.reverse();
 })
 const graphData = computed(() => {
-  const dataPoints = {};
+  const dataPoints: Record<number, DataPoint[]> = {};
+  const allYears = years.value
   const result = decades.value.map(decade => {
     dataPoints[decade.decadeYear] = [];
     return {
       decade: decade,
-      dataPoints: dataPoints[decade.decadeYear]
+      dataPoints: dataPoints[decade.decadeYear] ?? []
     };
   });
 
   songs.value.forEach(song => {
-    years.value.forEach(year => {
+    allYears.forEach(year => {
       if (song.position(year)) {
-        dataPoints[yearInDecade(song.album.releaseYear)].push({
+        const decadeKey = yearInDecade(song.album.releaseYear)
+        if (!dataPoints[decadeKey]) {
+          dataPoints[decadeKey] = []
+        }
+        dataPoints[decadeKey].push({
           song: song,
           year: year
         });
@@ -61,12 +73,13 @@ const graphData = computed(() => {
   return result;
 })
 const counts = computed(() => {
+  const allYears = years.value
   const allCounts = graphData.value.map(({decade, dataPoints}) => {
     return {
       entry: decade.name,
       total: dataPoints.length,
       perYear: Object.fromEntries(
-        years.value.map(year => [
+        allYears.map(year => [
           year.yyyy,
           dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
         ])
@@ -76,7 +89,7 @@ const counts = computed(() => {
   return allCounts.filter(entry => entry.total > 0)
 })
 
-function yearInDecade(yyyy) {
+function yearInDecade(yyyy: number): number {
   return yyyy - yyyy % 10;
 }
 </script>

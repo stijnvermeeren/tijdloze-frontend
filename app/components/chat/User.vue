@@ -21,18 +21,13 @@ span.container
 
 <script setup lang="ts">
 import { mdiChevronDown } from "@mdi/js";
+import type { ChatUser } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 
 const { isAdmin, user: currentUser } = storeToRefs(useAuthStore())
 
 const {$api} = useNuxtApp()
-
-interface ChatUser {
-  id: string
-  displayName: string
-  isAdmin?: boolean
-  isBlocked?: boolean
-}
 
 const props = defineProps<{
   user: ChatUser
@@ -43,13 +38,13 @@ const isBlocked = ref(!!props.user.isBlocked)
 
 async function block() {
   blocking.value = true;
-  await $api(`/user/${props.user.id}/block`, { method: 'POST' });
+  await $api(apiEndpoints.user.block(props.user.id));
   isBlocked.value = true;
   blocking.value = false;
 }
 async function unblock() {
   blocking.value = true;
-  await $api(`/user/${props.user.id}/block`, { method: 'DELETE' });
+  await $api(apiEndpoints.user.unblock(props.user.id));
   isBlocked.value = false;
   blocking.value = false;
 }

@@ -21,6 +21,7 @@
 <script setup lang="ts">
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useRepo } from 'pinia-orm'
+import { apiEndpoints } from '~/api/endpoints'
 import useSetUser from '~/composables/useSetUser'
 import Song from '~/orm/Song'
 import { reloadCoreData } from '~/utils/loadCoreData'
@@ -39,13 +40,8 @@ onMounted(async () => {
     // workaround until we find the reason why the pinia-orm repos are sometimes empty from SSR
     await reloadCoreData()
   } else {
-    const nuxtApp = useNuxtApp()
     const rootStore = useRootStore()
-    const coreDataResponse = await nuxtApp.$api('core-data/id')
-    const coreDataId =
-      coreDataResponse && typeof coreDataResponse === 'object' && 'id' in coreDataResponse
-        ? (coreDataResponse as { id: unknown }).id
-        : null
+    const coreDataId = (await useNuxtApp().$api(apiEndpoints.coreData.id())).id
     if (coreDataId !== rootStore.coreDataId) {
       await reloadCoreData()
     }

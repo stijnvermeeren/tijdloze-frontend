@@ -1,11 +1,9 @@
 import { defineStore } from 'pinia'
-
-type PollVote = { pollId: number, answerId: number }
-type PollData = Record<string, unknown>
+import type { PollRecord, PollVote } from '~/api/contracts'
 
 export const usePollStore = defineStore('poll', () => {
   const votes = ref<PollVote[]>([])
-  const currentPoll = ref<PollData | undefined>(undefined)
+  const currentPoll = ref<PollRecord | undefined>(undefined)
 
   function vote(pollId: number): number | undefined {
     const vote = votes.value.find(vote => vote.pollId === pollId);

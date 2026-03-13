@@ -21,15 +21,17 @@ div
        v-btn(@click='submit' :disabled='disabled' color="blue") Toevoegen
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { AlbumCreateData } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
+const {$api} = useNuxtApp()
+
 definePageMeta({
   middleware: 'admin'
 })
 
-const {$api} = useNuxtApp()
-
 const processing = ref(false)
-const fullAlbumData = ref({
+const fullAlbumData = ref<AlbumCreateData>({
   title: '',
   artistId: undefined,
   releaseYear: undefined,
@@ -43,7 +45,7 @@ const disabled = computed(() => {
 
 async function submit() {
   processing.value = true;
-  const data = await $api(`album`, useFetchOptsPost(fullAlbumData.value))
+  const data = await $api(apiEndpoints.album.create(), fullAlbumData.value)
   await useRouter().push(`/album/${data.id}`)
 }
 </script>

@@ -10,32 +10,34 @@ div
     v-btn(@click="invalidateCache") Invalidate API caches
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { TextValueResponse } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
 definePageMeta({
   middleware: 'admin'
 })
 
-const {data: chatOn} = await useFetch(`text/chatOn`, useFetchOpts({transform: response => response.value}));
-const {data: commentsOn} = await useFetch(`text/commentsOn`, useFetchOpts({transform: response => response.value}));
+const {data: chatOn} = await useApiFetchByPath<string>(
+  apiEndpoints.text.chatOn().path,
+  { transform: (response: TextValueResponse) => response.value }
+);
+const {data: commentsOn} = await useApiFetchByPath<string>(
+  apiEndpoints.text.commentsOn().path,
+  { transform: (response: TextValueResponse) => response.value }
+);
 
 watch(chatOn, async () => {
-  const data = {
-    text: chatOn.value
-  };
-  await $api(`text/chatOn`, useFetchOptsPost(data));
+  await $api(apiEndpoints.text.updateByKey('chatOn'), { text: chatOn.value });
 })
 
 watch(commentsOn, async () => {
-  const data = {
-    text: commentsOn.value
-  };
-  await $api(`text/commentsOn`, useFetchOptsPost(data));
+  await $api(apiEndpoints.text.updateByKey('commentsOn'), { text: commentsOn.value });
 })
 
 async function invalidateCache() {
-  await $api('/cache/invalidate', useFetchOpts());
+  await $api(apiEndpoints.cache.invalidate());
 }
 </script>
 

@@ -32,6 +32,7 @@ div
 </template>
 
 <script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
@@ -137,7 +138,7 @@ async function loadPreset(title: string, musicbrainzId: string | undefined, year
  */
 async function albumMatch(artistId: number, albumName: string, releaseYear: number | undefined, albumMBId?: string) {
   if (albumMBId) {
-    const apiAlbum = await $api<{id: number}>(`/album/musicbrainz/${albumMBId}`).catch(
+    const apiAlbum = await $api(apiEndpoints.musicbrainz.albumById(albumMBId)).catch(
         () => undefined
     );
     if (apiAlbum)  {
@@ -175,7 +176,7 @@ async function submit(artistId: number) {
       isSingle: albumDetails.value.isSingle,
       isSoundtrack: albumDetails.value.isSoundtrack,
     }
-    const album = await $api<{id: number}>('/album', { method: 'POST', body: albumData });
+    const album = await $api(apiEndpoints.album.create(), albumData);
     payloadAlbumId = album.id;
   }
   return payloadAlbumId

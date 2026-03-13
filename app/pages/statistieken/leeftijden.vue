@@ -18,7 +18,7 @@ div
     nuxt-page
 </template>
 
-<script setup>
+<script setup lang="ts">
 const tabs = [
   { to: '/statistieken/leeftijden', title: 'Statistieken' },
   { to: '/statistieken/leeftijden/grafiek', title: 'Op grafiek' }

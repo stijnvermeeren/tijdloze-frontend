@@ -50,9 +50,8 @@
 
 <script setup lang="ts">
 import {mdiSend} from "@mdi/js";
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
-
-const {$api} = useNuxtApp()
 const emit = defineEmits(['submitted', 'displayNameChanged'])
 
 const props = withDefaults(defineProps<{
@@ -102,7 +101,7 @@ async function submitDisplayName() {
   const data = {
     displayName: name.value
   };
-  useAuthStore().user = await $api(`user/display-name`, { method: 'POST', body: data });
+  useAuthStore().user = await useNuxtApp().$api(apiEndpoints.user.displayName(), data);
   editingDisplayName.value = false;
   submittingDisplayName.value = false;
   emit('displayNameChanged');
@@ -115,7 +114,7 @@ async function submit() {
     message: message.value,
     parentId: props.parentId
   };
-  await $api(`comment`, { method: 'POST', body: data })
+  await useNuxtApp().$api(apiEndpoints.comment.create(), data)
   submitting.value = false;
   message.value = '';
   emit('submitted');

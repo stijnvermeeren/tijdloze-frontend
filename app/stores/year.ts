@@ -7,7 +7,7 @@ export const useYearStore = defineStore('year', () => {
   const yearsRaw = ref<number[]>([])
 
   const years = computed<Year[]>(() => {
-    return yearsRaw.value?.map(yyyy => new Year(yyyy)) ?? []
+    return yearsRaw.value.map(yyyy => new Year(yyyy))
   })
   const context = computed<YearsIndex>(() => {
     return new YearsIndex(years.value)

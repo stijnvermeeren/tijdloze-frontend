@@ -7,7 +7,7 @@ div
     nuxt-page
 </template>
 
-<script setup>
+<script setup lang="ts">
 const tabs = [
   { title: 'Lijsten', to: '/website/methodologie' },
   { title: 'Schrijfwijze', to: '/website/methodologie/schrijfwijze' },
