@@ -1,4 +1,5 @@
 import vuetify from 'vite-plugin-vuetify';
+import type { PluginOption } from 'vite'
 
 export default defineNuxtConfig({
   site: { 
@@ -37,9 +38,8 @@ export default defineNuxtConfig({
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070' },
   css: [
-    { src: 'vue-virtual-scroller/dist/vue-virtual-scroller.css', lang: 'css' }
+    'vue-virtual-scroller/dist/vue-virtual-scroller.css'
   ],
   build: {
     transpile: [
@@ -55,11 +55,10 @@ export default defineNuxtConfig({
     '@nuxtjs/seo',
     'nuxt-gtag',
     /* Treeshaking: https://next.vuetifyjs.com/en/features/treeshaking/ */
-    async (options, nuxt) => {
-      nuxt.hooks.hook('vite:extendConfig', config => config.plugins.push(
-        vuetify({
-        })
-      ))
+    async (_options, nuxt) => {
+      nuxt.hooks.hook('vite:extendConfig', config => {
+        (config.plugins as PluginOption[]).push(vuetify({}))
+      })
     }
   ],
   devtools: {

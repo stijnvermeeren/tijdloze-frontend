@@ -38,7 +38,7 @@ The following environment variables can be defined (e.g. in a `.env` file) to co
 - `AUTH0_LOGOUT_URI`
 - `GOOGLE_ANALYTICS_ID`
 
-The defaults from [`nuxt.config.js`](./nuxt.config.js) should work out-of-the-box when running the API using default Docker Compose file.
+The defaults from [`nuxt.config.ts`](./nuxt.config.ts) should work out-of-the-box when running the API using default Docker Compose file.
 
 #### Available settings and defaults
 

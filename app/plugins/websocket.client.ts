@@ -1,25 +1,48 @@
 import Sockette from "sockette"
-import Song from '~/orm/Song'
-import Artist from '~/orm/Artist'
-import List from "~/orm/List";
-import Album from "~/orm/Album";
-import {useRootStore} from "~/stores/root";
-import {usePollStore} from "~/stores/poll";
-import {useRepo} from "pinia-orm";
-import { reloadCoreData } from "~/utils/loadCoreData";
+import Song from "~/orm/Song"
+import Artist from "~/orm/Artist"
+import List from "~/orm/List"
+import Album from "~/orm/Album"
+import { useRootStore } from "~/stores/root"
+import { usePollStore } from "~/stores/poll"
+import { useRepo } from "pinia-orm"
+import { reloadCoreData } from "~/utils/loadCoreData"
 
-export default defineNuxtPlugin( nuxtApp => {
+type CurrentListEvent = {
+  currentYear?: number
+  exitSongIds?: number[]
+  year?: number
+  position?: number
+  songId?: number
+  artist?: unknown
+  deletedArtistId?: number
+  album?: { artistId: number } & Record<string, unknown>
+  deletedAlbumId?: number
+  song?: {
+    artistId: number
+    secondArtistId?: number | null
+    albumId: number
+  } & Record<string, unknown>
+  deletedSongId?: number
+  poll?: unknown
+}
+
+export default defineNuxtPlugin((nuxtApp) => {
   const rootStore = useRootStore()
   const yearStore = useYearStore()
   const pollStore = usePollStore()
+  const $url = nuxtApp.$url as { websocket: (path: string) => string }
 
-  new Sockette(nuxtApp.$url.websocket("ws/current-list"), {
+  new Sockette($url.websocket("ws/current-list"), {
     timeout: 5e3,
     maxAttempts: 10,
-    onopen: e => {
-    },
-    onmessage: async e => {
-      const response = JSON.parse(e.data)
+    onopen: () => {},
+    onmessage: async (event: MessageEvent) => {
+      if (typeof event.data !== "string") {
+        return
+      }
+
+      const response = JSON.parse(event.data) as CurrentListEvent
 
       if (response.currentYear) {
         yearStore.setCurrentYear(response.currentYear)
@@ -56,8 +79,9 @@ export default defineNuxtPlugin( nuxtApp => {
                 await reloadCoreData()
               }
             } else {
-              const songId = list.songIds[response.position - 1]
-              list.songIds[response.position - 1] = null
+              const songIds = list.songIds as Array<number | null>
+              const songId = songIds[response.position - 1]
+              songIds[response.position - 1] = null
               useRepo(List).save(list)
 
               if (songId) {
@@ -79,8 +103,8 @@ export default defineNuxtPlugin( nuxtApp => {
       if (response.deletedArtistId) {
         const artist = useRepo(Artist).withAll().find(response.deletedArtistId)
         if (artist) {
-          useRepo(Song).destroy(artist.songs.map(song => song.id))
-          useRepo(Album).destroy(artist.albums.map(album => album.id))
+          useRepo(Song).destroy(artist.songs.map((song) => song.id))
+          useRepo(Album).destroy(artist.albums.map((album) => album.id))
           useRepo(Artist).destroy(response.deletedArtistId)
         }
       }
@@ -97,7 +121,7 @@ export default defineNuxtPlugin( nuxtApp => {
       if (response.deletedAlbumId) {
         const album = useRepo(Album).withAll().find(response.deletedAlbumId)
         if (album) {
-          useRepo(Song).destroy(album.songs.map(song => song.id))
+          useRepo(Song).destroy(album.songs.map((song) => song.id))
           useRepo(Album).destroy(response.deletedAlbumId)
         }
       }
@@ -106,9 +130,11 @@ export default defineNuxtPlugin( nuxtApp => {
         response.song.secondArtistId = response.song.secondArtistId ?? undefined
 
         const artist = useRepo(Artist).find(response.song.artistId)
-        const secondArtist = response.song.secondArtistId ? useRepo(Artist).find(response.song.secondArtistId) : undefined
+        const secondArtist = response.song.secondArtistId
+          ? useRepo(Artist).find(response.song.secondArtistId)
+          : undefined
         const album = useRepo(Album).find(response.song.albumId)
- 
+
         if (artist && (response.song.secondArtistId === undefined || secondArtist) && album) {
           useRepo(Song).save(response.song)
         } else {
@@ -121,14 +147,14 @@ export default defineNuxtPlugin( nuxtApp => {
       }
 
       if (response.poll) {
-        pollStore.currentPoll = response.poll
+        pollStore.currentPoll = response.poll as typeof pollStore.currentPoll
       }
     },
-    onreconnect: async e => {
+    onreconnect: async () => {
       await reloadCoreData()
     },
-    onmaximum: e => {},
-    onclose: e => {},
-    onerror: e => {}
-  });
+    onmaximum: () => {},
+    onclose: () => {},
+    onerror: () => {}
+  })
 })
