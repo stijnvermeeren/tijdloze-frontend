@@ -102,13 +102,13 @@ const exitsKnown = computed(() => {
       .find(entry => entry.song.notInList(selectedYear))
 })
 
-const {data: chatOn, status: chatStatus} = await useApiFetchByPath<boolean>(
-  apiEndpoints.text.chatOn().path,
+const {data: chatOn, status: chatStatus} = await useApiFetch(
+  apiEndpoints.text.chatOn(),
   { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.chatOn, lazy: true }
 )
 
-const {data: commentsOn, status: commentsStatus1} = await useApiFetchByPath<boolean>(
-  apiEndpoints.text.commentsOn().path,
+const {data: commentsOn, status: commentsStatus1} = await useApiFetch(
+  apiEndpoints.text.commentsOn(),
   { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true }
 )
 

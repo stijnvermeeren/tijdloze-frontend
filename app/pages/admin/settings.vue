@@ -19,12 +19,12 @@ definePageMeta({
   middleware: 'admin'
 })
 
-const {data: chatOn} = await useApiFetchByPath<string>(
-  apiEndpoints.text.chatOn().path,
+const {data: chatOn} = await useApiFetch(
+  apiEndpoints.text.chatOn(),
   { transform: (response: TextValueResponse) => response.value }
 );
-const {data: commentsOn} = await useApiFetchByPath<string>(
-  apiEndpoints.text.commentsOn().path,
+const {data: commentsOn} = await useApiFetch(
+  apiEndpoints.text.commentsOn(),
   { transform: (response: TextValueResponse) => response.value }
 );
 

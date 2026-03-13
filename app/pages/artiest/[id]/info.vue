@@ -28,8 +28,8 @@ import type Artist from '~/orm/Artist'
 const props = defineProps<{ artist: Artist }>()
 
 // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
-const {data: fullArtistData, status} = await useApiFetchByPath<ArtistFormData>(
-  () => apiEndpoints.artist.byId(props.artist.id).path, { lazy: true }
+const {data: fullArtistData, status} = await useApiFetch(
+  () => apiEndpoints.artist.byId(props.artist.id), { lazy: true }
 )
 
 type ArtistLinkProperty = keyof Pick<ArtistFormData, 'urlOfficial' | 'urlAllMusic' | 'spotifyId' | 'musicbrainzId'>

@@ -13,7 +13,6 @@ div.mt-5.mb-7
 </template>
 
 <script setup lang="ts">
-import type { WikipediaFindResponse } from '~/api/contracts/wikipedia'
 import { apiEndpoints } from '~/api/endpoints'
 import sanitizeHtml from 'sanitize-html';
 
@@ -22,8 +21,8 @@ const props = defineProps<{
   url: string
 }>()
 
-const {data: wikipediaContent} = await useApiFetchByPath<WikipediaFindResponse>(
-  apiEndpoints.wikipedia.find().path,
+const {data: wikipediaContent} = await useApiFetch(
+  apiEndpoints.wikipedia.find(),
   {
     query: {url: props.url},
     lazy: true,

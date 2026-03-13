@@ -33,13 +33,8 @@ const route = useRoute()
 const routeId = (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) || ''
 const songId = computed(() => idFromSlug(routeId))
 
-type FullSongData = {
-  spotifyId?: string
-  lyrics?: string
-}
-
-const {data: fullSongData, error, status} = await useApiFetchByPath<FullSongData>(
-  () => apiEndpoints.song.byId(Number(songId.value)).path, { lazy: true }
+const {data: fullSongData, error, status} = await useApiFetch(
+  () => apiEndpoints.song.byId(Number(songId.value)), { lazy: true }
 )
 
 const {currentYear, years} = storeToRefs(useYearStore())

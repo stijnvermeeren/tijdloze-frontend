@@ -24,21 +24,21 @@ div
 </template>
 
 <script setup lang="ts">
-  import type { CommentCountResponse, TextValueResponse, ThreadSummary } from '~/api/contracts'
+  import type { TextValueResponse } from '~/api/contracts'
   import { apiEndpoints } from '~/api/endpoints'
   import { queryKeys } from '~/api/queryKeys'
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
   const commentsPerPage = 20;
 
-  const {data: commentsOn, status: status1} = await useApiFetchByPath<boolean>(
-    apiEndpoints.text.commentsOn().path,
+  const {data: commentsOn, status: status1} = await useApiFetch(
+    apiEndpoints.text.commentsOn(),
     {transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true}
   )
 
-  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useApiFetchByPath<number>(
-    apiEndpoints.comment.count().path,
-    {transform: (data: CommentCountResponse) => data.commentCount, key: queryKeys.comments.count, lazy: true}
+  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useApiFetch(
+    apiEndpoints.comment.count(),
+    {key: queryKeys.comments.count, lazy: true}
   )
 
   const page = computed(() => {
@@ -48,8 +48,8 @@ div
     return +(paramsPage ?? queryPage ?? 1)
   })
 
-    const {data: comments, refresh: refreshComments, status: status3} = await useApiFetchByPath<ThreadSummary[]>(
-      () => apiEndpoints.comment.list(page.value).path, { lazy: true }
+    const {data: comments, refresh: refreshComments, status: status3} = await useApiFetch(
+      () => apiEndpoints.comment.list(page.value), { lazy: true }
   )
   useClientDataRefresh(refreshComments)
 
@@ -61,7 +61,7 @@ div
   })
 
   const pages = computed(() => {
-    return Math.ceil((commentCount.value ?? 0) / commentsPerPage);
+    return Math.ceil((commentCount.value?.commentCount ?? 0) / commentsPerPage);
   })
 
   async function reload() {

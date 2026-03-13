@@ -51,7 +51,6 @@ div
 </template>
 
 <script setup lang="ts">
-import type { TextValueResponse } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
@@ -64,11 +63,10 @@ const textExample = "<strong>vet</strong> <em>scheef</em>"
 const {currentYear} = storeToRefs(useYearStore())
 const currentYearYyyy = computed(() => currentYear.value?.yyyy ?? new Date().getFullYear())
 
-const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetchByPath<string>(
-  apiEndpoints.text.byKey(`analysis_${currentYearYyyy.value}`).path,
-  { transform: (data: TextValueResponse) => data.value }
+const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetch(
+  () => apiEndpoints.text.byKey(`analysis_${currentYearYyyy.value}`)
 );
-const initialAnalysis = ref(lastLoadedAnalysis.value)
+const initialAnalysis = ref(lastLoadedAnalysis.value?.value)
 
 const refreshing = ref(false)
 const saving = ref(false)
@@ -77,7 +75,7 @@ const analysis = ref(initialAnalysis.value)
 
 
 const outOfDate = computed(() => {
-  return lastLoadedAnalysis.value !== initialAnalysis.value;
+  return lastLoadedAnalysis.value?.value !== initialAnalysis.value;
 })
 const analysisPreview = computed(() => {
   if (analysis.value) {
@@ -95,8 +93,8 @@ async function save() {
 async function refresh() {
   refreshing.value = true;
   await refreshLastLoaded()
-  analysis.value = lastLoadedAnalysis.value;
-  initialAnalysis.value = lastLoadedAnalysis.value;
+  analysis.value = lastLoadedAnalysis.value?.value;
+  initialAnalysis.value = lastLoadedAnalysis.value?.value;
   refreshing.value = false;
 }
 

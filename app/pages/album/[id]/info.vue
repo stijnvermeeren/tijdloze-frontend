@@ -24,8 +24,8 @@ interface AlbumDetail {
 
 const props = defineProps<{ album: Album }>()
 
-const {data: fullAlbumData, status} = await useApiFetchByPath<AlbumDetail>(
-  () => apiEndpoints.album.byId(props.album.id).path, { lazy: true }
+const {data: fullAlbumData, status} = await useApiFetch(
+  () => apiEndpoints.album.byId(props.album.id), { lazy: true }
 )
 
 const links = computed(() => {
