@@ -55,7 +55,6 @@ interface SongPreset {
 }
 
 const emit = defineEmits(['existingSong', 'newSong'])
-const {$api} = useNuxtApp()
 
 const artistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('artistRef')
 const secondArtistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('secondArtistRef')
@@ -82,32 +81,24 @@ const isValid = computed<boolean>(() => {
 })
 
 async function loadPreset(preset: SongPreset) {
-  if (!artistRef.value || !albumRef.value || !songRef.value) {
-    return
-  }
-
-  await artistRef.value.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
+  await artistRef.value!.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
 
   if (preset.secondArtistName) {
     hasSecondArtist.value = true
-    await secondArtistRef.value?.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
+    await secondArtistRef.value!.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
   } else {
     hasSecondArtist.value = false
     secondArtistRef.value?.reset()
   }
 
-  await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
-  await songRef.value.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language, preset.leadVocals)
+  await albumRef.value!.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
+  await songRef.value!.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language, preset.leadVocals)
 }
 
 async function submit() {
-  if (!artistRef.value || !albumRef.value || !songRef.value) {
-    return
-  }
-
   submitting.value = true;
 
-  let payloadArtistId = await artistRef.value.submit()
+  let payloadArtistId = await artistRef.value!.submit()
   if (!payloadArtistId) {
     submitting.value = false;
     return
@@ -115,22 +106,22 @@ async function submit() {
 
   let payloadSecondArtistId = undefined;
   if (hasSecondArtist.value) {
-    payloadSecondArtistId = await secondArtistRef.value?.submit()
+    payloadSecondArtistId = await secondArtistRef.value!.submit()
   }
 
-  const payloadAlbumId = await albumRef.value.submit(payloadArtistId)
+  const payloadAlbumId = await albumRef.value!.submit(payloadArtistId)
   if (!payloadAlbumId) {
     submitting.value = false;
     return
   }
 
-  const song = await songRef.value.submit(payloadArtistId, payloadSecondArtistId, payloadAlbumId)
+  const song = await songRef.value!.submit(payloadArtistId, payloadSecondArtistId, payloadAlbumId)
 
-  artistRef.value.reset()
+  artistRef.value!.reset()
   hasSecondArtist.value = false
-  secondArtistRef.value?.reset()
-  albumRef.value.reset()
-  songRef.value.reset()
+  secondArtistRef.value!.reset()
+  albumRef.value!.reset()
+  songRef.value!.reset()
 
   emit('newSong', song)
   submitting.value = false;
