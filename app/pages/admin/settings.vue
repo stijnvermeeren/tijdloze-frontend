@@ -22,18 +22,18 @@ definePageMeta({
 const {data: chatOn} = await useApiFetch(
   apiEndpoints.text.chatOn(),
   { transform: (response: TextValueResponse) => response.value }
-);
+) as unknown as { data: Ref<string | null> }
 const {data: commentsOn} = await useApiFetch(
   apiEndpoints.text.commentsOn(),
   { transform: (response: TextValueResponse) => response.value }
-);
+) as unknown as { data: Ref<string | null> }
 
 watch(chatOn, async () => {
-  await $api(apiEndpoints.text.updateByKey('chatOn'), { text: chatOn.value });
+  await $api(apiEndpoints.text.updateByKey('chatOn'), { text: chatOn.value ?? undefined });
 })
 
 watch(commentsOn, async () => {
-  await $api(apiEndpoints.text.updateByKey('commentsOn'), { text: commentsOn.value });
+  await $api(apiEndpoints.text.updateByKey('commentsOn'), { text: commentsOn.value ?? undefined });
 })
 
 async function invalidateCache() {

@@ -1,4 +1,4 @@
-import type { ApiEndpoint } from '~/api/endpoints'
+import type { ApiEndpoint, MutationMethod, ReadOnlyMethod } from '~/api/endpoints'
 
 export type ApiResponse<TEndpoint extends ApiEndpoint<unknown, unknown>> =
   TEndpoint extends ApiEndpoint<infer TResponse, unknown> ? TResponse : never
@@ -9,10 +9,18 @@ export type ApiBody<TEndpoint extends ApiEndpoint<unknown, unknown>> =
 export type ApiRequestOptions = Record<string, unknown>
 
 export interface TypedApi {
-  <TEndpoint extends ApiEndpoint<unknown, undefined>>(
+  // GET/DELETE with no body: opts is optional
+  <TEndpoint extends ApiEndpoint<unknown, undefined, ReadOnlyMethod>>(
     endpoint: TEndpoint,
     opts?: ApiRequestOptions,
   ): Promise<ApiResponse<TEndpoint>>
+  // POST/PUT with no body: body must be explicitly undefined
+  <TEndpoint extends ApiEndpoint<unknown, undefined, MutationMethod>>(
+    endpoint: TEndpoint,
+    body: undefined,
+    opts?: ApiRequestOptions,
+  ): Promise<ApiResponse<TEndpoint>>
+  // Any endpoint with a body
   <TEndpoint extends ApiEndpoint<unknown, unknown>>(
     endpoint: TEndpoint,
     body: ApiBody<TEndpoint>,

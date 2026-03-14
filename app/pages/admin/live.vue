@@ -226,7 +226,7 @@ async function undo() {
 }
 async function startYear() {
   processing.value = true;
-  await $api(apiEndpoints.year.create(nextYearYyyy.value))
+  await $api(apiEndpoints.year.create(nextYearYyyy.value), undefined)
   processing.value = false;
 }
 async function deleteYear() {

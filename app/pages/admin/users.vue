@@ -118,7 +118,7 @@ const activeCount = computed(() => {
 
 async function block(userId: string) {
   refreshing.value = true;
-  await $api(apiEndpoints.user.block(userId));
+  await $api(apiEndpoints.user.block(userId), undefined);
   await refreshUsers()
   refreshing.value = false;
 }

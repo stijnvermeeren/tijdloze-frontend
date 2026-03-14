@@ -59,6 +59,6 @@ async function unmarkExit(song: Song) {
   await $api(apiEndpoints.listExit.remove(currentYear.value!.yyyy, song.id));
 }
 async function markExit(song: Song) {
-  await $api(apiEndpoints.listExit.add(currentYear.value!.yyyy, song.id));
+  await $api(apiEndpoints.listExit.add(currentYear.value!.yyyy, song.id), undefined);
 }
 </script>

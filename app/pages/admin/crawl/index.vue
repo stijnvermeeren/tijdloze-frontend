@@ -33,7 +33,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { ApiEndpoint } from '~/api/endpoints'
+import type { ApiEndpoint, ReadOnlyMethod } from '~/api/endpoints'
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
@@ -41,7 +41,7 @@ definePageMeta({
   middleware: 'admin'
 })
 
-async function call(endpoint: ApiEndpoint<unknown, unknown>) {
+async function call(endpoint: ApiEndpoint<unknown, undefined, ReadOnlyMethod>) {
   await $api(endpoint);
 }
 </script>

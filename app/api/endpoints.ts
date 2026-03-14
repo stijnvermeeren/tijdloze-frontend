@@ -19,7 +19,7 @@ import { wikipediaEndpoints } from './endpoints/wikipedia'
 import { wikidataEndpoints } from './endpoints/wikidata'
 import { yearEndpoints } from './endpoints/year'
 
-export type { ApiEndpoint, ApiMethod } from './endpoints/shared'
+export type { ApiEndpoint, ApiMethod, MutationMethod, ReadOnlyMethod } from './endpoints/shared'
 
 export const apiEndpoints = {
   coreData: coreDataEndpoints,
