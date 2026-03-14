@@ -37,10 +37,7 @@ const graphData = computed(() => {
     if (leadVocalId) {
       allYears.forEach(year => {
         if (song.position(year)) {
-          if (!dataPoints[leadVocalId]) {
-            dataPoints[leadVocalId] = []
-          }
-          dataPoints[leadVocalId].push({
+          dataPoints[leadVocalId]!.push({
             song: song,
             year: year
           });

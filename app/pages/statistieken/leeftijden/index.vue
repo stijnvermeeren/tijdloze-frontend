@@ -15,9 +15,8 @@ const data = computed(() => {
 
       songs.value.forEach(song => {
         const position = song.position(year)
-        const releaseYear = song.album?.releaseYear
-        if (position && position <= cutoff && releaseYear !== undefined) {
-          ages.push(year.yyyy - releaseYear);
+        if (position && position <= cutoff) {
+          ages.push(year.yyyy - song.album.releaseYear);
         }
       });
 

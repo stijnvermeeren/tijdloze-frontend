@@ -8,8 +8,8 @@ import { sortBy, sortWith, ascend } from 'ramda'
 export default class Artist extends Model {
   declare id: number
   declare name: string
-  declare aliases: string | null
-  declare countryId: string | null
+  declare aliases?: string
+  declare countryId?: string
 
   declare songs: Song[]
   declare secondarySongs: Song[]
@@ -21,10 +21,10 @@ export default class Artist extends Model {
 
   static override fields(): ModelFields {
     return {
-      id: this.attr(null),
-      name: this.attr(null),
-      aliases: this.attr(null),
-      countryId: this.attr(null),
+      id: this.attr(undefined),
+      name: this.attr(undefined),
+      aliases: this.attr(undefined),
+      countryId: this.attr(undefined),
 
       songs: this.hasMany(Song, 'artistId'),
       secondarySongs: this.hasMany(Song, 'secondArtistId'),

@@ -10,7 +10,7 @@ export default class Album extends Model {
   declare title: string
   declare artistId: number
   declare releaseYear: number
-  declare cover: string | null
+  declare cover?: string
   declare isSingle: boolean
   declare isSoundtrack: boolean
 
@@ -23,11 +23,11 @@ export default class Album extends Model {
 
   static override fields(): ModelFields {
     return {
-      id: this.attr(null),
-      title: this.attr(null),
-      artistId: this.attr(null),
-      releaseYear: this.attr(null),
-      cover: this.attr(null),
+      id: this.attr(undefined),
+      title: this.attr(undefined),
+      artistId: this.attr(undefined),
+      releaseYear: this.attr(undefined),
+      cover: this.attr(undefined),
       isSingle: this.attr(false),
       isSoundtrack: this.attr(false),
 

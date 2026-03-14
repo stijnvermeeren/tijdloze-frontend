@@ -16,5 +16,9 @@ export async function reloadCoreData() {
   useRepo(Artist).save(coreDataResponse.artists);
   useRepo(Album).save(coreDataResponse.albums);
   useRepo(Song).save(coreDataResponse.songs);
-  useRepo(List).save(coreDataResponse.lists);
+  useRepo(List).save(coreDataResponse.lists.map(list => ({
+    ...list,
+    songIds: list.songIds.map(id => id ?? undefined),
+    attributions: list.attributions ?? {}
+  })));
 }

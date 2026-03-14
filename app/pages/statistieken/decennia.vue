@@ -45,7 +45,7 @@ const graphData = computed(() => {
     dataPoints[decade.decadeYear] = [];
     return {
       decade: decade,
-      dataPoints: dataPoints[decade.decadeYear] ?? []
+      dataPoints: dataPoints[decade.decadeYear]!
     };
   });
 

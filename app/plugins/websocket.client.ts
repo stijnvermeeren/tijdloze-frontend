@@ -20,7 +20,7 @@ type CurrentListEvent = {
   deletedAlbumId?: number
   song?: {
     artistId: number
-    secondArtistId?: number | null
+    secondArtistId?: number
     albumId: number
   } & Record<string, unknown>
   deletedSongId?: number
@@ -79,9 +79,9 @@ export default defineNuxtPlugin((nuxtApp) => {
                 await reloadCoreData()
               }
             } else {
-              const songIds = list.songIds as Array<number | null>
+              const songIds = list.songIds as Array<number | undefined>
               const songId = songIds[response.position - 1]
-              songIds[response.position - 1] = null
+              songIds[response.position - 1] = undefined
               useRepo(List).save(list)
 
               if (songId) {

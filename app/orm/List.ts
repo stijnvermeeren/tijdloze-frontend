@@ -3,8 +3,8 @@ import type { ModelFields } from 'pinia-orm'
 
 export default class List extends Model {
   declare year: number
-  declare songIds: Array<number | null>
-  declare attributions: Record<number, string> | null
+  declare songIds: Array<number | undefined>
+  declare attributions: Record<number, string>
 
   static override get entity(): string {
     return 'lists'
@@ -14,9 +14,9 @@ export default class List extends Model {
 
   static override fields(): ModelFields {
     return {
-      year: this.attr(null),
-      songIds: this.attr(null),
-      attributions: this.attr(null)
+      year: this.attr(undefined),
+      songIds: this.attr([]),
+      attributions: this.attr({})
     }
   }
 }

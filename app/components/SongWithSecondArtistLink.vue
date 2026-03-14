@@ -20,7 +20,7 @@ const props = defineProps<{
   artist?: Artist
 }>()
 
-const secondArtist = computed<Artist | null>(() => {
+const secondArtist = computed<Artist | undefined>(() => {
   if (props.artist && props.song.secondArtistId && props.artist.id === props.song.secondArtistId) {
     return props.song.artist
   }

@@ -24,10 +24,7 @@ const data = computed<SongYearEntry[]>(() => {
   songs.value.forEach(song => {
     let inPreviousList = false;
     allYears.slice(1).forEach((year, index) => {
-      const previousYear = allYears[index]
-      if (!previousYear) {
-        return
-      }
+      const previousYear = allYears[index]!
       if (inPreviousList && song.notInList(year)) {
         dataPoints.push({
           song: song,
@@ -35,7 +32,7 @@ const data = computed<SongYearEntry[]>(() => {
         });
       }
 
-      inPreviousList = (song.position(year) ?? 0) > 0;
+      inPreviousList = song.position(year) !== undefined
     });
   });
   return dataPoints;

@@ -108,7 +108,7 @@ import {useRepo} from "pinia-orm";
 
 interface SongFullData {
   id: number
-  spotifyId?: string | null
+  spotifyId?: string
 }
 
 interface ImportSong {

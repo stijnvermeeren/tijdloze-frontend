@@ -35,7 +35,11 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
     // Flush avoids stale list data on the SSR-generated page.
     useRepo(List).flush()
-    useRepo(List).insert(coreDataResponse.lists)
+    useRepo(List).insert(coreDataResponse.lists.map(list => ({
+      ...list,
+      songIds: list.songIds.map(id => id ?? undefined),
+      attributions: list.attributions ?? {}
+    })))
 
     if (rootStore.listInProgress) {
       const poll = await $api(apiEndpoints.poll.latest()).catch(() => undefined)

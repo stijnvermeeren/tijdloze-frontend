@@ -16,10 +16,10 @@ import { apiEndpoints } from '~/api/endpoints'
 import type Album from '~/orm/Album'
 
 interface AlbumDetail {
-  urlWikiNl?: string | null
-  urlWikiEn?: string | null
-  urlAllMusic?: string | null
-  musicbrainzId?: string | null
+  urlWikiNl?: string
+  urlWikiEn?: string
+  urlAllMusic?: string
+  musicbrainzId?: string
 }
 
 const props = defineProps<{ album: Album }>()

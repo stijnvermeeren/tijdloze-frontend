@@ -6,7 +6,7 @@ nuxt-link(v-if="song" :to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
 import type Song from "~/orm/Song";
 
 defineProps<{
-  song: Song | null
+  song?: Song
 }>()
 </script>
 

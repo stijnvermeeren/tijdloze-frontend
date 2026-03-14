@@ -35,11 +35,8 @@ const data = computed<OneHitEntry[]>(() => {
   const allYears = years.value
 
   allYears.slice(1, -1).forEach((year, index) => {
-    const previousYear = allYears[index]
-    const nextYear = allYears[index + 2]
-    if (!previousYear || !nextYear) {
-      return
-    }
+    const previousYear = allYears[index]!
+    const nextYear = allYears[index + 2]!
     const top100 = useRootStore().list(year, 100, 100)
     top100.forEach(({song}) => {
       if (song.notInList(previousYear) && song.notInList(nextYear)) {

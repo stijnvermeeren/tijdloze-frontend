@@ -6,7 +6,7 @@ nuxt-link(v-if="year" :to='`/lijst/${year.yyyy}`') {{text}}
 import type Year from "~/orm/Year";
 
 const props = withDefaults(defineProps<{
-  year: Year | null
+  year?: Year
   short?: boolean
 }>(), {
   short: false

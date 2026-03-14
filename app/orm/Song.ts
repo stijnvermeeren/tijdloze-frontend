@@ -11,19 +11,19 @@ import { useYearStore } from '~/stores/year'
 export default class Song extends Model {
   declare id: number
   declare title: string
-  declare aliases: string | null
+  declare aliases?: string
   declare artistId: number
-  declare secondArtistId: number | null
-  declare albumId: number | null
-  declare languageId: string | null
-  declare leadVocals: string | null
-  declare spotifyId: string | null | undefined
-  declare recordingMBId: string | null | undefined
-  declare workMBId: string | null | undefined
+  declare secondArtistId?: number
+  declare albumId?: number
+  declare languageId?: string
+  declare leadVocals?: string
+  declare spotifyId?: string
+  declare recordingMBId?: string
+  declare workMBId?: string
   declare positions: Record<string, number>
 
   declare artist: Artist
-  declare secondArtist: Artist | null
+  declare secondArtist?: Artist
   declare album: Album
 
   static override get entity(): string {
@@ -32,14 +32,14 @@ export default class Song extends Model {
 
   static override fields(): ModelFields {
     return {
-      id: this.attr(null),
-      title: this.attr(null),
-      aliases: this.attr(null),
-      artistId: this.attr(null),
-      secondArtistId: this.attr(null),
-      albumId: this.attr(null),
-      languageId: this.attr(null),
-      leadVocals: this.attr(null),
+      id: this.attr(undefined),
+      title: this.attr(undefined),
+      aliases: this.attr(undefined),
+      artistId: this.attr(undefined),
+      secondArtistId: this.attr(undefined),
+      albumId: this.attr(undefined),
+      languageId: this.attr(undefined),
+      leadVocals: this.attr(undefined),
       positions: this.attr({}),
 
       artist: this.belongsTo(Artist, 'artistId'),

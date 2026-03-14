@@ -30,7 +30,7 @@ const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
   const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId] ?? countryId)(
-    [...usedCountryIds.value] as string[]  // convert set to sortable array
+    [...usedCountryIds.value]  // convert set to sortable array
   )
   const dataPoints: Record<string, SongYearEntry[]> = {};
   const allYears = years.value

@@ -18,7 +18,7 @@ export const useRootStore = defineStore('root', () => {
   const yearStore = useYearStore()
 
   const exitSongIds = ref<number[]>([])
-  const coreDataId = ref<number | null>(null)
+  const coreDataId = ref<number>()
   
   function indexByProperty<T extends { id: number }>(data: T[], selector: (entry: T) => string): Record<string, number[]> {
     const grouped = Object.groupBy(data, selector)
@@ -40,8 +40,13 @@ export const useRootStore = defineStore('root', () => {
     ], useRepo(Song).withAll().get() as Song[])
   })
 
-  const usedCountryIds = computed<Set<string | null>>(() => {
-    return new Set(useRepo(Artist).all().map(artist => artist.countryId))
+  const usedCountryIds = computed(() => {
+    return new Set(
+      useRepo(Artist)
+        .all()
+        .map(artist => artist.countryId)
+        .filter((countryId) => countryId !== undefined)
+    )
   })
 
   const lastSong = computed<Song | undefined>(() => {
@@ -78,7 +83,7 @@ export const useRootStore = defineStore('root', () => {
   function list(year: Year, limit?: number, maxPosition?: number): ListEntry[] {
     const yearList = useRepo(List).find(year.yyyy)
     if (yearList) {
-      let notNullSongIds = yearList.songIds.filter((x): x is number => x !== null)
+      let notNullSongIds = yearList.songIds.filter((x): x is number => x !== undefined)
       if ((limit ?? 0) > 0) {
         notNullSongIds = notNullSongIds.slice(0, limit)
       }
@@ -95,7 +100,7 @@ export const useRootStore = defineStore('root', () => {
         }
         if (songId && songsById[songId]) {
           let attribution: string | undefined
-          if (yearList.attributions && position in yearList.attributions) {
+          if (position in yearList.attributions) {
             attribution = yearList.attributions[position]
           }
           entries.push({
