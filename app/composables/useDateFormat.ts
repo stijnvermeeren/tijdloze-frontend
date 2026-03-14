@@ -6,10 +6,7 @@ interface DateFormatOptions {
   format?: string
 }
 
-export default function (dateString: string | number | Date | undefined, options: DateFormatOptions = {}): string | undefined {
-  if (dateString === undefined) {
-    return undefined
-  }
+export default function (dateString: string, options: DateFormatOptions = {}): string | undefined {
   const date = new Date(dateString)
   if (!Number.isNaN(date.getTime())) {
     if (options.ago || (options.agoMaxDays && Date.now() - date.getTime() < 1000 * 60 * 60 * 24 * options.agoMaxDays)) {

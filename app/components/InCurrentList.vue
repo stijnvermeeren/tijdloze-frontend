@@ -47,13 +47,10 @@ const otherSongs = computed(() => {
 })
 
 function sortBlock(song: Song) {
-  if (!currentYear.value) {
-    return 3
-  }
-  if (song.probablyInList(currentYear.value)) {
+  if (currentYear.value && song.probablyInList(currentYear.value)) {
     // songs that are probably still in the top 100
     return 1;
-  } else if (song.probablyInList(currentYear.value, true)) {
+  } else if (currentYear.value && song.probablyInList(currentYear.value, true)) {
     // songs that are already in the list
     return 2;
   } else {
