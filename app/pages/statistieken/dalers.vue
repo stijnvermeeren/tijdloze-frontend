@@ -29,6 +29,7 @@ const data = computed<ChangeEntry[]>(() => {
         dataPoints.push({
           song,
           year,
+          position: newPosition,
           oldPosition,
           newPosition
         });

@@ -25,15 +25,17 @@ const data = computed<ReentryEntry[]>(() => {
     let absenceYears = 0;
 
     allYears.forEach(year => {
-      if (hasPreviousEntry && absenceYears > 0 && song.position(year) !== undefined) {
+      const position = song.position(year)
+      if (hasPreviousEntry && absenceYears > 0 && position !== undefined) {
         dataPoints.push({
           song: song,
           year: year,
+          position: position,
           absenceYears: absenceYears
         });
       }
 
-      if (song.position(year) !== undefined) {
+      if (position !== undefined) {
         hasPreviousEntry = true;
         absenceYears = 0;
       } else {

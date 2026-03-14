@@ -38,11 +38,12 @@ const data = computed<OneHitEntry[]>(() => {
     const previousYear = allYears[index]!
     const nextYear = allYears[index + 2]!
     const top100 = useRootStore().list(year, 100, 100)
-    top100.forEach(({song}) => {
+    top100.forEach(({song, position}) => {
       if (song.notInList(previousYear) && song.notInList(nextYear)) {
         dataPoints.push({
           song: song,
           year: year,
+          position: position,
           isFinal: (allYears.filter(year => song.position(year)).length === 1)
         });
       }

@@ -96,8 +96,7 @@ type SongEditDraftData = Omit<SongFormData, 'artistId' | 'albumId'> & {
 
 const processing  = ref(false)
 
-const route = useRoute()
-const songId = useRouteParam('id', route)
+const songId = useRouteParam('id')
 const fullSongData = ref<SongEditDraftData>({
   id: 0,
   title: ''

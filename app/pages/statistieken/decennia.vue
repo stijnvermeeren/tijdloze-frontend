@@ -51,11 +51,13 @@ const graphData = computed(() => {
 
   songs.value.forEach(song => {
     allYears.forEach(year => {
-      if (song.position(year)) {
+      const position = song.position(year)
+      if (position) {
         const decadeKey = yearInDecade(song.album.releaseYear)
         dataPoints[decadeKey]!.push({
           song: song,
-          year: year
+          year: year,
+          position: position
         });
       }
     });

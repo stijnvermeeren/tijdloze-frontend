@@ -21,12 +21,12 @@ const props = defineProps<{
   isAdmin?: boolean
 }>()
 
-const questionEdit = ref<string>(question.value ?? '')
+const questionEdit = ref<string>(question.value)
 const editing = ref(false)
 const submitting = ref(false)
 
 watch(question, newValue => {
-  questionEdit.value = newValue ?? ''
+  questionEdit.value = newValue
 })
 
 async function send() {
@@ -41,7 +41,7 @@ async function send() {
 }
 
 function cancel() {
-  questionEdit.value = question.value ?? '';
+  questionEdit.value = question.value;
   editing.value = false;
 }
 </script>

@@ -40,13 +40,12 @@ const graphData = computed(() => {
     const languageId = song.languageId
     if (languageId) {
       allYears.forEach(year => {
-        if (song.position(year)) {
-          if (!dataPoints[languageId]) {
-            dataPoints[languageId] = []
-          }
-          dataPoints[languageId].push({
+        const position = song.position(year)
+        if (position) {
+          dataPoints[languageId]!.push({
             song: song,
-            year: year
+            year: year,
+            position: position
           });
         }
       });
@@ -60,7 +59,7 @@ const counts = computed(() => {
   const allYears = years.value
   return graphData.value.map(({languageId, dataPoints}) => {
     return {
-      entry: languages[languageId] ?? languageId,
+      entry: languages[languageId]!,
       total: dataPoints.length,
       perYear: Object.fromEntries(
         allYears.map(year => [

@@ -28,9 +28,11 @@ const data = computed<SongYearEntry[]>(() => {
   songs.value.forEach(song => {
     const firstYear = allYears.find(year => song.position(year));
     if (firstYear && !firstYear.equals(firstTijdlozeYear)) {
+      const position = song.position(firstYear)
       dataPoints.push({
         song: song,
-        year: firstYear
+        year: firstYear,
+        position: position!
       });
     }
   });

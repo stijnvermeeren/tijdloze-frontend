@@ -29,7 +29,7 @@ const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
-  const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId] ?? countryId)(
+  const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId]!)(
     [...usedCountryIds.value]  // convert set to sortable array
   )
   const dataPoints: Record<string, SongYearEntry[]> = {};
@@ -47,13 +47,12 @@ const graphData = computed(() => {
     const countryId = song.artist.countryId
     if (countryId) {
       allYears.forEach(year => {
-        if (song.position(year)) {
-          if (!dataPoints[countryId]) {
-            dataPoints[countryId] = []
-          }
-          dataPoints[countryId].push({
+        const position = song.position(year)
+        if (position) {
+          dataPoints[countryId]!.push({
             song: song,
-            year: year
+            year: year,
+            position: position
           });
         }
       });

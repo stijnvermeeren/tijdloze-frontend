@@ -23,8 +23,7 @@ div
   import Album from "~/orm/Album";
   import {useRepo} from "pinia-orm";
 
-  const route = useRoute()
-  const routeId = useRouteParam('id', route) || ''
+  const routeId = useRouteParam('id') || ''
   const albumId = computed(() => idFromSlug(routeId))
 
   const {currentYear, years} = storeToRefs(useYearStore())

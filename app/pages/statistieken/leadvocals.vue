@@ -36,10 +36,12 @@ const graphData = computed(() => {
     const leadVocalId = song.leadVocals
     if (leadVocalId) {
       allYears.forEach(year => {
-        if (song.position(year)) {
+        const position = song.position(year)
+        if (position) {
           dataPoints[leadVocalId]!.push({
             song: song,
-            year: year
+            year: year,
+            position: position
           });
         }
       });
@@ -52,7 +54,7 @@ const counts = computed(() => {
   const allYears = years.value
   return graphData.value.map(({vocalsGenderId, dataPoints}) => {
     return {
-      entry: vocalsGenders[vocalsGenderId] ?? vocalsGenderId,
+      entry: vocalsGenders[vocalsGenderId]!,
       total: dataPoints.length,
       perYear: Object.fromEntries(
         allYears.map(year => [

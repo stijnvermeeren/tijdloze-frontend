@@ -55,10 +55,9 @@ const props = withDefaults(defineProps<{
   height: '600px'
 })
 
-const route = useRoute()
-const initialFilter = useRouteQueryParam('filter', route) ?? ''
+const initialFilter = useRouteQueryParam('filter') ?? ''
 
-const rawPosition = useRouteQueryParam('positie', route)
+const rawPosition = useRouteQueryParam('positie')
 const parsedPosition = rawPosition ? parseInt(rawPosition, 10) : 0
 
 const filterQuery = ref<string>(initialFilter)

@@ -66,8 +66,7 @@ definePageMeta({
 })
 
 const processing = ref(false)
-const route = useRoute()
-const artistId = useRouteParam('id', route)
+const artistId = useRouteParam('id')
 
 const {data: fullArtistData} = await useApiFetch(apiEndpoints.artist.byId(Number(artistId)), { deep: true })
 

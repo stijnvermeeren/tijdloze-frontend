@@ -21,14 +21,14 @@ div
           circle.circle.coloredCircle(
             v-for='point in points'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year) ?? 0)'
+            :cy='yScale(point.position)'
             r='3'
           )
         g.color-2
           circle.circle.coloredCircle(
             v-for='point in secondaryPoints'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year) ?? 0)'
+            :cy='yScale(point.position)'
             r='3'
           )
         rect(
@@ -49,6 +49,7 @@ div
   type DistributionPoint = {
     year: Year
     song: Song
+    position: number
   }
 
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
@@ -75,7 +76,7 @@ div
     if (hoveredYear && hoveredPosition) {
       const allPoints = props.points.concat(props.secondaryPoints)
       const matchingEntry = allPoints.find((point: DistributionPoint) => {
-        return point.year.yyyy === hoveredYear.yyyy && point.song.position(hoveredYear) === hoveredPosition;
+        return point.year.yyyy === hoveredYear.yyyy && point.position === hoveredPosition;
       });
       if (matchingEntry) {
         return matchingEntry.song;

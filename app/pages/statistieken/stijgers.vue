@@ -22,16 +22,14 @@ const data = computed<ChangeEntry[]>(() => {
   const allYears = years.value
   songs.value.forEach(song => {
     allYears.slice(1).forEach((year, index) => {
-      const previousYear = allYears[index]
-      if (!previousYear) {
-        return
-      }
+      const previousYear = allYears[index]!
       const oldPosition = song.position(previousYear);
       const newPosition = song.position(year);
       if (oldPosition && newPosition && oldPosition > newPosition) {
         dataPoints.push({
           song,
           year,
+          position: newPosition,
           oldPosition,
           newPosition
         });

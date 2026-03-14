@@ -4,4 +4,5 @@ import type Year from '~/orm/Year'
 export type SongYearEntry = {
   song: Song
   year: Year
+  position: number
 }

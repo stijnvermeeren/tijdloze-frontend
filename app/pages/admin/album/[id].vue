@@ -67,8 +67,7 @@ div(v-if="fullAlbumData")
   })
 
   const processing = ref(false)
-  const route = useRoute()
-  const albumId = useRouteParam('id', route)
+  const albumId = useRouteParam('id')
 
   const {data: fullAlbumData} = await useApiFetch(apiEndpoints.album.byId(Number(albumId)), {deep:  true})
   const title = ref(fullAlbumData.value!.title)  // not reactive

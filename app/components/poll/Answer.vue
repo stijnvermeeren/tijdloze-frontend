@@ -22,12 +22,12 @@ const props = defineProps<{
 
 const answer = defineModel<string>({ required: true })
 
-const answerEdit = ref<string>(answer.value ?? '')
+const answerEdit = ref<string>(answer.value)
 const editing = ref(false)
 const submitting = ref(false)
 
 watch(answer, newValue => {
-  answerEdit.value = newValue ?? ''
+  answerEdit.value = newValue
 })
 
 async function send() {
@@ -42,7 +42,7 @@ async function send() {
 }
 
 function cancel() {
-  answerEdit.value = answer.value ?? '';
+  answerEdit.value = answer.value;
   editing.value = false;
 }
 </script>

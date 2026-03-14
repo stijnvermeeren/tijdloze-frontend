@@ -1,4 +1,5 @@
-export default function (name: string, route: ReturnType<typeof useRoute> = useRoute()) {
+export default function (name: string) {
+  const route = useRoute()
   const value = route.params[name]
 
   if (Array.isArray(value)) {

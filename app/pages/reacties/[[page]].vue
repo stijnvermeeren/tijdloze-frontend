@@ -43,9 +43,8 @@ div
   )
 
   const page = computed(() => {
-    const route = useRoute()
-    const paramsPage = useRouteParam('page', route)
-    const queryPage = useRouteQueryParam('page', route)
+    const paramsPage = useRouteParam('page')
+    const queryPage = useRouteQueryParam('page')
     return +(paramsPage || queryPage || 1)
   })
 

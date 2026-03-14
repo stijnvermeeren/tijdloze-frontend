@@ -29,8 +29,7 @@ import { idFromSlug } from '~/utils/slug'
 import Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
-const route = useRoute()
-const routeId = useRouteParam('id', route) || ''
+const routeId = useRouteParam('id') || ''
 const songId = computed(() => idFromSlug(routeId))
 
 const {data: fullSongData, error, status} = await useApiFetch(
