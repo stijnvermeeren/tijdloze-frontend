@@ -27,21 +27,16 @@ export default function (
   })
 
   const tooltipStyle = computed(() => {
-    if (!!hoverYear.value && !!hoverPosition.value && !!overlayScreenWidth.value && !!overlayScreenHeight.value) {
-      const lineX = hoverLineX.value
-      if (lineX === undefined) {
-        return {}
-      }
-
+    if (hoverLineX.value !== undefined && !!hoverPosition.value && !!overlayScreenWidth.value && !!overlayScreenHeight.value) {
       const tooltipTop = (margin.top + yScale.value(hoverPosition.value));
       const tooltipTopScreen = (tooltipTop * overlayScreenHeight.value / height) + "px";
 
-      if (lineX > width - 200) {
-        const tooltipRight = (margin.right + width - lineX + xBandScale.value.step() * 4/5);
+      if (hoverLineX.value > width - 200) {
+        const tooltipRight = (margin.right + width - hoverLineX.value + xBandScale.value.step() * 4/5);
         const tooltipRightScreen = (tooltipRight * overlayScreenWidth.value / width) + "px";
         return {right: tooltipRightScreen, top: tooltipTopScreen};
       } else {
-        const tooltipLeft = (margin.left + lineX + xBandScale.value.step() * 2/3);
+        const tooltipLeft = (margin.left + hoverLineX.value + xBandScale.value.step() * 2/3);
         const tooltipLeftScreen = (tooltipLeft * overlayScreenWidth.value / width) + "px";
         return {left: tooltipLeftScreen, top: tooltipTopScreen};
       }
@@ -103,5 +98,3 @@ export default function (
 
   return {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle}
 }
-
-
