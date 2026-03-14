@@ -33,6 +33,13 @@ const {$api} = useNuxtApp()
 
 const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
 
+type SongSearchResult = {
+  type: 'song'
+  item: Song
+  score: number
+  query?: string
+}
+
 const waitingForResults = ref(false)
 const query = ref("")
 const processing = ref(false)
@@ -48,7 +55,7 @@ watch(query, () => {
 
 const {currentYear, previousYear} = storeToRefs(useYearStore())
 
-function initialResults(results: unknown[]) {
+function initialResults(results: SongSearchResult[]) {
   if (waitingForResults.value) {
     waitingForResults.value = false
     if (results.length === 0) {
@@ -57,7 +64,10 @@ function initialResults(results: unknown[]) {
         searchBoxRef.value.searchActive = false
       }
     } else if (results.length === 1) {
-      selectSearchResult(results[0])
+      const result = results[0]
+      if (result) {
+        selectSearchResult(result)
+      }
       if (searchBoxRef.value) {
         searchBoxRef.value.searchActive = false
       }
@@ -70,7 +80,7 @@ function setQuery(newQuery: string) {
   mbHit.value = undefined
   waitingForResults.value = true
 }
-function selectSearchResult(result: unknown) {
+function selectSearchResult(result: SongSearchResult) {
   emit("selectSearchResult", result)
 }
 async function searchMusicbrainz() {

@@ -44,6 +44,7 @@ async function search() {
   processing.value = true
   const spotifyTracks = await $api(apiEndpoints.spotify.find(), { params: {query} }).catch(err => {
     processing.value = false
+    spotifyId.value = ''
     spotifyMessage.value = "Probleem bij het zoeken op Spotify";
     return undefined
   })
@@ -52,10 +53,7 @@ async function search() {
   if (spotifyTracks) {
     processing.value = false
     if (spotifyTracks.length) {
-      const firstTrack = spotifyTracks[0]
-      if (firstTrack) {
-        spotifyId.value = firstTrack.spotifyId
-      }
+      spotifyId.value = spotifyTracks[0]!.spotifyId
     } else {
       spotifyId.value = ''
       spotifyMessage.value = "Niets gevonden op Spotify"
