@@ -1,4 +1,5 @@
 import Sockette from "sockette"
+import type { AlbumData, ArtistData, PollRecord, SongData } from "~/api/contracts"
 import Song from "~/orm/Song"
 import Artist from "~/orm/Artist"
 import List from "~/orm/List"
@@ -14,17 +15,13 @@ type CurrentListEvent = {
   year?: number
   position?: number
   songId?: number
-  artist?: unknown
+  artist?: ArtistData
   deletedArtistId?: number
-  album?: { artistId: number } & Record<string, unknown>
+  album?: AlbumData
   deletedAlbumId?: number
-  song?: {
-    artistId: number
-    secondArtistId?: number
-    albumId: number
-  } & Record<string, unknown>
+  song?: SongData
   deletedSongId?: number
-  poll?: unknown
+  poll?: PollRecord
 }
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -79,7 +76,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                 await reloadCoreData()
               }
             } else {
-              const songIds = list.songIds as Array<number | undefined>
+              const songIds = list.songIds
               const songId = songIds[response.position - 1]
               songIds[response.position - 1] = undefined
               useRepo(List).save(list)
@@ -147,7 +144,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       }
 
       if (response.poll) {
-        pollStore.currentPoll = response.poll as typeof pollStore.currentPoll
+        pollStore.currentPoll = response.poll
       }
     },
     onreconnect: async () => {
