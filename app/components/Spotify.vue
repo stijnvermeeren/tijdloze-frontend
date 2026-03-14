@@ -4,7 +4,7 @@ iframe(
   width="500"
   height="80"
   frameBorder="0"
-  allowfullscreen="true"
+  allowfullscreen
   allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
   loading="lazy"
 )

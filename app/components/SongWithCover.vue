@@ -1,11 +1,11 @@
 <template lang="pug">
 div.songWithCover
   div
-    album-cover(:cover="song.album?.cover ?? undefined" :key="mounted ? 'mounted' : 'initial'")
+    album-cover(:cover="song.album.cover" :key="mounted ? 'mounted' : 'initial'")
   div
     div.title
       song-link(:song='song')
-    div.artist van #[song-artist-link(:song='song')] uit {{song.album?.releaseYear}}
+    div.artist van #[song-artist-link(:song='song')] uit {{song.album.releaseYear}}
     div.attribution(v-if="attribution")
       | In de officiële lijst als "
       span {{attribution}}

@@ -97,8 +97,7 @@ export default class Song extends Model {
     let unprocessedYears = years
 
     while (unprocessedYears.length) {
-      const firstYear = unprocessedYears[0]!
-      const position = this.position(firstYear)
+      const position = this.position(unprocessedYears[0]!)
 
       const [interval, rest] = splitWhen((year: Year) => this.position(year) !== position, unprocessedYears)
       if (position && interval.length > 1) {
