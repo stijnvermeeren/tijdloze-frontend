@@ -57,7 +57,6 @@ div(v-if="fullAlbumData")
 </template>
 
 <script setup lang="ts">
-  import type { AlbumFormData } from '~/api/contracts'
   import { apiEndpoints } from '~/api/endpoints'
   import Artist from "~/orm/Artist";
   import {useRepo} from "pinia-orm";
@@ -69,7 +68,7 @@ div(v-if="fullAlbumData")
 
   const processing = ref(false)
   const route = useRoute()
-  const albumId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+  const albumId = useRouteParam('id', route)
 
   const {data: fullAlbumData} = await useApiFetch(apiEndpoints.album.byId(Number(albumId)), {deep:  true})
   const title = ref(fullAlbumData.value!.title)  // not reactive

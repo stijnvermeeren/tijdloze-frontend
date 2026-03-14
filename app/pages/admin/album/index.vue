@@ -22,7 +22,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { AlbumCreateData } from '~/api/contracts'
+import type { AlbumFormData } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
@@ -30,8 +30,16 @@ definePageMeta({
   middleware: 'admin'
 })
 
+type AlbumCreateDraftData = {
+  title: string
+  artistId?: number
+  releaseYear?: number
+  isSingle: boolean
+  isSoundtrack: boolean
+}
+
 const processing = ref(false)
-const fullAlbumData = ref<AlbumCreateData>({
+const fullAlbumData = ref<AlbumCreateDraftData>({
   title: '',
   artistId: undefined,
   releaseYear: undefined,
@@ -44,8 +52,18 @@ const disabled = computed(() => {
 })
 
 async function submit() {
+  if (!fullAlbumData.value.artistId || !fullAlbumData.value.releaseYear) {
+    return
+  }
+
+  const payload: AlbumFormData = {
+    ...fullAlbumData.value,
+    artistId: fullAlbumData.value.artistId,
+    releaseYear: fullAlbumData.value.releaseYear
+  }
+
   processing.value = true;
-  const data = await $api(apiEndpoints.album.create(), fullAlbumData.value)
+  const data = await $api(apiEndpoints.album.create(), payload)
   await useRouter().push(`/album/${data.id}`)
 }
 </script>

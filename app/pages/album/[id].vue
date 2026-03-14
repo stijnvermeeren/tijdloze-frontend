@@ -24,7 +24,7 @@ div
   import {useRepo} from "pinia-orm";
 
   const route = useRoute()
-  const routeId = (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) || ''
+  const routeId = useRouteParam('id', route) || ''
   const albumId = computed(() => idFromSlug(routeId))
 
   const {currentYear, years} = storeToRefs(useYearStore())

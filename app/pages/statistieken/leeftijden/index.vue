@@ -9,9 +9,8 @@ const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const data = computed(() => {
-  const allYears = years.value
   return cutoffs.map(cutoff => {
-    const cutoffData = allYears.map(year => {
+    const cutoffData = years.value.map(year => {
       const ages: number[] = [];
 
       songs.value.forEach(song => {
@@ -45,7 +44,7 @@ const data = computed(() => {
   });
 })
 
-function displayAverage(sum: number, size: number): string | number {
-  return size === 0 ? '-' : Math.round(sum / size * 10) / 10
+function displayAverage(sum: number, size: number): string {
+  return size === 0 ? '-' : String(Math.round(sum / size * 10) / 10)
 }
 </script>

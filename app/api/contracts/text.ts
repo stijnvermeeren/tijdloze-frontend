@@ -4,5 +4,5 @@ export interface TextValueResponse {
 }
 
 export interface TextUpdateRequest {
-  text: string | undefined
+  text: string
 }

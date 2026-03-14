@@ -56,15 +56,9 @@ const props = withDefaults(defineProps<{
 })
 
 const route = useRoute()
-const queryFilter = route.query.filter
-const initialFilter = Array.isArray(queryFilter)
-  ? (queryFilter[0] ?? '')
-  : (queryFilter ?? '')
+const initialFilter = useRouteQueryParam('filter', route) ?? ''
 
-const queryPosition = route.query.positie
-const rawPosition = Array.isArray(queryPosition)
-  ? queryPosition[0]
-  : queryPosition
+const rawPosition = useRouteQueryParam('positie', route)
 const parsedPosition = rawPosition ? parseInt(rawPosition, 10) : 0
 
 const filterQuery = ref<string>(initialFilter)

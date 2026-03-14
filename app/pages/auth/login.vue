@@ -10,8 +10,7 @@ onMounted( async () => {
   const loggedIn = await authGuard(useRoute())
   if (loggedIn) {
     await useSetUser(auth0)
-    const redirectQuery = useRoute().query['redirect']
-    const redirect = Array.isArray(redirectQuery) ? redirectQuery[0] : redirectQuery
+    const redirect = useRouteQueryParam('redirect')
     navigateTo(redirect || '/', {replace: true})
   }
 })

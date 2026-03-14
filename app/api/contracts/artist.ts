@@ -1,11 +1,4 @@
-export interface ArtistCreateData {
-  name: string
-  countryId?: string
-  musicbrainzId?: string
-}
-
 export interface ArtistFormData {
-  id: number
   name: string
   aliases?: string
   countryId?: string
@@ -17,4 +10,8 @@ export interface ArtistFormData {
   wikidataId?: string
   spotifyId?: string
   musicbrainzId?: string
+}
+
+export interface ArtistData extends ArtistFormData {
+  id: number
 }

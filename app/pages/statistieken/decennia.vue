@@ -23,17 +23,11 @@ div
 
 <script setup lang="ts">
 import Album from "~/orm/Album";
-import Song from '~/orm/Song'
-import type Year from '~/orm/Year'
 import {useRepo} from "pinia-orm";
+import type { DataPoint } from './dataPoint'
 
 const {songs} = storeToRefs(useRootStore())
 const {currentYear, years} = storeToRefs(useYearStore())
-
-type DataPoint = {
-  song: Song
-  year: Year
-}
 
 const decades = computed(() => {
   const startYear = Math.min(...useRepo(Album).all().map(album => album.releaseYear));

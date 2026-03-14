@@ -88,11 +88,17 @@ definePageMeta({
   middleware: 'admin'
 })
 
+type SongEditDraftData = Omit<SongFormData, 'artistId' | 'albumId'> & {
+  id: number
+  artistId?: number
+  albumId?: number
+}
+
 const processing  = ref(false)
 
 const route = useRoute()
-const songId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
-const fullSongData = ref<SongFormData>({
+const songId = useRouteParam('id', route)
+const fullSongData = ref<SongEditDraftData>({
   id: 0,
   title: ''
 })
@@ -125,11 +131,19 @@ watch(artistId, () => {
 })
 
 async function submit() {
-  if (!fullSongData.value.id) {
+  if (!fullSongData.value.id || !fullSongData.value.artistId || !fullSongData.value.albumId) {
     return
   }
+
+  const { id, artistId, albumId, ...rest } = fullSongData.value
+  const payload: SongFormData = {
+    ...rest,
+    artistId,
+    albumId
+  }
+
   processing.value = true;
-  await $api(apiEndpoints.song.update(fullSongData.value.id), fullSongData.value)
+  await $api(apiEndpoints.song.update(id), payload)
   await navigateTo(`/nummer/${fullSongData.value.id}`)
 }
 async function submitDelete() {

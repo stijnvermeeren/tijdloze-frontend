@@ -85,8 +85,7 @@ const analysisPreview = computed(() => {
   }
 })
 async function save() {
-  saving.value = true;
-  await $api(apiEndpoints.text.updateAnalysis(currentYearYyyy.value), { text: analysis.value });
+  saving.value = true;  await $api(apiEndpoints.text.updateAnalysis(currentYearYyyy.value), { text: analysis.value });
   await refresh()
   saving.value = false;
 }

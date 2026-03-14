@@ -30,7 +30,7 @@ import Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
 const route = useRoute()
-const routeId = (Array.isArray(route.params.id) ? route.params.id[0] : route.params.id) || ''
+const routeId = useRouteParam('id', route) || ''
 const songId = computed(() => idFromSlug(routeId))
 
 const {data: fullSongData, error, status} = await useApiFetch(

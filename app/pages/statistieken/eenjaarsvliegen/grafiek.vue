@@ -12,10 +12,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type Song from '~/orm/Song'
-import type Year from '~/orm/Year'
-
-type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+import type { OneHitEntry } from './oneHitEntry'
 
 const props = defineProps<{ data: OneHitEntry[] }>()
 

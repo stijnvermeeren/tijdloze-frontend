@@ -1,16 +1,7 @@
-export interface AlbumCreateData {
-  title: string
-  artistId?: number
-  musicbrainzId?: string
-  releaseYear?: number
-  isSingle: boolean
-  isSoundtrack: boolean
-}
-
 export interface AlbumFormData {
-  id: number
   title: string
   artistId: number
+  musicbrainzId?: string
   releaseYear: number
   isSingle: boolean
   isSoundtrack: boolean
@@ -18,6 +9,9 @@ export interface AlbumFormData {
   urlWikiNl?: string
   urlWikiEn?: string
   urlAllMusic?: string
-  musicbrainzId?: string
   wikidataId?: string
+}
+
+export interface AlbumData extends AlbumFormData {
+  id: number
 }

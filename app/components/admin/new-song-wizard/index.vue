@@ -119,6 +119,10 @@ async function submit() {
   }
 
   const payloadAlbumId = await albumRef.value.submit(payloadArtistId)
+  if (!payloadAlbumId) {
+    submitting.value = false;
+    return
+  }
 
   const song = await songRef.value.submit(payloadArtistId, payloadSecondArtistId, payloadAlbumId)
 

@@ -58,7 +58,6 @@ template(v-if="fullArtistData")
 </template>
 
 <script setup lang="ts">
-import type { ArtistFormData } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
@@ -68,7 +67,7 @@ definePageMeta({
 
 const processing = ref(false)
 const route = useRoute()
-const artistId = Array.isArray(route.params.id) ? route.params.id[0] : route.params.id
+const artistId = useRouteParam('id', route)
 
 const {data: fullArtistData} = await useApiFetch(apiEndpoints.artist.byId(Number(artistId)), { deep: true })
 

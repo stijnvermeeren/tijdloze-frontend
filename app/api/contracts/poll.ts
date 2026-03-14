@@ -28,9 +28,9 @@ export interface PollCreateRequest {
 }
 
 export interface PollQuestionUpdateRequest {
-  question: string | undefined
+  question: string
 }
 
 export interface PollAnswerUpdateRequest {
-  answer: string | undefined
+  answer: string
 }

@@ -21,7 +21,7 @@ div
 
 
 <script setup lang="ts">
-import type { ArtistCreateData } from '~/api/contracts'
+import type { ArtistFormData } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
@@ -30,7 +30,7 @@ definePageMeta({
 })
 
 const processing = ref(false)
-const fullArtistData = ref<ArtistCreateData>({
+const fullArtistData = ref<ArtistFormData>({
   name: '',
   countryId: undefined
 })

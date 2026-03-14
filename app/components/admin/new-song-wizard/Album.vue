@@ -32,6 +32,7 @@ div
 </template>
 
 <script setup lang="ts">
+import type { AlbumFormData } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
@@ -168,11 +169,16 @@ async function albumMatch(artistId: number, albumName: string, releaseYear: numb
 async function submit(artistId: number) {
   let payloadAlbumId = albumId.value;
   if (!payloadAlbumId) {
-    const albumData = {
+    const releaseYear = albumDetails.value.releaseYear
+    if (releaseYear === undefined) {
+      return undefined
+    }
+
+    const albumData: AlbumFormData = {
       artistId: artistId,
       title: albumDetails.value.title,
       musicbrainzId: albumDetails.value.musicbrainzId,
-      releaseYear: albumDetails.value.releaseYear,
+      releaseYear: releaseYear,
       isSingle: albumDetails.value.isSingle,
       isSoundtrack: albumDetails.value.isSoundtrack,
     }

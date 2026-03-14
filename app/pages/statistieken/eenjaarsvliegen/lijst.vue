@@ -20,10 +20,8 @@ table.lijst.perVijf
 
 <script setup lang="ts">
 import ranking from '~/utils/ranking';
-import type Song from '~/orm/Song'
 import type Year from '~/orm/Year'
-
-type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+import type { OneHitEntry } from './oneHitEntry'
 
 const props = defineProps<{ data: OneHitEntry[]; years: Year[] }>()
 

@@ -23,16 +23,10 @@ div
 <script setup lang="ts">
 import countries from '~/utils/country'
 import { sortBy } from 'ramda'
-import Song from '~/orm/Song'
-import type Year from '~/orm/Year'
+import type { DataPoint } from './dataPoint'
 
 const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
-
-type DataPoint = {
-  song: Song
-  year: Year
-}
 
 const graphData = computed(() => {
   const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId] ?? countryId)(

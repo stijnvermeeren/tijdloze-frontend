@@ -18,9 +18,7 @@ div
   const {currentYear, years} = storeToRefs(useYearStore())
 
   const artistId = computed(() => {
-    const rawId = useRoute().params?.id
-    const normalizedId = Array.isArray(rawId) ? rawId[0] : rawId
-    return idFromSlug(normalizedId || '')
+    return idFromSlug(useRouteParam('id') || '')
   })
 
   const artist = computed<Artist>(() => {

@@ -7,10 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type Song from '~/orm/Song'
-import type Year from '~/orm/Year'
-
-type StationaryEntry = { song: Song; year: Year }
+import type { StationaryEntry } from './stationair/stationaryEntry'
 
 const tabs = [
   { to: '/statistieken/stationair', title: 'Per jaar' },

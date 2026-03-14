@@ -40,6 +40,7 @@ v-container
 </template>
 
 <script setup lang="ts">
+import type { SongFormData } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 import type SongSpotifyInput from '~/components/admin/SongSpotifyInput.vue'
 import languages from '~/utils/language'
@@ -133,7 +134,7 @@ async function loadPreset(title: string, recordingMBId?: string, workMBId?: stri
 }
 
 async function submit(artistId: number, secondArtistId: number | undefined, albumId: number) {
-  const songData = {
+  const songData: SongFormData = {
     artistId: artistId,
     secondArtistId: secondArtistId,
     albumId: albumId,

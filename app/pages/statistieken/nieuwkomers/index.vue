@@ -21,10 +21,8 @@ table.lijst.perEen
 
 <script setup lang="ts">
 import { sortBy } from 'ramda'
-import type Song from '~/orm/Song'
 import type Year from '~/orm/Year'
-
-type NewcomerEntry = { song: Song; year: Year }
+import type { NewcomerEntry } from './newcomerEntry'
 
 const props = defineProps<{ data: NewcomerEntry[]; years: Year[] }>()
 

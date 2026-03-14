@@ -14,19 +14,19 @@ div(v-else)
 import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
-const question = defineModel<string>()
+const question = defineModel<string>({ required: true })
 
 const props = defineProps<{
   pollId: number
   isAdmin?: boolean
 }>()
 
-const questionEdit = ref(question.value)
+const questionEdit = ref<string>(question.value ?? '')
 const editing = ref(false)
 const submitting = ref(false)
 
 watch(question, newValue => {
-  questionEdit.value = newValue
+  questionEdit.value = newValue ?? ''
 })
 
 async function send() {
@@ -41,7 +41,7 @@ async function send() {
 }
 
 function cancel() {
-  questionEdit.value = question.value;
+  questionEdit.value = question.value ?? '';
   editing.value = false;
 }
 </script>

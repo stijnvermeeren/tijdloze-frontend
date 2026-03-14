@@ -16,16 +16,10 @@ div
 
 <script setup lang="ts">
 import vocalsGenders from '~/utils/leadVocals'
-import Song from '~/orm/Song'
-import type Year from '~/orm/Year'
+import type { DataPoint } from './dataPoint'
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
-
-type DataPoint = {
-  song: Song
-  year: Year
-}
 
 const graphData = computed(() => {
   const dataPoints: Record<string, DataPoint[]> = {};

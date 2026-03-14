@@ -1,22 +1,9 @@
-export interface SongCreateData {
+export interface SongFormData {
+  title: string
+  aliases?: string
   artistId: number
   secondArtistId?: number
   albumId: number
-  title: string
-  languageId?: string
-  leadVocals?: string
-  spotifyId?: string
-  musicbrainzRecordingId?: string
-  musicbrainzWorkId?: string
-}
-
-export interface SongFormData {
-  id: number
-  title: string
-  aliases?: string
-  artistId?: number
-  secondArtistId?: number
-  albumId?: number
   languageId?: string
   leadVocals?: string
   notes?: string
@@ -27,4 +14,8 @@ export interface SongFormData {
   musicbrainzRecordingId?: string
   musicbrainzWorkId?: string
   wikidataId?: string
+}
+
+export interface SongData extends SongFormData {
+  id: number
 }
