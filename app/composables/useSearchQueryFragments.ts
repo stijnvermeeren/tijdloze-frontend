@@ -16,11 +16,11 @@ export default function (query: string) {
     .filter((fragment: string) => !ignoredWords.has(fragment));
 
   const lastToken = tokens[tokens.length - 1]
-  if (tokens.length > 1 && lastToken && ignoredWordsAtEnd.has(lastToken)) {
+  if (lastToken && ignoredWordsAtEnd.has(lastToken)) {
     tokens = tokens.slice(0, -1);
   }
   const firstToken = tokens[0]
-  if (tokens.length > 1 && firstToken && ignoredWordsAtBeginning.has(firstToken)) {
+  if (firstToken && ignoredWordsAtBeginning.has(firstToken)) {
     tokens = tokens.slice(1);
   }
   return tokens;

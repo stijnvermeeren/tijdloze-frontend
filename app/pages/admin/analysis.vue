@@ -63,8 +63,8 @@ definePageMeta({
 const textExample = "<strong>vet</strong> <em>scheef</em>"
 
 const {currentYear} = storeToRefs(useYearStore())
-const currentYearYyyy = computed(() => currentYear.value?.yyyy ?? new Date().getFullYear())
-const currentYearValue = computed<Year>(() => currentYear.value ?? new Year(currentYearYyyy.value))
+const currentYearValue = computed<Year>(() => currentYear.value ?? new Year(new Date().getFullYear()))
+const currentYearYyyy = computed(() => currentYearValue.value.yyyy)
 
 const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetch(
   () => apiEndpoints.text.byKey(analysisKey(currentYearValue.value))

@@ -41,8 +41,10 @@ const {exitSongIds} = storeToRefs(useRootStore())
 
 const exits = computed<Song[]>(() => {
   return exitSongIds.value
-    .map(id => useRepo(Song).with('artist').with('secondArtist').find(id))
-    .filter((song): song is Song => song !== null)
+    .flatMap((id) => {
+      const song = useRepo(Song).with('artist').with('secondArtist').find(id)
+      return song ? [song] : []
+    })
 })
 
 

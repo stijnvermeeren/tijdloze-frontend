@@ -3,18 +3,9 @@ import { apiEndpoints } from '~/api/endpoints'
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
 
-interface UserPayload {
-  name?: string
-  given_name?: string
-  family_name?: string
-  nickname?: string
-  email?: string
-  email_verified?: boolean
-}
-
 export default async function (auth0: ReturnType<typeof useAuth0>) {
   const {$api} = useNuxtApp()
-  const user = auth0.user.value as UserPayload | undefined
+  const user = auth0.user.value
   if (user) {
     useAuthStore().accessToken = await auth0.getAccessTokenSilently()
 

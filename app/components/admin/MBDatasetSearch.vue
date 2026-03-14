@@ -60,17 +60,10 @@ function initialResults(results: SongSearchResult[]) {
     waitingForResults.value = false
     if (results.length === 0) {
       searchMusicbrainz()
-      if (searchBoxRef.value) {
-        searchBoxRef.value.searchActive = false
-      }
+      searchBoxRef.value!.searchActive = false
     } else if (results.length === 1) {
-      const result = results[0]
-      if (result) {
-        selectSearchResult(result)
-      }
-      if (searchBoxRef.value) {
-        searchBoxRef.value.searchActive = false
-      }
+      selectSearchResult(results[0]!)
+      searchBoxRef.value!.searchActive = false
     }
   }
 }

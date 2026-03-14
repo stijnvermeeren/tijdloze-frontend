@@ -79,7 +79,6 @@ export default class Song extends Model {
     }
 
     const previousYear = useYearStore().context.forYear(year).previous?.year
-
     const currentYear = useYearStore().currentYear
 
     if (currentYear && year.equals(currentYear) && previousYear && this.position(previousYear, extended)) {
@@ -98,10 +97,7 @@ export default class Song extends Model {
     let unprocessedYears = years
 
     while (unprocessedYears.length) {
-      const firstYear = unprocessedYears[0]
-      if (!firstYear) {
-        break
-      }
+      const firstYear = unprocessedYears[0]!
       const position = this.position(firstYear)
 
       const [interval, rest] = splitWhen((year: Year) => this.position(year) !== position, unprocessedYears)
