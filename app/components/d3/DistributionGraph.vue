@@ -3,11 +3,11 @@ div
   .graph(@mouseleave="hoverYear = undefined")
     h4(v-if='$slots.default || title')
       slot {{title}}
-    .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+    .tooltip(v-if="tooltipSong && hoverYear" :style="tooltipStyle")
       .year
-        | {{hoverYear!.yyyy}}
+        | {{hoverYear.yyyy}}
       .entry
-        | {{tooltipSong.position(hoverYear!)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}}
+        | {{tooltipSong.position(hoverYear)}}. {{tooltipSong.artist.name}} - {{tooltipSong.title}}
     svg(:viewBox='`0 0 ${fullWidth} ${fullHeight}`' xmlns='http://www.w3.org/2000/svg')
       g(:transform='`translate(${margin.left},${margin.top})`')
         d3-axes(

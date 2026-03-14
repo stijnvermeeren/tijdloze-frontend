@@ -37,15 +37,9 @@ p(v-else)
 </template>
 
 <script setup lang="ts">
-import type Song from "~/orm/Song";
 import type Year from "~/orm/Year";
+import type { ListEntry } from '~/stores/root'
 import {mdiMagnify} from "@mdi/js";
-
-type ListEntry = {
-  position: number
-  song: Song
-  attribution?: string
-}
 
 const props = withDefaults(defineProps<{
   year: Year

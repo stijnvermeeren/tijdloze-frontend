@@ -11,7 +11,7 @@ import {useYearStore} from "~/stores/year";
 export type ListEntry = {
   position: number
   song: Song
-  attribution: string | undefined
+  attribution?: string
 }
 
 export const useRootStore = defineStore('root', () => {
