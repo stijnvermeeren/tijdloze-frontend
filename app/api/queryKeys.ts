@@ -1,4 +1,5 @@
 import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
 
 export const queryKeys = {
   comments: {
@@ -8,7 +9,7 @@ export const queryKeys = {
     page: (page: number) => apiEndpoints.comment.list(page).path,
   },
   text: {
-    chatOn: apiEndpoints.text.chatOn().path,
-    commentsOn: apiEndpoints.text.commentsOn().path,
+    chatOn: apiEndpoints.text.byKey(textKey.chatOn).path,
+    commentsOn: apiEndpoints.text.byKey(textKey.commentsOn).path,
   },
 } as const

@@ -6,7 +6,7 @@ export interface CommentItem {
   created: string
   updated: string
   message: string
-  deleted?: boolean
+  deleted?: string
 }
 
 export interface FullComment extends CommentItem {

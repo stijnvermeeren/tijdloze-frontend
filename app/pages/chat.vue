@@ -24,6 +24,7 @@ div
 <script setup lang="ts">
 import type { TextValueResponse } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
 import { queryKeys } from '~/api/queryKeys'
 import {useAuthStore} from "~/stores/auth";
 const {$api} = useNuxtApp()
@@ -32,7 +33,7 @@ const name = ref<string>(useAuthStore().displayName ?? '')
 const submittingDisplayName = ref(false)
 
 const {data: chatEnabled} = await useApiFetch(
-  apiEndpoints.text.chatOn(),
+  apiEndpoints.text.byKey(textKey.chatOn),
   { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.chatOn }
 )
 

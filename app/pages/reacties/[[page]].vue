@@ -26,13 +26,14 @@ div
 <script setup lang="ts">
   import type { TextValueResponse } from '~/api/contracts'
   import { apiEndpoints } from '~/api/endpoints'
+  import { textKey } from '~/api/endpoints/text'
   import { queryKeys } from '~/api/queryKeys'
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
   const commentsPerPage = 20;
 
   const {data: commentsOn, status: status1} = await useApiFetch(
-    apiEndpoints.text.commentsOn(),
+    apiEndpoints.text.byKey(textKey.commentsOn),
     {transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true}
   )
 

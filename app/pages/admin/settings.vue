@@ -4,8 +4,7 @@ div
   h2 Instellingen
   div
     v-switch(
-      :model-value="commentsOn"
-      @update:model-value="setCommentsOn($event ?? 'off')"
+      v-model="commentsOnEdit"
       :true-value="'on'"
       :false-value="'off'"
       label="Reacties open"
@@ -13,8 +12,7 @@ div
     )
   div
     v-switch(
-      :model-value="chatOn"
-      @update:model-value="setChatOn($event ?? 'off')"
+      v-model="chatOnEdit"
       :true-value="'on'"
       :false-value="'off'"
       label="Chatbox open"
@@ -26,26 +24,29 @@ div
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
 const {$api} = useNuxtApp()
 
 definePageMeta({
   middleware: 'admin'
 })
 
-const {data: chatOnResponse} = await useApiFetch(apiEndpoints.text.chatOn())
-const {data: commentsOnResponse} = await useApiFetch(apiEndpoints.text.commentsOn())
+const {data: chatOnResponse} = await useApiFetch(apiEndpoints.text.byKey(textKey.chatOn))
+const {data: commentsOnResponse} = await useApiFetch(apiEndpoints.text.byKey(textKey.commentsOn))
 
 const chatOn = computed(() => chatOnResponse.value?.value ?? 'off')
-
 const commentsOn = computed(() => commentsOnResponse.value?.value ?? 'off')
 
-function setChatOn(value: string): void { 
-  $api(apiEndpoints.text.updateByKey('chatOn'), { text: value })
-}
+const chatOnEdit = ref<string>(chatOn.value)
+const commentsOnEdit = ref<string>(commentsOn.value)
 
-function setCommentsOn(value: string): void {
-  $api(apiEndpoints.text.updateByKey('commentsOn'), { text: value })
-}
+watch(chatOnEdit, (newValue) => {
+  $api(apiEndpoints.text.updateByKey(textKey.chatOn), { text: newValue })
+})
+
+watch(commentsOnEdit, (newValue) => {
+  $api(apiEndpoints.text.updateByKey(textKey.commentsOn), { text: newValue })
+})
 
 async function invalidateCache() {
   await $api(apiEndpoints.cache.invalidate());

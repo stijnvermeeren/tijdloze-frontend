@@ -18,6 +18,7 @@ div
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
+import { analysisKey } from '~/api/endpoints/text'
 import analyse from '~/utils/analyse';
 import {useRootStore} from "~/stores/root";
 import {mdiDownload} from "@mdi/js";
@@ -44,7 +45,7 @@ if (!yyyyParam) {
 
 const analysisCurrentYear = ref('')
 if (currentYear.value && yyyyParam === currentYear.value.yyyy.toString()) {
-  const analysisCurrentYearResponse = await $api(apiEndpoints.text.analysis(Number(yyyyParam))).catch(() => null);
+  const analysisCurrentYearResponse = await $api(apiEndpoints.text.byKey(analysisKey(currentYear.value))).catch(() => null);
   analysisCurrentYear.value = analysisCurrentYearResponse?.value ?? ''
 }
 

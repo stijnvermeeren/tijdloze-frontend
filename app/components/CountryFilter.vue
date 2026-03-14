@@ -25,7 +25,7 @@ const model = defineModel()
 
 const countryMap = countries
 
-const sortedCountryIds = sortBy((countryId: string) => countryMap[countryId] || '', Object.keys(countryMap))
+const sortedCountryIds = sortBy((countryId: string) => countryMap[countryId]!, Object.keys(countryMap))
 
 const usedCountryIds = computed(() => {
   return sortedCountryIds.filter(countryId => useRootStore().usedCountryIds.has(countryId))

@@ -1,4 +1,5 @@
 import { apiEndpoints } from "~/api/endpoints"
+import { textKey } from "~/api/endpoints/text"
 import { useRootStore } from "~/stores/root"
 import { useConfigStore } from "~/stores/config"
 import { usePollStore } from "~/stores/poll"
@@ -17,8 +18,8 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
   await callOnce(async () => {
     const [chatOnResponse, commentsOnResponse, coreDataResponse] = await Promise.all([
-      $api(apiEndpoints.text.chatOn()),
-      $api(apiEndpoints.text.commentsOn()),
+      $api(apiEndpoints.text.byKey(textKey.chatOn)),
+      $api(apiEndpoints.text.byKey(textKey.commentsOn)),
       $api(apiEndpoints.coreData.root())
     ])
 

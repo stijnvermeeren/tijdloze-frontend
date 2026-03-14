@@ -22,20 +22,21 @@ const listCount = computed(() => {
   }, 0)
 })
 const inListSummary = computed(() => {
+  const currentYearValue = currentYear.value
+  if (currentYearValue === undefined) {
+    return '';
+  }
   const intervalSummaries = probablyInListIntervals(props.songs, years.value, false).map(interval => {
-    const first = interval[0];
-    const last = interval[interval.length - 1];
-    if (!first || !last || !currentYear.value) {
-      return '';
-    }
-    if (last.equals(currentYear.value)) {
+    const first = interval[0]!;
+    const last = interval[interval.length - 1]!;
+    if (last.equals(currentYearValue)) {
       return `${first.yyyy}-...`
     } else if (first.equals(last)) {
       return first.yyyy
     } else {
       return `${first.yyyy}-${last._yy}`
     }
-  }).filter(Boolean);
+  });
   return intervalSummaries.join(", ");
 })
 </script>

@@ -52,6 +52,8 @@ div
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
+import { analysisKey } from '~/api/endpoints/text'
+import Year from '~/orm/Year'
 const {$api} = useNuxtApp()
 
 definePageMeta({
@@ -62,9 +64,10 @@ const textExample = "<strong>vet</strong> <em>scheef</em>"
 
 const {currentYear} = storeToRefs(useYearStore())
 const currentYearYyyy = computed(() => currentYear.value?.yyyy ?? new Date().getFullYear())
+const currentYearValue = computed<Year>(() => currentYear.value ?? new Year(currentYearYyyy.value))
 
 const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetch(
-  () => apiEndpoints.text.analysis(currentYearYyyy.value)
+  () => apiEndpoints.text.byKey(analysisKey(currentYearValue.value))
 );
 const initialAnalysis = ref(lastLoadedAnalysis.value?.value)
 
@@ -85,7 +88,7 @@ const analysisPreview = computed(() => {
   }
 })
 async function save() {
-  saving.value = true;  await $api(apiEndpoints.text.updateAnalysis(currentYearYyyy.value), { text: analysis.value });
+  saving.value = true;  await $api(apiEndpoints.text.updateByKey(analysisKey(currentYearValue.value)), { text: analysis.value });
   await refresh()
   saving.value = false;
 }

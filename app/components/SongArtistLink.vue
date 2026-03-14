@@ -1,6 +1,6 @@
 <template lang="pug">
 span
-  artist-link(v-if="song.artist" :artist="song.artist")
+  artist-link(:artist="song.artist")
   template(v-if='song.secondArtist')
     |
     | en

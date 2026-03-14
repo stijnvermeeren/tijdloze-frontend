@@ -51,6 +51,7 @@ div
 <script setup lang="ts">
 import type { TextValueResponse } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
 import { queryKeys } from '~/api/queryKeys'
 
 import List from "~/orm/List";
@@ -103,12 +104,12 @@ const exitsKnown = computed(() => {
 })
 
 const {data: chatOn, status: chatStatus} = await useApiFetch(
-  apiEndpoints.text.chatOn(),
+  apiEndpoints.text.byKey(textKey.chatOn),
   { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.chatOn, lazy: true }
 )
 
 const {data: commentsOn, status: commentsStatus1} = await useApiFetch(
-  apiEndpoints.text.commentsOn(),
+  apiEndpoints.text.byKey(textKey.commentsOn),
   { transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true }
 )
 
