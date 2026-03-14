@@ -1,6 +1,6 @@
 <template lang="pug">
-  template(v-if="status === 'success'")
-    ui-alert(v-if="fullArtistData?.notes")
+  template(v-if="fullArtistData")
+    ui-alert(v-if="fullArtistData.notes")
       make-links(:text="fullArtistData.notes")
 
     p(v-if="artist.countryId")
@@ -9,8 +9,8 @@
       nuxt-link(:to="`/database?type=artiesten&land=${artist.countryId}`")
         strong
           country-icon(:country-id="artist.countryId" :include-name="true")
-    wikipedia-content(v-if="fullArtistData?.['urlWikiNl']" :url="fullArtistData['urlWikiNl']" language="Nederlands")
-    wikipedia-content(v-if="fullArtistData?.['urlWikiEn']" :url="fullArtistData['urlWikiEn']" language="Engels")
+    wikipedia-content(v-if="fullArtistData['urlWikiNl']" :url="fullArtistData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(v-if="fullArtistData['urlWikiEn']" :url="fullArtistData['urlWikiEn']" language="Engels")
     p.links(v-if="links.length")
       | Externe links:
       template(v-for="(link, index) in links" :key="index")
@@ -22,17 +22,17 @@
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
-import type { ArtistFormData } from '~/api/contracts'
+import type { ArtistData } from '~/api/contracts'
 import type Artist from '~/orm/Artist'
 
 const props = defineProps<{ artist: Artist }>()
 
 // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
-const {data: fullArtistData, status} = await useApiFetch(
+const {data: fullArtistData } = await useApiFetch(
   () => apiEndpoints.artist.byId(props.artist.id), { lazy: true }
 )
 
-type ArtistLinkProperty = keyof Pick<ArtistFormData, 'urlOfficial' | 'urlAllMusic' | 'spotifyId' | 'musicbrainzId'>
+type ArtistLinkProperty = keyof Pick<ArtistData, 'urlOfficial' | 'urlAllMusic' | 'spotifyId' | 'musicbrainzId'>
 
 const links = computed(() => {
   const links: { href: string; title: string }[] = [];

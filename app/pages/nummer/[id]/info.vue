@@ -23,17 +23,17 @@
 </template>
 
 <script setup lang="ts">
-import type { SongFormData } from '~/api/contracts'
+import type { SongData } from '~/api/contracts'
 import type Song from '~/orm/Song'
 import vocalsGenders from '~/utils/leadVocals'
 import languages from '~/utils/language'
 
 const props = defineProps<{
-  fullSongData?: SongFormData
+  fullSongData?: SongData
   song: Song
 }>()
 
-type SongLinkProperty = keyof Pick<SongFormData, 'musicbrainzRecordingId' | 'musicbrainzWorkId'>
+type SongLinkProperty = keyof Pick<SongData, 'musicbrainzRecordingId' | 'musicbrainzWorkId'>
 
 const links = computed(() => {
   const links: { href: string; title: string }[] = [];

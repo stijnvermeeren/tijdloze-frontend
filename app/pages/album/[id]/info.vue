@@ -1,7 +1,7 @@
 <template lang="pug">
-  template(v-if="status === 'success'")
-    wikipedia-content(v-if="fullAlbumData?.['urlWikiNl']" :url="fullAlbumData['urlWikiNl']" language="Nederlands")
-    wikipedia-content(v-if="fullAlbumData?.['urlWikiEn']" :url="fullAlbumData['urlWikiEn']" language="Engels")
+  template(v-if="fullAlbumData")
+    wikipedia-content(v-if="fullAlbumData['urlWikiNl']" :url="fullAlbumData['urlWikiNl']" language="Nederlands")
+    wikipedia-content(v-if="fullAlbumData['urlWikiEn']" :url="fullAlbumData['urlWikiEn']" language="Engels")
     p.links(v-if="links.length")
       | Externe links:
       template(v-for="(link, index) in links" :key="index")
@@ -13,18 +13,14 @@
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
+import type { AlbumData } from '~/api/contracts/album'
 import type Album from '~/orm/Album'
 
-interface AlbumDetail {
-  urlWikiNl?: string
-  urlWikiEn?: string
-  urlAllMusic?: string
-  musicbrainzId?: string
-}
+type AlbumDetail = Pick<AlbumData, 'urlWikiNl' | 'urlWikiEn' | 'urlAllMusic' | 'musicbrainzId'>
 
 const props = defineProps<{ album: Album }>()
 
-const {data: fullAlbumData, status} = await useApiFetch(
+const {data: fullAlbumData } = await useApiFetch(
   () => apiEndpoints.album.byId(props.album.id), { lazy: true }
 )
 

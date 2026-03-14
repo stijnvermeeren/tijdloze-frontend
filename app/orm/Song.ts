@@ -14,12 +14,9 @@ export default class Song extends Model {
   declare aliases?: string
   declare artistId: number
   declare secondArtistId?: number
-  declare albumId?: number
+  declare albumId: number
   declare languageId?: string
   declare leadVocals?: string
-  declare spotifyId?: string
-  declare recordingMBId?: string
-  declare workMBId?: string
   declare positions: Record<string, number>
 
   declare artist: Artist

@@ -99,17 +99,13 @@ div
 
 <script setup lang="ts">
 import type { MBDatasetHit } from '~/api/contracts'
+import type { SongData } from '~/api/contracts/song'
 import { apiEndpoints } from '~/api/endpoints'
 import type MBDatasetSearch from '~/components/admin/MBDatasetSearch.vue'
 import type NewSongWizard from '~/components/admin/new-song-wizard/index.vue'
 import Song from "~/orm/Song";
 import {mdiSearchWeb} from "@mdi/js";
 import {useRepo} from "pinia-orm";
-
-interface SongFullData {
-  id: number
-  spotifyId?: string
-}
 
 interface ImportSong {
   overridePosition: number | undefined
@@ -128,7 +124,7 @@ const {currentYear, previousYear} = storeToRefs(useYearStore())
 
 const nextSongTab = ref('hide')
 const nextSong = ref<Song | undefined>(undefined)
-const nextSongFullData = ref<SongFullData | undefined>(undefined)
+const nextSongFullData = ref<SongData | undefined>(undefined)
 const processing = ref(false)
 const query = ref('')
 const importQuery = ref('')
