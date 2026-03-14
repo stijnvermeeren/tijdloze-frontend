@@ -61,4 +61,20 @@ export default defineNuxtConfig({
 
     enabled: true,
   },
+  vite: {
+    optimizeDeps: {
+      include: [
+        'sanitize-html', // CJS
+        'd3-array',
+        'd3-shape',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        '@auth0/auth0-vue',
+        'sockette',
+        'ramda',
+        '@mdi/js',
+        'vue-boring-avatars',
+      ]
+    }
+  },
 });

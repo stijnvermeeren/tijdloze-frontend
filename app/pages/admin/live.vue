@@ -64,7 +64,8 @@ div
           | Gevonden in de database:
           |
           strong {{nextSong.artist.name}} - {{nextSong.title}}
-          |  (in {{previousYear?.yyyy}} op positie {{nextSong.position(previousYear!, true)}})
+          template(v-if="previousYear")
+            |  (in {{previousYear.yyyy}} op positie {{nextSong.position(previousYear, true)}})
         div(v-if='nextSongFullData && nextSongFullData.spotifyId')
           spotify(:spotify-id='nextSongFullData.spotifyId')
         div
@@ -99,6 +100,8 @@ div
 <script setup lang="ts">
 import type { MBDatasetHit } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
+import type MBDatasetSearch from '~/components/admin/MBDatasetSearch.vue'
+import type NewSongWizard from '~/components/admin/new-song-wizard/index.vue'
 import Song from "~/orm/Song";
 import {mdiSearchWeb} from "@mdi/js";
 import {useRepo} from "pinia-orm";
@@ -117,8 +120,8 @@ const {$api} = useNuxtApp()
 
 definePageMeta({ middleware: 'admin' })
 
-const wizard = useTemplateRef<{ loadPreset: (data: Record<string, unknown>) => void }>('wizard')
-const search = useTemplateRef<{ setQuery: (query: string) => void }>('search')
+const wizard = useTemplateRef<InstanceType<typeof NewSongWizard>>('wizard')
+const search = useTemplateRef<InstanceType<typeof MBDatasetSearch>>('search')
 
 const {lastSong, lastPosition} = storeToRefs(useRootStore())
 const {currentYear, previousYear} = storeToRefs(useYearStore())
@@ -209,13 +212,22 @@ async function selectExistingSong(song: Song) {
 function fillMBData(data: MBDatasetHit) {
   nextSongTab.value = 'new';
   wizard.value!.loadPreset({
-    songTitle: data.songTitle,
-    artistName: data.artistName,
-    artistMBId: data.artistMusicbrainzId,
-    artistCountryId: data.artistCountryId,
+    songTitle: data.title,
+    language: data.language,
+    leadVocals: data.leadVocals,
+    recordingMBId: data.recordingMBId,
+    workMBId: data.workMBId,
+    artistName: data.name,
+    artistMBId: data.artistMBId,
+    artistCountryId: data.countryId,
+    secondArtistName: data.secondArtistName,
+    secondArtistMBId: data.secondArtistMBId,
+    secondArtistCountryId: data.secondArtistCountryId,
     albumTitle: data.albumTitle,
-    albumMBId: data.albumMusicbrainzId,
-    albumYear: data.albumReleaseYear,
+    albumMBId: data.albumMBId,
+    albumYear: data.releaseYear,
+    albumIsSingle: data.isSingle,
+    albumIsSoundtrack: data.isSoundtrack
   });
 }
 async function undo() {

@@ -45,11 +45,11 @@ div
     const route = useRoute()
     const paramsPage = Array.isArray(route.params.page) ? route.params.page[0] : route.params.page
     const queryPage = Array.isArray(route.query.page) ? route.query.page[0] : route.query.page
-    return +(paramsPage ?? queryPage ?? 1)
+    return +(paramsPage || queryPage || 1)
   })
 
-    const {data: comments, refresh: refreshComments, status: status3} = await useApiFetch(
-      () => apiEndpoints.comment.list(page.value), { lazy: true }
+  const {data: comments, refresh: refreshComments, status: status3} = await useApiFetch(
+    () => apiEndpoints.comment.list(page.value), { lazy: true }
   )
   useClientDataRefresh(refreshComments)
 

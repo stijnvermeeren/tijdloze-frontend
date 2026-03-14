@@ -4,7 +4,7 @@ div.mt-5.mb-7
   template(v-if="sanitizedContent")
     div.details
       div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
-      div Laatst geladen: {{useDateFormat(wikipediaContent!.lastUpdate, {ago: true})}}
+      div Laatst geladen: {{lastUpdate}}
     div.px-5.mt-2.wikipediaContent(v-html="sanitizedContent")
   div(v-else)
     v-progress-circular(indeterminate size="small")
@@ -28,6 +28,8 @@ const {data: wikipediaContent} = await useApiFetch(
     lazy: true,
   }
 )
+
+const lastUpdate = computed(() => useDateFormat(wikipediaContent.value?.lastUpdate, {ago: true}))
 
 const sanitizedContent = computed(() => {
   if (wikipediaContent.value) {

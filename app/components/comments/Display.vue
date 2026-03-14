@@ -5,7 +5,7 @@ comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
       user-avatar(v-if="comment.userId" :id="comment.userId" :user-name="comment.name" :is-admin="comment.isAdmin")
       span.legacyName(v-else) {{ comment.name }}
       span.created(v-tooltip="`Gepubliceerd: ${useDateFormat(comment.created)}`")
-        | {{ useDateFormat(comment.created, {agoMaxDays}) }}
+        | {{ createdAgo }}
       span.updated(v-if="showUpdated")
         | (
         span(v-tooltip="`Laatste wijziging: ${useDateFormat(comment.updated)}`") gewijzigd
@@ -36,6 +36,7 @@ const props = defineProps<{
 }>()
 
 const agoMaxDays = 7
+const createdAgo = computed(() => useDateFormat(props.comment.created, {agoMaxDays}))
 
 const isDeleted = ref(!!props.comment.deleted)
 const message = ref(props.comment.message)

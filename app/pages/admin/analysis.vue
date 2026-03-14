@@ -64,14 +64,14 @@ const {currentYear} = storeToRefs(useYearStore())
 const currentYearYyyy = computed(() => currentYear.value?.yyyy ?? new Date().getFullYear())
 
 const {data: lastLoadedAnalysis, refresh: refreshLastLoaded} = await useApiFetch(
-  () => apiEndpoints.text.byKey(`analysis_${currentYearYyyy.value}`)
+  () => apiEndpoints.text.analysis(currentYearYyyy.value)
 );
 const initialAnalysis = ref(lastLoadedAnalysis.value?.value)
 
 const refreshing = ref(false)
 const saving = ref(false)
 const interval = ref<ReturnType<typeof setInterval> | undefined>(undefined)
-const analysis = ref(initialAnalysis.value)
+const analysis = ref(initialAnalysis.value ?? '')
 
 
 const outOfDate = computed(() => {
@@ -93,8 +93,8 @@ async function save() {
 async function refresh() {
   refreshing.value = true;
   await refreshLastLoaded()
-  analysis.value = lastLoadedAnalysis.value?.value;
-  initialAnalysis.value = lastLoadedAnalysis.value?.value;
+  analysis.value = lastLoadedAnalysis.value?.value ?? '';
+  initialAnalysis.value = lastLoadedAnalysis.value?.value ?? '';
   refreshing.value = false;
 }
 

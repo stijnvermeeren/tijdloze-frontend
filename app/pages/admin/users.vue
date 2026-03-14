@@ -112,7 +112,7 @@ const blockedCount = computed(() => {
 })
 const activeCount = computed(() => {
   return safeUsers.value.filter(user => {
-    return new Date(user.lastSeen ?? 0) > new Date(Date.now() - 24 * 3600 * 1000)
+    return new Date(user.lastSeen) > new Date(Date.now() - 24 * 3600 * 1000)
   }).length;
 })
 

@@ -56,14 +56,14 @@ div
               div.r
                 | {{ item.position }}
               div.c
-                div.a(v-if="type === 'nummers'")
-                  song-artist-link(:song='item.entry.song!')
-                div.a(v-else)
-                  artist-link(:artist='item.entry.artist!')
-                div(v-if="type === 'nummers'")
-                  song-link(:song='item.entry.song!')
-                div(v-if="type === 'albums'")
-                  album-link(:album='item.entry.album!')
+                div.a(v-if="type === 'nummers' && item.entry.song")
+                  song-artist-link(:song='item.entry.song')
+                div.a(v-else-if="item.entry.artist")
+                  artist-link(:artist='item.entry.artist')
+                div(v-if="type === 'nummers' && item.entry.song")
+                  song-link(:song='item.entry.song')
+                div(v-if="type === 'albums' && item.entry.album")
+                  album-link(:album='item.entry.album')
               div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 

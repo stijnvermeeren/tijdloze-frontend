@@ -1,13 +1,22 @@
 export interface MBDatasetHit {
-  songTitle: string
-  spotifyId?: string
-  artistName: string
-  artistCountryId?: string
-  artistMusicbrainzId?: string
+  recordingMBId: string
+  workMBId?: string
+  matchedAlias: string
+  title: string
+  language?: string
+  leadVocals?: string
   albumTitle: string
-  albumReleaseYear?: number
-  albumMusicbrainzId?: string
-  albumCover?: string
+  releaseYear: number
+  isSingle: boolean
+  isSoundtrack: boolean
+  albumMBId: string
+  name: string
+  artistMBId: string
+  countryId: string
+  secondArtistName?: string
+  secondArtistMBId?: string
+  secondArtistCountryId?: string
+  score: number
 }
 
 export interface MBDatasetSearchResponse {

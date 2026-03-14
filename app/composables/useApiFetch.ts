@@ -22,8 +22,9 @@ export default function useApiFetch<
   const endpointPath = typeof endpoint === 'function'
     ? () => endpoint().path
     : endpoint.path
+  // Limitation: Method is evaluated once and cannot change reactively!
   const endpointMethod = typeof endpoint === 'function'
-    ? () => endpoint().method
+    ? endpoint().method
     : endpoint.method
 
   return apiFetch<ApiResponse<TEndpoint>>(endpointPath, {

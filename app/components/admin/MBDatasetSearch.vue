@@ -26,13 +26,10 @@ div
 <script setup lang="ts">
 import type { MBDatasetHit, MBDatasetSearchResponse } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
+import type SearchBox from '~/components/SearchBox.vue'
 import type Song from '~/orm/Song'
 
 const {$api} = useNuxtApp()
-
-interface SearchBoxRef {
-  searchActive: boolean
-}
 
 const emit = defineEmits(["search", "selectSearchResult", "mbHit"])
 
@@ -43,7 +40,7 @@ const showingResults = ref(false)
 const mbHit = ref<MBDatasetHit | undefined>(undefined)
 const requestError = ref(false)
 
-const searchBoxRef = useTemplateRef<SearchBoxRef>('searchBox')
+const searchBoxRef = useTemplateRef<InstanceType<typeof SearchBox>>('searchBox')
 
 watch(query, () => {
   showingResults.value = false

@@ -41,6 +41,7 @@ v-container
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
+import type SongSpotifyInput from '~/components/admin/SongSpotifyInput.vue'
 import languages from '~/utils/language'
 import Artist from "~/orm/Artist";
 import type Song from "~/orm/Song";
@@ -48,10 +49,6 @@ import {useRepo} from "pinia-orm";
 
 const {$api} = useNuxtApp()
 const emit = defineEmits(['existingSong'])
-
-interface SpotifyRef {
-  search: () => Promise<void> | void
-}
 
 interface SongDetails {
   title: string
@@ -62,7 +59,7 @@ interface SongDetails {
   spotifyId?: string
 }
 
-const spotifyRef = useTemplateRef<SpotifyRef>('spotify')
+const spotifyRef = useTemplateRef<InstanceType<typeof SongSpotifyInput>>('spotify')
 const languageMap = languages
 
 const props = defineProps<{
