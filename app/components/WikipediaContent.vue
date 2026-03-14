@@ -29,7 +29,10 @@ const {data: wikipediaContent} = await useApiFetch(
   }
 )
 
-const lastUpdate = computed(() => useDateFormat(wikipediaContent.value?.lastUpdate, {ago: true}))
+const lastUpdate = computed(() => {
+  const rawLastUpdate = wikipediaContent.value?.lastUpdate
+  return rawLastUpdate ? useDateFormat(rawLastUpdate, {ago: true}) : undefined
+})
 
 const sanitizedContent = computed(() => {
   if (wikipediaContent.value) {

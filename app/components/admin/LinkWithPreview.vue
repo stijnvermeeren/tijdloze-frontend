@@ -8,7 +8,7 @@ div.iframecontainer(v-if="iFrameSrc" :class="field")
     :class="{isHidden: !showIFrame}"
     :onload="onload"
     frameBorder="0"
-    :allowfullscreen="true"
+    allowfullscreen
     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
     loading="lazy"
   )
