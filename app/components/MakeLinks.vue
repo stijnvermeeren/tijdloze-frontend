@@ -11,11 +11,9 @@ type Fragment = {
   to?: string
 }
 
-const props = withDefaults(defineProps<{
-  text?: string
-}>(), {
-  text: ""
-})
+const props = defineProps<{
+  text: string
+}>()
 
 const fragments = computed<Fragment[]>(() => {
   let unprocessedText = props.text
