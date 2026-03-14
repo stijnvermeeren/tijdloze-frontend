@@ -69,11 +69,8 @@ function findSongId(input: string): number | undefined {
   const split = input.split(";");
   if (split.length === 2) {
     const [rawTitle, rawArtistName] = split
-    if (!rawTitle || !rawArtistName) {
-      return undefined
-    }
-    const title = rawTitle.trim();
-    const artistName = rawArtistName.trim();
+    const title = rawTitle!.trim();
+    const artistName = rawArtistName!.trim();
 
     const titleMatches = useRootStore().songIdsByTitle[title.toLowerCase()];
     if (titleMatches) {
