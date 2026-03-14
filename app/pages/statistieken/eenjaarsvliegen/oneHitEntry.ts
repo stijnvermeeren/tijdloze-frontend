@@ -1,4 +1,3 @@
-import type Song from '~/orm/Song'
-import type Year from '~/orm/Year'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
-export type OneHitEntry = { song: Song; year: Year; isFinal: boolean }
+export type OneHitEntry = SongYearEntry & { isFinal: boolean }

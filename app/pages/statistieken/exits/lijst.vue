@@ -18,14 +18,14 @@ table.lijst.perVijf
 <script setup lang="ts">
 import ranking from '~/utils/ranking';
 import type Year from '~/orm/Year'
-import type { ExitEntry } from './exitEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
-const props = defineProps<{ data: ExitEntry[]; years: Year[] }>()
+const props = defineProps<{ data: SongYearEntry[]; years: Year[] }>()
 
 const rankingList = computed(() => {
   return ranking(
     props.data,
-    ({song, year}) => song.position(year) ?? Number.MAX_SAFE_INTEGER,
+    ({song, year}) => song.position(year)!,
     ({year}) => year.yyyy,
     50
   );

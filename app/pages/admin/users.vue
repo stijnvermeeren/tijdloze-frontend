@@ -38,7 +38,6 @@ div
 </template>
 
 <script setup lang="ts">
-import type { UserListItem } from '~/api/contracts'
 import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 import {mdiMagnify} from "@mdi/js";

@@ -36,9 +36,7 @@ const {$api} = useNuxtApp()
 const {currentYear, years, context} = storeToRefs(useYearStore())
 const {listInProgress} = storeToRefs(useRootStore())
 
-const route = useRoute()
-const routeYyyyParam = route.params.yyyy
-const yyyyParam = Array.isArray(routeYyyyParam) ? routeYyyyParam[0] : routeYyyyParam
+const yyyyParam = useRouteParam('yyyy')
 if (!yyyyParam) {
   throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
 }
@@ -77,7 +75,7 @@ const exits = computed<ListEntry[]>(() => {
     const prev = previousYear.value
     return useRootStore().list(prev, 100, 100)
       .filter(entry => entry.song.notInList(year.value))
-      .sort((a, b) => (a.song.position(prev) ?? Number.POSITIVE_INFINITY) - (b.song.position(prev) ?? Number.POSITIVE_INFINITY));
+      .sort((a, b) => a.song.position(prev)! - b.song.position(prev)!);
   } else {
     return [];
   }

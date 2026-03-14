@@ -23,7 +23,7 @@ div
 <script setup lang="ts">
 import countries from '~/utils/country'
 import { sortBy } from 'ramda'
-import type { DataPoint } from './dataPoint'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
@@ -32,7 +32,7 @@ const graphData = computed(() => {
   const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId] ?? countryId)(
     [...usedCountryIds.value] as string[]  // convert set to sortable array
   )
-  const dataPoints: Record<string, DataPoint[]> = {};
+  const dataPoints: Record<string, SongYearEntry[]> = {};
   const allYears = years.value
 
   const result = sortedUsedCountryIds.map(countryId => {

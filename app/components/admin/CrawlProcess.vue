@@ -43,9 +43,6 @@ import {useRepo} from "pinia-orm";
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
 import Song from "~/orm/Song";
-import type ArtistModel from '~/orm/Artist'
-import type AlbumModel from '~/orm/Album'
-import type SongModel from '~/orm/Song'
 
 const {$api} = useNuxtApp()
 
@@ -70,7 +67,7 @@ const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(apiEndpoints.crawlProcess.next(props.type))
 
-const storeModel = computed<ArtistModel | AlbumModel | SongModel | undefined>(() => {
+const storeModel = computed<Artist | Album | Song | undefined>(() => {
   const modelId = getModelId(crawl.value)
   if (!modelId) {
     return undefined
@@ -85,9 +82,9 @@ const storeModel = computed<ArtistModel | AlbumModel | SongModel | undefined>(()
   return useRepo(Song).find(modelId) ?? undefined
 })
 
-const artistModel = computed(() => props.type === 'artist' ? storeModel.value as ArtistModel | undefined : undefined)
-const albumModel = computed(() => props.type === 'album' ? storeModel.value as AlbumModel | undefined : undefined)
-const songModel = computed(() => props.type === 'song' ? storeModel.value as SongModel | undefined : undefined)
+const artistModel = computed(() => props.type === 'artist' ? storeModel.value as Artist | undefined : undefined)
+const albumModel = computed(() => props.type === 'album' ? storeModel.value as Album | undefined : undefined)
+const songModel = computed(() => props.type === 'song' ? storeModel.value as Song | undefined : undefined)
 
 const currentValue = computed(() => {
   const field = crawl.value?.field

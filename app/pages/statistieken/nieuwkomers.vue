@@ -7,7 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { NewcomerEntry } from './nieuwkomers/newcomerEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const tabs = [
   { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
@@ -18,8 +18,8 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed<NewcomerEntry[]>(() => {
-  const dataPoints: NewcomerEntry[] = [];
+const data = computed<SongYearEntry[]>(() => {
+  const dataPoints: SongYearEntry[] = [];
   const allYears = years.value
   const firstTijdlozeYear = allYears[0]
   if (!firstTijdlozeYear) {

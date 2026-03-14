@@ -7,7 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { DropEntry } from './dalers/dropEntry'
+import type { ChangeEntry } from '~/pages/statistieken/changeEntry'
 
 const tabs = [
   { to: '/statistieken/dalers', title: 'Per jaar' },
@@ -17,8 +17,8 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed<DropEntry[]>(() => {
-  const dataPoints: DropEntry[] = [];
+const data = computed<ChangeEntry[]>(() => {
+  const dataPoints: ChangeEntry[] = [];
   const allYears = years.value
   songs.value.forEach(song => {
     allYears.slice(1).forEach((year, index) => {

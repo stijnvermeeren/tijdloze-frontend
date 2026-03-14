@@ -30,7 +30,7 @@
       template(v-for='message in messages')
         div.entry(
           v-if='message.userId' 
-          :title="useDateFormat(message.created, { format: 'D MMMM YYYY, H:mm:ss'})"
+          v-bind='message.created ? { title: useDateFormat(message.created, { format: "D MMMM YYYY, H:mm:ss" }) } : {}'
           :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}'
         )
           div.userName

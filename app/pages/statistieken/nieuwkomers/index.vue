@@ -22,9 +22,9 @@ table.lijst.perEen
 <script setup lang="ts">
 import { sortBy } from 'ramda'
 import type Year from '~/orm/Year'
-import type { NewcomerEntry } from './newcomerEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
-const props = defineProps<{ data: NewcomerEntry[]; years: Year[] }>()
+const props = defineProps<{ data: SongYearEntry[]; years: Year[] }>()
 
 const listData = computed(() => {
   const listYears = props.years.slice(1).reverse();
@@ -36,9 +36,9 @@ const listData = computed(() => {
   })
 })
 
-function entriesPerYear(year: Year): NewcomerEntry[] {
-  return sortBy((entry: NewcomerEntry) => entry.song.position(entry.year) ?? Number.MAX_SAFE_INTEGER)(
-    props.data.filter((entry: NewcomerEntry) => entry.year.equals(year))
+function entriesPerYear(year: Year): SongYearEntry[] {
+  return sortBy((entry: SongYearEntry) => entry.song.position(entry.year)!)(
+    props.data.filter((entry: SongYearEntry) => entry.year.equals(year))
   );
 }
 </script>

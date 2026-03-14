@@ -24,7 +24,7 @@ div
 <script setup lang="ts">
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
-import type { DataPoint } from './dataPoint'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {currentYear, years} = storeToRefs(useYearStore())
@@ -39,7 +39,7 @@ const decades = computed(() => {
   return decades.reverse();
 })
 const graphData = computed(() => {
-  const dataPoints: Record<number, DataPoint[]> = {};
+  const dataPoints: Record<number, SongYearEntry[]> = {};
   const allYears = years.value
   const result = decades.value.map(decade => {
     dataPoints[decade.decadeYear] = [];

@@ -29,7 +29,7 @@ import vocalsGenders from '~/utils/leadVocals'
 import languages from '~/utils/language'
 
 const props = defineProps<{
-  fullSongData: SongFormData | null | undefined
+  fullSongData?: SongFormData
   song: Song
 }>()
 

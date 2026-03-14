@@ -7,7 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { ExitEntry } from './exits/exitEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const tabs = [
   { to: '/statistieken/exits', title: 'Per jaar' },
@@ -18,8 +18,8 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed<ExitEntry[]>(() => {
-  const dataPoints: ExitEntry[] = [];
+const data = computed<SongYearEntry[]>(() => {
+  const dataPoints: SongYearEntry[] = [];
   const allYears = years.value
   songs.value.forEach(song => {
     let inPreviousList = false;

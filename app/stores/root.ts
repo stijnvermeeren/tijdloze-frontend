@@ -30,9 +30,6 @@ export const useRootStore = defineStore('root', () => {
   const songIdsByTitle = computed<Record<string, number[]>>(() => {
     return indexByProperty(useRepo(Song).all(), song => song.title.toLowerCase())
   })
-  const artistIdsByFullName = computed<Record<string, number[]>>(() => {
-    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
-  })
   const artistIdsByName = computed<Record<string, number[]>>(() => {
     return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
   })
@@ -120,7 +117,6 @@ export const useRootStore = defineStore('root', () => {
   return {
     coreDataId,
     artistIdsByName,
-    artistIdsByFullName,
     exitSongIds,
     lastCompleteYear,
     lastPosition,

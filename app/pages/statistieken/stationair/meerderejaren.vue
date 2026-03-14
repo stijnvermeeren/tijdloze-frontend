@@ -60,7 +60,7 @@ const byNumberOfYears = computed(() => {
         data.push({
           song,
           years: interval,
-          position: song.position(firstYear(interval)) ?? Number.MAX_SAFE_INTEGER
+          position: song.position(firstYear(interval))!
         });
       })
   });

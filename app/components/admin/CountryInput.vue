@@ -26,7 +26,7 @@ import { sortBy } from 'ramda';
 
 const countryId = defineModel()
 
-const countryOptions = sortBy((countryId: string) => countries[countryId] ?? '', Object.keys(countries)).map((id: string) => {
+const countryOptions = sortBy((countryId: string) => countries[countryId]!, Object.keys(countries)).map((id: string) => {
   return {
     value: id,
     title: countries[id]

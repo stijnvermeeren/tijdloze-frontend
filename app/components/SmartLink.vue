@@ -51,25 +51,18 @@ function findYear(input: string): Year | undefined {
 function findYearShort(input: string): Year | undefined {
   return years.value.find(year => year._yy === input);
 }
-function findArtistId(input: string): number | null {
-  const fullNameMatches = useRootStore().artistIdsByFullName[input.toLowerCase()];
-  if (fullNameMatches && fullNameMatches.length === 1) {
-    return fullNameMatches[0] ?? null
-  } else if (fullNameMatches && fullNameMatches.length > 1) {
-    return null;
+function findArtistId(input: string): number | undefined {
+  const nameMatches = useRootStore().artistIdsByName[input.toLowerCase()];
+  if (nameMatches && nameMatches.length === 1) {
+    return nameMatches[0]
   }
 
-  const lastNameMatches = useRootStore().artistIdsByName[input.toLowerCase()];
-  if (lastNameMatches && lastNameMatches.length === 1) {
-    return lastNameMatches[0] ?? null
-  }
-
-  return null;
+  return undefined;
 }
-function findSongId(input: string): number | null {
+function findSongId(input: string): number | undefined {
   const titleMatches = useRootStore().songIdsByTitle[input.toLowerCase()];
   if (titleMatches && titleMatches.length === 1) {
-    return titleMatches[0] ?? null
+    return titleMatches[0]
   }
 
   // fallback behaviour for inputs of the form "One;U2"
@@ -77,7 +70,7 @@ function findSongId(input: string): number | null {
   if (split.length === 2) {
     const [rawTitle, rawArtistName] = split
     if (!rawTitle || !rawArtistName) {
-      return null
+      return undefined
     }
     const title = rawTitle.trim();
     const artistName = rawArtistName.trim();
@@ -91,12 +84,12 @@ function findSongId(input: string): number | null {
       });
 
       if (combinedMatches.length === 1) {
-        return combinedMatches[0] ?? null
+        return combinedMatches[0]
       }
     }
   }
 
-  return null;
+  return undefined;
 }
 </script>
 

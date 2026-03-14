@@ -20,13 +20,13 @@ div
 
 <script setup lang="ts">
 import languages from '~/utils/language'
-import type { DataPoint } from './dataPoint'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
-  const dataPoints: Record<string, DataPoint[]> = {};
+  const dataPoints: Record<string, SongYearEntry[]> = {};
   const allYears = years.value
   const result = Object.keys(languages).map((languageId: string) => {
     dataPoints[languageId] = [];

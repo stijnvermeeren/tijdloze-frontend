@@ -1,4 +1,3 @@
-import type Song from '~/orm/Song'
-import type Year from '~/orm/Year'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
-export type ReentryEntry = { song: Song; year: Year; absenceYears: number }
+export type ReentryEntry = SongYearEntry & { absenceYears: number }

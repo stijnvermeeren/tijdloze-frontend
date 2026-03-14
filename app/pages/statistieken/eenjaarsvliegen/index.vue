@@ -39,7 +39,7 @@ const listYears = computed(() => {
 })
 
 function entriesPerYear(year: Year): OneHitEntry[] {
-  return sortBy((entry: OneHitEntry) => entry.song.position(entry.year) ?? Number.MAX_SAFE_INTEGER)(
+  return sortBy((entry: OneHitEntry) => entry.song.position(entry.year)!)(
     props.data.filter((entry: OneHitEntry) => entry.year.equals(year))
   );
 }

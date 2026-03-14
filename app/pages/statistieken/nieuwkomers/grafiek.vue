@@ -3,7 +3,7 @@ d3-distribution-graph(:points='data')
 </template>
 
 <script setup lang="ts">
-import type { NewcomerEntry } from './newcomerEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
-defineProps<{ data: NewcomerEntry[] }>()
+defineProps<{ data: SongYearEntry[] }>()
 </script>

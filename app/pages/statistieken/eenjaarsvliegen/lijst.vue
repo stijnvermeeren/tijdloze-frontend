@@ -28,7 +28,7 @@ const props = defineProps<{ data: OneHitEntry[]; years: Year[] }>()
 const rankingList = computed(() => {
   return ranking(
     props.data,
-    ({song, year}) => song.position(year) ?? Number.MAX_SAFE_INTEGER,
+    ({song, year}) => song.position(year)!,
     ({year}) => year.yyyy,
     50
   );

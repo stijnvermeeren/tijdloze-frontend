@@ -7,7 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { StationaryEntry } from './stationair/stationaryEntry'
+import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
 
 const tabs = [
   { to: '/statistieken/stationair', title: 'Per jaar' },
@@ -18,8 +18,8 @@ const tabs = [
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed<StationaryEntry[]>(() => {
-  const dataPoints: StationaryEntry[] = [];
+const data = computed<SongYearEntry[]>(() => {
+  const dataPoints: SongYearEntry[] = [];
   const allYears = years.value
   songs.value.forEach(song => {
     allYears.slice(1).forEach((year, index) => {

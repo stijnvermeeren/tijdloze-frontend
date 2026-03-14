@@ -45,7 +45,7 @@ const listData = computed(() => {
 })
 
 function entriesPerYear(year: Year): ReentryEntry[] {
-  return sortBy((entry: ReentryEntry) => entry.song.position(entry.year) ?? Number.MAX_SAFE_INTEGER)(
+  return sortBy((entry: ReentryEntry) => entry.song.position(entry.year)!)(
     props.data.filter((entry: ReentryEntry) => entry.year.equals(year))
   );
 }
