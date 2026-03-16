@@ -55,14 +55,14 @@ export const useRootStore = defineStore('root', () => {
     }
     return list(yearStore.currentYear, 1)?.[0]?.song
   })
-  const lastPosition = computed<number>(() => {
+  const lastPosition = computed<number | undefined>(() => {
     if (!lastSong.value || !yearStore.currentYear) {
-      return 0
+      return undefined
     }
-    return lastSong.value.position(yearStore.currentYear, true) ?? 0
+    return lastSong.value.position(yearStore.currentYear, true)
   })
   const listInProgress = computed<boolean>(() => {
-    return lastPosition.value !== 0 && lastPosition.value !== 1
+    return !!lastPosition.value && lastPosition.value !== 1
   })
   const lastCompleteYear = computed<Year | undefined>(() => {
     if (listInProgress.value) {

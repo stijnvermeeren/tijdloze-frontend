@@ -19,7 +19,7 @@ table.lijst.perVijf
 <script setup lang="ts">
 import ranking from '~/utils/ranking';
 import type Year from '~/orm/Year'
-import type { ChangeEntry } from '~/pages/statistieken/changeEntry'
+import type { ChangeEntry } from '~/types/statistieken/changeEntry'
 
 const props = defineProps<{ data: ChangeEntry[]; years: Year[] }>()
 

@@ -20,7 +20,7 @@ div
 
 <script setup lang="ts">
 import languages from '~/utils/language'
-import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())

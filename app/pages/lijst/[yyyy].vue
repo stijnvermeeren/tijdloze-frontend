@@ -25,7 +25,7 @@ import {mdiDownload} from "@mdi/js";
 import type { ListEntry } from '~/stores/root'
 import type Year from '~/orm/Year'
 import { sortBy } from 'ramda'
-import type { TabItem } from '~/components/ui/tabs'
+import type { TabItem } from '~/types/tabs'
 
 definePageMeta({
   validate: async (route) => {

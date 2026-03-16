@@ -16,7 +16,7 @@ div
 
 <script setup lang="ts">
 import vocalsGenders from '~/utils/leadVocals'
-import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())

@@ -1,7 +1,7 @@
 import type Song from '~/orm/Song'
 import type Year from '~/orm/Year'
 
-function createIntervals(years: Year[], fn: (year: Year) => unknown): Year[][] {
+function createIntervals(years: Year[], fn: (year: Year) => boolean): Year[][] {
   const intervals: Year[][] = [];
   let currentInterval: Year[] = [];
 

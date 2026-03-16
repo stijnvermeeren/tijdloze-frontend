@@ -19,7 +19,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { OneHitEntry } from './eenjaarsvliegen/oneHitEntry'
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
 
 const tabs = [
   { to: '/statistieken/eenjaarsvliegen', title: 'Per jaar' },

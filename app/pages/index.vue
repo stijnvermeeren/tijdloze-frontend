@@ -1,10 +1,10 @@
 <template lang="pug">
 div
   .description
-    ui-alert.alert(v-if="listInProgress")
+    ui-alert.alert(v-if="listInProgress && currentYear")
       | De Tijdloze is een radioprogramma van Studio Brussel. Officiële informatie vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
       br
-      | De Tijdloze van {{currentYear?.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
+      | De Tijdloze van {{currentYear.yyyy}} wordt momenteel uitgezonden. Op deze website kan je de lijst en alle bijhorende statistieken volgen (regelmatige updates tijdens de countdown; live tijdens de top 100).
 
     ui-alert(v-else title="Officiële informatie / stemmen")
       | De Tijdloze is een radioprogramma van #[a(href='https://stubru.be/') Studio Brussel]. Dit is een onafhankelijke website. Officiële informatie en de mogelijkheid om te stemmen (ca. eind november / begin december) vind je op de website #[a(href='https://www.vrt.be/vrtmax/kanalen/de-tijdloze/') VRT MAX].
@@ -23,7 +23,7 @@ div
     .link
       nuxt-link(v-if='top5.length' :to='`/lijst/${tableYear.yyyy}`')
         v-btn De volledige lijst van {{tableYear.yyyy}}
-      nuxt-link(v-if='listInProgress && lastPosition <= 1000' :to='`/lijst/${tableYear.yyyy}/opkomst`')
+      nuxt-link(v-if='listInProgress && lastPosition && lastPosition <= 1000' :to='`/lijst/${tableYear.yyyy}/opkomst`')
         v-btn Nog op komst?
       nuxt-link(v-if='listInProgress && exitsKnown' :to='`/lijst/${tableYear.yyyy}/exits`')
         v-btn Uit de top 100 verdwenen

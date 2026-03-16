@@ -6,7 +6,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { ReentryEntry } from './reentries/reentryEntry'
+import type { ReentryEntry } from '~/types/statistieken/reentryEntry'
 
 const tabs = [
   { to: '/statistieken/reentries', title: 'Per jaar' },

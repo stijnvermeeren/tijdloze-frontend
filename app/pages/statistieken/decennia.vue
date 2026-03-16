@@ -24,7 +24,7 @@ div
 <script setup lang="ts">
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
-import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {currentYear, years} = storeToRefs(useYearStore())

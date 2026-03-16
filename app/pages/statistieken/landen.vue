@@ -23,7 +23,7 @@ div
 <script setup lang="ts">
 import countries from '~/utils/country'
 import { sortBy } from 'ramda'
-import type { SongYearEntry } from '~/pages/statistieken/songYearEntry'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())

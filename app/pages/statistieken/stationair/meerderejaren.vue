@@ -17,7 +17,7 @@ table.lijst.perEen
           tbody
             tr(v-for='entry in data.entries')
               td.i
-                | {{firstYear(entry.years).yyyy}}-{{lastYear(entry.years).yyyy}}
+                | {{entry.firstYear}}-{{entry.lastYear}}
               td.i
                 | {{entry.position}}
               td.l
@@ -34,15 +34,9 @@ const props = defineProps<{ years: Year[] }>()
 type StationaryEntry = {
   song: Song
   years: Year[]
+  firstYear: Year
+  lastYear: Year
   position: number
-}
-
-function firstYear(years: Year[]): Year {
-  return years[0] as Year
-}
-
-function lastYear(years: Year[]): Year {
-  return years[years.length - 1] as Year
 }
 
 const songs = computed(() => {
@@ -56,18 +50,21 @@ const byNumberOfYears = computed(() => {
     song.stationaryIntervals(allYears)
       .filter((interval: Year[]) => interval.length > 2)
       .map((interval: Year[]) => {
-        maxYears = Math.max(maxYears, interval.length);
+        maxYears = Math.max(maxYears, interval.length)
+        const firstYear = interval[0]!
         data.push({
           song,
           years: interval,
-          position: song.position(firstYear(interval))!
+          firstYear: firstYear,
+          lastYear: interval[interval.length - 1]!,
+          position: song.position(firstYear)!
         });
       })
   });
 
   return range(3, maxYears + 1).reverse().map(numberOfYears => {
     const entries = sortWith<StationaryEntry>([
-      ascend((entry: StationaryEntry) => -firstYear(entry.years).yyyy),
+      ascend((entry: StationaryEntry) => -entry.firstYear.yyyy),
       ascend((entry: StationaryEntry) => entry.position)
     ])(data.filter((item: StationaryEntry) => item.years.length === numberOfYears));
 

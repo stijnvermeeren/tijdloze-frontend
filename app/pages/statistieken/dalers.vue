@@ -7,7 +7,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { ChangeEntry } from '~/pages/statistieken/changeEntry'
+import type { ChangeEntry } from '~/types/statistieken/changeEntry'
 
 const tabs = [
   { to: '/statistieken/dalers', title: 'Per jaar' },
