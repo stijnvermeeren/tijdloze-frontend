@@ -4,11 +4,7 @@ import { useRootStore } from "~/stores/root"
 import { useConfigStore } from "~/stores/config"
 import { usePollStore } from "~/stores/poll"
 import type { TypedApi } from "~/api/client"
-import Song from "~/orm/Song"
-import Album from "~/orm/Album"
-import Artist from "~/orm/Artist"
-import List from "~/orm/List"
-import { useRepo } from "pinia-orm"
+import { applyCoreDataResponse } from "~/utils/loadCoreData"
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const rootStore = useRootStore()
@@ -25,21 +21,10 @@ export default defineNuxtPlugin(async (nuxtApp) => {
 
     configStore.chatOn = chatOnResponse.value === "on"
     configStore.commentsOn = commentsOnResponse.value === "on"
-    rootStore.coreDataId = coreDataResponse.id
-    rootStore.exitSongIds = coreDataResponse.exitSongIds
-    yearStore.yearsRaw = coreDataResponse.years
-
-    useRepo(Artist).insert(coreDataResponse.artists)
-    useRepo(Album).insert(coreDataResponse.albums)
-    useRepo(Song).insert(coreDataResponse.songs)
-
-    // Flush avoids stale list data on the SSR-generated page.
-    useRepo(List).flush()
-    useRepo(List).insert(coreDataResponse.lists.map(list => ({
-      ...list,
-      songIds: list.songIds.map(id => id ?? undefined),
-      attributions: list.attributions ?? {}
-    })))
+    applyCoreDataResponse(coreDataResponse, {
+      // Flush avoids stale list data on the SSR-generated page.
+      flushLists: true
+    })
 
     if (rootStore.listInProgress) {
       const poll = await $api(apiEndpoints.poll.latest()).catch(() => undefined)

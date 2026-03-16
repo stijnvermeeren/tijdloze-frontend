@@ -5,13 +5,6 @@ export interface ChatUser {
   isBlocked?: boolean
 }
 
-export interface ChatMessage {
-  userId?: string
-  displayName?: string
-  message: string
-  created: string
-}
-
 export interface ChatTicketResponse {
   ticket: string
 }

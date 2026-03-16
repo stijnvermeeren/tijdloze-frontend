@@ -11,8 +11,8 @@ export interface CoreDataAlbum {
   artistId: number
   releaseYear: number
   cover?: string
-  isSingle: boolean
-  isSoundtrack: boolean
+  isSingle?: boolean
+  isSoundtrack?: boolean
 }
 
 export interface CoreDataSong {
@@ -21,12 +21,9 @@ export interface CoreDataSong {
   aliases?: string
   artistId: number
   secondArtistId?: number
-  albumId?: number
+  albumId: number
   languageId?: string
   leadVocals?: string
-  spotifyId?: string
-  recordingMBId?: string
-  workMBId?: string
   positions: Record<string, number>
 }
 

@@ -319,7 +319,7 @@ const artistData = computed(() => {
 })
 const albumData = computed(() => {
   const data = Object.values(
-    Object.groupBy(rawData.value, item => item.song.albumId ?? -1)
+    Object.groupBy(rawData.value, item => item.song.albumId)
   )
   .filter((items): items is typeof rawData.value => items !== undefined)
   .map(items => {
