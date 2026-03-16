@@ -13,7 +13,7 @@ export class YearsIndex {
     }
 
     forYear(year: Year): YearContext {
-        return new YearContext(this, this.indexByYyyy[year.yyyy] ?? 0)
+        return new YearContext(this, this.indexByYyyy[year.yyyy]!)
     }
 }
 

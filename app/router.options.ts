@@ -1,16 +1,15 @@
 import type { RouterConfig } from '@nuxt/schema'
-
-type ScrollBehavior = NonNullable<RouterConfig['scrollBehavior']>
+import type { RouteLocationNormalized, RouteLocationNormalizedLoaded, RouterScrollBehavior } from '#vue-router'
 
 export default <RouterConfig>{
     scrollBehavior(
-        to: Parameters<ScrollBehavior>[0],
-        from: Parameters<ScrollBehavior>[1],
-        savedPosition: Parameters<ScrollBehavior>[2],
+        to: RouteLocationNormalized,
+        from: RouteLocationNormalizedLoaded,
+        savedPosition: Parameters<RouterScrollBehavior>[2],
     ) {
         const nuxtApp = useNuxtApp()
-        const fromNoScrollDepth = typeof from.meta.noScrollDepth === 'number' ? from.meta.noScrollDepth : null
-        const toNoScrollDepth = typeof to.meta.noScrollDepth === 'number' ? to.meta.noScrollDepth : null
+        const fromNoScrollDepth = from.meta.noScrollDepth
+        const toNoScrollDepth = to.meta.noScrollDepth
 
         if (fromNoScrollDepth && toNoScrollDepth && fromNoScrollDepth === toNoScrollDepth) {
             const noScrollDepth = fromNoScrollDepth
