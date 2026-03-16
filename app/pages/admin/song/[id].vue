@@ -22,7 +22,7 @@ div
         admin-artist-select(v-model='fullSongData.secondArtistId' :required='false' label="Tweede artiest" density="compact")
     v-row(dense)
       v-col
-        admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId ?? 0')
+        admin-album-select(v-model='fullSongData.albumId' :artist-id='fullSongData.artistId')
     v-row(dense)
       v-col
         admin-language-input(v-model='fullSongData.languageId')
@@ -90,7 +90,7 @@ definePageMeta({
 
 type SongEditDraftData = Omit<SongFormData, 'artistId' | 'albumId'> & {
   id: number
-  artistId?: number
+  artistId: number
   albumId?: number
 }
 
@@ -99,7 +99,8 @@ const processing  = ref(false)
 const songId = useRouteParam('id')
 const fullSongData = ref<SongEditDraftData>({
   id: 0,
-  title: ''
+  title: '',
+  artistId: 0
 })
 const {data: fetchedSongData, status} = await useApiFetch(apiEndpoints.song.byId(Number(songId)), { deep: true })
 const title = ref('')  // not reactive
@@ -115,10 +116,14 @@ const artistId = computed(() => {
   return fullSongData.value.artistId;
 })
 const album = computed(() => {
-  return useRepo(Album).find(fullSongData.value.albumId ?? 0);
+  const albumId = fullSongData.value.albumId
+  if (albumId === undefined) {
+    return undefined
+  }
+  return useRepo(Album).find(albumId);
 })
 const artist = computed(() => {
-  return useRepo(Artist).find(fullSongData.value.artistId ?? 0);
+  return useRepo(Artist).find(fullSongData.value.artistId);
 })
 const disabled = computed(() => {
   return processing.value || !fullSongData.value.title || !fullSongData.value.artistId ||

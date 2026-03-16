@@ -8,11 +8,7 @@ ui-card
 </template>
 
 <script setup lang="ts">
-type TabItem = {
-  to: string
-  title: string
-  subtitle?: string
-}
+import type { TabItem } from '~/components/ui/tabs'
 
 defineProps<{
   tabs: TabItem[]

@@ -1,8 +1,7 @@
-import { sortWith, ascend } from 'ramda'
+import { sortWith, ascend, takeWhile } from 'ramda'
 
 interface RankingEntry<T> {
   position: number | '='
-  key: PropertyKey
   entry: T
 }
 
@@ -24,27 +23,20 @@ export default function ranking<T extends object>(
     if (lastEntry && rankBy(entry) === rankBy(lastEntry)) {
       results.push({
         position: '=' as const,
-        key: (entry as { key: PropertyKey }).key,
         entry
       })
     } else {
       const position = index + 1;
       results.push({
         position,
-        key: (entry as { key: PropertyKey }).key,
         entry
       });
       lastEntry = entry;
     }
   });
 
-  const limitedResults: RankingEntry<T>[] = []
-  for (const result of results) {
-    if (result.position === '=' || !limit || (typeof result.position === 'number' && result.position <= limit)) {
-      limitedResults.push(result)
-    } else {
-      break
-    }
-  }
-  return limitedResults;
+  return takeWhile(
+    result => result.position === '=' || !limit || result.position <= limit,
+    results
+  );
 }

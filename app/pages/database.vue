@@ -51,7 +51,7 @@ div
     v-no-ssr
       div.listContainer(v-bind="containerProps")
         div(v-bind="wrapperProps" ref="wrapper")
-          div.listEntry(v-for="({data: item}, index) in virtualList" :key="item.key")
+          div.listEntry(v-for="({data: item}, index) in virtualList" :key="item.entry.key")
             div.entry(:class="{lineBelow: index % 5 === 4}")
               div.r
                 | {{ item.position }}
@@ -82,7 +82,7 @@ type VirtualEntry = {
   key: number
   points: number
 }
-type VirtualListItem = { position: number | '='; key: PropertyKey; entry: VirtualEntry }
+type VirtualListItem = { position: number | '='; entry: VirtualEntry }
 
 const TYPE_SONGS = 'nummers'
 const TYPE_ALBUMS = 'albums'

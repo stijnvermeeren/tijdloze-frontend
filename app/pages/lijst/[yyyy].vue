@@ -24,6 +24,8 @@ import {useRootStore} from "~/stores/root";
 import {mdiDownload} from "@mdi/js";
 import type { ListEntry } from '~/stores/root'
 import type Year from '~/orm/Year'
+import { sortBy } from 'ramda'
+import type { TabItem } from '~/components/ui/tabs'
 
 definePageMeta({
   validate: async (route) => {
@@ -73,9 +75,11 @@ const newSongs = computed<ListEntry[]>(() => {
 const exits = computed<ListEntry[]>(() => {
   if (previousYear.value) {
     const prev = previousYear.value
-    return useRootStore().list(prev, 100, 100)
-      .filter(entry => entry.song.notInList(year.value))
-      .sort((a, b) => a.song.position(prev)! - b.song.position(prev)!);
+    return sortBy(
+      (entry: ListEntry) => entry.song.position(prev)!,
+      useRootStore().list(prev, 100, 100)
+        .filter(entry => entry.song.notInList(year.value))
+    )
   } else {
     return [];
   }
@@ -95,7 +99,7 @@ const analysis = computed(() => {
 })
 
 const tabs = computed(() => {
-  const tabs: { to: string; title: string; subtitle?: string }[] = [{ to: `/lijst/${year.value.yyyy}`, title: 'De lijst' }]
+  const tabs: TabItem[] = [{ to: `/lijst/${year.value.yyyy}`, title: 'De lijst' }]
   if (exits.value.length) {
     tabs.push({ to: `/lijst/${year.value.yyyy}/exits`, title: 'Exits', subtitle: "top 100" })
   }
