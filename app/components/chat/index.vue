@@ -150,7 +150,8 @@ function messageUser(message: ChatMessageForComponent): ChatUser {
     return {
       id: fallbackUserId,
       displayName: displayName(fallbackUserId, message.displayName),
-      isAdmin: false
+      isAdmin: false,
+      isBlocked: false
     };
   }
 }
@@ -230,7 +231,9 @@ function loadOnline(newOnlineData: ChatUser[]) {
   if (!onlineIds.includes(currentUser.value.id)) {
     currentUserEntry = [{
       id: currentUser.value.id,
-      displayName: currentUser.value.displayName
+      displayName: currentUser.value.displayName,
+      isAdmin: currentUser.value.isAdmin,
+      isBlocked: currentUser.value.isBlocked
     }]
   }
 

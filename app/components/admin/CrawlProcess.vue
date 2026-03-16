@@ -50,41 +50,37 @@ const props = defineProps<{
   type: CrawlType
 }>()
 
-function getModelId(entry: CrawlEntry | null | undefined): number | undefined {
-  if (!entry) {
-    return undefined
-  }
-  if (props.type === 'artist') {
-    return entry.artistId
-  }
-  if (props.type === 'album') {
-    return entry.albumId
-  }
-  return entry.songId
-}
-
 const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(apiEndpoints.crawlProcess.next(props.type))
 
-const storeModel = computed<Artist | Album | Song | undefined>(() => {
-  const modelId = getModelId(crawl.value)
-  if (!modelId) {
+const artistModel = computed<Artist | undefined>(() => {
+  const entry = crawl.value
+  if (props.type !== 'artist' || !entry?.artistId) {
     return undefined
   }
-
-  if (props.type === 'artist') {
-    return useRepo(Artist).find(modelId) ?? undefined
-  }
-  if (props.type === 'album') {
-    return useRepo(Album).find(modelId) ?? undefined
-  }
-  return useRepo(Song).find(modelId) ?? undefined
+  return useRepo(Artist).find(entry.artistId) ?? undefined
 })
 
-const artistModel = computed(() => props.type === 'artist' ? storeModel.value as Artist | undefined : undefined)
-const albumModel = computed(() => props.type === 'album' ? storeModel.value as Album | undefined : undefined)
-const songModel = computed(() => props.type === 'song' ? storeModel.value as Song | undefined : undefined)
+const albumModel = computed<Album | undefined>(() => {
+  const entry = crawl.value
+  if (props.type !== 'album' || !entry?.albumId) {
+    return undefined
+  }
+  return useRepo(Album).find(entry.albumId) ?? undefined
+})
+
+const songModel = computed<Song | undefined>(() => {
+  const entry = crawl.value
+  if (props.type !== 'song' || !entry?.songId) {
+    return undefined
+  }
+  return useRepo(Song).find(entry.songId) ?? undefined
+})
+
+const storeModel = computed<Artist | Album | Song | undefined>(() => {
+  return artistModel.value || albumModel.value || songModel.value
+})
 
 const currentValue = computed(() => {
   const field = crawl.value?.field

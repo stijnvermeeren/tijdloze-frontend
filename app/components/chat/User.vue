@@ -34,7 +34,7 @@ const props = defineProps<{
 }>()
 
 const blocking = ref(false)
-const isBlocked = ref(!!props.user.isBlocked)
+const isBlocked = ref(props.user.isBlocked)
 
 async function block() {
   blocking.value = true;
@@ -49,7 +49,7 @@ async function unblock() {
   blocking.value = false;
 }
 watch(() => props.user, () => {
-  isBlocked.value = !!props.user.isBlocked;
+  isBlocked.value = props.user.isBlocked;
 })
 </script>
 
