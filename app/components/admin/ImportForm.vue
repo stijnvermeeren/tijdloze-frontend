@@ -79,7 +79,7 @@ function startImport() {
         continue
       }
       const query = `${groups.artist} ${groups.title}`
-      const overridePosition = parseInt(groups.position ?? '0', 10)
+      const overridePosition = groups.position === undefined ? undefined : parseInt(groups.position)
       importSongs.push({
         overridePosition,
         query
@@ -96,7 +96,7 @@ function startImport() {
         overridePosition = undefined
         const positionMatch = fragment.match(/^[0-9]+/g);
         if (positionMatch && positionMatch.length && positionMatch[0]) {
-          overridePosition = parseInt(positionMatch[0], 10);
+          overridePosition = parseInt(positionMatch[0]);
         }
         cleanFragment = fragment
             .replace(/^[0-9]*[\.]?/g, "")

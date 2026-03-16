@@ -46,7 +46,7 @@ const shownReplies = computed(() => {
       return fullComment.value.replies.slice(fullComment.value.replies.length - initialReplyCount)
     }
   } else {
-    return [props.threadSummary.lastReply2, props.threadSummary.lastReply1].filter((x): x is CommentItem => !!x)
+    return [props.threadSummary.lastReply2, props.threadSummary.lastReply1].filter((x) => !!x)
   }
 })
 const replyCount = computed(() => {

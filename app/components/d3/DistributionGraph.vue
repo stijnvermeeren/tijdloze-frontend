@@ -54,12 +54,12 @@ div
 
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
   const {years, xBandScale, xScale, yScale} = useGraph()
-  const hover = useGraphHover(xBandScale, xScale, yScale, years)
-  const onHover = hover.onHover
-  const hoverYear = hover.hoverYear as Ref<Year | undefined>
-  const hoverLineX = hover.hoverLineX as Ref<number | undefined>
-  const hoverPosition = hover.hoverPosition as Ref<number | undefined>
-  const tooltipStyle = hover.tooltipStyle
+  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(
+    xBandScale,
+    xScale,
+    yScale,
+    years
+  )
 
   const props = withDefaults(defineProps<{
     title?: string

@@ -54,37 +54,37 @@ const submitting = ref(false)
 
 const {data: crawl, refresh: refreshCrawl} = await useApiFetch(apiEndpoints.crawlProcess.next(props.type))
 
-const artistModel = computed<Artist | undefined>(() => {
+const artistModel = computed<Artist | null>(() => {
   const entry = crawl.value
   if (props.type !== 'artist' || !entry?.artistId) {
-    return undefined
+    return null
   }
-  return useRepo(Artist).find(entry.artistId) ?? undefined
+  return useRepo(Artist).find(entry.artistId)
 })
 
-const albumModel = computed<Album | undefined>(() => {
+const albumModel = computed<Album | null>(() => {
   const entry = crawl.value
   if (props.type !== 'album' || !entry?.albumId) {
-    return undefined
+    return null
   }
-  return useRepo(Album).find(entry.albumId) ?? undefined
+  return useRepo(Album).find(entry.albumId)
 })
 
-const songModel = computed<Song | undefined>(() => {
+const songModel = computed<Song | null>(() => {
   const entry = crawl.value
   if (props.type !== 'song' || !entry?.songId) {
-    return undefined
+    return null
   }
-  return useRepo(Song).find(entry.songId) ?? undefined
+  return useRepo(Song).find(entry.songId)
 })
 
-const storeModel = computed<Artist | Album | Song | undefined>(() => {
+const storeModel = computed<Artist | Album | Song | null>(() => {
   return artistModel.value || albumModel.value || songModel.value
 })
 
 const currentValue = computed(() => {
   const field = crawl.value?.field
-  const model = storeModel.value as Record<string, unknown> | undefined
+  const model = storeModel.value as Record<string, unknown> | null
   if (!field || !model) {
     return undefined
   }

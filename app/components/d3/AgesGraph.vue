@@ -73,12 +73,12 @@ const points = computed(() => {
   return points;
 })
 
-const hover = useGraphHover(xBandScale, xScale, yScale, years)
-const onHover = hover.onHover
-const hoverYear = hover.hoverYear as Ref<Year | undefined>
-const hoverPosition = hover.hoverPosition as Ref<number | undefined>
-const hoverLineX = hover.hoverLineX as Ref<number | undefined>
-const tooltipStyle = hover.tooltipStyle
+const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(
+  xBandScale,
+  xScale,
+  yScale,
+  years
+)
 
 const tooltipSong = computed(() => {
   if (!!hoverYear.value && !!hoverPosition.value) {

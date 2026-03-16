@@ -29,8 +29,8 @@
     .messagesContainer
       template(v-for='message in messages')
         div.entry(
-          v-if='message.userId' 
-          v-bind='message.created ? { title: useDateFormat(message.created, { format: "D MMMM YYYY, H:mm:ss" }) } : {}'
+          v-if='isUserMessage(message)'
+          v-bind='{ title: useDateFormat(message.created, { format: "D MMMM YYYY, H:mm:ss" }) }'
           :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}'
         )
           div.userName
@@ -58,16 +58,26 @@ import {useAuthStore} from "~/stores/auth";
 import { mdiPencil } from '@mdi/js';
 import { sortBy } from 'ramda';
 
-type ChatMessageForComponent = {
-  userId?: string
-  displayName?: string
+type ChatSystemMessage = {
   message: string
-  created?: string
+}
+
+type ChatUserMessage = {
+  message: string
+  userId: string
+  displayName: string
+  created: string
+}
+
+type ChatMessage = ChatUserMessage | ChatSystemMessage
+
+function isUserMessage(message: ChatMessage): message is ChatUserMessage {
+  return 'userId' in message && 'displayName' in message && 'created' in message
 }
 
 const {$api, $url} = useNuxtApp()
 
-const messages = ref<ChatMessageForComponent[]>([])
+const messages = ref<ChatMessage[]>([])
 const online = ref<ChatUser[]>([])
 const displayNames = ref<Record<string, string>>({})
 const connected = ref(false)
@@ -133,7 +143,7 @@ function cancelDisplayName() {
 
 function displayName(userId: string, fallback?: string) {
   const savedName = displayNames.value[userId];
-  return savedName ? savedName : (fallback ?? 'Onbekend');
+  return savedName ? savedName : (fallback ?? '');
 }
 
 function isAdmin(userId: string) {
@@ -141,12 +151,12 @@ function isAdmin(userId: string) {
   return user ? user.isAdmin : false;
 }
 
-function messageUser(message: ChatMessageForComponent): ChatUser {
+function messageUser(message: ChatUserMessage): ChatUser {
   const user = online.value.find(user => user.id === message.userId);
   if (user) {
     return user;
   } else {
-    const fallbackUserId = message.userId ?? 'unknown';
+    const fallbackUserId = message.userId;
     return {
       id: fallbackUserId,
       displayName: displayName(fallbackUserId, message.displayName),
@@ -156,9 +166,9 @@ function messageUser(message: ChatMessageForComponent): ChatUser {
   }
 }
 
-function addMessage(message: ChatMessageForComponent) {
-  function isNewMessage(entry: ChatMessageForComponent) {
-    return !entry.userId && entry.message?.startsWith("Nieuw in de chat: ")
+function addMessage(message: ChatMessage) {
+  function isNewMessage(entry: ChatMessage) {
+    return !isUserMessage(entry) && entry.message.startsWith("Nieuw in de chat: ")
   }
 
   let merged = false
