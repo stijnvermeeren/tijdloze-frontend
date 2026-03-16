@@ -141,9 +141,9 @@ function cancelDisplayName() {
   displayNameEdit.value = currentUser.value.displayName;
 }
 
-function displayName(userId: string, fallback?: string) {
+function displayName(userId: string, fallback: string) {
   const savedName = displayNames.value[userId];
-  return savedName ? savedName : (fallback ?? '');
+  return savedName ? savedName : fallback;
 }
 
 function isAdmin(userId: string) {
