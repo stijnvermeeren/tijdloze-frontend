@@ -20,7 +20,7 @@
           circle.circle.coloredCircle(
             v-if='song.position(year)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year) ?? 0)'
+            :cy='yScale(song.position(year)!)'
             r='3'
           )
       rect(
@@ -69,7 +69,7 @@
   }
 
   function stationaryYears(song: Song): Year[] {
-    return song.stationaryIntervals(years.value).flat() as Year[];
+    return song.stationaryIntervals(years.value).flat();
   }
 </script>
 

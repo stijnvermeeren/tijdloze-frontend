@@ -31,7 +31,7 @@
           circle.circle.coloredCircle(
             v-if='song.position(year, extended)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year, extended) ?? 0)'
+            :cy='yScale(song.position(year, extended)!)'
             r='3'
           )
       rect(
@@ -114,18 +114,16 @@ const colorClass = computed(() => {
 
 const tooltipEntries = computed(() => {
   const hoveredYear = hoverYear.value
+  const result: TooltipEntry[] = [];
   if (hoveredYear) {
-    const tooltipEntries: TooltipEntry[] = [];
     props.entries.forEach(({song, isTop100}, index) => {
       const position = song.position(hoveredYear, extended.value);
       if (position) {
-        tooltipEntries.push({song, index, colorClass: colorClass.value(index, isTop100), position})
+        result.push({song, index, colorClass: colorClass.value(index, isTop100), position})
       }
     });
-    return sortBy((entry: TooltipEntry) => entry.position, tooltipEntries)
-  } else {
-    return [] as TooltipEntry[];
   }
+  return sortBy((entry: TooltipEntry) => entry.position, result)
 })
 
 function onSongHover(index: number | undefined) {

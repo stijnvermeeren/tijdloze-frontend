@@ -23,9 +23,12 @@ v-data-table(
 </template>
 
 <script setup lang="ts">
-import type Year from "~/orm/Year";
-
 const CHUNK_LENGTH = 8
+
+type YearEntry = {
+  yyyy: number
+  _yy: string
+}
 
 type DataRow = {
   entry: string
@@ -46,7 +49,7 @@ const {years} = storeToRefs(useYearStore())
 
 const yearGroups = computed(() => {
   const yearsLength = years.value.length
-  const results: Array<Array<Pick<Year, 'yyyy' | '_yy'>>> = []
+  const results: YearEntry[][] = []
   for (let i = 0; i <= (yearsLength - 1) / CHUNK_LENGTH; i++) {
     const yearsChunk = years.value.slice(
         Math.max(0, yearsLength - CHUNK_LENGTH * (i + 1)),
@@ -64,10 +67,10 @@ const yearGroups = computed(() => {
 
 const yearGroupsOptions = computed(() => {
   return yearGroups.value.map((yearsChunk, index) => {
-    const firstYear = yearsChunk[0]
-    const lastYear = yearsChunk[yearsChunk.length - 1]
+    const firstYear = yearsChunk[0]!
+    const lastYear = yearsChunk[yearsChunk.length - 1]!
     return {
-      title: firstYear && lastYear ? `${firstYear.yyyy} - ${lastYear.yyyy}` : "",
+      title: `${firstYear.yyyy} - ${lastYear.yyyy}`,
       value: index
     }
   })
@@ -75,11 +78,8 @@ const yearGroupsOptions = computed(() => {
 
 const selectedYearGroupIndex = ref(0)
 
-const selectedYears = computed<Array<Pick<Year, 'yyyy' | '_yy'>>>(() => {
-  if (yearGroups.value.length > selectedYearGroupIndex.value) {
-    return yearGroups.value[selectedYearGroupIndex.value] ?? []
-  }
-  return []
+const selectedYears = computed<Array<YearEntry>>(() => {
+  return yearGroups.value[selectedYearGroupIndex.value] ?? []
 })
 
 const headers = computed(() => {
