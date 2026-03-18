@@ -1,4 +1,3 @@
-
 import {scaleLinear, scaleBand} from "d3-scale";
 import {line} from "d3-shape";
 import type Year from '~/orm/Year'
@@ -23,7 +22,7 @@ export default function () {
     const result: Record<number, number> = {}
     let previousYearCutoff: number | undefined = undefined
     years.value.forEach(year => {
-      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy] ?? 0) + 1
+      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy]!) + 1
       if (previousYearCutoff !== undefined) {
         result[year.yyyy] = Math.min(previousYearCutoff, thisYearCutoff);
       } else {
@@ -38,9 +37,9 @@ export default function () {
     const result: Record<number, number> = {}
     let previousYear: Year | undefined = undefined
     years.value.forEach(year => {
-      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy] ?? 0) + 1
+      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy]!) + 1
       if (previousYear) {
-        result[previousYear.yyyy] = Math.min(result[previousYear.yyyy] ?? thisYearCutoff, thisYearCutoff);
+        result[previousYear.yyyy] = Math.min(result[previousYear.yyyy]!, thisYearCutoff);
       }
       result[year.yyyy] = thisYearCutoff;
       previousYear = year
@@ -76,9 +75,9 @@ export default function () {
     if (years.value.length) {
       const points = []
       years.value.forEach((year, index) => {
-        const y = yScale.value((maxPositionByYyyy.value[year.yyyy] ?? 0) + 1)
-        const xStart = (index === 0) ? 0 : (xBandScale.value(year._yy) ?? 0)
-        const xEnd = (index === years.value.length - 1) ? width : (xBandScale.value(year._yy) ?? 0) + xBandScale.value.bandwidth()
+        const y = yScale.value((maxPositionByYyyy.value[year.yyyy]!) + 1)
+        const xStart = (index === 0) ? 0 : (xBandScale.value(year._yy)!)
+        const xEnd = (index === years.value.length - 1) ? width : (xBandScale.value(year._yy)!) + xBandScale.value.bandwidth()
         points.push(`${xStart},${y}`)
         points.push(`${xEnd},${y}`)
       })
@@ -117,20 +116,17 @@ export default function () {
       const positionPoints: GraphPoint[] = intervalYears.map((year: Year) => {
         return {
           x: xScale.value(year._yy),
-          y: yScale.value(song.position(year, extended.value) ?? 0),
+          y: yScale.value(song.position(year, extended.value)!),
           defined: true
         };
       });
 
       const lastYear = interval[interval.length - 1];
-      if (!lastYear) {
-        return [start, positionPoints, undefinedPoint].flat();
-      }
-      if (suddenEnds || (currentYear.value && lastYear.equals(currentYear.value))) {
+      if (!lastYear || suddenEnds || (currentYear.value && lastYear.equals(currentYear.value))) {
         return [start, positionPoints, undefinedPoint].flat();
       } else {
         const lastPosition = positions[positions.length - 1] ?? 0;
-        const cutoffPosition = cutoffPositionAfter.value[lastYear.yyyy] ?? 0;
+        const cutoffPosition = cutoffPositionAfter.value[lastYear.yyyy]!;
         const end = {
           x: xScale.value(lastYear._yy) + 9 / 10 * halfBandWith,
           y: yScale.value(Math.max(lastPosition, cutoffPosition)),
