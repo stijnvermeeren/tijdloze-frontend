@@ -50,12 +50,10 @@ const props = withDefaults(defineProps<{
 })
 
 const initialFilter = useRouteQueryParam('filter') ?? ''
-
 const rawPosition = useRouteQueryParam('positie')
-const parsedPosition = rawPosition ? parseInt(rawPosition, 10) : 0
 
 const filterQuery = ref<string>(initialFilter)
-const scrollPosition = ref<number | undefined>(Number.isFinite(parsedPosition) && parsedPosition > 0 ? parsedPosition : undefined)
+const scrollPosition = ref<number | undefined>(rawPosition ? parseInt(rawPosition) : undefined)
 
 function setQueryParams() {
   useRouter().replace({
@@ -70,7 +68,7 @@ function setQueryParams() {
 watch([filterQuery, scrollPosition], setQueryParams)
 
 const filteredList = computed(() => {
-  const queryFragments = useSearchQueryFragments(filterQuery.value) as string[]
+  const queryFragments = useSearchQueryFragments(filterQuery.value)
   return props.list.filter(entry => useSearchFilter(queryFragments, useSearchSongContent)(entry.song))
 })
 
@@ -98,7 +96,10 @@ onActivated(() => {
 })
 
 function onScroll() {
-  const scrollTop = containerProps.ref.value?.scrollTop ?? 0
+  const scrollTop = containerProps.ref.value?.scrollTop
+  if (scrollTop === undefined) {
+    return
+  }
   const scrollIndex = Math.ceil(scrollTop / itemHeight)
   if (scrollIndex) {
     scrollPosition.value = filteredList.value?.[scrollIndex]?.position
