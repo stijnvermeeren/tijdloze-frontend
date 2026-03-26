@@ -1,22 +1,9 @@
 <template lang="pug">
-table.lijst.perEen
-  tbody
-    tr
-      th.r Jaar
-      th Aantal
-      th.l Nieuwkomers
-    tr(v-for='{year, entries} in listData')
-      td.r
-        year-link(:year='year')
-      td {{entries.length}}
-      td
-        table.valueSong(v-if='entries.length')
-          tbody
-            tr(v-for='entry in entries')
-              td {{entry.song.position(entry.year)}}
-              td.l
-                song-with-cover(:song='entry.song')
-        div(v-else) /
+statistics-year-songs-table(
+  :list-data='listData'
+  songs-header='Nieuwkomers'
+  header-class='l'
+)
 </template>
 
 <script setup lang="ts">
