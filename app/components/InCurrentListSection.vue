@@ -1,5 +1,5 @@
 <template lang="pug">
-song-with-position(v-if='currentYear' v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear")
+song-with-position(v-if='currentYear' v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear" show-entry-stats)
 </template>
 
 <script setup lang="ts">
