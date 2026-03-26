@@ -1,8 +1,8 @@
 <template lang="pug">
 statistics-year-songs-table(
   :list-data='listData'
-  songs-header='Nieuwkomers'
-  header-class='l'
+  count-label-singular='nieuwkomer'
+  count-label-plural='nieuwkomers'
 )
 </template>
 

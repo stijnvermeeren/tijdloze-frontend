@@ -1,8 +1,8 @@
 <template lang="pug">
 statistics-year-songs-table(
   :list-data='listData'
-  songs-header='Stationaire nummers'
-  header-class='l'
+  count-label-singular='stationair nummer'
+  count-label-plural='stationaire nummers'
 )
 </template>
 

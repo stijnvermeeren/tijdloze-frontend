@@ -2,18 +2,12 @@
 statistics-year-songs-table(
   :list-data='listData'
   songs-table-class='valueSongValue'
-  header-class='l'
+  count-label-singular='re-entry'
+  count-label-plural='re-entries'
 )
-  template(#songsHeader)
-    table.valueSongValue
-      tbody
-        tr
-          th Pos.
-          th.l Nummer
-          th Afwezigheid
   template(#extraCell='{entry}')
-    td.text-no-wrap
-      | {{entry.absenceYears}} jaar
+    td.text-no-wrap.attribution
+      | na #[strong {{entry.absenceYears}}] jaar afwezigheid
 </template>
 
 <script setup lang="ts">

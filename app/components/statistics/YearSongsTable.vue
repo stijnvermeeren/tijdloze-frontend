@@ -1,21 +1,15 @@
 <template lang="pug">
-table.lijst.perEen
+table.lijst.perEen.withTopBorder
   tbody
-    tr
-      th.r Jaar
-      th Aantal
-      th(:class='headerClass')
-        slot(name='songsHeader')
-          | {{songsHeader}}
     tr(v-for='{year, entries} in listData')
       td.r
         year-link(:year='year')
-      td {{entries.length}}
       td
-        statistics-year-songs-inner-table(v-if='entries.length' :entries='entries' :songs-table-class='songsTableClass')
+        statistics-year-songs-inner-table(:entries='entries' :display-year='year' :songs-table-class='songsTableClass' :count-label-singular='countLabelSingular' :count-label-plural='countLabelPlural')
+          template(#positionAnnotation='{entry}')
+            slot(name='positionAnnotation' :entry='entry')
           template(#extraCell='{entry}')
             slot(name='extraCell' :entry='entry')
-        div(v-else) /
 </template>
 
 <script setup lang="ts">
@@ -29,15 +23,21 @@ type YearEntryGroup = {
   entries: EntryLike[]
 }
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     listData: YearEntryGroup[]
-    songsHeader?: string
     songsTableClass?: string
-    headerClass?: string
+    countLabelSingular: string
+    countLabelPlural: string
   }>(),
   {
     songsTableClass: 'valueSong'
   }
 )
 </script>
+
+<style scoped>
+.withTopBorder {
+  border-top: 1px #888888 dotted;;
+}
+</style>

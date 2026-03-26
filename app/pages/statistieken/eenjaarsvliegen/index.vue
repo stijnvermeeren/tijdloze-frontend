@@ -2,17 +2,12 @@
 statistics-year-songs-table(
   :list-data='listData'
   songs-table-class='valueSongValue'
+  count-label-singular='eenjaarsvlieg'
+  count-label-plural='eenjaarsvliegen'
 )
-  template(#songsHeader)
-    table.valueSongValue
-      tbody
-        tr
-          th Pos.
-          th.l Nummer
-          th Definitief
   template(#extraCell='{entry}')
-    td
-      template(v-if='entry.isFinal') *
+    td.attribution
+      template(v-if='entry.isFinal') Definitief
 </template>
 
 <script setup lang="ts">

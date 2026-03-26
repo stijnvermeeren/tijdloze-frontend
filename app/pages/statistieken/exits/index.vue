@@ -1,9 +1,11 @@
 <template lang="pug">
 statistics-year-songs-table(
   :list-data='listData'
-  songs-header='Exits'
-  header-class='l'
+  count-label-singular='exit'
+  count-label-plural='exits'
 )
+  template(#positionAnnotation='{entry}')
+    position-annotation in {{entry.year.yyyy}}
 </template>
 
 <script setup lang="ts">
