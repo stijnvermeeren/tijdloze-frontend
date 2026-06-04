@@ -12,7 +12,7 @@ div
 </template>
 
 <script setup lang="ts">
-import type { OneHitEntry } from './oneHitEntry'
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
 
 const props = defineProps<{ data: OneHitEntry[] }>()
 

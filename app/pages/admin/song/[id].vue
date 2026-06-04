@@ -110,7 +110,7 @@ watch(status, (newValue) => {
     fullSongData.value = fetchedSongData.value
     title.value = fetchedSongData.value.title
   }
-})
+}, { immediate: true })
 
 const artistId = computed(() => {
   return fullSongData.value.artistId;

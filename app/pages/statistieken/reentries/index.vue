@@ -30,7 +30,7 @@ table.lijst.perEen
 <script setup lang="ts">
 import { sortBy } from 'ramda';
 import type Year from '~/orm/Year'
-import type { ReentryEntry } from './reentryEntry'
+import type { ReentryEntry } from '~/types/statistieken/reentryEntry'
 
 const props = defineProps<{ data: ReentryEntry[]; years: Year[] }>()
 

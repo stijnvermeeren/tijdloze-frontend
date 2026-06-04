@@ -31,7 +31,7 @@
           circle.circle.coloredCircle(
             v-if='song.position(year, extended)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year, extended)!)'
+            :cy='yScale(song.position(year, extended))'
             r='3'
           )
       rect(
