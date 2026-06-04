@@ -20,7 +20,7 @@
           circle.circle.coloredCircle(
             v-if='song.position(year)'
             :cx='xScale(year._yy)'
-            :cy='yScale(song.position(year)!)'
+            :cy='yScale(song.position(year))'
             r='3'
           )
       rect(

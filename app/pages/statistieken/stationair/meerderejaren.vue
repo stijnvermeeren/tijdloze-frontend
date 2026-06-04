@@ -17,7 +17,7 @@ table.lijst.perEen
           tbody
             tr(v-for='entry in data.entries')
               td.i
-                | {{entry.firstYear}}-{{entry.lastYear}}
+                | {{entry.firstYear.yyyy}}-{{entry.lastYear.yyyy}}
               td.i
                 | {{entry.position}}
               td.l

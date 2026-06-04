@@ -87,7 +87,7 @@ const { currentYear, years } = storeToRefs(useYearStore())
 const { isAdmin } = storeToRefs(useAuthStore())
 
 const top100InProgress = computed(() => {
-  return listInProgress.value && lastPosition.value <= 100;
+  return listInProgress.value && lastPosition.value! <= 100;
 })
 const sortedYears = computed(() => {
   return [...years.value].reverse();
