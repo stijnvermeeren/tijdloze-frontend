@@ -3,21 +3,23 @@
   div(v-if='isAuthenticated')
     div.label Aangemeld als 
     div
-      user-avatar(:id="user.id" :user-name="userName" :is-admin="isAdmin")
+      user-avatar(v-if="userId" :id="userId" :user-name="userName" :is-admin="isAdmin")
     v-btn.mt-2(rounded @click='logout()' size="small") Afmelden
   div(v-else)
     v-btn(rounded :to="{path: '/auth/login', query: {redirect: route.fullPath}}") Aanmelden
 </template>
 
-<script setup>
+<script setup lang="ts">
   import {useAuthStore} from "~/stores/auth";
   import {useAuth0} from "@auth0/auth0-vue";
 
-  let auth0
+  let auth0: ReturnType<typeof useAuth0> | null = null
 
   const route = useRoute()
 
-  const {isAuthenticated, displayNameWithFallback: userName, isAdmin, user } = storeToRefs(useAuthStore())
+  const {isAuthenticated, displayNameWithFallback, isAdmin, user } = storeToRefs(useAuthStore())
+  const userId = computed(() => user.value?.id)
+  const userName = computed(() => displayNameWithFallback.value ?? '')
 
   onMounted(() => {
     auth0 = useAuth0()

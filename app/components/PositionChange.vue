@@ -6,14 +6,14 @@ div
   .up(v-if='isNew') nieuw
 </template>
 
-<script setup>
-const props = defineProps({
-  position: Number,
-  previousPosition: Number
-})
+<script setup lang="ts">
+const props = defineProps<{
+  position?: number
+  previousPosition?: number
+}>()
 
 const diff = computed(() => {
-  return Math.abs(props.position - props.previousPosition)
+  return Math.abs((props.position ?? 0) - (props.previousPosition ?? 0))
 })
 const equal = computed(() => {
   return props.position && props.position === props.previousPosition

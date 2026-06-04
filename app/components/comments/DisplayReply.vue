@@ -6,7 +6,7 @@ div.container
     slot
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiArrowRightBottom} from "@mdi/js";
 </script>
 

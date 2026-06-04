@@ -1,16 +1,15 @@
 <template lang="pug">
-nuxt-link(:to='`/lijst/${year.yyyy}`') {{text}}
+nuxt-link(v-if="year" :to='`/lijst/${year.yyyy}`') {{text}}
 </template>
 
-<script setup>
-import Year from "../orm/Year";
+<script setup lang="ts">
+import type Year from "~/orm/Year";
 
-const props = defineProps({
-  year: Year,
-  short: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  year: Year
+  short?: boolean
+}>(), {
+  short: false
 })
 
 const text = computed(() => {

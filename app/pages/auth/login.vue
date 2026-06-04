@@ -2,7 +2,7 @@
 p Je wordt aangemeld...
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {authGuard, useAuth0} from '@auth0/auth0-vue';
 
 onMounted( async () => {
@@ -10,8 +10,8 @@ onMounted( async () => {
   const loggedIn = await authGuard(useRoute())
   if (loggedIn) {
     await useSetUser(auth0)
-    const redirect = useRoute().query['redirect']
-    navigateTo(redirect ? redirect : '/', {replace: true})
+    const redirect = useRouteQueryParam('redirect')
+    navigateTo(redirect || '/', {replace: true})
   }
 })
 </script>

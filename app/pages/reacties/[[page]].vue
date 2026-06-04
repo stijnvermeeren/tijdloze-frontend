@@ -23,27 +23,33 @@ div
     v-progress-circular(indeterminate)
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type { TextValueResponse } from '~/api/contracts'
+  import { apiEndpoints } from '~/api/endpoints'
+  import { textKey } from '~/api/endpoints/text'
+  import { queryKeys } from '~/api/queryKeys'
   import useClientDataRefresh from "~/composables/useClientDataRefresh";
 
   const commentsPerPage = 20;
 
-  const {data: commentsOn, status: status1} = await useLazyFetch(
-    `text/commentsOn`,
-    useFetchOpts({transform: data => data.value === 'on', key: 'commentsOn'})
+  const {data: commentsOn, status: status1} = await useApiFetch(
+    apiEndpoints.text.byKey(textKey.commentsOn),
+    {transform: (data: TextValueResponse) => data.value === 'on', key: queryKeys.text.commentsOn, lazy: true}
   )
 
-  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useLazyFetch(
-    `comments/count`,
-    useFetchOpts({transform: data => data.commentCount, key: `comments/count`})
+  const {data: commentCount, refresh: reloadCommentCount, status: status2} = await useApiFetch(
+    apiEndpoints.comment.count(),
+    {key: queryKeys.comments.count, lazy: true}
   )
 
   const page = computed(() => {
-    return +useRoute().params.page || +useRoute().query.page || 1;
+    const paramsPage = useRouteParam('page')
+    const queryPage = useRouteQueryParam('page')
+    return +(paramsPage || queryPage || 1)
   })
 
-  const {data: comments, refresh: refreshComments, status: status3} = await useLazyFetch(
-      () => `comments/${page.value}`, useFetchOpts()
+  const {data: comments, refresh: refreshComments, status: status3} = await useApiFetch(
+    () => apiEndpoints.comment.list(page.value), { lazy: true }
   )
   useClientDataRefresh(refreshComments)
 
@@ -55,7 +61,7 @@ div
   })
 
   const pages = computed(() => {
-    return Math.ceil(commentCount.value / commentsPerPage);
+    return Math.ceil((commentCount.value?.commentCount ?? 0) / commentsPerPage);
   })
 
   async function reload() {
@@ -74,7 +80,7 @@ div
 
   definePageMeta({
     scrollToTop: true,
-    key: "reacties"  // avoid re-rendering the whole page when just switching comments page
+    key: 'reacties'  // avoid re-rendering the whole page when just switching comments page
   })
 </script>
 

@@ -17,44 +17,56 @@ table.lijst.perEen
           tbody
             tr(v-for='entry in data.entries')
               td.i
-                | {{entry.years[0].yyyy}}-{{entry.years[entry.years.length - 1].yyyy}}
+                | {{entry.firstYear.yyyy}}-{{entry.lastYear.yyyy}}
               td.i
-                | {{entry.song.position(entry.years[0])}}
+                | {{entry.position}}
               td.l
                 song-with-cover(:song='entry.song')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { sortWith, ascend, range } from 'ramda'
+import Song from '~/orm/Song'
+import type Year from '~/orm/Year'
 
-const props = defineProps({
-  years: Array
-})
+const props = defineProps<{ years: Year[] }>()
+
+type StationaryEntry = {
+  song: Song
+  years: Year[]
+  firstYear: Year
+  lastYear: Year
+  position: number
+}
 
 const songs = computed(() => {
   return useRootStore().songs;
 })
 const byNumberOfYears = computed(() => {
-  let data = [];
+  const allYears = useYearStore().years
+  let data: StationaryEntry[] = [];
   let maxYears = 0;
   songs.value.forEach(song => {
-    song.stationaryIntervals(useYearStore().years)
-      .filter(interval => interval.length > 2)
-      .map(interval => {
-        maxYears = Math.max(maxYears, interval.length);
+    song.stationaryIntervals(allYears)
+      .filter((interval: Year[]) => interval.length > 2)
+      .map((interval: Year[]) => {
+        maxYears = Math.max(maxYears, interval.length)
+        const firstYear = interval[0]!
         data.push({
           song,
           years: interval,
-          position: song.position(interval[0])
+          firstYear: firstYear,
+          lastYear: interval[interval.length - 1]!,
+          position: song.position(firstYear)!
         });
       })
   });
 
   return range(3, maxYears + 1).reverse().map(numberOfYears => {
-    const entries = sortWith([
-      ascend(data => -data.years[0].yyyy),
-      ascend(data => data.song.position(data.years[0]))
-    ])(data.filter(item => item.years.length === numberOfYears));
+    const entries = sortWith<StationaryEntry>([
+      ascend((entry: StationaryEntry) => -entry.firstYear.yyyy),
+      ascend((entry: StationaryEntry) => entry.position)
+    ])(data.filter((item: StationaryEntry) => item.years.length === numberOfYears));
 
     return {numberOfYears, entries};
   });

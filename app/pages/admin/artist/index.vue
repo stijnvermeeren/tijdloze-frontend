@@ -20,15 +20,17 @@ div
 </template>
 
 
-<script setup>
+<script setup lang="ts">
+import type { ArtistFormData } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
+const {$api} = useNuxtApp()
+
 definePageMeta({
   middleware: 'admin'
 })
 
-const {$api} = useNuxtApp()
-
 const processing = ref(false)
-const fullArtistData = ref({
+const fullArtistData = ref<ArtistFormData>({
   name: '',
   countryId: undefined
 })
@@ -39,7 +41,7 @@ const disabled = computed(() => {
 
 async function submit() {
   processing.value = true;
-  const data = await $api(`artist`, useFetchOptsPost(fullArtistData.value))
+  const data = await $api(apiEndpoints.artist.create(), fullArtistData.value)
   await useRouter().push(`/artiest/${data.id}`)
 }
 </script>

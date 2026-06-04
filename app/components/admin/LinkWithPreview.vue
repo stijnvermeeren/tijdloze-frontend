@@ -8,18 +8,18 @@ div.iframecontainer(v-if="iFrameSrc" :class="field")
     :class="{isHidden: !showIFrame}"
     :onload="onload"
     frameBorder="0"
-    allowfullscreen=""
+    allowfullscreen
     allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
     loading="lazy"
   )
 </template>
 
-<script setup>
-const props = defineProps({
-  type: String,
-  field: String,
-  value: String
-})
+<script setup lang="ts">
+const props = defineProps<{
+  type: string
+  field: string
+  value: string
+}>()
 
 const showIFrame = ref(false)
 

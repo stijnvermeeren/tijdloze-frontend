@@ -27,21 +27,20 @@ table.lijst.perEen
         div(v-else) /
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { sortBy } from 'ramda';
+import type Year from '~/orm/Year'
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+const props = defineProps<{ data: OneHitEntry[]; years: Year[] }>()
 
 const listYears = computed(() => {
   return props.years.slice(1, -1).reverse();
 })
 
-function entriesPerYear(year) {
-  return sortBy(entry => entry.song.position(entry.year))(
-    props.data.filter(entry => entry.year.equals(year))
+function entriesPerYear(year: Year): OneHitEntry[] {
+  return sortBy((entry: OneHitEntry) => entry.song.position(entry.year)!)(
+    props.data.filter((entry: OneHitEntry) => entry.year.equals(year))
   );
 }
 </script>

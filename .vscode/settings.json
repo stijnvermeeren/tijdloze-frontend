@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^npx nuxi typecheck$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

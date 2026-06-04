@@ -12,24 +12,25 @@ div.d-flex.align-center
     spotify(:spotify-id='spotifyId' v-if="spotifyId")
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import {mdiOpenInNew} from "@mdi/js";
 
 const {$api} = useNuxtApp()
 
-const spotifyId = defineModel()
+const spotifyId = defineModel<string>()
 
-const props = defineProps({
-  artist: String,
-  album: String,
-  title: String
-})
+const props = defineProps<{
+  artist?: string
+  album?: string
+  title: string
+}>()
 
 const spotifyMessage = ref("")
 const processing = ref(false)
 
 async function search() {
-  const queryParts = []
+  const queryParts: string[] = []
   if (props.artist) {
     queryParts.push(`artist:"${props.artist.replace('"', "")}"`)
   }
@@ -41,16 +42,18 @@ async function search() {
   }
   const query = queryParts.join(" ")
   processing.value = true
-  const spotifyTracks = await $api('/spotify/find', useFetchOpts({params: {query: query}})).catch(err => {
+  const spotifyTracks = await $api(apiEndpoints.spotify.find(), { params: {query} }).catch(err => {
     processing.value = false
+    spotifyId.value = ''
     spotifyMessage.value = "Probleem bij het zoeken op Spotify";
+    return undefined
   })
   spotifyMessage.value = ""
 
   if (spotifyTracks) {
     processing.value = false
     if (spotifyTracks.length) {
-      spotifyId.value = spotifyTracks[0].spotifyId
+      spotifyId.value = spotifyTracks[0]!.spotifyId
     } else {
       spotifyId.value = ''
       spotifyMessage.value = "Niets gevonden op Spotify"

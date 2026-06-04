@@ -17,22 +17,22 @@ div.thread
       comments-form(expanded :parent-id="threadSummary.mainComment.id" @submitted="submitted")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { mdiMessageReplyText, mdiDotsVertical } from '@mdi/js';
+import type { CommentItem, FullComment, ThreadSummary } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 
-const {$api} = useNuxtApp()
 const emit = defineEmits(["updated"])
-const props = defineProps({
-  threadSummary: Object
-})
+
+const props = defineProps<{
+  threadSummary: ThreadSummary
+}>()
 const replying = ref(false)
 const isExpanded = ref(false)
 const initialReplyCount = 2
-const {data: fullComment, refresh: fullCommentRefresh, status: fullCommentStatus} = useFetch(
-    `comment/${props.threadSummary.mainComment.id}/full`,
-    useFetchOpts({
-      immediate: false
-    })
+const {data: fullComment, refresh: fullCommentRefresh, status: fullCommentStatus} = useApiFetch(
+  apiEndpoints.comment.full(props.threadSummary.mainComment.id),
+  { immediate: false }
 )
 async function expand() {
   await fullCommentRefresh()
@@ -46,7 +46,7 @@ const shownReplies = computed(() => {
       return fullComment.value.replies.slice(fullComment.value.replies.length - initialReplyCount)
     }
   } else {
-    return [props.threadSummary.lastReply2, props.threadSummary.lastReply1].filter(x => x)
+    return [props.threadSummary.lastReply2, props.threadSummary.lastReply1].filter((x) => !!x)
   }
 })
 const replyCount = computed(() => {

@@ -14,31 +14,37 @@ div
     p
       make-links(text='De eenjaarsvliegkampioen is echter [Michael Jackson]: in [1988] kwamen maar liefst drie van zijn nummers nieuw binnen: [Bad], [Thriller] en [Dirty Diana]. Twintig jaar lang zouden dit zijn enige noteringen in de Tijdloze zijn. Pas in 2009, na [Michael Jackson]s overlijden, zou Thriller opnieuw de Tijdloze binnenkomen.')
 
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/eenjaarsvliegen', title: 'Per jaar' },\
-    { to: '/statistieken/eenjaarsvliegen/lijst', title: 'Hoogste aller tijden' },\
-    { to: '/statistieken/eenjaarsvliegen/grafiek', title: 'Op grafiek' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
+
+const tabs = [
+  { to: '/statistieken/eenjaarsvliegen', title: 'Per jaar' },
+  { to: '/statistieken/eenjaarsvliegen/lijst', title: 'Hoogste aller tijden' },
+  { to: '/statistieken/eenjaarsvliegen/grafiek', title: 'Op grafiek' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<OneHitEntry[]>(() => {
+  const dataPoints: OneHitEntry[] = [];
+  const allYears = years.value
 
-  years.value.slice(1, -1).forEach((year, index) => {
-    const previousYear = years.value[index]
-    const nextYear = years.value[index + 2]
+  allYears.slice(1, -1).forEach((year, index) => {
+    const previousYear = allYears[index]!
+    const nextYear = allYears[index + 2]!
     const top100 = useRootStore().list(year, 100, 100)
-    top100.forEach(({song}) => {
+    top100.forEach(({song, position}) => {
       if (song.notInList(previousYear) && song.notInList(nextYear)) {
         dataPoints.push({
           song: song,
           year: year,
-          isFinal: (years.value.filter(year => song.position(year)).length === 1)
+          position: position,
+          isFinal: (allYears.filter(year => song.position(year)).length === 1)
         });
       }
     })

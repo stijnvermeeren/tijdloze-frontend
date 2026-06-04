@@ -3,10 +3,10 @@ svg(:class="['colorLabel', 'color-' + index]")
   rect.coloredRect(x='0' y='0' width='30' height='14')
 </template>
 
-<script setup>
-const props = defineProps({
-  index: Number
-})
+<script setup lang="ts">
+defineProps<{
+  index: number
+}>()
 </script>
 
 <style scoped>

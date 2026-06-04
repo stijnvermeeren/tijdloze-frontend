@@ -2,7 +2,7 @@
   .lyrics {{ fullSongData?.lyrics }}
 </template>
 
-<script setup>
+<script setup lang="ts">
 const props = defineProps({
   fullSongData: {
     type: Object,

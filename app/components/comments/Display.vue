@@ -5,7 +5,7 @@ comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
       user-avatar(v-if="comment.userId" :id="comment.userId" :user-name="comment.name" :is-admin="comment.isAdmin")
       span.legacyName(v-else) {{ comment.name }}
       span.created(v-tooltip="`Gepubliceerd: ${useDateFormat(comment.created)}`")
-        | {{ useDateFormat(comment.created, {agoMaxDays}) }}
+        | {{ createdAgo }}
       span.updated(v-if="showUpdated")
         | (
         span(v-tooltip="`Laatste wijziging: ${useDateFormat(comment.updated)}`") gewijzigd
@@ -22,18 +22,21 @@ comments-sheet(v-if="!isDeleted || isAdmin" :class="{'mine': isMine}")
     comments-edit-form(v-else :comment-id="comment.id" :message="message" @submitted="commentEdited")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiDelete, mdiPencil, mdiRestore} from "@mdi/js";
+import type { CommentItem } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
 const emit = defineEmits(['deleted', 'restored'])
 
-const props = defineProps({
-  comment: Object
-})
+const props = defineProps<{
+  comment: CommentItem
+}>()
 
 const agoMaxDays = 7
+const createdAgo = computed(() => useDateFormat(props.comment.created, {agoMaxDays}))
 
 const isDeleted = ref(!!props.comment.deleted)
 const message = ref(props.comment.message)
@@ -42,10 +45,11 @@ const editing = ref(false)
 const { isAuthenticated, isAdmin, user } = storeToRefs(useAuthStore())
 
 const isMine = computed(() => {
-  return isAuthenticated.value && user.value.id === props.comment.userId;
+  const userId = user.value?.id
+  return isAuthenticated.value && userId === props.comment.userId;
 })
 const showUpdated = computed(() => {
-  const differenceMillis = new Date(props.comment.updated) - new Date(props.comment.created);
+  const differenceMillis = new Date(props.comment.updated).getTime() - new Date(props.comment.created).getTime();
   return differenceMillis > 10000;
 })
 
@@ -53,20 +57,20 @@ function editComment() {
   editing.value = true;
 }
 
-function commentEdited(newMessage) {
+function commentEdited(newMessage: string) {
   message.value = newMessage;
   editing.value = false;
 }
 async function deleteComment() {
   if (confirm("Wil je dit bericht werkelijk verwijderen?")) {
-    await $api(`comment/${props.comment.id}`, useFetchOptsDelete())
+    await $api(apiEndpoints.comment.delete(props.comment.id))
     isDeleted.value = true
     emit("deleted")
   }
 }
 async function restoreComment() {
   if (confirm("Wil je dit bericht werkelijk terugzetten?")) {
-    await $api(`comment/${props.comment.id}`, useFetchOptsPost())
+    await $api(apiEndpoints.comment.restore(props.comment.id), undefined)
     isDeleted.value = false
     emit("restored")
   }

@@ -1,6 +1,6 @@
 <template lang="pug">
 .graph(@mouseleave="hoverYear = undefined")
-  .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+  .tooltip(v-if="tooltipSong && hoverYear" :style="tooltipStyle")
     .year
       | {{hoverYear.yyyy}}
     .entry
@@ -36,8 +36,16 @@
       )
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+import type Year from "~/orm/Year";
 import {useRootStore} from "~/stores/root";
+
+type AgePoint = {
+  year: Year
+  position: number
+  age: number
+}
 
 const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
 const {years, xBandScale, xScale, yScale} = useGraph()
@@ -48,13 +56,14 @@ const yStep = computed(() => {
 
 const points = computed(() => {
   const songs = useRootStore().songs;
-  const points = [];
+  const points: AgePoint[] = [];
   years.value.forEach(year => {
     songs.forEach(song => {
-      if (song.position(year)) {
+      const position = song.position(year)
+      if (position) {
         points.push({
           year: year,
-          position: song.position(year),
+          position,
           age: year.yyyy - song.album.releaseYear
         });
       }
@@ -64,7 +73,12 @@ const points = computed(() => {
   return points;
 })
 
-const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
+const {onHover, hoverYear, hoverPosition, hoverLineX, tooltipStyle} = useGraphHover(
+  xBandScale,
+  xScale,
+  yScale,
+  years
+)
 
 const tooltipSong = computed(() => {
   if (!!hoverYear.value && !!hoverPosition.value) {
@@ -75,7 +89,7 @@ const tooltipSong = computed(() => {
   return undefined;
 })
 
-function lineWidth(age) {
+function lineWidth(age: number) {
   return 1 + age / 3;
 }
 </script>

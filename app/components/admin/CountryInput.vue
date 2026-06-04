@@ -20,16 +20,16 @@ div.d-flex
       country-icon(country-id="be")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import countries from '~/utils/country'
 import { sortBy } from 'ramda';
 
 const countryId = defineModel()
 
-const countryOptions = sortBy(countryId => countries[countryId])(Object.keys(countries)).map(countryId => {
+const countryOptions = sortBy((countryId: string) => countries[countryId]!, Object.keys(countries)).map((id: string) => {
   return {
-    value: countryId,
-    title: countries[countryId]
+    value: id,
+    title: countries[id]
   }
 })
 </script>

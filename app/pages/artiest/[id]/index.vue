@@ -7,13 +7,10 @@
 </template>
 
 
-<script setup>
-const props = defineProps({
-  artist: {
-    type: Object,
-    required: true
-  }
-})
+<script setup lang="ts">
+import type Artist from '~/orm/Artist'
+
+const props = defineProps<{ artist: Artist }>()
 
 const byAlbum = ref(false)
 </script>

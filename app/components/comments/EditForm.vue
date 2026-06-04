@@ -19,15 +19,16 @@ div
       | Bericht wijzigen
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiSend} from "@mdi/js";
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 const emit = defineEmits(['submitted'])
 
-const props = defineProps({
-  commentId: Number,
-  message: String
-})
+const props = defineProps<{
+  commentId: number
+  message: string
+}>()
 
 const editMessage = ref(props.message)
 const submitting = ref(false)
@@ -42,7 +43,7 @@ async function submit() {
   const data = {
     message: editMessage.value
   };
-  await $api(`comment/${props.commentId}`, useFetchOptsPut(data))
+  await $api(apiEndpoints.comment.update(props.commentId), data)
   submitting.value = false;
   emit('submitted', editMessage.value)
 }

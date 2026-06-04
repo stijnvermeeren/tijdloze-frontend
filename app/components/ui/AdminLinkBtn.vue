@@ -5,12 +5,12 @@ div(v-if="isAdmin")
       slot
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {useAuthStore} from "~/stores/auth";
 
-defineProps({
-  to: String
-})
+defineProps<{
+  to: string
+}>()
 
 const isAdmin = computed(() => {
   return useAuthStore().isAdmin

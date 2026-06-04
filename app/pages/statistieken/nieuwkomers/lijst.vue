@@ -15,18 +15,17 @@ table.lijst.perVijf
       td {{entry.song.position(entry.year)}}
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ranking from '~/utils/ranking';
+import type Year from '~/orm/Year'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+const props = defineProps<{ data: SongYearEntry[]; years: Year[] }>()
 
 const rankingList = computed(() => {
   return ranking(
     props.data,
-    ({song, year}) => song.position(year),
+    ({song, year}) => song.position(year)!,
     ({year}) => year.yyyy,
     50
   );

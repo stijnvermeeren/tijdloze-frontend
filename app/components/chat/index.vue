@@ -29,8 +29,8 @@
     .messagesContainer
       template(v-for='message in messages')
         div.entry(
-          v-if='message.userId' 
-          :title="useDateFormat(message.created, { format: 'D MMMM YYYY, H:mm:ss'})"
+          v-if='isUserMessage(message)'
+          v-bind='{ title: useDateFormat(message.created, { format: "D MMMM YYYY, H:mm:ss" }) }'
           :class='{myMessage: message.userId === currentUser.id, isAdmin: isAdmin(message.userId)}'
         )
           div.userName
@@ -50,30 +50,48 @@
       | Gelieve niet met overdreven veel hoofdletters te schrijven in de chat.
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Sockette from 'sockette';
+import type { ChatTicketResponse, ChatUser } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
-import { sortBy } from 'ramda';
 import { mdiPencil } from '@mdi/js';
+import { sortBy } from 'ramda';
+
+type ChatSystemMessage = {
+  message: string
+}
+
+type ChatUserMessage = {
+  message: string
+  userId: string
+  displayName: string
+  created: string
+}
+
+type ChatMessage = ChatUserMessage | ChatSystemMessage
+
+function isUserMessage(message: ChatMessage): message is ChatUserMessage {
+  return 'userId' in message && 'displayName' in message && 'created' in message
+}
 
 const {$api, $url} = useNuxtApp()
 
-const messages = ref([])
-const online = ref([])
-const displayNames = ref({})
+const messages = ref<ChatMessage[]>([])
+const online = ref<ChatUser[]>([])
+const displayNames = ref<Record<string, string>>({})
 const connected = ref(false)
 const error = ref(false)
 const closing = ref(false)
 const postDelay = ref(0)
-const lastId = ref(0)
 const message = ref('')
 const showAllOnline = ref(false)
 const changeName = ref(false)
-const displayNameEdit = ref(useAuthStore().user.displayName)
+const displayNameEdit = ref(useAuthStore().user?.displayName ?? '')
 const savingDisplayName = ref(false)
 const initialTicketBackoff = 5000  // milliseconds
 const ticketBackoff = ref(initialTicketBackoff)
-const ws = ref(undefined)
+const ws = ref<Sockette | undefined>(undefined)
 
 const messagesContainer = useTemplateRef('messagesContainer')
 
@@ -90,10 +108,10 @@ const sendDisabled = computed(() => {
   return !message.value.length || uppercaseMessage.value || !connected.value || error.value || postDelay.value > 0;
 })
 const onlineSorted = computed(() => {
-  return sortBy(onlineUser => onlineUser.displayName.toLowerCase())(online.value);
+  return sortBy((onlineUser: ChatUser) => onlineUser.displayName.toLowerCase(), online.value)
 })
 const currentUser = computed(() => {
-  return useAuthStore().user;
+  return useAuthStore().user as ChatUser;
 })
 const displayNameValid = computed(() => {
   return displayNameEdit.value.trim().length > 0;
@@ -111,7 +129,7 @@ async function saveDisplayName() {
   const data = {
     displayName: displayNameEdit.value.trim()
   };
-  useAuthStore().user = await $api(`user/display-name`, useFetchOptsPost(data));
+  useAuthStore().user = await $api(apiEndpoints.user.displayName(), data);
   // TODO replace this
   // await this.loadOnlineOnce();
   savingDisplayName.value = false;
@@ -123,38 +141,40 @@ function cancelDisplayName() {
   displayNameEdit.value = currentUser.value.displayName;
 }
 
-function displayName(userId, fallback) {
+function displayName(userId: string, fallback: string) {
   const savedName = displayNames.value[userId];
   return savedName ? savedName : fallback;
 }
 
-function isAdmin(userId) {
+function isAdmin(userId: string) {
   const user = online.value.find(user => user.id === userId);
   return user ? user.isAdmin : false;
 }
 
-function messageUser(message) {
+function messageUser(message: ChatUserMessage): ChatUser {
   const user = online.value.find(user => user.id === message.userId);
   if (user) {
     return user;
   } else {
+    const fallbackUserId = message.userId;
     return {
-      id: message.userId,
-      displayName: displayName(message.userId, message.displayName),
-      isAdmin: false
+      id: fallbackUserId,
+      displayName: displayName(fallbackUserId, message.displayName),
+      isAdmin: false,
+      isBlocked: false
     };
   }
 }
 
-function addMessage(message) {
-  function isNewMessage(message) {
-    return !message.userId && message.message?.startsWith("Nieuw in de chat: ")
+function addMessage(message: ChatMessage) {
+  function isNewMessage(entry: ChatMessage) {
+    return !isUserMessage(entry) && entry.message.startsWith("Nieuw in de chat: ")
   }
 
   let merged = false
   if (messages.value.length) {
     const lastMessage = messages.value[messages.value.length - 1]
-    if (isNewMessage(lastMessage) && isNewMessage(message)) {
+    if (lastMessage && isNewMessage(lastMessage) && isNewMessage(message)) {
       // merge new user join messages
       merged = true
       // temporary workaround with string manipulation until the websockets sends this data in a more structured format
@@ -177,6 +197,9 @@ function addMessage(message) {
 
 function autoScroll() {
   const elem = messagesContainer.value;
+  if (!elem) {
+    return;
+  }
 
   // auto-scroll if within 100px from bottom
   if (elem.scrollHeight - elem.clientHeight - elem.scrollTop < 50) {
@@ -186,7 +209,7 @@ function autoScroll() {
   }
 }
 
-function loadOnline(newOnlineData) {
+function loadOnline(newOnlineData: ChatUser[]) {
   newOnlineData.forEach(onlineUser => {
     if (displayNames.value[onlineUser.id] !== onlineUser.displayName) {
       if (displayNames.value[onlineUser.id]) {
@@ -214,11 +237,13 @@ function loadOnline(newOnlineData) {
     })
   }
 
-  let currentUserEntry = [];
+  let currentUserEntry: ChatUser[] = [];
   if (!onlineIds.includes(currentUser.value.id)) {
     currentUserEntry = [{
       id: currentUser.value.id,
-      displayName: currentUser.value.displayName
+      displayName: currentUser.value.displayName,
+      isAdmin: currentUser.value.isAdmin,
+      isBlocked: currentUser.value.isBlocked
     }]
   }
 
@@ -226,7 +251,7 @@ function loadOnline(newOnlineData) {
 }
 async function send() {
   if (!sendDisabled.value) {
-    ws.value.json({ message: message.value });
+    ws.value?.json({ message: message.value });
     message.value = '';
 
     postDelay.value = 3;
@@ -250,7 +275,7 @@ async function reconnect() {
     ws.value.close()
   }
 
-  const ticketResponse = await $api('chat/ticket').catch(err => {
+  const ticketResponse = await $api(apiEndpoints.chat.ticket()).catch(err => {
     console.log("Unable to obtain ticket for chat.")
     error.value = true;
     ticketBackoff.value = ticketBackoff.value * 1.5  // exponential backoff
@@ -276,7 +301,7 @@ async function reconnect() {
       },
       onreconnect: e => {
         // properly reconnect with a new ticket
-        ws.value.close()
+        ws.value?.close()
         reconnect()
       },
       onmaximum: e => {},
@@ -300,7 +325,7 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   closing.value = true
-  ws.value.close()
+  ws.value?.close()
 })
 </script>
 

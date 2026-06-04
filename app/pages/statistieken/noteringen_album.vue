@@ -2,17 +2,19 @@
 Title Noteringen (albums)
 div
   h2 Tijdloze Noteringen (Albums)
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/noteringen_album', title: 'In totaal' },\
-    { to: '/statistieken/noteringen_album/perjaar', title: 'Per jaar' },\
-    { to: '/statistieken/noteringen_album/nummers', title: 'Verschillende nummers' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:albums='albums' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
+
+const tabs = [
+  { to: '/statistieken/noteringen_album', title: 'In totaal' },
+  { to: '/statistieken/noteringen_album/perjaar', title: 'Per jaar' },
+  { to: '/statistieken/noteringen_album/nummers', title: 'Verschillende nummers' }
+]
 
 const {years} = storeToRefs(useYearStore())
 const albums = computed(() => {

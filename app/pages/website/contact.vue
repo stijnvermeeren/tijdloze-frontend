@@ -43,15 +43,17 @@ div
             | Bericht verzenden
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { ContactFormRequest } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
 
 const {$api} = useNuxtApp()
 
-const name = ref(useAuthStore().isAuthenticated ? useAuthStore().displayNameWithFallback : '')
-const email = ref(useAuthStore().isAuthenticated ? useAuthStore().user.email || '' : '')
-const message = ref("")
-const error = ref(null)
+const name = ref<string>(useAuthStore().isAuthenticated ? (useAuthStore().displayNameWithFallback ?? '') : '')
+const email = ref<string>(useAuthStore().isAuthenticated ? (useAuthStore().user?.email ?? '') : '')
+const message = ref<string>("")
+const error = ref<string | null>(null)
 const emailTouched = ref(false)
 const inProgress = ref(false)
 const success = ref(false)
@@ -80,10 +82,10 @@ function reset() {
 }
 async function submit() {
   inProgress.value = true;
-  error.value = "";
+  error.value = null;
 
   const route = useRoute();
-  const payLoad = {
+  const payLoad: ContactFormRequest = {
     name: name.value.trim(),
     message: message.value,
     debug: route.query.debug !== undefined
@@ -92,7 +94,7 @@ async function submit() {
     payLoad.email = email.value.trim();
   }
 
-  const result = await $api('/contact', useFetchOptsPost(payLoad)).catch(err => {
+  const result = await $api(apiEndpoints.contact.submit(), payLoad).catch(err => {
     inProgress.value = false;
     error.value = `Foutmelding van de server: ${err}.`;
   })
@@ -101,7 +103,7 @@ async function submit() {
     success.value = true;
   }
 }
-function validateEmail(email) {
+function validateEmail(email: string): boolean {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(email.toLowerCase());
 }

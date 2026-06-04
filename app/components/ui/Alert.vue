@@ -5,18 +5,17 @@ v-alert.mb-5(
   :icon="icon"
   :color="color"
   density="compact"
-  color="#888"
 )
   slot
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { mdiInformationVariantCircleOutline, mdiSailBoatSink, mdiAlertOutline, mdiBalloon } from '@mdi/js'
 
-const props = defineProps({
-  title: String,
-  type: String
-})
+const props = defineProps<{
+  title?: string
+  type?: 'error' | 'warning' | 'success'
+}>()
 
 let icon = mdiInformationVariantCircleOutline
 let color = 'grey-darken-1'

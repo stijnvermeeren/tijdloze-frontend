@@ -35,7 +35,7 @@ div
           label="Jaar van release"
         )
 
-  ui-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear.yyyy} nog onvolledig`" type="warning")
+  ui-alert.alert(v-if="showWarning" :title="`Tijdloze van ${currentYear?.yyyy} nog onvolledig`" type="warning")
     | De statistieken kunnen nog veranderen.
 
   div.list
@@ -51,35 +51,54 @@ div
     v-no-ssr
       div.listContainer(v-bind="containerProps")
         div(v-bind="wrapperProps" ref="wrapper")
-          div.listEntry(v-for="({data: item}, index) in virtualList" :key="item.key")
+          div.listEntry(v-for="({data: item}, index) in virtualList" :key="item.entry.key")
             div.entry(:class="{lineBelow: index % 5 === 4}")
               div.r
                 | {{ item.position }}
               div.c
-                div.a(v-if="type === 'nummers'")
+                div.a(v-if="type === 'nummers' && item.entry.song")
                   song-artist-link(:song='item.entry.song')
-                div.a(v-else)
+                div.a(v-else-if="item.entry.artist")
                   artist-link(:artist='item.entry.artist')
-                div(v-if="type === 'nummers'")
+                div(v-if="type === 'nummers' && item.entry.song")
                   song-link(:song='item.entry.song')
-                div(v-if="type === 'albums'")
+                div(v-if="type === 'albums' && item.entry.album")
                   album-link(:album='item.entry.album')
               div.p {{ Math.round(item.entry.points * 10) / 10 }}
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ranking from '~/utils/ranking';
+import Song from '~/orm/Song';
 import Artist from "~/orm/Artist";
 import Album from "../orm/Album";
 import {useRepo} from "pinia-orm";
+import type Year from '~/orm/Year';
+
+type VirtualEntry = {
+  song?: Song
+  artist?: Artist
+  album?: Album
+  key: number
+  points: number
+}
+type VirtualListItem = { position: number | '='; entry: VirtualEntry }
 
 const TYPE_SONGS = 'nummers'
 const TYPE_ALBUMS = 'albums'
 const TYPE_ARTISTS = 'artiesten'
 const validTypes = new Set([TYPE_SONGS, TYPE_ALBUMS, TYPE_ARTISTS])
 
-function parseType(value) {
-  return validTypes.has(value) ? value : TYPE_SONGS
+type RawQueryParam = string | null | (string | null)[] | undefined
+
+function normalize(value: RawQueryParam): string | undefined {
+  if (Array.isArray(value)) return value[0] ?? undefined
+  return value ?? undefined
+}
+
+function parseType(value: RawQueryParam): string {
+  const v = normalize(value)
+  return (v && validTypes.has(v)) ? v : TYPE_SONGS
 }
 
 const FILTER_ANY = 'alle'
@@ -92,8 +111,9 @@ const filterOptions = [
   {title: 'Niet weggevallen uit de', value: FILTER_NO_EXIT}
 ]
 
-function parseFilter(value) {
-  return validFilters.has(value) ? value : FILTER_ANY
+function parseFilter(value: RawQueryParam): string {
+  const v = normalize(value)
+  return (v && validFilters.has(v)) ? v : FILTER_ANY
 }
 
 const CUTOFF_TOP100 = 'top100'
@@ -104,8 +124,21 @@ const cutoffOptions = [
   {title: 'volledige lijst', value: CUTOFF_FULL}
 ]
 
-function parseCutoff(value) {
-  return validCutoffs.has(value) ? value : CUTOFF_TOP100
+function parseCutoff(value: RawQueryParam): string {
+  const v = normalize(value)
+  return (v && validCutoffs.has(v)) ? v : CUTOFF_TOP100
+}
+
+function parseYyyy(value: RawQueryParam): number | undefined {
+  const v = normalize(value)
+  if (!v) return undefined
+  const n = parseInt(v)
+  return isNaN(n) ? undefined : n
+}
+
+function parseIntParam(value: RawQueryParam): number {
+  const v = normalize(value)
+  return v ? parseInt(v) : NaN
 }
 
 const SCORE_ENTRY_COUNT = 'entry_count'
@@ -113,17 +146,18 @@ const SCORE_SONG_COUNT = 'song_count'
 const SCORE_BORDA = 'borda'
 const SCORE_YEAR_ASC = 'year_asc'
 const SCORE_YEAR_DESC = 'year_desc'
-const validScoreMethods = {}
+const validScoreMethods: Record<string, string[]> = {}
 validScoreMethods[TYPE_SONGS] = [SCORE_ENTRY_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
 validScoreMethods[TYPE_ALBUMS] = [SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA, SCORE_YEAR_ASC, SCORE_YEAR_DESC];
 validScoreMethods[TYPE_ARTISTS] = [SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA];
 const sumEntriesScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_BORDA])
 const sumSongsScoreMethods = new Set([SCORE_ENTRY_COUNT, SCORE_SONG_COUNT, SCORE_BORDA])
 
-function parseScoreMethod(value, type) {
+function parseScoreMethod(value: RawQueryParam, type: string): string {
+  const v = normalize(value)
   const validScoreMethodsForType = validScoreMethods[type]
-  if  (validScoreMethodsForType) {
-    return new Set(validScoreMethodsForType).has(value) ? value : validScoreMethodsForType[0]
+  if (validScoreMethodsForType) {
+    return (v && new Set(validScoreMethodsForType).has(v)) ? v : (validScoreMethodsForType[0] ?? SCORE_ENTRY_COUNT)
   } else {
     return SCORE_ENTRY_COUNT
   }
@@ -133,28 +167,28 @@ const isMounted = ref(false)
 const type = ref(parseType(useRoute().query.type))
 const filter = ref(parseFilter(useRoute().query.filter))
 const cutoff = ref(parseCutoff(useRoute().query.cutoff))
-const startYear = ref(useRoute().query.start || useYearStore().years?.[0]?.yyyy)
-const endYear = ref(useRoute().query.einde || useRootStore().lastCompleteYear?.yyyy)
-const minReleaseYear = ref(parseInt(useRoute().query.minReleaseYear))
-const maxReleaseYear = ref(parseInt(useRoute().query.maxReleaseYear))
+const startYear = ref<number | undefined>(parseYyyy(useRoute().query.start) ?? useYearStore().years?.[0]?.yyyy)
+const endYear = ref<number | undefined>(parseYyyy(useRoute().query.einde) ?? useRootStore().lastCompleteYear?.yyyy)
+const minReleaseYear = ref(parseIntParam(useRoute().query.minReleaseYear))
+const maxReleaseYear = ref(parseIntParam(useRoute().query.maxReleaseYear))
 const scoreMethod = ref(parseScoreMethod(useRoute().query.score, type.value))
-const countryFilterValue = ref(useRoute().query.land)
-const languageFilterValue = ref(useRoute().query.taal)
-const leadVocalsFilterValue = ref(useRoute().query.leadVocals)
+const countryFilterValue = ref(normalize(useRoute().query.land))
+const languageFilterValue = ref(normalize(useRoute().query.taal))
+const leadVocalsFilterValue = ref(normalize(useRoute().query.leadVocals))
 
 const {years, currentYear} = storeToRefs(useYearStore())
 
 const lowestReleaseYear = computed(() => {
-  return Math.min(...useRepo(Album).all().map(album => album.releaseYear))
+  return Math.min(...useRepo(Album).all().map((album: Album) => album.releaseYear))
 })
 const highestReleaseYear = computed(() => {
-  return Math.max(...useRepo(Album).all().map(album => album.releaseYear))
+  return Math.max(...useRepo(Album).all().map((album: Album) => album.releaseYear))
 })
 const releaseYearRange = computed(() => {
   return [minReleaseYear.value, maxReleaseYear.value]
 })
 const queryParams = computed(() => {
-  const allParams = {
+  const allParams: Record<string, string | number | undefined> = {
     type: type.value,
     start: startYear.value?.toString(),
     einde: endYear.value?.toString(),
@@ -168,7 +202,7 @@ const queryParams = computed(() => {
     maxReleaseYear: maxReleaseYear.value
   };
 
-  // Don't include undefined/empty params in the URL
+  // Don't include undefined/empty/NaN params in the URL
   return Object.fromEntries(Object.entries(allParams).filter(([_, value]) => value))
 })
 const query = computed(() => {
@@ -189,34 +223,38 @@ const yearOptions = computed(() => {
   })
 })
 const selectedYears = computed(() => {
-  return years.value.filter(year => year.yyyy >= startYear.value && year.yyyy <= endYear.value);
+  return years.value.filter(year =>
+    (startYear.value === undefined || year.yyyy >= startYear.value) &&
+    (endYear.value === undefined || year.yyyy <= endYear.value)
+  );
 })
 const showWarning = computed(() => {
-  return useRootStore().listInProgress && endYear.value >= currentYear.value.yyyy
+  return useRootStore().listInProgress &&
+    currentYear.value !== undefined &&
+    endYear.value !== undefined &&
+    endYear.value >= currentYear.value.yyyy
 })
 const sortAscending = computed(() => {
   return scoreMethod.value === SCORE_YEAR_ASC
 })
-const songScoreFn = computed(() => {
+const entryScoreFn = computed<(position: number) => number>(() => {
+  if (scoreMethod.value === SCORE_BORDA) {
+    return (position: number) => (position > 100) ? 0 : 101 - position
+  } else {
+    return (_position: number) => 1
+  }
+})
+const songScoreFn = computed<(song: Song) => number>(() => {
   if (sumEntriesScoreMethods.has(scoreMethod.value)) {
-    return song => selectedYears.value
+    return (song: Song) => selectedYears.value
       .map(year => song.position(year, extended.value))
-      .filter(position => position)
+      .filter((p): p is number => !!p)
       .map(entryScoreFn.value)
       .reduce((a, b) => a + b, 0)
   } else if (scoreMethod.value === SCORE_YEAR_DESC || scoreMethod.value === SCORE_YEAR_ASC) {
-    return song => song.album.releaseYear
+    return (song: Song) => song.album.releaseYear
   } else {
-    return song => 1
-  }
-})
-const entryScoreFn = computed(() => {
-  if (scoreMethod.value === SCORE_BORDA) {
-    return position => {
-      return (position > 100) ? 0 : 101 - position;
-    }
-  } else {
-    return position => 1;
+    return (_song: Song) => 1
   }
 })
 const rawData = computed(() => {
@@ -230,14 +268,14 @@ const rawData = computed(() => {
   });
 })
 
-const data = computed(() => {
+const data = computed<VirtualListItem[]>(() => {
   if (isMounted.value) {
     if (type.value === TYPE_ARTISTS) {
-      return artistData.value;
+      return artistData.value as VirtualListItem[];
     } else if (type.value === TYPE_ALBUMS) {
-      return albumData.value;
+      return albumData.value as VirtualListItem[];
     } else {
-      return songData.value;
+      return songData.value as VirtualListItem[];
     }
   } else {
     // default values for computations on server-side, to prevent high load on server
@@ -255,12 +293,12 @@ const artistData = computed(() => {
   const primaryScores = Object.groupBy(rawData.value, item => item.song.artistId)
   const secondaryScores = Object.groupBy(
     rawData.value.filter(item => item.song.secondArtistId),
-    item => item.song.secondArtistId
+    item => String(item.song.secondArtistId!)
   )
 
-  const data = useRepo(Artist).all().map(artist => {
-    const primaryItems = primaryScores[artist.id] ? primaryScores[artist.id] : [];
-    const secondaryItems = secondaryScores[artist.id] ? secondaryScores[artist.id] : [];
+  const data = useRepo(Artist).all().map((artist: Artist) => {
+    const primaryItems = primaryScores[artist.id] ?? [];
+    const secondaryItems = secondaryScores[String(artist.id)] ?? [];
 
     const score = primaryItems.concat(secondaryItems)
       .map(item => item.points)
@@ -282,17 +320,19 @@ const artistData = computed(() => {
 const albumData = computed(() => {
   const data = Object.values(
     Object.groupBy(rawData.value, item => item.song.albumId)
-  ).map(items => {
-    let points
+  )
+  .filter((items): items is typeof rawData.value => items !== undefined)
+  .map(items => {
+    let points: number
     if (sumSongsScoreMethods.has(scoreMethod.value)) {
       points = items.map(item => item.points).reduce((a, b) => a + b, 0)
     } else {
-      points = items[0].points
+      points = items[0]!.points
     }
     return {
-      album: items[0].song.album,
-      artist: items[0].song.artist,
-      key: items[0].song.album.id,
+      album: items[0]!.song.album,
+      artist: items[0]!.song.artist,
+      key: items[0]!.song.album.id,
       points
     }
   });
@@ -333,14 +373,14 @@ watch(query, (newQuery) => {
   type.value = parseType(newQuery.type);
   filter.value = parseFilter(newQuery.filter);
   cutoff.value = parseCutoff(newQuery.cutoff);
-  startYear.value = newQuery.start ? newQuery.start : useYearStore().years?.[0]?.yyyy;
-  endYear.value = newQuery.einde ? newQuery.einde : useRootStore().lastCompleteYear?.yyyy;
+  startYear.value = parseYyyy(newQuery.start) ?? useYearStore().years?.[0]?.yyyy;
+  endYear.value = parseYyyy(newQuery.einde) ?? useRootStore().lastCompleteYear?.yyyy;
   scoreMethod.value = parseScoreMethod(newQuery.score, type.value);
-  countryFilterValue.value = newQuery.land;
-  languageFilterValue.value = newQuery.taal;
-  leadVocalsFilterValue.value = newQuery.leadVocals;
-  minReleaseYear.value = parseInt(newQuery.minReleaseYear);
-  maxReleaseYear.value = parseInt(newQuery.maxReleaseYear);
+  countryFilterValue.value = normalize(newQuery.land);
+  languageFilterValue.value = normalize(newQuery.taal);
+  leadVocalsFilterValue.value = normalize(newQuery.leadVocals);
+  minReleaseYear.value = parseIntParam(newQuery.minReleaseYear);
+  maxReleaseYear.value = parseIntParam(newQuery.maxReleaseYear);
 })
 
 onMounted(() => {
@@ -353,13 +393,13 @@ onMounted(() => {
   }
 })
 
-function updateReleaseYearRange(newValue) {
+function updateReleaseYearRange(newValue: [number, number]): void {
   const [minValue, maxValue] = newValue
   minReleaseYear.value = minValue
   maxReleaseYear.value = maxValue
 }
 
-function applyFilters(songs) {
+function applyFilters(songs: Song[]): Song[] {
   let result = songs;
 
   if (filter.value === FILTER_ALL_YEARS) {
@@ -369,7 +409,7 @@ function applyFilters(songs) {
   } else if (filter.value === FILTER_NO_EXIT) {
     result = result.filter(song =>
       selectedYears.value.slice(1).every((year, index) => {
-        const previousYear = selectedYears.value[index]
+        const previousYear = selectedYears.value[index] as Year
         return !song.position(previousYear, extended.value) || !!song.position(year, extended.value)
       })
     );

@@ -13,12 +13,13 @@ div
   v-btn.mt-5(@click="crawl") crawl by song
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 definePageMeta({ middleware: 'admin' })
 
 const {$api} = useNuxtApp()
 
 async function crawl() {
-  await $api('musicbrainz/crawl-songs')
+  await $api(apiEndpoints.musicbrainz.crawlSongs())
 }
 </script>

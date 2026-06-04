@@ -2,13 +2,10 @@
 d3-graph(:entries='entries' no-label)
 </template>
 
-<script setup>
-const props = defineProps({
-  song: {
-    type: Object,
-    required: true
-  }
-})
+<script setup lang="ts">
+import type Song from '~/orm/Song'
+
+const props = defineProps<{ song: Song }>()
 const entries = useGraphEntries([props.song])
 </script>
 

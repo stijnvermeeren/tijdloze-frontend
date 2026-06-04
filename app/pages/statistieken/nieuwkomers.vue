@@ -2,27 +2,37 @@
 Title Nieuwkomers
 div
   h2 Tijdloze nieuwkomers
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/nieuwkomers', title: 'Per jaar' },\
-    { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },\
-    { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
+
+const tabs = [
+  { to: '/statistieken/nieuwkomers', title: 'Per jaar' },
+  { to: '/statistieken/nieuwkomers/lijst', title: 'Hoogste aller tijden' },
+  { to: '/statistieken/nieuwkomers/grafiek', title: 'Op grafiek' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
-  const firstTijdlozeYear = years.value[0];
+const data = computed<SongYearEntry[]>(() => {
+  const dataPoints: SongYearEntry[] = [];
+  const allYears = years.value
+  const firstTijdlozeYear = allYears[0]
+  if (!firstTijdlozeYear) {
+    return dataPoints
+  }
   songs.value.forEach(song => {
-    const firstYear = years.value.find(year => song.position(year));
+    const firstYear = allYears.find(year => song.position(year));
     if (firstYear && !firstYear.equals(firstTijdlozeYear)) {
+      const position = song.position(firstYear)
       dataPoints.push({
         song: song,
-        year: firstYear
+        year: firstYear,
+        position: position!
       });
     }
   });

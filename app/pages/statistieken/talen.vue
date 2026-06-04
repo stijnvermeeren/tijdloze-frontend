@@ -18,15 +18,17 @@ div
     d3-distribution-graph(:points='dataPoints' :title='languages[languageId]')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import languages from '~/utils/language'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
-  const dataPoints = {};
-  const result = Object.keys(languages).map(languageId => {
+  const dataPoints: Record<string, SongYearEntry[]> = {};
+  const allYears = years.value
+  const result = Object.keys(languages).map((languageId: string) => {
     dataPoints[languageId] = [];
     return {
       languageId: languageId,
@@ -35,12 +37,15 @@ const graphData = computed(() => {
   });
 
   songs.value.forEach(song => {
-    if (song.languageId) {
-      years.value.forEach(year => {
-        if (song.position(year)) {
-          dataPoints[song.languageId].push({
+    const languageId = song.languageId
+    if (languageId) {
+      allYears.forEach(year => {
+        const position = song.position(year)
+        if (position) {
+          dataPoints[languageId]!.push({
             song: song,
-            year: year
+            year: year,
+            position: position
           });
         }
       });
@@ -51,12 +56,13 @@ const graphData = computed(() => {
   return result.filter(data => data.dataPoints.length)
 })
 const counts = computed(() => {
+  const allYears = years.value
   return graphData.value.map(({languageId, dataPoints}) => {
     return {
-      entry: languages[languageId],
+      entry: languages[languageId]!,
       total: dataPoints.length,
       perYear: Object.fromEntries(
-        years.value.map(year => [
+        allYears.map(year => [
           year.yyyy,
           dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
         ])

@@ -1,23 +1,25 @@
 <template lang="pug">
-song-with-position(v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear")
+song-with-position(v-if='currentYear' v-for='song in sortedSongs' :key='song.id' :song="song" :year="currentYear")
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Song from '~/orm/Song';
 import { sortWith, ascend } from 'ramda';
 
-const props = defineProps({
-  songs: Array
-})
+const props = defineProps<{
+  songs: Song[]
+}>()
 
 const {currentYear, previousYear} = storeToRefs(useYearStore())
 
 const sortedSongs = computed(() => {
   return sortWith(
     [
-      ascend(song => song.position(currentYear.value, true) || Infinity),
-      ascend(song => song.position(previousYear.value, true) || Infinity)
-    ]
-  )(props.songs)
+      ascend((song: Song) => currentYear.value ? (song.position(currentYear.value, true) ?? Infinity) : Infinity),
+      ascend((song: Song) => previousYear.value ? (song.position(previousYear.value, true) ?? Infinity) : Infinity)
+    ],
+    props.songs
+  )
 })
 </script>
 

@@ -3,39 +3,53 @@ Title Admin: Instellingen
 div
   h2 Instellingen
   div
-    v-switch(v-model="commentsOn" :true-value="'on'" :false-value="'off'" label="Reacties open" hide-details)
+    v-switch(
+      v-model="commentsOnEdit"
+      :true-value="'on'"
+      :false-value="'off'"
+      label="Reacties open"
+      hide-details
+    )
   div
-    v-switch(v-model="chatOn" :true-value="'on'" :false-value="'off'" label="Chatbox open" hide-details)
+    v-switch(
+      v-model="chatOnEdit"
+      :true-value="'on'"
+      :false-value="'off'"
+      label="Chatbox open"
+      hide-details
+    )
   p
     v-btn(@click="invalidateCache") Invalidate API caches
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
 const {$api} = useNuxtApp()
 
 definePageMeta({
   middleware: 'admin'
 })
 
-const {data: chatOn} = await useFetch(`text/chatOn`, useFetchOpts({transform: response => response.value}));
-const {data: commentsOn} = await useFetch(`text/commentsOn`, useFetchOpts({transform: response => response.value}));
+const {data: chatOnResponse} = await useApiFetch(apiEndpoints.text.byKey(textKey.chatOn))
+const {data: commentsOnResponse} = await useApiFetch(apiEndpoints.text.byKey(textKey.commentsOn))
 
-watch(chatOn, async () => {
-  const data = {
-    text: chatOn.value
-  };
-  await $api(`text/chatOn`, useFetchOptsPost(data));
+const chatOn = computed(() => chatOnResponse.value?.value ?? 'off')
+const commentsOn = computed(() => commentsOnResponse.value?.value ?? 'off')
+
+const chatOnEdit = ref<string>(chatOn.value)
+const commentsOnEdit = ref<string>(commentsOn.value)
+
+watch(chatOnEdit, (newValue) => {
+  $api(apiEndpoints.text.updateByKey(textKey.chatOn), { text: newValue })
 })
 
-watch(commentsOn, async () => {
-  const data = {
-    text: commentsOn.value
-  };
-  await $api(`text/commentsOn`, useFetchOptsPost(data));
+watch(commentsOnEdit, (newValue) => {
+  $api(apiEndpoints.text.updateByKey(textKey.commentsOn), { text: newValue })
 })
 
 async function invalidateCache() {
-  await $api('/cache/invalidate', useFetchOpts());
+  await $api(apiEndpoints.cache.invalidate());
 }
 </script>
 

@@ -4,7 +4,7 @@ div
   div.flexTitle
     h2 Admin: polls
     v-btn(@click='refresh()' :disabled='refreshing' size="small" rounded) Opnieuw laden
-  ui-card(:title="`Maak een nieuwe poll (${currentYear.yyyy})`")
+  ui-card(:title="`Maak een nieuwe poll (${currentYear?.yyyy})`")
     div
       h4 Vraag
       div
@@ -24,26 +24,28 @@ div
       poll(:poll='poll', :is-admin='true')
 </template>
 
-<script setup>
-definePageMeta({ middleware: 'admin' })
-
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
+
+definePageMeta({ middleware: 'admin' })
 
 const refreshing = ref(false)
 const question = ref('')
 const answers = ref([{text: ''}, {text: ''}])
 const submitting = ref(false)
 
-const {data: polls, refresh: refreshPolls} = await useFetch(`poll/list`, useFetchOpts())
+const {data: polls, refresh: refreshPolls} = await useApiFetch(apiEndpoints.poll.list())
 
 const {currentYear, years} = storeToRefs(useYearStore())
 
 const groupedPolls = computed(() => {
-  const pollYears = years.value.filter(year => parseInt(year.yyyy) >= 2015);
+  const pollYears = years.value.filter(year => Number(year.yyyy) >= 2015);
+  const allPolls = polls.value ?? []
   return pollYears.reverse().map(year => {
     return {
       year: year.yyyy,
-      polls: polls.value.filter(poll => poll.year === year.yyyy)
+      polls: allPolls.filter((poll) => poll.year === year.yyyy)
     }
   })
 })
@@ -59,13 +61,16 @@ async function refresh() {
 }
 
 async function submit() {
+  if (!currentYear.value) {
+    return
+  }
   submitting.value = true;
   const data = {
     question: question.value,
     answers: answers.value.map(answer => answer.text),
     year: currentYear.value.yyyy
   };
-  await $api('poll', useFetchOptsPost(data));
+  await $api(apiEndpoints.poll.create(), data);
   await refresh();
   question.value = '';
   answers.value = [{text: ''}, {text: ''}];

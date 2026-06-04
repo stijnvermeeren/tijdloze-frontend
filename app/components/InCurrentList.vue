@@ -7,10 +7,10 @@ div.container
         |  ({{album.releaseYear}})
       in-current-list-section(:songs="albumSongs(album)")
     template(v-if="songs")
-      template(v-if="top100Songs.length")
+      template(v-if="currentYear && top100Songs.length")
         div.currentListHeader In de top 100 van {{currentYear.yyyy}}
         in-current-list-section(:songs='top100Songs')
-      template(v-if="fullListSongs.length")
+      template(v-if="currentYear && fullListSongs.length")
         div.currentListHeader In de countdown van {{currentYear.yyyy}}
         in-current-list-section(:songs='fullListSongs')
       template(v-if="otherSongs.length")
@@ -20,13 +20,18 @@ div.container
     | Nog geen nummers in de Tijdloze.
 </template>
 
-<script setup>
-import Artist from "../orm/Artist";
+<script setup lang="ts">
+import type Artist from "~/orm/Artist";
+import type Album from "~/orm/Album";
+import type Song from "~/orm/Song";
 
-const props = defineProps({
-  songs: Array,
-  albums: Array,
-  artist: Artist
+const props = withDefaults(defineProps<{
+  songs?: Song[]
+  albums?: Album[]
+  artist?: Artist
+}>(), {
+  songs: () => [],
+  albums: () => []
 })
 
 const {currentYear} = storeToRefs(useYearStore())
@@ -41,23 +46,24 @@ const otherSongs = computed(() => {
   return props.songs.filter(song => sortBlock(song) === 3)
 })
 
-function sortBlock(song) {
-  if (song.probablyInList(currentYear.value)) {
+function sortBlock(song: Song) {
+  if (currentYear.value && song.probablyInList(currentYear.value)) {
     // songs that are probably still in the top 100
     return 1;
-  } else if (song.probablyInList(currentYear.value, true)) {
+  } else if (currentYear.value && song.probablyInList(currentYear.value, true)) {
     // songs that are already in the list
     return 2;
   } else {
     return 3;
   }
 }
-function albumSongs(album) {
+function albumSongs(album: Album): Song[] {
   // Only show songs linked to the current artist (in case this album is actually from a different artist)
   // Test e.g. with the Daft Punk album Random Access Memories.
-  return props.artist ? (
-      album.songs.filter(song => song.artistId === props.artist.id || song.secondArtistId === props.artist.id)
-  ) : album.songs
+  const artistId = props.artist?.id
+  return artistId
+    ? album.songs.filter((song: Song) => song.artistId === artistId || song.secondArtistId === artistId)
+    : album.songs
 }
 </script>
 

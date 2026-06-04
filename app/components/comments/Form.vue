@@ -48,22 +48,17 @@
       | Om reacties te plaatsen, moet je je #[nuxt-link(:to="{path: '/auth/login', query: {redirect: route.fullPath}}") aanmelden/registeren].
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiSend} from "@mdi/js";
+import { apiEndpoints } from '~/api/endpoints'
 import {useAuthStore} from "~/stores/auth";
-
-const {$api} = useNuxtApp()
 const emit = defineEmits(['submitted', 'displayNameChanged'])
 
-const props = defineProps({
-  "expanded": {
-    type: Boolean,
-    default: false
-  },
-  "parentId": {
-    type: Number,
-    default: undefined
-  }
+const props = withDefaults(defineProps<{
+  expanded?: boolean
+  parentId?: number
+}>(), {
+  expanded: false,
 })
 
 
@@ -74,9 +69,7 @@ const editingDisplayName = ref(false)
 const submittingDisplayName = ref(false)
 const submitting = ref(false)
 
-const route = computed(() => {
-  return useRoute()
-})
+const route = useRoute()
 const isAuthenticated = computed(() => {
   return useAuthStore().isAuthenticated;
 })
@@ -90,15 +83,15 @@ const invalidMessage = computed(() => {
   return message.value.length === 0;
 })
 
-function onFocus(event) {
+function onFocus(event: FocusEvent) {
   isExpanded.value = true;
   nextTick(() => {
-    event.target.focus()
+    (event.target as HTMLTextAreaElement | null)?.focus()
   });
 }
 
 function editDisplayName() {
-  name.value = useAuthStore().displayNameWithFallback;
+  name.value = useAuthStore().displayNameWithFallback ?? '';
   editingDisplayName.value = true;
 }
 
@@ -108,7 +101,7 @@ async function submitDisplayName() {
   const data = {
     displayName: name.value
   };
-  useAuthStore().user = await $api(`user/display-name`, useFetchOptsPost(data));
+  useAuthStore().user = await useNuxtApp().$api(apiEndpoints.user.displayName(), data);
   editingDisplayName.value = false;
   submittingDisplayName.value = false;
   emit('displayNameChanged');
@@ -121,7 +114,7 @@ async function submit() {
     message: message.value,
     parentId: props.parentId
   };
-  await $api(`comment`, useFetchOptsPost(data))
+  await useNuxtApp().$api(apiEndpoints.comment.create(), data)
   submitting.value = false;
   message.value = '';
   emit('submitted');

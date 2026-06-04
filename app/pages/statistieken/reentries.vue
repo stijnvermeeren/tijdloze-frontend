@@ -1,34 +1,41 @@
 <template lang="pug">
 div
   h2 Tijdloze Re-entries
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/reentries', title: 'Per jaar' },\
-    { to: '/statistieken/reentries/lijst', title: 'Hoogste aller tijden' },\
-    { to: '/statistieken/reentries/grafiek', title: 'Op grafiek' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { ReentryEntry } from '~/types/statistieken/reentryEntry'
+
+const tabs = [
+  { to: '/statistieken/reentries', title: 'Per jaar' },
+  { to: '/statistieken/reentries/lijst', title: 'Hoogste aller tijden' },
+  { to: '/statistieken/reentries/grafiek', title: 'Op grafiek' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<ReentryEntry[]>(() => {
+  const dataPoints: ReentryEntry[] = [];
+  const allYears = years.value
   songs.value.forEach(song => {
     let hasPreviousEntry = false;
     let absenceYears = 0;
 
-    years.value.forEach(year => {
-      if (hasPreviousEntry && absenceYears > 0 && song.position(year) > 0) {
+    allYears.forEach(year => {
+      const position = song.position(year)
+      if (hasPreviousEntry && absenceYears > 0 && position !== undefined) {
         dataPoints.push({
           song: song,
           year: year,
+          position: position,
           absenceYears: absenceYears
         });
       }
 
-      if (song.position(year) > 0) {
+      if (position !== undefined) {
         hasPreviousEntry = true;
         absenceYears = 0;
       } else {

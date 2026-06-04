@@ -5,27 +5,43 @@ span
     smart-link(v-if='fragment.to' :to='fragment.to')
 </template>
 
-<script setup>
-import { splitWhen } from 'ramda';
+<script setup lang="ts">
+type Fragment = {
+  text?: string
+  to?: string
+}
 
-const props = defineProps({
-  text: String
-})
+const props = defineProps<{
+  text: string
+}>()
 
-const fragments = computed(() => {
-  let unprocessedText = props.text;
-  let fragments = [];
+const fragments = computed<Fragment[]>(() => {
+  let unprocessedText = props.text
+  const results: Fragment[] = []
 
   while (unprocessedText.length > 0) {
-    const [text, rest] = splitWhen(char => char === '[')(unprocessedText)
-    fragments.push({text: text.join('')});
-    unprocessedText = rest.slice(1)
+    const openIndex = unprocessedText.indexOf('[')
+    if (openIndex === -1) {
+      results.push({ text: unprocessedText })
+      break
+    }
 
-    const [to, rest2] = splitWhen(char => char === ']')(unprocessedText)
-    fragments.push({to: to.join('')});
-    unprocessedText = rest2.slice(1)
+    if (openIndex > 0) {
+      results.push({ text: unprocessedText.slice(0, openIndex) })
+    }
+
+    const rest = unprocessedText.slice(openIndex + 1)
+    const closeIndex = rest.indexOf(']')
+    if (closeIndex === -1) {
+      results.push({ text: `[${rest}` })
+      break
+    }
+
+    const to = rest.slice(0, closeIndex)
+    results.push({ to })
+    unprocessedText = rest.slice(closeIndex + 1)
   }
 
-  return fragments;
+  return results
 })
 </script>

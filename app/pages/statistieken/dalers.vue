@@ -2,28 +2,34 @@
 Title Dalers
 div
   h2 Tijdloze dalers
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/dalers', title: 'Per jaar' },\
-    { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { ChangeEntry } from '~/types/statistieken/changeEntry'
+
+const tabs = [
+  { to: '/statistieken/dalers', title: 'Per jaar' },
+  { to: '/statistieken/dalers/lijst', title: 'Grootste aller tijden' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<ChangeEntry[]>(() => {
+  const dataPoints: ChangeEntry[] = [];
+  const allYears = years.value
   songs.value.forEach(song => {
-    years.value.slice(1).forEach((year, index) => {
-      const previousYear = years.value[index]
+    allYears.slice(1).forEach((year, index) => {
+      const previousYear = allYears[index]!
       const oldPosition = song.position(previousYear);
       const newPosition = song.position(year);
       if (oldPosition && newPosition && oldPosition < newPosition) {
         dataPoints.push({
           song,
           year,
+          position: newPosition,
           oldPosition,
           newPosition
         });

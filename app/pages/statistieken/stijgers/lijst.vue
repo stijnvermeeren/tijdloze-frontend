@@ -16,13 +16,12 @@ table.lijst.perVijf
       td.i {{entry.oldPosition}} &rarr; {{entry.newPosition}}
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ranking from '~/utils/ranking';
+import type Year from '~/orm/Year'
+import type { ChangeEntry } from '~/types/statistieken/changeEntry'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+const props = defineProps<{ data: ChangeEntry[]; years: Year[] }>()
 
 const rankingList = computed(() => {
   return ranking(

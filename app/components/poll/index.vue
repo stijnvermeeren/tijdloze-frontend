@@ -33,34 +33,30 @@ div.poll
       v-btn(size="x-small" @click='deletePoll()' :disabled='deleting') Poll verbergen op de website
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiRefresh} from "@mdi/js";
+import type { PollAnswer, PollRecord } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import {usePollStore} from "~/stores/poll";
 import {useAuthStore} from "~/stores/auth";
-import useFetchOptsPost from "~/composables/useFetchOptsPost";
 
 const auth = inject('auth', {}) // provide default value for server-side
 const {$api} = useNuxtApp()
 
-const props = defineProps({
-  poll: {
-    type: Object
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false
-  },
-  isActive: {
-    type: Boolean,
-    default: false
-  }
+const props = withDefaults(defineProps<{
+  poll: PollRecord
+  isAdmin?: boolean
+  isActive?: boolean
+}>(), {
+  isAdmin: false,
+  isActive: false,
 })
 
-const livePoll = ref(props.poll)
+const livePoll = ref<PollRecord>(props.poll)
 const isDeleted = ref(props.poll.isDeleted)
 const deleting = ref(false)
 const voting = ref(false)
-const myVoteEdit = ref(undefined)
+const myVoteEdit = ref<number | undefined>(undefined)
 const isLoading = ref(false)
 
 const myVote = computed(() => {
@@ -76,7 +72,7 @@ const isAuthenticated = computed(() => {
 })
 
 const voteCount = computed(() => {
-  return livePoll.value.answers.reduce((sum, answer) => sum + answer.voteCount, 0);
+  return livePoll.value.answers.reduce((sum: number, answer: PollAnswer) => sum + answer.voteCount, 0);
 })
 
 watch(() => props.poll, (newPoll) => {
@@ -90,29 +86,29 @@ watch(myVote, () => {
 async function reload() {
   isLoading.value = true;
   if (isAuthenticated.value) {
-    const result = await $api(`poll/my-votes`)
+    const result = await $api(apiEndpoints.poll.myVotes())
     usePollStore().votes = result.votes;
   }
 
-  livePoll.value = await $api(`poll/${props.poll.id}`)
+  livePoll.value = await $api(apiEndpoints.poll.byId(props.poll.id))
   isLoading.value = false;
 }
 
 async function vote() {
   if (isAuthenticated.value) {
     voting.value = true;
-    await $api(`poll/${props.poll.id}/${myVoteEdit.value}`, useFetchOptsPost());
+    await $api(apiEndpoints.poll.vote(props.poll.id, myVoteEdit.value!), undefined);
 
     await reload();
     voting.value = false;
   }
 }
 
-function barWidth(answerVotes) {
+function barWidth(answerVotes: number) {
   return 150 * answerVotes / voteCount.value;
 }
 
-function percentage(answerVotes) {
+function percentage(answerVotes: number) {
   if (voteCount.value) {
     return Math.round(100 * answerVotes / voteCount.value) + '%';
   } else {
@@ -122,14 +118,14 @@ function percentage(answerVotes) {
 
 async function deletePoll() {
   deleting.value = true;
-  await $api(`poll/${props.poll.id}/hide`, useFetchOptsPost());
+  await $api(apiEndpoints.poll.hide(props.poll.id), undefined);
   isDeleted.value = true;
   deleting.value = false;
 }
 
 async function restore() {
   deleting.value = true;
-  await $api(`poll/${props.poll.id}/hide`, useFetchOptsDelete());
+  await $api(apiEndpoints.poll.restore(props.poll.id));
   isDeleted.value = false;
   deleting.value = false;
 }

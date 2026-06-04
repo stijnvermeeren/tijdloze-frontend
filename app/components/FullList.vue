@@ -36,25 +36,24 @@ p(v-else)
   template(v-else="filterQuery") Nog geen nummers in de Tijdloze van {{year.yyyy}}.
 </template>
 
-<script setup>
-import Year from "../orm/Year";
+<script setup lang="ts">
+import type Year from "~/orm/Year";
+import type { ListEntry } from '~/stores/root'
 import {mdiMagnify} from "@mdi/js";
 
-const props = defineProps({
-  year: {
-    type: Year
-  },
-  list: {
-    type: Array
-  },
-  height: {
-    type: String,
-    default: '600px'
-  }
+const props = withDefaults(defineProps<{
+  year: Year
+  list: ListEntry[]
+  height?: string
+}>(), {
+  height: '600px'
 })
 
-const filterQuery = ref(useRoute().query.filter || '')
-const scrollPosition = ref(parseInt(useRoute().query.positie) || 0)
+const initialFilter = useRouteQueryParam('filter') ?? ''
+const rawPosition = useRouteQueryParam('positie')
+
+const filterQuery = ref<string>(initialFilter)
+const scrollPosition = ref<number | undefined>(rawPosition ? parseInt(rawPosition) : undefined)
 
 function setQueryParams() {
   useRouter().replace({
@@ -89,13 +88,18 @@ onActivated(() => {
     if (index > -1) {
       scrollTo(index)
       // Slight offset, to make clear that we're not at the top
-      containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+      if (containerProps.ref.value) {
+        containerProps.ref.value.scrollTop = containerProps.ref.value.scrollTop - 20
+      }
     }
   }
 })
 
 function onScroll() {
   const scrollTop = containerProps.ref.value?.scrollTop
+  if (scrollTop === undefined) {
+    return
+  }
   const scrollIndex = Math.ceil(scrollTop / itemHeight)
   if (scrollIndex) {
     scrollPosition.value = filteredList.value?.[scrollIndex]?.position

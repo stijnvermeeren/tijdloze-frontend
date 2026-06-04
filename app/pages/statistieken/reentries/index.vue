@@ -27,13 +27,12 @@ table.lijst.perEen
         div(v-else) /
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { sortBy } from 'ramda';
+import type Year from '~/orm/Year'
+import type { ReentryEntry } from '~/types/statistieken/reentryEntry'
 
-const props = defineProps({
-  data: Array,
-  years: Array
-})
+const props = defineProps<{ data: ReentryEntry[]; years: Year[] }>()
 
 const listData = computed(() => {
   const listYears = props.years.slice(2).reverse()
@@ -45,9 +44,9 @@ const listData = computed(() => {
   })
 })
 
-function entriesPerYear(year) {
-  return sortBy(entry => entry.song.position(entry.year))(
-    props.data.filter(entry => entry.year.equals(year))
+function entriesPerYear(year: Year): ReentryEntry[] {
+  return sortBy((entry: ReentryEntry) => entry.song.position(entry.year)!)(
+    props.data.filter((entry: ReentryEntry) => entry.year.equals(year))
   );
 }
 </script>

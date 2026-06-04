@@ -10,18 +10,19 @@ div(v-else)
     v-btn(v-if='isAdmin' size="x-small" @click='editing = true') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
-const props = defineProps({
-  pollId: Number,
-  pollAnswerId: Number,
-  isAdmin: Boolean
-})
+const props = defineProps<{
+  pollId: number
+  pollAnswerId: number
+  isAdmin?: boolean
+}>()
 
-const answer = defineModel()
+const answer = defineModel<string>({ required: true })
 
-const answerEdit = ref(answer.value)
+const answerEdit = ref<string>(answer.value)
 const editing = ref(false)
 const submitting = ref(false)
 
@@ -34,7 +35,7 @@ async function send() {
   const data = {
     answer: answerEdit.value
   };
-  await $api(`poll/${props.pollId}/${props.pollAnswerId}`, useFetchOptsPut(data));
+  await $api(apiEndpoints.poll.answer(props.pollId, props.pollAnswerId), data);
   answer.value = answerEdit.value;
   submitting.value = false;
   editing.value = false;

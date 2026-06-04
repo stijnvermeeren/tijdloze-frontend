@@ -1,6 +1,6 @@
 <template lang="pug">
 div.container
-  div.previous(v-if="previousPosition && !hidePreviousNext" :title="`Positie in ${previousYear.yyyy}`")
+  div.previous(v-if="previousPosition && previousYear && !hidePreviousNext" :title="`Positie in ${previousYear.yyyy}`")
     nuxt-link(:to="`/lijst/${previousYear.yyyy}`") ←
     |
     | {{previousPosition}}
@@ -8,26 +8,24 @@ div.container
     position-main.position-main(:position="position" :probably-in-list="song.probablyInList(year, true)")
     position-annotation(v-if='position && previousYear')
       position-change(:position="position" :previous-position="previousPosition")
-  div.next(v-if="nextPosition && !hidePreviousNext" :title="`Positie in ${nextYear.yyyy}`")
+  div.next(v-if="nextPosition && nextYear && !hidePreviousNext" :title="`Positie in ${nextYear.yyyy}`")
     | {{nextPosition}}
     |
     nuxt-link(:to="`/lijst/${nextYear.yyyy}`") →
 </template>
 
-<script setup>
-import Year from "../orm/Year";
+<script setup lang="ts">
+import type Year from "~/orm/Year";
+import type Song from "~/orm/Song";
 
-const props = defineProps({
-  song: Object,
-  year: Year,
-  hidePreviousNext: {
-    type: Boolean,
-    default: false
-  },
-  overridePosition: {
-    type: Number,
-    default: 0
-  }
+const props = withDefaults(defineProps<{
+  song: Song
+  year: Year
+  hidePreviousNext?: boolean
+  overridePosition?: number
+}>(), {
+  hidePreviousNext: false,
+  overridePosition: 0
 })
 
 const position = computed(() => {

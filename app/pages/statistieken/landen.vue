@@ -20,18 +20,20 @@ div
         country-icon(:country-id='countryId' :include-name='true')
 </template>
 
-<script setup>
+<script setup lang="ts">
 import countries from '~/utils/country'
 import { sortBy } from 'ramda'
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
 
 const {usedCountryIds, songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
 const graphData = computed(() => {
-  const sortedUsedCountryIds = sortBy(countryId => countries[countryId])(
+  const sortedUsedCountryIds = sortBy((countryId: string) => countries[countryId]!)(
     [...usedCountryIds.value]  // convert set to sortable array
   )
-  const dataPoints = {};
+  const dataPoints: Record<string, SongYearEntry[]> = {};
+  const allYears = years.value
 
   const result = sortedUsedCountryIds.map(countryId => {
     dataPoints[countryId] = [];
@@ -42,12 +44,15 @@ const graphData = computed(() => {
   });
 
   songs.value.forEach(song => {
-    if (song.artist.countryId) {
-      years.value.forEach(year => {
-        if (song.position(year)) {
-          dataPoints[song.artist.countryId].push({
+    const countryId = song.artist.countryId
+    if (countryId) {
+      allYears.forEach(year => {
+        const position = song.position(year)
+        if (position) {
+          dataPoints[countryId]!.push({
             song: song,
-            year: year
+            year: year,
+            position: position
           });
         }
       });
@@ -59,12 +64,13 @@ const graphData = computed(() => {
 })
 
 const counts = computed(() => {
-  return graphData.value.map(({countryId, countryName, dataPoints}) => {
+  const allYears = years.value
+  return graphData.value.map(({countryId, dataPoints}) => {
     return {
       entry: countryId,
       total: dataPoints.length,
       perYear: Object.fromEntries(
-        years.value.map(year => [
+        allYears.map(year => [
           year.yyyy,
           dataPoints.filter(dataPoint => dataPoint.year.equals(year)).length
         ])

@@ -26,7 +26,8 @@ div
           )
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import Album from "~/orm/Album";
 import Artist from "~/orm/Artist";
 import {useRepo} from "pinia-orm";
@@ -34,7 +35,13 @@ import {useRepo} from "pinia-orm";
 const {$api} = useNuxtApp()
 
 const defaultArtistType = 'new'
-function defaultArtistDetails() {
+interface ArtistDetails {
+  name: string
+  musicbrainzId?: string
+  countryId?: string
+}
+
+function defaultArtistDetails(): ArtistDetails {
   return {
     name: '',
     musicbrainzId: undefined,
@@ -42,12 +49,12 @@ function defaultArtistDetails() {
   }
 }
 
-const artistType = ref(defaultArtistType)
-const artistId = ref(undefined)
-const artistDetails = ref(defaultArtistDetails())
+const artistType = ref<'new' | 'existing'>(defaultArtistType)
+const artistId = ref<number | undefined>(undefined)
+const artistDetails = ref<ArtistDetails>(defaultArtistDetails())
 
 const artistName = computed(() => {
-  if (artistId.value) {
+  if (artistId.value && artist.value) {
     return artist.value.name;
   } else {
     return artistDetails.value.name;
@@ -57,6 +64,9 @@ const artistNew = computed(() => {
   return artistType.value === 'new';
 })
 const artist = computed(() => {
+  if (artistId.value === undefined) {
+    return undefined
+  }
   return useRepo(Artist).find(artistId.value);
 })
 const artistValid = computed(() => {
@@ -73,7 +83,7 @@ async function reset() {
   artistDetails.value = defaultArtistDetails()
 }
 
-async function loadPreset(name, musicbrainzId, countryId) {
+async function loadPreset(name: string, musicbrainzId?: string, countryId?: string) {
   const matchedArtist = await artistMatch(name, musicbrainzId);
 
   artistDetails.value.name = name;
@@ -88,7 +98,7 @@ async function loadPreset(name, musicbrainzId, countryId) {
   }
 }
 
-function preProcessArtistName(artistName) {
+function preProcessArtistName(artistName: string) {
   let query = useSearchNormalize(artistName.toLowerCase());
   if (query.substring(0, 4) === 'the ') {
     query = artistName.substring(4);
@@ -96,12 +106,14 @@ function preProcessArtistName(artistName) {
   return query;
 }
 
-async function artistMatch(artistName, artistMBId) {
-  const artist = await $api(`/artist/musicbrainz/${artistMBId}`).catch(
-      () => undefined
-  );
-  if (artist)  {
-    return useRepo(Artist).find(artist.id)
+async function artistMatch(artistName: string, artistMBId?: string) {
+  if (artistMBId) {
+    const mbArtist = await $api(apiEndpoints.musicbrainz.artistById(artistMBId)).catch(
+        () => undefined
+    );
+    if (mbArtist)  {
+      return useRepo(Artist).find(mbArtist.id)
+    }
   }
 
   if (artistName) {
@@ -117,9 +129,9 @@ async function artistMatch(artistName, artistMBId) {
 }
 
 async function submit() {
-  let payloadArtistId;
+  let payloadArtistId: number | undefined;
   if (artistNew.value) {
-    const artist = await $api('/artist', useFetchOptsPost(artistDetails.value));
+    const artist = await $api(apiEndpoints.artist.create(), artistDetails.value);
     payloadArtistId = artist.id;
   } else {
     payloadArtistId = artistId.value;

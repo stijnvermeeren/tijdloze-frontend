@@ -2,22 +2,22 @@
 div
   div
     div.heading Artiest
-    admin-new-song-wizard-artist.indent(ref="artist2")
+    admin-new-song-wizard-artist.indent(ref="artistRef")
   div
     v-checkbox(v-model="hasSecondArtist" label="Tweede artiest")
   div(v-show="hasSecondArtist")
     div.heading Tweede artiest
-    admin-new-song-wizard-artist.indent(ref="secondArtist")
+    admin-new-song-wizard-artist.indent(ref="secondArtistRef")
 
   div.heading Album
-  admin-new-song-wizard-album.indent(:artist-id="artistId" ref="album")
+  admin-new-song-wizard-album.indent(:artist-id="artistId" ref="albumRef")
 
   div.heading Nummer
   admin-new-song-wizard-song(
     :artist-id="artistId"
     :artist-name="artistRef?.artistName"
     :album-title="albumRef?.albumTitle"
-    ref="song"
+    ref="songRef"
     @existingSong="emit('existingSong', $event)"
   )
 
@@ -30,69 +30,98 @@ div
     ) {{buttonLabel}}
 </template>
 
-<script setup>
-const emit = defineEmits(['existingSong', 'newSong'])
-const {$api} = useNuxtApp()
+<script setup lang="ts">
+import type ArtistWizard from './Artist.vue'
+import type AlbumWizard from './Album.vue'
+import type SongWizard from './Song.vue'
 
-const artistRef = useTemplateRef('artist2')
-const secondArtistRef = useTemplateRef('secondArtist')
-const albumRef = useTemplateRef('album')
-const songRef = useTemplateRef('song')
+interface SongPreset {
+  artistName: string
+  artistMBId?: string
+  artistCountryId?: string
+  secondArtistName?: string
+  secondArtistMBId?: string
+  secondArtistCountryId?: string
+  albumTitle: string
+  albumMBId?: string
+  albumYear?: number
+  albumIsSingle: boolean
+  albumIsSoundtrack: boolean
+  songTitle: string
+  recordingMBId?: string
+  workMBId?: string
+  language?: string
+  leadVocals?: string
+}
+
+const emit = defineEmits(['existingSong', 'newSong'])
+
+const artistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('artistRef')
+const secondArtistRef = useTemplateRef<InstanceType<typeof ArtistWizard>>('secondArtistRef')
+const albumRef = useTemplateRef<InstanceType<typeof AlbumWizard>>('albumRef')
+const songRef = useTemplateRef<InstanceType<typeof SongWizard>>('songRef')
 
 const hasSecondArtist = ref(false)
 const submitting = ref(false)
 
-const props = defineProps({
-  buttonLabel: {
-    type: String,
-    default: "Toevoegen"
-  }
+const props = withDefaults(defineProps<{
+  buttonLabel?: string
+}>(), {
+  buttonLabel: "Toevoegen"
 })
 
-const artistId = computed(() => {
+const artistId = computed<number | undefined>(() => {
   if (artistRef.value?.artistId && artistRef.value.artistType === 'existing') {
     return artistRef.value.artistId;
   }
 })
-const isValid = computed(() => {
-  const secondArtistValid = !hasSecondArtist.value || secondArtistRef.value?.artistValid
-  return artistRef.value?.artistValid && secondArtistValid && albumRef.value?.albumValid && songRef.value?.songValid
+const isValid = computed<boolean>(() => {
+  const secondArtistValid = !hasSecondArtist.value || !!secondArtistRef.value?.artistValid
+  return !!artistRef.value?.artistValid && secondArtistValid && !!albumRef.value?.albumValid && !!songRef.value?.songValid
 })
 
-async function loadPreset(preset) {
-  await artistRef.value.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
+async function loadPreset(preset: SongPreset) {
+  await artistRef.value!.loadPreset(preset.artistName, preset.artistMBId, preset.artistCountryId)
 
   if (preset.secondArtistName) {
     hasSecondArtist.value = true
-    await secondArtistRef.value.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
+    await secondArtistRef.value!.loadPreset(preset.secondArtistName, preset.secondArtistMBId, preset.secondArtistCountryId)
   } else {
     hasSecondArtist.value = false
-    secondArtistRef.value.reset()
+    secondArtistRef.value?.reset()
   }
 
-  await albumRef.value.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
-  await songRef.value.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language, preset.leadVocals)
+  await albumRef.value!.loadPreset(preset.albumTitle, preset.albumMBId, preset.albumYear, preset.albumIsSingle, preset.albumIsSoundtrack)
+  await songRef.value!.loadPreset(preset.songTitle, preset.recordingMBId, preset.workMBId, preset.language, preset.leadVocals)
 }
 
 async function submit() {
   submitting.value = true;
 
-  let payloadArtistId = await artistRef.value.submit()
+  let payloadArtistId = await artistRef.value!.submit()
+  if (!payloadArtistId) {
+    submitting.value = false;
+    return
+  }
 
   let payloadSecondArtistId = undefined;
   if (hasSecondArtist.value) {
-    payloadSecondArtistId = await secondArtistRef.value.submit()
+    payloadSecondArtistId = await secondArtistRef.value!.submit()
   }
 
-  const payloadAlbumId = await albumRef.value.submit(payloadArtistId)
+  const payloadAlbumId = await albumRef.value!.submit(payloadArtistId)
+  if (!payloadAlbumId) {
+    submitting.value = false;
+    return
+  }
 
-  const song = await songRef.value.submit(payloadArtistId, payloadSecondArtistId, payloadAlbumId)
+  const song = await songRef.value!.submit(payloadArtistId, payloadSecondArtistId, payloadAlbumId)
 
-  artistRef.value.reset()
+  artistRef.value!.reset()
   hasSecondArtist.value = false
-  secondArtistRef.value.reset()
-  albumRef.value.reset()
-  songRef.value.reset()
+  secondArtistRef.value!.reset()
+  albumRef.value!.reset()
+  songRef.value!.reset()
 
   emit('newSong', song)
   submitting.value = false;

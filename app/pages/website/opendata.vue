@@ -29,14 +29,14 @@ div
       v-img(src="/images/db_schema.png" cover)
 </template>
 
-<script setup>
-let lastUpdateSql = ref()
-let lastUpdateTsv = ref()
+<script setup lang="ts">
+let lastUpdateSql = ref<Date | undefined>(undefined)
+let lastUpdateTsv = ref<Date | undefined>(undefined)
 
 const zipPath = '/data/tijdloze.zip'
 const tsvPath = '/data/tijdloze.tsv'
 
-function formatDate(date) {
+function formatDate(date: Date): string {
   return `${date.getUTCDate()}/${date.getUTCMonth() + 1}/${date.getUTCFullYear()}`
 }
 

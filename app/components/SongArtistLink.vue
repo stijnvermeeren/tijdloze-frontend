@@ -8,8 +8,10 @@ span
     artist-link(:artist='song.secondArtist')
 </template>
 
-<script setup>
-defineProps({
-  song: Object
-})
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+
+defineProps<{
+  song: Song
+}>()
 </script>

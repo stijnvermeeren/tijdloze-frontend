@@ -11,10 +11,10 @@ div
         |  Niet-definitieve eenjaarsvliegen
 </template>
 
-<script setup>
-const props = defineProps({
-  data: Array
-})
+<script setup lang="ts">
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
+
+const props = defineProps<{ data: OneHitEntry[] }>()
 
 const finalPoints = computed(() => {
   return props.data.filter(point => point.isFinal);

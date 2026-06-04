@@ -4,7 +4,7 @@ div.mt-5.mb-7
   template(v-if="sanitizedContent")
     div.details
       div Inhoud van Wikipedia met licentie #[a(href="https://creativecommons.org/licenses/by-sa/4.0/deed.nl") Creative Commons BY-SA 4.0]
-      div Laatst geladen: {{useDateFormat(wikipediaContent['lastUpdate'], {ago: true})}}
+      div Laatst geladen: {{lastUpdate}}
     div.px-5.mt-2.wikipediaContent(v-html="sanitizedContent")
   div(v-else)
     v-progress-circular(indeterminate size="small")
@@ -12,30 +12,31 @@ div.mt-5.mb-7
     ui-external-link-btn(:href="url") Lees meer op Wikipedia
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import sanitizeHtml from 'sanitize-html';
 
-const props = defineProps({
-  language: {
-    type: String,
-    required: true
-  },
-  url: {
-    type: String,
-    required: true
-  }
-})
+const props = defineProps<{
+  language: string
+  url: string
+}>()
 
-const {data: wikipediaContent, error} = await useLazyFetch(
-  `wikipedia/find`, useFetchOpts({
-    query: {url: props.url}
-  })
+const {data: wikipediaContent} = await useApiFetch(
+  apiEndpoints.wikipedia.find(),
+  {
+    query: {url: props.url},
+    lazy: true,
+  }
 )
 
+const lastUpdate = computed(() => {
+  const rawLastUpdate = wikipediaContent.value?.lastUpdate
+  return rawLastUpdate ? useDateFormat(rawLastUpdate, {ago: true}) : undefined
+})
+
 const sanitizedContent = computed(() => {
-  const content = wikipediaContent.value?.['content']
-  if (content) {
-    return sanitizeHtml(content, {
+  if (wikipediaContent.value) {
+    return sanitizeHtml(wikipediaContent.value.content, {
       allowedTags: ['p', 'i', 'b'],
       allowedAttributes: {
         'p': ['class']

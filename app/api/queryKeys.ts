@@ -1,0 +1,15 @@
+import { apiEndpoints } from '~/api/endpoints'
+import { textKey } from '~/api/endpoints/text'
+
+export const queryKeys = {
+  comments: {
+    count: apiEndpoints.comment.count().path,
+    deleted: apiEndpoints.comment.deleted().path,
+    homepage: 'comments',
+    page: (page: number) => apiEndpoints.comment.list(page).path,
+  },
+  text: {
+    chatOn: apiEndpoints.text.byKey(textKey.chatOn).path,
+    commentsOn: apiEndpoints.text.byKey(textKey.commentsOn).path,
+  },
+} as const

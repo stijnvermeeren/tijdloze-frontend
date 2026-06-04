@@ -14,7 +14,7 @@ div.d-flex
     v-btn(value="i") Instrumentaal
 </template>
 
-<script setup>
+<script setup lang="ts">
 import languages from '~/utils/language'
 
 const languageId = defineModel()

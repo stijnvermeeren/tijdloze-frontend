@@ -7,14 +7,15 @@ span(:class='{bold: isBold}')
   span(v-else) {{input}}
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type Year from "~/orm/Year";
 import Artist from "../orm/Artist";
 import Song from "../orm/Song";
 import {useRepo} from "pinia-orm";
 
-const props = defineProps({
-  to: String
-})
+const props = defineProps<{
+  to: string
+}>()
 
 const isBold = computed(() => {
   return props.to.startsWith("*");
@@ -44,39 +45,32 @@ const artist = computed(() => {
   return artistId ? useRepo(Artist).find(artistId) : undefined
 })
 
-
-function findYear(input) {
+function findYear(input: string): Year | undefined {
   return years.value.find(year => year.yyyy.toString() === input);
 }
-function findYearShort(input) {
+function findYearShort(input: string): Year | undefined {
   return years.value.find(year => year._yy === input);
 }
-function findArtistId(input) {
-  const fullNameMatches = useRootStore().artistIdsByFullName[input.toLowerCase()];
-  if (fullNameMatches && fullNameMatches.length === 1) {
-    return fullNameMatches[0];
-  } else if (fullNameMatches && fullNameMatches.length > 1) {
-    return null;
+function findArtistId(input: string): number | undefined {
+  const nameMatches = useRootStore().artistIdsByName[input.toLowerCase()];
+  if (nameMatches && nameMatches.length === 1) {
+    return nameMatches[0]
   }
 
-  const lastNameMatches = useRootStore().artistIdsByName[input.toLowerCase()];
-  if (lastNameMatches && lastNameMatches.length === 1) {
-    return lastNameMatches[0];
-  }
-
-  return null;
+  return undefined;
 }
-function findSongId(input) {
+function findSongId(input: string): number | undefined {
   const titleMatches = useRootStore().songIdsByTitle[input.toLowerCase()];
   if (titleMatches && titleMatches.length === 1) {
-    return titleMatches[0];
+    return titleMatches[0]
   }
 
   // fallback behaviour for inputs of the form "One;U2"
   const split = input.split(";");
   if (split.length === 2) {
-    const title = split[0].trim();
-    const artistName = split[1].trim();
+    const [rawTitle, rawArtistName] = split
+    const title = rawTitle!.trim();
+    const artistName = rawArtistName!.trim();
 
     const titleMatches = useRootStore().songIdsByTitle[title.toLowerCase()];
     if (titleMatches) {
@@ -87,12 +81,12 @@ function findSongId(input) {
       });
 
       if (combinedMatches.length === 1) {
-        return combinedMatches[0];
+        return combinedMatches[0]
       }
     }
   }
 
-  return null;
+  return undefined;
 }
 </script>
 

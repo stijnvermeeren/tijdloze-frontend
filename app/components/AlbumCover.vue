@@ -3,12 +3,12 @@ img.cover(v-if="cover" :src="`/data/covers/${cover}.jpg`")
 v-icon.cover(v-else :icon="mdiMusicBoxOutline" color="grey")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiMusicBoxOutline} from "@mdi/js";
 
-defineProps({
-  cover: String,
-})
+defineProps<{
+  cover?: string
+}>()
 </script>
 
 <style>

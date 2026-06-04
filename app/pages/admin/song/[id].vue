@@ -37,10 +37,10 @@ div
         v-textarea(v-model='fullSongData.lyrics' label="Lyrics" rows="5" hide-details)
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist.name}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiNl' lang='nl' :query='`${fullSongData.title} ${artist?.name ?? ""}`')
     v-row(dense)
       v-col
-        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist.name}`')
+        admin-wiki-url-input(v-model='fullSongData.urlWikiEn' lang='en' :query='`${fullSongData.title} ${artist?.name ?? ""}`')
     v-row(dense)
       v-col
         song-spotify-input(
@@ -54,7 +54,7 @@ div
         admin-musicbrainz-input(
           v-model='fullSongData.musicbrainzRecordingId'
           musicbrainz-category="recording"
-          :query='`${fullSongData.title} ${artist.name}`'
+          :query='`${fullSongData.title} ${artist?.name ?? ""}`'
         )
     v-row(dense)
       v-col
@@ -67,7 +67,7 @@ div
       v-col
         admin-wikidata-input(
           v-model='fullSongData.wikidataId'
-          :query='`${fullSongData.title} ${artist.name}`'
+          :query='`${fullSongData.title} ${artist?.name ?? ""}`'
         )
     v-row
       v-col
@@ -75,34 +75,52 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SongFormData } from '~/api/contracts'
+import { apiEndpoints } from '~/api/endpoints'
 import Artist from "~/orm/Artist";
 import Album from "~/orm/Album";
 import {useRepo} from "pinia-orm";
 import SongSpotifyInput from "~/components/admin/SongSpotifyInput.vue";
-
 const {$api} = useNuxtApp()
 
 definePageMeta({
   middleware: 'admin'
 })
 
+type SongEditDraftData = Omit<SongFormData, 'artistId' | 'albumId'> & {
+  id: number
+  artistId: number
+  albumId?: number
+}
+
 const processing  = ref(false)
 
-const {data: fullSongData, status} = await useFetch(`song/${useRoute().params.id}`, useFetchOpts({deep: true}))
-const title = ref(fullSongData.value.title)  // not reactive
+const songId = useRouteParam('id')
+const fullSongData = ref<SongEditDraftData>({
+  id: 0,
+  title: '',
+  artistId: 0
+})
+const {data: fetchedSongData, status} = await useApiFetch(apiEndpoints.song.byId(Number(songId)), { deep: true })
+const title = ref('')  // not reactive
 
 watch(status, (newValue) => {
-  if (newValue === 'success') {
-    title.value = fullSongData.value.title
+  if (newValue === 'success' && fetchedSongData.value) {
+    fullSongData.value = fetchedSongData.value
+    title.value = fetchedSongData.value.title
   }
-})
+}, { immediate: true })
 
 const artistId = computed(() => {
   return fullSongData.value.artistId;
 })
 const album = computed(() => {
-  return useRepo(Album).find(fullSongData.value.albumId);
+  const albumId = fullSongData.value.albumId
+  if (albumId === undefined) {
+    return undefined
+  }
+  return useRepo(Album).find(albumId);
 })
 const artist = computed(() => {
   return useRepo(Artist).find(fullSongData.value.artistId);
@@ -117,14 +135,28 @@ watch(artistId, () => {
 })
 
 async function submit() {
+  if (!fullSongData.value.id || !fullSongData.value.artistId || !fullSongData.value.albumId) {
+    return
+  }
+
+  const { id, artistId, albumId, ...rest } = fullSongData.value
+  const payload: SongFormData = {
+    ...rest,
+    artistId,
+    albumId
+  }
+
   processing.value = true;
-  await $api(`song/${fullSongData.value.id}`, useFetchOptsPut(fullSongData.value))
+  await $api(apiEndpoints.song.update(id), payload)
   await navigateTo(`/nummer/${fullSongData.value.id}`)
 }
 async function submitDelete() {
+  if (!fullSongData.value.id || !fullSongData.value.artistId) {
+    return
+  }
   if (confirm("Dit nummer echt volledig verwijderen uit de database?")) {
     processing.value = true;
-    await $api(`song/${fullSongData.value.id}`, useFetchOptsDelete())
+    await $api(apiEndpoints.song.delete(fullSongData.value.id))
     await useRouter().push(`/artiest/${fullSongData.value.artistId}`);
   }
 }

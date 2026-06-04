@@ -14,14 +14,16 @@ div
     p
       make-links(text='Het oudste nummer, absoluut bekeken, dat ooit in de Tijdloze stond, was [Jailhouse Rock] uit 1957. Dit nummer stond echter enkel in [1987] in de Tijdloze, en was toen dus 30 jaar oud. Het oudste nummer van de Tijdloze van [2018], [Feeling Good] van [Nina Simone] uit 1965, was maar liefst 54 jaar oud, een record voor de Tijdloze.')
 
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/leeftijden', title: 'Statistieken' },\
-    { to: '/statistieken/leeftijden/grafiek', title: 'Op grafiek' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page
 </template>
 
-<script setup>
+<script setup lang="ts">
+const tabs = [
+  { to: '/statistieken/leeftijden', title: 'Statistieken' },
+  { to: '/statistieken/leeftijden/grafiek', title: 'Op grafiek' }
+]
+
 definePageMeta({
   noScrollDepth: 2
 })

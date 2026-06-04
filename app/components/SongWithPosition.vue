@@ -6,30 +6,17 @@ div.entry
   song-with-cover(:song="song" :attribution="attribution")
 </template>
 
-<script setup>
-import Song from "../orm/Song";
-import Year from "../orm/Year";
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+import type Year from "~/orm/Year";
 
-defineProps({
-  song: {
-    type: Object
-  },
-  attribution: {
-    type: String,
-    default: undefined
-  },
-  overridePosition: {
-    type: Number,
-    default: 0
-  },
-  year: {
-    type: Year
-  },
-  hidePreviousNext: {
-    type: Boolean,
-    default: false
-  }
-})
+defineProps<{
+  song: Song
+  attribution?: string
+  overridePosition?: number
+  year: Year
+  hidePreviousNext?: boolean
+}>()
 </script>
 
 <style scoped>

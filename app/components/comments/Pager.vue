@@ -17,13 +17,13 @@
     nuxt-link(:to='pagePath(page + 1)') volgende
 </template>
 
-<script setup>
-const props = defineProps({
-  page: Number,
-  pages: Number
-})
+<script setup lang="ts">
+const props = defineProps<{
+  page: number
+  pages: number
+}>()
 
-function pagePath(page) {
+function pagePath(page: number) {
   if (page > 1) {
     return `/reacties/${page}`
   } else {

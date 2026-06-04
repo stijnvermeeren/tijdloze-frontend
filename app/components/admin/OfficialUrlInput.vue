@@ -5,14 +5,14 @@ div.d-flex
   v-btn.ml-2(v-if='query' :icon="mdiSearchWeb" :href="searchUrl" target="_blank")
 </template>
 
-<script setup>
+<script setup lang="ts">
 import {mdiOpenInNew, mdiSearchWeb} from "@mdi/js";
 
-const props = defineProps({
-  query: String
-})
+const props = defineProps<{
+  query: string
+}>()
 
-const officialUrl = defineModel()
+const officialUrl = defineModel<string>()
 
 const searchUrl = computed(() => {
   const encodedQuery = encodeURIComponent(props.query)

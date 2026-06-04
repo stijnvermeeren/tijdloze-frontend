@@ -17,19 +17,20 @@ div
         td {{entry.count}}
 </template>
 
-<script setup>
+<script setup lang="ts">
 import ranking from '~/utils/ranking';
+import type Artist from '~/orm/Artist'
+import type Year from '~/orm/Year'
 
-const props = defineProps({
-  artists: Array,
-  years: Array
-})
+const props = defineProps<{ artists: Artist[]; years: Year[] }>()
 
 const rankingList = computed(() => {
-  const data = props.artists.map(artist => {
+  const data = props.artists.map((artist: Artist) => {
     return {
       artist: artist,
-      count: artist.allSongs.map(song => song.listCount(props.years)).reduce((a, b) => a + b, 0)
+      count: artist.allSongs
+        .map(song => song.listCount(props.years))
+        .reduce((a: number, b: number) => a + b, 0)
     };
   }).filter(({ count }) => count > 0);
   return ranking(

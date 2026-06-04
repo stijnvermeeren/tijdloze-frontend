@@ -23,21 +23,29 @@ Title {{song.title}} ({{song.artist.name}})
       spotify(:spotify-id='fullSongData.spotifyId')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 import { idFromSlug } from '~/utils/slug'
 import Song from "~/orm/Song";
 import {useRepo} from "pinia-orm";
 
-const songId = computed(() => idFromSlug(useRoute().params?.id))
+const routeId = useRouteParam('id') || ''
+const songId = computed(() => idFromSlug(routeId))
 
-const {data: fullSongData, error, status} = await useLazyFetch(
-    () => `song/${songId.value}`, useFetchOpts()
+const {data: fullSongData, error, status} = await useApiFetch(
+  () => apiEndpoints.song.byId(Number(songId.value)), { lazy: true }
 )
 
 const {currentYear, years} = storeToRefs(useYearStore())
 
-const song = computed(() => {
-  return useRepo(Song).withAll().find(songId.value);
+const song = computed<Song>(() => {
+  const foundSong = useRepo(Song).withAll().find(songId.value)
+
+  if (!foundSong) {
+    throw createError({ statusCode: 404, statusMessage: 'Pagina niet gevonden' })
+  }
+
+  return foundSong
 })
 const tabs = computed(() => {
   const prefix = `/nummer/${songId.value}-${song.value.slug}`

@@ -2,32 +2,36 @@
 Title Exits
 div
   h2 Tijdloze exits
-  ui-tabs(:tabs="[\
-    { to: '/statistieken/exits', title: 'Per jaar' },\
-    { to: '/statistieken/exits/lijst', title: 'Hoogste aller tijden' },\
-    { to: '/statistieken/exits/grafiek', title: 'Op grafiek' }\
-  ]")
+  ui-tabs(:tabs="tabs")
     nuxt-page(:data='data' :years='years')
 </template>
 
-<script setup>
+<script setup lang="ts">
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
+
+const tabs = [
+  { to: '/statistieken/exits', title: 'Per jaar' },
+  { to: '/statistieken/exits/lijst', title: 'Hoogste aller tijden' },
+  { to: '/statistieken/exits/grafiek', title: 'Op grafiek' }
+]
+
 const {songs} = storeToRefs(useRootStore())
 const {years} = storeToRefs(useYearStore())
 
-const data = computed(() => {
-  const dataPoints = [];
+const data = computed<SongYearEntry[]>(() => {
+  const dataPoints: SongYearEntry[] = [];
+  const allYears = years.value
   songs.value.forEach(song => {
-    let inPreviousList = false;
-    years.value.slice(1).forEach((year, index) => {
-      const previousYear = years.value[index]
-      if (inPreviousList && song.notInList(year)) {
+    allYears.slice(1).forEach((year, index) => {
+      const previousYear = allYears[index]!
+      const previousPosition = song.position(previousYear)
+      if (previousPosition !== undefined && song.notInList(year)) {
         dataPoints.push({
           song: song,
-          year: previousYear
+          year: previousYear,
+          position: previousPosition
         });
       }
-
-      inPreviousList = song.position(year) > 0;
     });
   });
   return dataPoints;

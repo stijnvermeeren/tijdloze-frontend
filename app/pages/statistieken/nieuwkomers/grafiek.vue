@@ -2,8 +2,8 @@
 d3-distribution-graph(:points='data')
 </template>
 
-<script setup>
-defineProps({
-  data: Array
-})
+<script setup lang="ts">
+import type { SongYearEntry } from '~/types/statistieken/songYearEntry'
+
+defineProps<{ data: SongYearEntry[] }>()
 </script>

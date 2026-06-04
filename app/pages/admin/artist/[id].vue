@@ -1,7 +1,8 @@
 <template lang="pug">
-Title Admin: Artist: {{fullArtistData.name}}
-div
-  h2 Artiest aanpassen
+template(v-if="fullArtistData")
+  Title Admin: Artist: {{fullArtistData.name}}
+  div
+    h2 Artiest aanpassen
 
   v-container
     v-row(dense)
@@ -56,7 +57,8 @@ div
         v-btn(@click='submit' color="blue" :disabled='disabled') Aanpassen
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
 const {$api} = useNuxtApp()
 
 definePageMeta({
@@ -64,22 +66,23 @@ definePageMeta({
 })
 
 const processing = ref(false)
+const artistId = useRouteParam('id')
 
-const {data: fullArtistData} = await useFetch(`artist/${useRoute().params.id}`, useFetchOpts({deep: true}))
+const {data: fullArtistData} = await useApiFetch(apiEndpoints.artist.byId(Number(artistId)), { deep: true })
 
 const disabled = computed(() => {
-  return processing.value || !fullArtistData.value.name
+  return processing.value || !fullArtistData.value!.name
 })
 
 async function submit() {
   processing.value = true;
-  await $api(`artist/${fullArtistData.value.id}`, useFetchOptsPut(fullArtistData.value))
-  await navigateTo(`/artiest/${fullArtistData.value.id}`);
+  await $api(apiEndpoints.artist.update(fullArtistData.value!.id), fullArtistData.value!)
+  await navigateTo(`/artiest/${fullArtistData.value!.id}`);
 }
 async function submitDelete() {
   if (confirm("Deze artiest (en alle bijhorende nummers en albums) echt volledig verwijderen uit de database?")) {
     processing.value = true;
-    await $api(`artist/${fullArtistData.value.id}`, useFetchOptsDelete())
+    await $api(apiEndpoints.artist.delete(fullArtistData.value!.id))
     await navigateTo(`/database`)
   }
 }

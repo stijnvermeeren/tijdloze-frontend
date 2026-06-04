@@ -1,9 +1,9 @@
 <template lang="pug">
-  template(v-if="status === 'success'")
+  template(v-if="fullArtistData")
     ui-alert(v-if="fullArtistData.notes")
       make-links(:text="fullArtistData.notes")
 
-    p
+    p(v-if="artist.countryId")
       | Nationaliteit:
       |
       nuxt-link(:to="`/database?type=artiesten&land=${artist.countryId}`")
@@ -20,31 +20,27 @@
     v-progress-circular(indeterminate)
 </template>
 
-<script setup>
-const props = defineProps({
-  artist: {
-    type: Object,
-    required: true
-  }
-})
+<script setup lang="ts">
+import { apiEndpoints } from '~/api/endpoints'
+import type { ArtistData } from '~/api/contracts'
+import type Artist from '~/orm/Artist'
+
+const props = defineProps<{ artist: Artist }>()
 
 // TODO: https://github.com/nuxt/nuxt/issues/20664#issuecomment-2453845270
-const {data: fullArtistData, status} = await useLazyFetch(
-    () => `artist/${props.artist.id}`, useFetchOpts()
+const {data: fullArtistData } = await useApiFetch(
+  () => apiEndpoints.artist.byId(props.artist.id), { lazy: true }
 )
 
-const links = computed(() => {
-  const links = [];
-  const addLink = (property, title, fn) => {
-    if (!fn) {
-      fn = x => x
-    }
+type ArtistLinkProperty = keyof Pick<ArtistData, 'urlOfficial' | 'urlAllMusic' | 'spotifyId' | 'musicbrainzId'>
 
-    if (fullArtistData.value?.[property]) {
-      links.push({
-        href: fn(fullArtistData.value[property]),
-        title: title
-      })
+const links = computed(() => {
+  const links: { href: string; title: string }[] = [];
+  const addLink = (property: ArtistLinkProperty, title: string, fn?: (value: string) => string) => {
+    const resolved = fn ?? ((x: string) => x)
+    const val = fullArtistData.value?.[property]
+    if (val) {
+      links.push({ href: resolved(val), title })
     }
   };
 

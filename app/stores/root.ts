@@ -1,0 +1,136 @@
+import { defineStore } from 'pinia'
+import { useRepo } from 'pinia-orm'
+import { sortWith, ascend } from 'ramda'
+
+import Artist from '~/orm/Artist';
+import Song from '~/orm/Song';
+import List from '~/orm/List';
+import type Year from '~/orm/Year';
+import {useYearStore} from "~/stores/year";
+
+export type ListEntry = {
+  position: number
+  song: Song
+  attribution?: string
+}
+
+export const useRootStore = defineStore('root', () => {
+  const yearStore = useYearStore()
+
+  const exitSongIds = ref<number[]>([])
+  const coreDataId = ref<number>()
+  
+  function indexByProperty<T extends { id: number }>(data: T[], selector: (entry: T) => string): Record<string, number[]> {
+    const grouped = Object.groupBy(data, selector)
+    return Object.fromEntries(
+      Object.entries(grouped).map(([key, entries]) => [key, (entries ?? []).map(entry => entry.id)])
+    )
+  }
+
+  const songIdsByTitle = computed<Record<string, number[]>>(() => {
+    return indexByProperty(useRepo(Song).all(), song => song.title.toLowerCase())
+  })
+  const artistIdsByName = computed<Record<string, number[]>>(() => {
+    return indexByProperty(useRepo(Artist).all(), artist => artist.name.toLowerCase())
+  })
+  const songs = computed<Song[]>(() => {
+    return sortWith([
+      ascend((song: Song) => song.title),
+      ascend((song: Song) => song.album.releaseYear)
+    ], useRepo(Song).withAll().get() as Song[])
+  })
+
+  const usedCountryIds = computed(() => {
+    return new Set(
+      useRepo(Artist)
+        .all()
+        .map(artist => artist.countryId)
+        .filter((countryId) => countryId !== undefined)
+    )
+  })
+
+  const lastSong = computed<Song | undefined>(() => {
+    if (!yearStore.currentYear) {
+      return undefined
+    }
+    return list(yearStore.currentYear, 1)?.[0]?.song
+  })
+  const lastPosition = computed<number | undefined>(() => {
+    if (!lastSong.value || !yearStore.currentYear) {
+      return undefined
+    }
+    return lastSong.value.position(yearStore.currentYear, true)
+  })
+  const listInProgress = computed<boolean>(() => {
+    return !!lastPosition.value && lastPosition.value !== 1
+  })
+  const lastCompleteYear = computed<Year | undefined>(() => {
+    if (listInProgress.value) {
+      return yearStore.previousYear
+    } else {
+      return yearStore.currentYear
+    }
+  })
+
+  const maxPositionByYyyy = computed<Record<number, number>>(() => {
+    const result: Record<number, number> = {}
+    useRepo(List).all().forEach(listEntry => {
+      result[listEntry.year] = listEntry.songIds.length
+    })
+    return result
+  })
+
+  function list(year: Year, limit?: number, maxPosition?: number): ListEntry[] {
+    const yearList = useRepo(List).find(year.yyyy)
+    if (yearList) {
+      let notNullSongIds = yearList.songIds.filter((x): x is number => x !== undefined)
+      if ((limit ?? 0) > 0) {
+        notNullSongIds = notNullSongIds.slice(0, limit)
+      }
+      const songs = useRepo(Song).with('album').with('artist').with('secondArtist').find(notNullSongIds)
+      const songsById: Record<number, Song> = {}
+      songs.forEach(song => {
+        songsById[song.id] = song
+      })
+      const entries: ListEntry[] = []
+      for (const [index, songId] of yearList.songIds.entries()) {
+        const position = index + 1
+        if ((maxPosition ?? 0) > 0 && position > (maxPosition ?? 0)) {
+          return entries
+        }
+        if (songId && songsById[songId]) {
+          let attribution: string | undefined
+          if (position in yearList.attributions) {
+            attribution = yearList.attributions[position]
+          }
+          entries.push({
+            position,
+            song: songsById[songId],
+            attribution
+          })
+        }
+        if ((limit ?? 0) > 0 && entries.length >= (limit ?? 0)) {
+          return entries
+        }
+      }
+      return entries
+    } else {
+      return []
+    }
+  }
+    
+  return {
+    coreDataId,
+    artistIdsByName,
+    exitSongIds,
+    lastCompleteYear,
+    lastPosition,
+    lastSong,
+    list,
+    listInProgress,
+    maxPositionByYyyy,
+    songIdsByTitle,
+    songs,
+    usedCountryIds
+  }
+})

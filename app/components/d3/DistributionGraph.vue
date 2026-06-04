@@ -3,7 +3,7 @@ div
   .graph(@mouseleave="hoverYear = undefined")
     h4(v-if='$slots.default || title')
       slot {{title}}
-    .tooltip(v-if="tooltipSong" :style="tooltipStyle")
+    .tooltip(v-if="tooltipSong && hoverYear" :style="tooltipStyle")
       .year
         | {{hoverYear.yyyy}}
       .entry
@@ -21,14 +21,14 @@ div
           circle.circle.coloredCircle(
             v-for='point in points'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year))'
+            :cy='yScale(point.position)'
             r='3'
           )
         g.color-2
           circle.circle.coloredCircle(
             v-for='point in secondaryPoints'
             :cx='xScale(point.year._yy)'
-            :cy='yScale(point.song.position(point.year))'
+            :cy='yScale(point.position)'
             r='3'
           )
         rect(
@@ -42,30 +42,41 @@ div
         )
 </template>
 
-<script setup>
+<script setup lang="ts">
+  import type Song from "~/orm/Song";
+  import type Year from "~/orm/Year";
+
+  type DistributionPoint = {
+    year: Year
+    song: Song
+    position: number
+  }
+
   const {fullWidth, fullHeight, width, height, margin} = useGraphConstants()
   const {years, xBandScale, xScale, yScale} = useGraph()
-  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(xBandScale, xScale, yScale, years)
+  const {onHover, hoverYear, hoverLineX, hoverPosition, tooltipStyle} = useGraphHover(
+    xBandScale,
+    xScale,
+    yScale,
+    years
+  )
 
-  const props = defineProps({
-    title: {
-      type: String
-    },
-    points: {
-      type: Array,
-      default: () => []
-    },
-    secondaryPoints: {
-      type: Array,
-      default: () => []
-    }
+  const props = withDefaults(defineProps<{
+    title?: string
+    points?: DistributionPoint[]
+    secondaryPoints?: DistributionPoint[]
+  }>(), {
+    points: () => [],
+    secondaryPoints: () => []
   })
 
   const tooltipSong = computed(() => {
-    if (!!hoverYear.value && !!hoverPosition.value) {
+    const hoveredYear = hoverYear.value
+    const hoveredPosition = hoverPosition.value
+    if (hoveredYear && hoveredPosition) {
       const allPoints = props.points.concat(props.secondaryPoints)
-      const matchingEntry = allPoints.find(point => {
-        return point.year.yyyy === hoverYear.value.yyyy && point.song.position(hoverYear.value) === hoverPosition.value;
+      const matchingEntry = allPoints.find((point: DistributionPoint) => {
+        return point.year.yyyy === hoveredYear.yyyy && point.position === hoveredPosition;
       });
       if (matchingEntry) {
         return matchingEntry.song;

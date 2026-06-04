@@ -2,10 +2,12 @@
 nuxt-link(:to='`/nummer/${song.id}-${song.slug}`') {{song.title}}
 </template>
 
-<script setup>
-defineProps({
-  song: Object
-})
+<script setup lang="ts">
+import type Song from "~/orm/Song";
+
+defineProps<{
+  song: Song
+}>()
 </script>
 
 <style scoped>
