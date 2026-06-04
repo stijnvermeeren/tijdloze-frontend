@@ -1,41 +1,30 @@
 <template lang="pug">
-table.lijst.perEen
-  tbody
-    tr
-      th.r Jaar
-      th Aantal
-      th
-        table.valueSongValue
-          tbody
-            tr
-              th Pos.
-              th.l Nummer
-              th Definitief
-    tr(v-for='year in listYears')
-      td.r
-        year-link(:year='year')
-      td {{entriesPerYear(year).length}}
-      td
-        table.valueSongValue(v-if='entriesPerYear(year).length')
-          tbody
-            tr(v-for='entry in entriesPerYear(year)')
-              td {{entry.song.position(entry.year)}}
-              td.l
-                song-with-cover(:song='entry.song')
-              td
-                template(v-if='entry.isFinal') *
-        div(v-else) /
+statistics-year-songs-table(
+  :list-data='listData'
+  songs-table-class='valueSongValue'
+  count-label-singular='eenjaarsvlieg'
+  count-label-plural='eenjaarsvliegen'
+)
+  template(#extraCell='{entry}')
+    td.attribution
+      template(v-if='entry.isFinal') Definitief
 </template>
 
 <script setup lang="ts">
 import { sortBy } from 'ramda';
 import type Year from '~/orm/Year'
-import type { OneHitEntry } from './oneHitEntry'
+import type { OneHitEntry } from '~/types/statistieken/oneHitEntry'
 
 const props = defineProps<{ data: OneHitEntry[]; years: Year[] }>()
 
-const listYears = computed(() => {
-  return props.years.slice(1, -1).reverse();
+const listData = computed(() => {
+  const listYears = props.years.slice(1, -1).reverse();
+  return listYears.map(year => {
+    return {
+      year,
+      entries: entriesPerYear(year)
+    }
+  })
 })
 
 function entriesPerYear(year: Year): OneHitEntry[] {
