@@ -1,7 +1,7 @@
 <template lang="pug">
 table.lijst.perEen.withTopBorder
   tbody
-    tr(v-for='{year, entries} in listData')
+    tr(v-for='{year, entries} in listData' :key='year.yyyy')
       td.r
         year-link(:year='year')
       td
