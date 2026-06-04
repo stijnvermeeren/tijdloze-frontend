@@ -20,6 +20,7 @@
   "dependencies": {
     "@auth0/auth0-vue": "^2.5.0",
     "@pinia/nuxt": "^0.11.3",
+    "@takumi-rs/core": "^1.7.0",
     "@vueuse/core": "^13.9.0",
     "@vueuse/nuxt": "^13.9.0",
     "d3-array": "^3.2.4",

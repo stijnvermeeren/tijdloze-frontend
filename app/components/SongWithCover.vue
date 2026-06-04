@@ -49,8 +49,6 @@ div.songWithCover {
     font-size: 85%;
     color: #777;
     font-style: italic;
-    span {
-    }
   }
 }
 </style>

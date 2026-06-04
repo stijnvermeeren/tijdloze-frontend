@@ -102,12 +102,9 @@ table.lijst {
     margin: 0.3em 0;
 
     & td:first-child, & th:first-child {
-      width: 15%;
+      width: 85%;
     }
     & td:nth-child(2), & th:nth-child(2) {
-      width: 70%;
-    }
-    & td:nth-child(3), & th:nth-child(3) {
       width: 15%;
     }
     & td {
@@ -117,12 +114,6 @@ table.lijst {
   & table.valueSong {
     margin: 0.3em 0;
 
-    & td:first-child, & th:first-child {
-      width: 15%;
-    }
-    & td:nth-child(2), & th:nth-child(2) {
-      width: 85%;
-    }
     & td {
       border: none !important;
     }
