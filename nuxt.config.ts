@@ -18,13 +18,14 @@ export default defineNuxtConfig({
   ssr: true,
   runtimeConfig: {
     public: {
-      apiUriClient: "http://localhost:9000/",
-      apiUriServer: "http://localhost:9000/",
-      auth0ClientId: "bDIm5fEwDBV0IBv5tRb48IPwLhFeysSB",
-      auth0ClientDomain: "stijnvermeeren-tijdloze-dev.eu.auth0.com",
-      auth0Audience: "dev.tijdloze.stijnshome.be",
-      auth0CallbackUri: "http://localhost:3000/auth/callback",
-      auth0LogoutUri: "http://localhost:3000/"
+      // Allow to use env variables at build-time to override the defaults (e.g. for AWS Amplify)
+      apiUriClient: process.env.NUXT_PUBLIC_API_URI_CLIENT || "http://localhost:9000/",
+      apiUriServer: process.env.NUXT_PUBLIC_API_URI_SERVER || "http://localhost:9000/",
+      auth0ClientId: process.env.NUXT_PUBLIC_AUTH0_CLIENT_ID || "bDIm5fEwDBV0IBv5tRb48IPwLhFeysSB",
+      auth0ClientDomain: process.env.NUXT_PUBLIC_AUTH0_CLIENT_DOMAIN || "stijnvermeeren-tijdloze-dev.eu.auth0.com",
+      auth0Audience: process.env.NUXT_PUBLIC_AUTH0_AUDIENCE || "dev.tijdloze.stijnshome.be",
+      auth0CallbackUri: process.env.NUXT_PUBLIC_AUTH0_CALLBACK_URI || "http://localhost:3000/auth/callback",
+      auth0LogoutUri: process.env.NUXT_PUBLIC_AUTH0_LOGOUT_URI || "http://localhost:3000/"
     }
   },
   /*
