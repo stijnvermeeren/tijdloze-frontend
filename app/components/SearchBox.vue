@@ -1,52 +1,35 @@
 <template lang="pug">
 .searchBox(ref="searchBoxContainer")
-  v-text-field(
-    :label='placeholder'
-    persistent-placeholder
-    autocomplete='off'
-    spellcheck='false'
-    v-model='query'
-    @keyup.down='move(1)'
-    @keyup.up='move(-1)'
-    @keyup.enter='go(selectedIndex)'
-    @keydown.up.prevent='() => true'
-    @keydown.down.prevent='() => true'
-    @focus="searchActive = true"
-    @blur="onBlur"
-    ref="input"
+  v-autocomplete(
+    v-model="selectedResult"
+    v-model:search="query"
+    :items="results"
+    :item-title="getItemTitle"
+    :item-value="(r) => `${r.type}-${r.item.id}`"
+    :placeholder="placeholder"
+    menu-icon=""
+    :menu-props="{ maxHeight: 450 }"
+    no-filter
+    return-object
     hide-details
     density="compact"
+    autocomplete="off"
+    spellcheck="false"
+    persistent-placeholder
+    ref="autocomplete"
+    @update:modelValue="onSelect"
+    v-model:menu="menuOpen"
   )
     template(#prepend-inner)
       v-icon(:icon="mdiMagnify")
-  #searchResults(v-if='query.length > 0 && searchActive')
-    .suggestion(
-      v-for='(result, index) in visibleResults'
-      @click='go(index)'
-      @mousemove='selectedIndex = index'
-      :class='{selected: index === selectedIndex}'
-      tabindex="-1"
-    )
-      div(v-if="result.type === 'artist'")
-        | {{result.item.name}}
-      div(v-if="result.type === 'song'")
-        | {{result.item.title}}
-        span.info
-          | (nummer van #[span.artiest {{result.item.artist.name}}]
-          template(v-if='result.item.secondArtist')
-            |
-            | en #[span.artiest {{result.item.secondArtist.name}}]
-          template(v-if='songsYear && result.item.position(songsYear, true)')
-            | ; positie {{result.item.position(songsYear, true)}} in {{songsYear.yyyy}}
-          | )
-      div(v-if="result.type === 'album'")
-        album-title(:album="result.item")
-        span.info
-          | (album van #[span.artiest {{result.item.artist.name}}] uit {{result.item.releaseYear}})
-    .more-suggestions(v-if='resultsCount > resultsLimit')
-      | Nog {{resultsCount - resultsLimit}} andere treffer{{resultsCount - resultsLimit > 1 ? 's' : ''}}.
-    .more-suggestions(v-if='resultsCount === 0')
-      | Geen resultaten gevonden.
+    template(#item="{ item, props: itemProps }")
+      v-list-item(v-bind="itemProps" title="" class="pa-0")
+        song-with-cover(v-if="item.raw.type === 'song'" :song="item.raw.item" plain-artist)
+        album-with-cover(v-if="item.raw.type === 'album'" :album="item.raw.item" plain-artist)
+        artist-with-icon(v-if="item.raw.type === 'artist'" :artist="item.raw.item")
+    template(#no-data)
+      .more-suggestions(v-if='query.length > 0')
+        | Geen resultaten gevonden.
 </template>
 
 <script setup lang="ts">
@@ -57,6 +40,7 @@ import type Year from "~/orm/Year";
 import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 import { sortBy } from 'ramda'
+import type { VAutocomplete } from 'vuetify/components'
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
 
@@ -83,25 +67,28 @@ const props = withDefaults(defineProps<{
   albumFilter?: (album: Album) => boolean
   songsYear?: Year
 }>(), {
-  placeholder: 'Zoek artiest, album of nummer',
+  placeholder: 'Artiest, album, nummer',
   songFilter: () => true,
   artistFilter: () => true,
   albumFilter: () => true,
 })
 
-const input = useTemplateRef('input')
+const autocomplete = useTemplateRef<InstanceType<typeof VAutocomplete>>('autocomplete')
 const searchBoxContainer = useTemplateRef('searchBoxContainer')
 
-const selectedIndex = ref<number | undefined>(undefined)
+const selectedResult = ref<SearchResult | null>(null)
 const searchActive = ref(false)
 
-const resultsLimit = 10
+const menuOpen = computed({
+  get: () => !!query.value && searchActive.value,
+  set: (val) => onMenuUpdate(val)
+})
 
 const allArtists = computed(() => {
   return useRepo(Artist).all().filter(props.artistFilter);
 })
 const allSongs = computed(() => {
-  return useRepo(Song).with('artist').with('secondArtist').get().filter(props.songFilter);
+  return useRepo(Song).with('artist').with('secondArtist').with('album').get().filter(props.songFilter);
 })
 const allAlbums = computed(() => {
   return useRepo(Album).with('artist').get().filter(props.albumFilter);
@@ -119,35 +106,41 @@ const results = computed<SearchResult[]>(() => {
 
   return sortBy((result: SearchResult) => -result.score, [artists, songs, albums].flat())
 })
-const visibleResults = computed(() => {
-  return results.value.slice(0, resultsLimit);
-})
-const resultsCount = computed(() => {
-  return results.value.length;
-})
 
 const { gtag } = useGtag()
 watch(query, () => {
-  selectedIndex.value = undefined;
-  input.value?.focus();
   emit('initialResults', results.value);
 
   if (query.value) {
     gtag('event', 'search', {
       query: query.value,
-      result_count: resultsCount.value,
+      result_count: results.value.length,
       path: useRoute().path
     })
   }
 })
 
-function onBlur(event: FocusEvent) {
-  if (searchBoxContainer.value) {
-    if (!searchBoxContainer.value.contains(event.relatedTarget as Node | null)) {
-      searchActive.value = false
-    }
+function getItemTitle(result: SearchResult): string {
+  if (result.type === 'artist') return result.item.name
+  if (result.type === 'song') return result.item.title
+  if (result.type === 'album') return result.item.artist.name
+  return ''
+}
+
+function onMenuUpdate(isOpen: boolean) {
+  searchActive.value = isOpen
+}
+
+async function onSelect(result: SearchResult | null) {
+  if (result) {
+    result.query = query.value
+    emit('selectSearchResult', result)
+    await nextTick()
+    query.value = ''
+    selectedResult.value = null
   }
 }
+
 function search<T extends Artist | Song | Album, K extends SearchType>(
   queryFragments: string[],
   data: T[],
@@ -163,34 +156,6 @@ function search<T extends Artist | Song | Album, K extends SearchType>(
     return {type, item, score} as SearchResultByType[K]
   });
 }
-function move(offset: number) {
-  if (!visibleResults.value.length) {
-    return
-  }
-  if (selectedIndex.value === undefined) {
-    if (offset >= 0) {
-      selectedIndex.value = -1;
-    } else {
-      selectedIndex.value = 0;
-    }
-  }
-  selectedIndex.value = mod(selectedIndex.value + offset, visibleResults.value.length);
-}
-function mod(n: number, m: number) {
-  return ((n % m) + m) % m;
-}
-function go(index: number | undefined) {
-  if (index !== undefined) {
-    const result = results.value[index];
-    if (!result) {
-      return
-    }
-    result.query = query.value;
-    emit('selectSearchResult', result);
-    query.value = '';
-    searchActive.value = false;
-  }
-}
 
 onKeyStroke('Escape', () => {
   if (query.value) {
@@ -201,8 +166,8 @@ onKeyStroke('Escape', () => {
 const isVisible = useElementVisibility(searchBoxContainer)
 
 onStartTyping(() => {
-  if (isVisible.value && !input.value?.focused) {
-    input.value?.focus()
+  if (isVisible.value && !autocomplete.value?.focused) {
+    autocomplete.value?.focus()
   }
 })
 
@@ -215,70 +180,8 @@ defineExpose({
   @import "../assets/styleConfig.css";
 
   .searchBox {
-    position: relative;
     margin: 10px 0;
     font-size: 16px;
-    overflow: visible;
-
-    input {
-      width: 100%;
-      height: 28px;
-      text-indent: 30px;
-
-      background: var(--input-background-color);
-      border: 1px solid #aaa;
-      border-radius: 5px;
-      box-shadow: 0 0 3px #ccc, 0 10px 15px #ebebeb inset;
-
-      position: relative;
-      vertical-align: top;
-    }
-
-    #searchResults {
-      width: 100%;
-      border: 1px solid #999;
-      background: var(--input-background-color);
-      overflow: auto;
-
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 1;
-      right: auto;
-
-      font-size: 80%;
-      text-align: left;
-
-      > div {
-        padding: 0.2em 0.5em;
-        white-space: nowrap;
-        overflow: hidden;
-        border-bottom: 1px solid black;
-        font-size: 89%;
-
-
-        &.suggestion {
-          cursor: pointer;
-
-          span.info {
-            display: block;
-            margin-left: 2em;
-            font-size: 80%;
-            span.artiest {
-              font-weight: bold;
-            }
-          }
-
-          &.selected {
-            background: var(--header-background-color);
-          }
-        }
-
-        &.more-suggestions {
-          font-size: 80%;
-          font-style: italic;
-        }
-      }
-    }
   }
+
 </style>
