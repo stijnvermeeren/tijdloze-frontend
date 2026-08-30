@@ -31,6 +31,7 @@ type BestInfo = {
   count: number
   firstYear: number
   lastYear: number
+  continuous: boolean
 }
 
 const { years, currentYear } = storeToRefs(useYearStore())
@@ -42,23 +43,72 @@ const top100Entries = computed<PositionEntry[]>(() => {
   })
 })
 
-const countdownEntries = computed<PositionEntry[]>(() => {
+const countdownOnlyEntries = computed<PositionEntry[]>(() => {
   return years.value.flatMap((entryYear) => {
     const position = props.song.position(entryYear, true)
-    return position ? [{ year: entryYear, position }] : []
+    return position && position > 100 ? [{ year: entryYear, position }] : []
   })
-})
-
-const countdownOnlyEntries = computed<PositionEntry[]>(() => {
-  return countdownEntries.value.filter(entry => entry.position > 100)
 })
 
 const hasTop100Entries = computed(() => top100Entries.value.length > 0)
 const hasCountdownEntries = computed(() => countdownOnlyEntries.value.length > 0)
 
-const isPossiblyInCurrentYear = computed(() => {
-  return !!currentYear.value && props.song.probablyInList(currentYear.value, true)
-})
+function isContinuousYearSpan(entryYears: number[], extended = false, endYear?: number): boolean {
+  if (entryYears.length < 2 && endYear === undefined) {
+    return true
+  }
+
+  const listYears = years.value.map(year => year.yyyy)
+  const firstYear = entryYears[0]
+  const lastYear = endYear ?? entryYears[entryYears.length - 1]
+  if (firstYear === undefined || lastYear === undefined) {
+    return false
+  }
+
+  const relevantYears = listYears.filter(year => year >= firstYear && year <= lastYear)
+  return relevantYears.every(year => {
+    if (year === currentYear.value?.yyyy && !!currentYear.value && props.song.probablyInList(currentYear.value, extended)) {
+      return true
+    }
+    return entryYears.includes(year)
+  })
+}
+
+function yearRange(entries: PositionEntry[], extended = false): { firstYear?: number, lastYear?: number, continuous: boolean } | undefined {
+  if (!entries.length) {
+    return undefined
+  }
+
+  const first = entries[0]
+  if (!first) {
+    return undefined
+  }
+
+  const entryYears = entries.map(entry => entry.year.yyyy)
+  const maybeInCurrentTop100 = !!currentYear.value && props.song.probablyInList(currentYear.value)
+  const possiblyInCurrentYear = !!currentYear.value
+    && props.song.probablyInList(currentYear.value, extended)
+    && (!extended || !maybeInCurrentTop100)
+
+  if (possiblyInCurrentYear) {
+    return {
+      firstYear: first.year.yyyy,
+      lastYear: undefined,
+      continuous: isContinuousYearSpan(entryYears, extended, currentYear.value?.yyyy)
+    }
+  }
+
+  const last = entries[entries.length - 1]
+  if (!last) {
+    return undefined
+  }
+
+  return {
+    firstYear: first.year.yyyy,
+    lastYear: last.year.yyyy,
+    continuous: isContinuousYearSpan(entryYears, extended)
+  }
+}
 
 function bestEntry(entries: PositionEntry[]): PositionEntry | undefined {
   return entries.reduce<PositionEntry | undefined>((best, entry) => {
@@ -67,10 +117,6 @@ function bestEntry(entries: PositionEntry[]): PositionEntry | undefined {
     }
     return best
   }, undefined)
-}
-
-function lastEntry(entries: PositionEntry[]): PositionEntry | undefined {
-  return entries[entries.length - 1]
 }
 
 function bestInfo(entries: PositionEntry[], includeBest: boolean): BestInfo | undefined {
@@ -95,47 +141,31 @@ function bestInfo(entries: PositionEntry[], includeBest: boolean): BestInfo | un
     position: best.position,
     count: yearsWithBest.length,
     firstYear,
-    lastYear
+    lastYear,
+    continuous: isContinuousYearSpan(yearsWithBest)
   }
-}
-
-function lastText(entries: PositionEntry[]): string | undefined {
-  const last = lastEntry(entries)
-  if (!isPossiblyInCurrentYear.value && last) {
-    return `laatste in ${last.year.yyyy}`
-  }
-  return undefined
 }
 
 const top100BestInfo = computed(() => bestInfo(top100Entries.value, true))
 const countdownBestInfo = computed(() => bestInfo(countdownOnlyEntries.value, !hasTop100Entries.value))
-const top100LastText = computed(() => lastText(top100Entries.value))
-const countdownLastText = computed(() => lastText(countdownOnlyEntries.value))
+const top100Years = computed(() => yearRange(top100Entries.value, false))
+const countdownYears = computed(() => yearRange(countdownOnlyEntries.value, true))
 
 const detailSections = computed(() => {
-  const sections: Array<{
+  const sections = [] as Array<{
     label: string
     count: number
+    firstYear?: number
+    lastYear?: number
+    continuous?: boolean
     bestInfo?: BestInfo
-    lastText?: string
-  }> = []
+  }>
 
   if (hasTop100Entries.value) {
-    sections.push({
-      label: 'top 100',
-      count: top100Entries.value.length,
-      bestInfo: top100BestInfo.value,
-      lastText: top100LastText.value
-    })
+    sections.push({ label: 'top 100', count: top100Entries.value.length, ...top100Years.value, bestInfo: top100BestInfo.value })
   }
-
   if (hasCountdownEntries.value) {
-    sections.push({
-      label: 'countdown',
-      count: countdownOnlyEntries.value.length,
-      bestInfo: countdownBestInfo.value,
-      lastText: countdownLastText.value
-    })
+    sections.push({ label: 'countdown', count: countdownOnlyEntries.value.length, ...countdownYears.value, bestInfo: countdownBestInfo.value })
   }
 
   return sections

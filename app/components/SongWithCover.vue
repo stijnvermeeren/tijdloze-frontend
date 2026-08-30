@@ -7,22 +7,32 @@ div.songWithCover
       song-link(:song='song')
     div.artist van #[song-artist-link(:song='song')] uit {{song.album.releaseYear}}
     div.details(v-if='showEntryStats && detailsSections.length')
-      template(v-for='(section, index) in detailsSections' :key='section.label')
-        template(v-if='index')
-          | .
-          | 
+      span.mr-4(v-for='(section, index) in detailsSections' :key='section.label')
         span.font-weight-bold {{ section.count }}x
         |  {{ section.label }}
+        template(v-if='section.firstYear !== undefined')
+          |  ({{ section.firstYear }}
+          template(v-if='section.firstYear !== section.lastYear')
+            v-icon.details-icon(:icon='section.continuous ? mdiMenuRight : mdiMenuRightOutline' :size='section.continuous ? 16 : 13' :title="section.continuous ? 'doorlopend' : 'tussen jaren'")
+            template(v-if='section.lastYear !== undefined')
+              |  {{ section.lastYear }}
+            template(v-else)
+              |  ...
+          | )
         template(v-if='section.bestInfo')
-          | , hoogste:
+          | ,
           | 
+          v-icon.details-icon(:icon='mdiChevronDoubleUp' size='14' title="hoogste positie")
           span.font-weight-bold {{ section.bestInfo.position }}
           template(v-if='section.bestInfo.count === 1')
             |  (in {{ section.bestInfo.firstYear }})
           template(v-else)
-            |  ({{ section.bestInfo.count }}x tussen {{ section.bestInfo.firstYear }} en {{ section.bestInfo.lastYear }})
-        template(v-if='section.lastText')
-          | , {{ section.lastText }}
+            |  ({{ section.bestInfo.count }}x,
+            | 
+            |  {{ section.bestInfo.firstYear }}
+            v-icon.details-icon(:icon='section.bestInfo.continuous ? mdiMenuRight : mdiMenuRightOutline' :size='section.bestInfo.continuous ? 16 : 13' :title="section.bestInfo.continuous ? 'doorlopend' : 'tussen jaren'")
+            | {{ section.bestInfo.lastYear }})
+        | .
     div.attribution(v-if="attribution")
       | In de officiële lijst als "
       span {{attribution}}
@@ -30,6 +40,7 @@ div.songWithCover
 </template>
 
 <script setup lang="ts">
+import { mdiChevronDoubleUp, mdiChevronDoubleRight, mdiMenuRight, mdiMenuRightOutline } from '@mdi/js'
 import type Song from "~/orm/Song";
 
 type BestInfo = {
@@ -37,13 +48,16 @@ type BestInfo = {
   count: number
   firstYear: number
   lastYear: number
+  continuous?: boolean
 }
 
 type DetailSection = {
   label: string
   count: number
+  firstYear?: number
+  lastYear?: number
+  continuous?: boolean
   bestInfo?: BestInfo
-  lastText?: string
 }
 
 const props = defineProps<{
@@ -83,6 +97,9 @@ div.songWithCover {
   .details {
     font-size: 85%;
     color: #666;
+  }
+  .details-icon {
+    vertical-align: text-bottom;
   }
   .attribution {
     font-size: 85%;
