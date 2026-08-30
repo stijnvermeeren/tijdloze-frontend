@@ -26,7 +26,7 @@
       v-list-item(v-bind="itemProps" title="" class="pa-0")
         song-with-cover(v-if="item.raw.type === 'song'" :song="item.raw.item" plain-artist)
         album-with-cover(v-if="item.raw.type === 'album'" :album="item.raw.item" plain-artist)
-        artist-with-icon(v-if="item.raw.type === 'artist'" :artist="item.raw.item")
+        artist-with-icon(v-if="item.raw.type === 'artist'" :artist="item.raw.item" :tabindex="-1")
     template(#no-data)
       .more-suggestions(v-if='query.length > 0')
         | Geen resultaten gevonden.
@@ -182,6 +182,13 @@ defineExpose({
   .searchBox {
     margin: 10px 0;
     font-size: 16px;
+  }
+
+  .more-suggestions {
+    padding: 5px 16px;
+    font-size: 85%;
+    font-style: italic;
+    color: #777;
   }
 
 </style>
