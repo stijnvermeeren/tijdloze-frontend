@@ -1,8 +1,6 @@
 <template lang="pug">
 div
   #sideNav(@click.stop='menuClick($event)')
-    search-box(@selectSearchResult='selectSearchResult($event)')
-
     nav
       v-list(bg-color="#fadfbb" density="comfortable" :opened="openeds")
         v-list-item(to="/") Home
@@ -103,30 +101,6 @@ function groupMap(path: string) {
       return `group-${firstPart}`
   }
 }
-type SearchResult = {
-  type: 'song' | 'artist' | 'album'
-  item: {
-    id: number
-    slug: string
-  }
-}
-
-function selectSearchResult(result: SearchResult) {
-  let path = ''
-
-  if (result.type === 'song') {
-    path = `/nummer/${result.item.id}-${result.item.slug}`
-  } else if (result.type === 'artist') {
-    path = `/artiest/${result.item.id}-${result.item.slug}`
-  } else if (result.type === 'album') {
-    path = `/album/${result.item.id}-${result.item.slug}`
-  }
-  if (path) {
-    close();
-    navigateTo(path);
-  }
-}
-
 onKeyStroke('Escape', close)
 
 function close(_e?: Event) {
