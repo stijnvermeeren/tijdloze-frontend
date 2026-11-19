@@ -3,12 +3,13 @@
   v-autocomplete(
     v-model="selectedResult"
     v-model:search="query"
-    :items="results"
+    :items="renderedResults"
     :item-title="getItemTitle"
     :item-value="(r) => `${r.type}-${r.item.id}`"
     :placeholder="placeholder"
+    :autofocus="autofocus"
     menu-icon=""
-    :menu-props="{ maxHeight: 450 }"
+    :menu-props="menuProps"
     no-filter
     return-object
     hide-details
@@ -41,8 +42,10 @@ import {useRepo} from "pinia-orm"
 import {mdiMagnify} from "@mdi/js";
 import { sortBy } from 'ramda'
 import type { VAutocomplete } from 'vuetify/components'
+import type { LocationStrategyFunction } from 'vuetify'
 
 const emit = defineEmits(['initialResults', 'selectSearchResult'])
+const MAX_RENDERED_RESULTS = 50
 
 type SearchResultArtist = { type: 'artist'; item: Artist; score: number; query?: string }
 type SearchResultSong = { type: 'song'; item: Song; score: number; query?: string }
@@ -66,18 +69,52 @@ const props = withDefaults(defineProps<{
   artistFilter?: (artist: Artist) => boolean
   albumFilter?: (album: Album) => boolean
   songsYear?: Year
+  autofocus?: boolean
+  fillAvailableHeight?: boolean
 }>(), {
   placeholder: 'Artiest, album, nummer',
   songFilter: () => true,
   artistFilter: () => true,
   albumFilter: () => true,
+  autofocus: false,
+  fillAvailableHeight: false,
 })
+
+const fillAvailableHeightLocationStrategy: LocationStrategyFunction = (data, _props, contentStyles) => {
+  const updateLocation = () => {
+    const target = data.target.value
+    if (!(target instanceof HTMLElement)) return
+
+    const bounds = target.getBoundingClientRect()
+    Object.assign(contentStyles.value, {
+      position: 'fixed',
+      top: `${bounds.bottom}px`,
+      bottom: '8px',
+      left: `${bounds.left}px`,
+      right: 'auto',
+      width: `${bounds.width}px`,
+      maxHeight: 'none',
+    })
+  }
+
+  updateLocation()
+  return { updateLocation }
+}
 
 const autocomplete = useTemplateRef<InstanceType<typeof VAutocomplete>>('autocomplete')
 const searchBoxContainer = useTemplateRef('searchBoxContainer')
+const { width: searchBoxWidth } = useElementSize(searchBoxContainer)
 
 const selectedResult = ref<SearchResult | null>(null)
 const searchActive = ref(false)
+const menuProps = computed(() => {
+  return {
+    locationStrategy: props.fillAvailableHeight ? fillAvailableHeightLocationStrategy : 'connected',
+    maxHeight: props.fillAvailableHeight ? 'none' : 450,
+    width: searchBoxWidth.value || undefined,
+    contentClass: 'search-results-menu',
+  }
+})
 
 const menuOpen = computed({
   get: () => !!query.value && searchActive.value,
@@ -106,6 +143,7 @@ const results = computed<SearchResult[]>(() => {
 
   return sortBy((result: SearchResult) => -result.score, [artists, songs, albums].flat())
 })
+const renderedResults = computed(() => results.value.slice(0, MAX_RENDERED_RESULTS))
 
 const { gtag } = useGtag()
 watch(query, () => {
@@ -191,4 +229,30 @@ defineExpose({
     color: #777;
   }
 
+  :global(.search-results-menu) {
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  :global(.search-results-menu .v-list-item),
+  :global(.search-results-menu .itemWithMedia) {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  :global(.search-results-menu .itemWithMedia) {
+    width: 100%;
+  }
+
+  :global(.search-results-menu .itemWithMedia > div:last-child) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  :global(.search-results-menu .itemWithMedia .title),
+  :global(.search-results-menu .itemWithMedia .subtitle) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 </style>

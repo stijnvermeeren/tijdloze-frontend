@@ -1,12 +1,35 @@
 <template lang="pug">
 #container
-  v-app-bar-nav-icon.burger-button(variant="text" @click.stop="menuOpen = !menuOpen")
   div.overlay(v-if="menuOpen")
-  #header
-    #logo(@click="$router.push('/')")
-      h1 tijdloze
-        span.domain .rocks
-      div.subtitle Tijdloze muziek-klassiekers + data-analyse
+  #header(@click="mobileSearchOpen = false")
+    #header-content
+      v-app-bar-nav-icon.burger-button.mobile-header-button(
+        variant="text"
+        aria-label="Menu"
+        @click.stop="mobileSearchOpen = false; menuOpen = !menuOpen"
+      )
+      #logo(@click="$router.push('/')")
+        h1 tijdloze
+          span.domain .rocks
+        div.subtitle Tijdloze muziek-klassiekers + data-analyse
+      search-box.header-search.desktop-search(@selectSearchResult="selectSearchResult($event)")
+      v-btn.mobile-search-button.mobile-header-button(
+        variant="text"
+        :icon="mobileSearchOpen ? mdiClose : mdiMagnify"
+        :aria-label="mobileSearchOpen ? 'Sluiten' : 'Zoeken'"
+        @click.stop="mobileSearchOpen = !mobileSearchOpen"
+      )
+  .mobile-search-panel(
+    v-if="mobileSearchOpen"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Zoeken"
+  )
+    search-box.mobile-search-box(
+      autofocus
+      fill-available-height
+      @selectSearchResult="selectSearchResult($event)"
+    )
   #left
   #sitemenu(:class='{closed: !menuOpen}' ref="menuContainer")
     site-menu(@close="menuOpen = false")
@@ -19,6 +42,7 @@
 </template>
 
 <script setup lang="ts">
+import { mdiClose, mdiMagnify } from '@mdi/js'
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useRepo } from 'pinia-orm'
 import { apiEndpoints } from '~/api/endpoints'
@@ -28,8 +52,29 @@ import { reloadCoreData } from '~/utils/loadCoreData'
 
 const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
+const mobileSearchOpen = ref(false)
 
 onClickOutside(menuContainer, () => menuOpen.value = false)
+
+type SearchResult = {
+  type: 'song' | 'artist' | 'album'
+  item: {
+    id: number
+    slug: string
+  }
+}
+
+function selectSearchResult(result: SearchResult) {
+  mobileSearchOpen.value = false
+
+  const paths = {
+    song: `/nummer/${result.item.id}-${result.item.slug}`,
+    artist: `/artiest/${result.item.id}-${result.item.slug}`,
+    album: `/album/${result.item.id}-${result.item.slug}`,
+  }
+
+  navigateTo(paths[result.type])
+}
 
 onMounted(async () => {
   const auth0 = useAuth0()
@@ -91,13 +136,14 @@ onMounted(async () => {
   }
 
   .burger-button {
-    position: absolute;
-    left: 26px;
-    top: 10px;
+    display: none;
+  }
 
-    @media (min-width: 1200px) {
-      display: none;
-    }
+  .mobile-header-button {
+    width: 48px;
+    min-width: 48px;
+    height: 48px;
+    padding: 0;
   }
 
   #container {
@@ -113,6 +159,18 @@ onMounted(async () => {
     
     #header {
       grid-area: header;
+      display: grid;
+      grid-template-columns: subgrid;
+    }
+
+    #header-content {
+      grid-column: 2 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-width: 0;
+      padding: 0 50px 0 calc(1.15em + 16px);
+      box-sizing: border-box;
     }
 
     #main {
@@ -166,24 +224,47 @@ onMounted(async () => {
           left: -300px;
         }
       }
+
+      #header-content {
+        grid-column: 1;
+        padding: 0 10px;
+      }
+
+      #header {
+        position: relative;
+        z-index: 1001;
+      }
+
+      .desktop-search {
+        display: none;
+      }
+
+      #header .burger-button {
+        display: inline-flex;
+      }
+
+      #header .mobile-search-button {
+        display: inline-flex;
+      }
     }
   }
 
   #header {
-    flex: 0 1 auto;
     background-color: var(--header-background-color);
 
     #logo {
       display: flex;
       flex-direction: column;
+      flex-shrink: 0;
       justify-content: center;
       padding-top: 8px;
       height: 68px;
+      box-sizing: border-box;
       cursor: pointer;
-      text-align: center;
+      text-align: left;
 
       h1 {
-        margin: 0 20px;
+        margin: 0;
         font-size: 32px;
         font-style: italic;
 
@@ -193,10 +274,58 @@ onMounted(async () => {
       }
 
       .subtitle {
-        margin: 0 20px;
+        margin: 0;
         font-size: 12px;
         color: #444;
       }
+    }
+
+    .header-search {
+      width: var(--search-box-width);
+      flex: 0 1 var(--search-box-width);
+      min-width: 0;
+
+      .v-field {
+        background-color: var(--menu-background-color);
+      }
+    }
+
+    .mobile-search-button {
+      display: none;
+    }
+  }
+
+  .mobile-search-panel {
+    display: none;
+  }
+
+  .mobile-search-box {
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: var(--background-color);
+
+    .v-autocomplete {
+      width: 100%;
+    }
+
+    .v-field {
+      background-color: var(--background-color);
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .mobile-search-panel {
+      position: fixed;
+      z-index: 1000;
+      top: 68px;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: block;
+      overflow-y: auto;
+      background-color: var(--background-color);
     }
   }
 
