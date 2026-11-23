@@ -55,7 +55,7 @@ watch(query, () => {
 
 const {currentYear, previousYear} = storeToRefs(useYearStore())
 
-function initialResults(results: SongSearchResult[]) {
+async function initialResults(results: SongSearchResult[]) {
   if (waitingForResults.value) {
     waitingForResults.value = false
     if (results.length === 0) {
@@ -64,6 +64,9 @@ function initialResults(results: SongSearchResult[]) {
     } else if (results.length === 1) {
       selectSearchResult(results[0]!)
       searchBoxRef.value!.searchActive = false
+    } else {
+      await searchBoxRef.value!.focus()
+      searchBoxRef.value!.searchActive = true
     }
   }
 }
