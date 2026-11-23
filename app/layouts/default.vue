@@ -35,9 +35,9 @@
       @selectSearchResult="selectSearchResult($event)"
     )
   #left
-  #sitemenu(:class='{closed: !menuOpen}' ref="menuContainer")
+  #sitemenu(:class='{closed: !menuOpen}' :inert="mobileSearchOpen" ref="menuContainer")
     site-menu(@close="menuOpen = false")
-  #main
+  #main(:inert="mobileSearchOpen")
     .hidden
       | tijdloze.rocks bevat statistieken en informatie over de Tijdloze 100. Dit is de allertijden-lijst van Studio Brussel. Op het einde van elk jaar zend StuBru het beste uit de rockgeschiedenis uit. Op deze site vind je alle lijsten sinds 1987 en allerhande statistieken.
     slot
