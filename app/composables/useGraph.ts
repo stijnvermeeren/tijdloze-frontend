@@ -22,7 +22,7 @@ export default function () {
     const result: Record<number, number> = {}
     let previousYearCutoff: number | undefined = undefined
     years.value.forEach(year => {
-      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy]!) + 1
+      const thisYearCutoff = maxPositionForYear(year) + 1
       if (previousYearCutoff !== undefined) {
         result[year.yyyy] = Math.min(previousYearCutoff, thisYearCutoff);
       } else {
@@ -37,7 +37,7 @@ export default function () {
     const result: Record<number, number> = {}
     let previousYear: Year | undefined = undefined
     years.value.forEach(year => {
-      const thisYearCutoff = (maxPositionByYyyy.value[year.yyyy]!) + 1
+      const thisYearCutoff = maxPositionForYear(year) + 1
       if (previousYear) {
         result[previousYear.yyyy] = Math.min(result[previousYear.yyyy]!, thisYearCutoff);
       }
@@ -48,8 +48,12 @@ export default function () {
   })
 
   const maxPosition = computed(() => {
-    return Math.max(0, ...Object.values(maxPositionByYyyy.value))
+    return Math.max(100, ...Object.values(maxPositionByYyyy.value))
   })
+
+  function maxPositionForYear(year: Year): number {
+    return maxPositionByYyyy.value[year.yyyy] || maxPosition.value
+  }
 
   const xBandScale = computed(() => {
     return scaleBand()
@@ -75,7 +79,7 @@ export default function () {
     if (years.value.length) {
       const points = []
       years.value.forEach((year, index) => {
-        const y = yScale.value((maxPositionByYyyy.value[year.yyyy]!) + 1)
+        const y = yScale.value(maxPositionForYear(year) + 1)
         const xStart = (index === 0) ? 0 : (xBandScale.value(year._yy)!)
         const xEnd = (index === years.value.length - 1) ? width : (xBandScale.value(year._yy)!) + xBandScale.value.bandwidth()
         points.push(`${xStart},${y}`)
@@ -145,5 +149,3 @@ export default function () {
 
   return {years, xBandScale, xScale, yScale, songLine, extended, greyBackgroundPoints}
 }
-
-

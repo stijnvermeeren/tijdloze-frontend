@@ -112,6 +112,7 @@ const { width: searchBoxWidth } = useElementSize(searchBoxContainer)
 
 const selectedResult = ref<SearchResult | null>(null)
 const searchActive = ref(false)
+const selectingResult = ref(false)
 const inputFocused = ref(false)
 const menuProps = computed(() => {
   return {
@@ -119,12 +120,13 @@ const menuProps = computed(() => {
     maxHeight: props.fillAvailableHeight ? 'none' : 450,
     width: searchBoxWidth.value || undefined,
     attach: props.menuAttach,
+    transition: false,
     contentClass: 'search-results-menu',
   }
 })
 
 const menuOpen = computed({
-  get: () => !!query.value && searchActive.value,
+  get: () => !selectingResult.value && !!query.value && searchActive.value,
   set: (val) => onMenuUpdate(val)
 })
 
@@ -173,10 +175,12 @@ function getItemTitle(result: SearchResult): string {
 }
 
 function onMenuUpdate(isOpen: boolean) {
+  if (selectingResult.value && isOpen) return
   searchActive.value = isOpen
 }
 
 function onSearchUpdate(newQuery: string | null) {
+  if (selectingResult.value) return
   if (!inputFocused.value && !newQuery) return
   query.value = newQuery ?? ''
 }
@@ -200,10 +204,13 @@ async function focus() {
 async function onSelect(result: SearchResult | null) {
   if (result) {
     result.query = query.value
+    selectingResult.value = true
+    searchActive.value = false
+    query.value = ''
     emit('selectSearchResult', result)
     await nextTick()
-    query.value = ''
     selectedResult.value = null
+    selectingResult.value = false
   }
 }
 
