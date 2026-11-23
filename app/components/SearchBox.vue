@@ -2,7 +2,7 @@
 .searchBox(ref="searchBoxContainer")
   v-autocomplete(
     v-model="selectedResult"
-    v-model:search="query"
+    :search="query"
     :items="renderedResults"
     :item-title="getItemTitle"
     :item-value="(r) => `${r.type}-${r.item.id}`"
@@ -19,6 +19,9 @@
     persistent-placeholder
     ref="autocomplete"
     @update:modelValue="onSelect"
+    @update:search="onSearchUpdate"
+    @focus="onFocus"
+    @blur="onBlur"
     v-model:menu="menuOpen"
   )
     template(#prepend-inner)
@@ -109,6 +112,7 @@ const { width: searchBoxWidth } = useElementSize(searchBoxContainer)
 
 const selectedResult = ref<SearchResult | null>(null)
 const searchActive = ref(false)
+const inputFocused = ref(false)
 const menuProps = computed(() => {
   return {
     locationStrategy: props.fillAvailableHeight ? fillAvailableHeightLocationStrategy : 'connected',
@@ -172,6 +176,27 @@ function onMenuUpdate(isOpen: boolean) {
   searchActive.value = isOpen
 }
 
+function onSearchUpdate(newQuery: string | null) {
+  if (!inputFocused.value && !newQuery) return
+  query.value = newQuery ?? ''
+}
+
+async function onFocus() {
+  inputFocused.value = true
+  const currentQuery = query.value
+  await nextTick()
+  query.value = currentQuery
+}
+
+function onBlur() {
+  inputFocused.value = false
+}
+
+async function focus() {
+  autocomplete.value?.focus()
+  await nextTick()
+}
+
 async function onSelect(result: SearchResult | null) {
   if (result) {
     result.query = query.value
@@ -208,12 +233,13 @@ const isVisible = useElementVisibility(searchBoxContainer)
 
 onStartTyping(() => {
   if (isVisible.value && !autocomplete.value?.focused) {
-    autocomplete.value?.focus()
+    focus()
   }
 })
 
 defineExpose({
-  searchActive
+  searchActive,
+  focus
 })
 </script>
 
@@ -223,6 +249,10 @@ defineExpose({
   .searchBox {
     margin: 10px 0;
     font-size: 16px;
+  }
+
+  .searchBox :deep(.v-autocomplete--single:not(.v-autocomplete--selection-slot) .v-field--dirty:not(.v-field--focused) input) {
+    opacity: 1;
   }
 
   .more-suggestions {
