@@ -57,6 +57,10 @@ import { reloadCoreData } from '~/utils/loadCoreData'
 const menuContainer = useTemplateRef('menuContainer')
 const menuOpen = ref(false)
 const mobileSearchOpen = ref(false)
+const isMobileViewport = useMediaQuery('(max-width: 1199px)')
+watch(isMobileViewport, (isMobile) => {
+  if (!isMobile) mobileSearchOpen.value = false
+})
 
 onClickOutside(menuContainer, () => menuOpen.value = false)
 
