@@ -14,20 +14,24 @@
         div.subtitle Tijdloze muziek-klassiekers + data-analyse
       search-box.header-search.desktop-search(@selectSearchResult="selectSearchResult($event)")
       v-btn.mobile-search-button.mobile-header-button(
+        id="mobile-search-toggle"
         variant="text"
         :icon="mobileSearchOpen ? mdiClose : mdiMagnify"
-        :aria-label="mobileSearchOpen ? 'Sluiten' : 'Zoeken'"
+        :aria-label="mobileSearchOpen ? 'Zoeken sluiten' : 'Zoeken'"
+        :aria-expanded="mobileSearchOpen"
+        aria-controls="mobile-search-panel"
         @click.stop="mobileSearchOpen = !mobileSearchOpen"
       )
   .mobile-search-panel(
     v-if="mobileSearchOpen"
-    role="dialog"
-    aria-modal="true"
+    id="mobile-search-panel"
+    role="search"
     aria-label="Zoeken"
   )
     search-box.mobile-search-box(
       autofocus
       fill-available-height
+      menu-attach=".mobile-search-panel"
       @selectSearchResult="selectSearchResult($event)"
     )
   #left
@@ -55,6 +59,13 @@ const menuOpen = ref(false)
 const mobileSearchOpen = ref(false)
 
 onClickOutside(menuContainer, () => menuOpen.value = false)
+
+onKeyStroke('Escape', () => {
+  if (!mobileSearchOpen.value) return
+
+  mobileSearchOpen.value = false
+  nextTick(() => document.getElementById('mobile-search-toggle')?.focus())
+})
 
 type SearchResult = {
   type: 'song' | 'artist' | 'album'
@@ -213,7 +224,7 @@ onMounted(async () => {
       #sitemenu {
         grid-area: auto;
         position: fixed;
-        z-index: 1000;
+        z-index: 1002;
         top: 0;
         left: 0;
         bottom: 0;
@@ -295,10 +306,6 @@ onMounted(async () => {
     }
   }
 
-  .mobile-search-panel {
-    display: none;
-  }
-
   .mobile-search-box {
     width: 100%;
     margin: 0;
@@ -315,16 +322,20 @@ onMounted(async () => {
     }
   }
 
+  .mobile-search-panel {
+    display: none;
+  }
+
   @media (max-width: 1199px) {
     .mobile-search-panel {
+      display: block;
       position: fixed;
       z-index: 1000;
       top: 68px;
       right: 0;
       bottom: 0;
       left: 0;
-      display: block;
-      overflow-y: auto;
+      overflow: visible;
       background-color: var(--background-color);
     }
   }

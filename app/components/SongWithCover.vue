@@ -3,7 +3,8 @@ item-with-media
   template(#media)
     album-cover(:cover="song.album.cover" :key="mounted ? 'mounted' : 'initial'")
   template(#title)
-    song-link(:song='song' :tabindex="plainArtist ? -1 : undefined")
+    song-link(v-if="!plainTitle" :song='song')
+    span.plainTitle(v-else) {{song.title}}
   template(#subtitle)
     | van #[song-artist-link(:song='song' :plain-artist="plainArtist")] uit {{song.album.releaseYear}}
   template(v-if="attribution" #extra)
@@ -19,6 +20,7 @@ const props = defineProps<{
   song: Song
   attribution?: string
   plainArtist?: boolean
+  plainTitle?: boolean
 }>()
 
 // Fix for wrong covers on hydration mismatch on homepage.
@@ -27,3 +29,9 @@ onMounted(() => {
   mounted.value = true
 })
 </script>
+
+<style scoped>
+.plainTitle {
+  font-style: italic;
+}
+</style>

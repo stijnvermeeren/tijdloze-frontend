@@ -3,7 +3,8 @@ item-with-media
   template(#media)
     v-icon.artistIcon(:icon="mdiAccountMusic" color="grey")
   template(#title)
-    artist-link(:artist="artist" :tabindex="tabindex")
+    artist-link(v-if="!plainTitle" :artist="artist" :tabindex="tabindex")
+    span(v-else) {{artist.name}}
 </template>
 
 <script setup lang="ts">
@@ -13,6 +14,7 @@ import { mdiAccountMusic } from "@mdi/js";
 defineProps<{
   artist: Artist
   tabindex?: number
+  plainTitle?: boolean
 }>()
 </script>
 

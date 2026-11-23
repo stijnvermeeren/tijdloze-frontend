@@ -25,9 +25,9 @@
       v-icon(:icon="mdiMagnify")
     template(#item="{ item, props: itemProps }")
       v-list-item(v-bind="itemProps" title="" class="pa-0")
-        song-with-cover(v-if="item.raw.type === 'song'" :song="item.raw.item" plain-artist)
-        album-with-cover(v-if="item.raw.type === 'album'" :album="item.raw.item" plain-artist)
-        artist-with-icon(v-if="item.raw.type === 'artist'" :artist="item.raw.item" :tabindex="-1")
+        song-with-cover(v-if="item.raw.type === 'song'" :song="item.raw.item" plain-artist plain-title)
+        album-with-cover(v-if="item.raw.type === 'album'" :album="item.raw.item" plain-artist plain-title)
+        artist-with-icon(v-if="item.raw.type === 'artist'" :artist="item.raw.item" plain-title)
     template(#no-data)
       .more-suggestions(v-if='query.length > 0')
         | Geen resultaten gevonden.
@@ -71,6 +71,7 @@ const props = withDefaults(defineProps<{
   songsYear?: Year
   autofocus?: boolean
   fillAvailableHeight?: boolean
+  menuAttach?: string
 }>(), {
   placeholder: 'Artiest, album, nummer',
   songFilter: () => true,
@@ -78,6 +79,7 @@ const props = withDefaults(defineProps<{
   albumFilter: () => true,
   autofocus: false,
   fillAvailableHeight: false,
+  menuAttach: undefined,
 })
 
 const fillAvailableHeightLocationStrategy: LocationStrategyFunction = (data, _props, contentStyles) => {
@@ -112,6 +114,7 @@ const menuProps = computed(() => {
     locationStrategy: props.fillAvailableHeight ? fillAvailableHeightLocationStrategy : 'connected',
     maxHeight: props.fillAvailableHeight ? 'none' : 450,
     width: searchBoxWidth.value || undefined,
+    attach: props.menuAttach,
     contentClass: 'search-results-menu',
   }
 })
