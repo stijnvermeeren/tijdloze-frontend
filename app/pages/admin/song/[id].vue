@@ -51,6 +51,12 @@ div
         )
     v-row(dense)
       v-col
+        admin-youtube-video-input(
+          v-model='fullSongData.youtubeVideoId'
+          :query='`${fullSongData.title} ${artist?.name ?? ""}`'
+        )
+    v-row(dense)
+      v-col
         admin-musicbrainz-input(
           v-model='fullSongData.musicbrainzRecordingId'
           musicbrainz-category="recording"
