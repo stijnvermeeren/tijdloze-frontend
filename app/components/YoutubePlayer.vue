@@ -29,12 +29,15 @@ const rootAttrs = computed(() => ({
 
 <style scoped>
 .youtube-player-error {
+  position: absolute;
+  inset: 0;
   display: grid;
   width: 100%;
   height: 100%;
   place-items: center;
   color: white;
   text-align: center;
+  background-color: black;
 }
 
 :deep(iframe) {
