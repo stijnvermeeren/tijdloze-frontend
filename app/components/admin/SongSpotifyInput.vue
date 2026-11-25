@@ -7,14 +7,19 @@ div.d-flex.align-center
       clearable
       :error-messages="spotifyMessage"
     )
-    v-btn.mx-1(@click="search" :disabled="processing") Zoek
   div
     spotify(:spotify-id='spotifyId' v-if="spotifyId")
+  v-btn.mx-1(
+    @click="search"
+    :icon="mdiSearchWeb"
+    :disabled="processing"
+    aria-label="Zoeken op Spotify"
+  )
 </template>
 
 <script setup lang="ts">
 import { apiEndpoints } from '~/api/endpoints'
-import {mdiOpenInNew} from "@mdi/js";
+import {mdiSearchWeb} from "@mdi/js";
 
 const {$api} = useNuxtApp()
 

@@ -11,6 +11,7 @@ export interface SongFormData {
   urlWikiNl?: string
   urlWikiEn?: string
   spotifyId?: string
+  youtubeVideoId?: string
   musicbrainzRecordingId?: string
   musicbrainzWorkId?: string
   wikidataId?: string
