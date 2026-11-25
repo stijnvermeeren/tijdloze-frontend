@@ -43,6 +43,7 @@ export default defineNuxtConfig({
     ]
   },
   modules: [
+    '@nuxt/scripts',
     '@nuxt/eslint',
     '@pinia/nuxt',
     '@vueuse/nuxt',

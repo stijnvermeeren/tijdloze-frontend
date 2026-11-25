@@ -22,14 +22,7 @@ Title {{song.title}} ({{song.artist.name}})
     .media-embed(v-if='fullSongData?.spotifyId')
       spotify(:spotify-id='fullSongData.spotifyId')
     .media-embed(v-if='fullSongData?.youtubeVideoId')
-      iframe.youtube(
-        :src='`https://www.youtube.com/embed/${encodeURIComponent(fullSongData.youtubeVideoId)}`'
-        title='YouTube video player'
-        width='352'
-        height='198'
-        allowfullscreen
-        loading='lazy'
-      )
+      youtube-player(:video-id='fullSongData.youtubeVideoId' :width='352')
 </template>
 
 <script setup lang="ts">
@@ -86,16 +79,6 @@ definePageMeta({
     .media-embed {
       width: min(352px, 100%);
 
-      :deep(iframe) {
-        width: 100%;
-        max-width: 100%;
-      }
-
-      iframe.youtube {
-        display: block;
-        aspect-ratio: 16 / 9;
-        height: auto;
-      }
     }
   }
 </style>
