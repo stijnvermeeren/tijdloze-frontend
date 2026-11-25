@@ -27,6 +27,8 @@ const href = computed(() => {
   switch (props.field) {
     case "spotifyId":
       return `https://open.spotify.com/${props.type}/${props.value}`
+    case "youtubeVideoId":
+      return `https://www.youtube.com/watch?v=${props.value}`
     case "wikidataId":
       return `https://wikidata.org/wiki/${props.value}`
     case "musicbrainzWorkId":
@@ -54,6 +56,8 @@ const iFrameSrc = computed(() => {
   switch (props.field) {
     case "spotifyId":
       return `https://open.spotify.com/embed/artist/${props.value}`
+    case "youtubeVideoId":
+      return `https://www.youtube.com/embed/${props.value}`
     case "urlAllMusic":
       return undefined
     default:

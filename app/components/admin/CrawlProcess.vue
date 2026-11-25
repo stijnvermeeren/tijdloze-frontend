@@ -31,7 +31,9 @@ ui-card(v-if="crawl")
         :field="crawl.field"
         :value="currentValue"
       )
-      span(v-else) (Geen waarde)
+      span(v-else-if="currentEntityStatus === 'error' && currentEntityError") Huidige waarde kon niet geladen worden
+      span(v-else-if="currentEntityStatus === 'success'") (Geen waarde)
+      span(v-else) Huidige waarde laden...
 
 div(v-else) Niets meer gevonden...
 </template>
@@ -78,17 +80,47 @@ const songModel = computed<Song | null>(() => {
   return useRepo(Song).find(entry.songId)
 })
 
-const storeModel = computed<Artist | Album | Song | null>(() => {
-  return artistModel.value || albumModel.value || songModel.value
+const currentEntityId = computed(() => {
+  const entry = crawl.value
+  if (props.type === 'artist') {
+    return entry?.artistId
+  }
+  if (props.type === 'album') {
+    return entry?.albumId
+  }
+  return entry?.songId
 })
+
+const currentEntityEndpoint = computed(() => {
+  const id = currentEntityId.value
+  if (props.type === 'artist') {
+    return apiEndpoints.artist.byId(id ?? 0)
+  }
+  if (props.type === 'album') {
+    return apiEndpoints.album.byId(id ?? 0)
+  }
+  return apiEndpoints.song.byId(id ?? 0)
+})
+
+const {
+  data: currentEntityData,
+  status: currentEntityStatus,
+  error: currentEntityError
+} = await useApiFetch(
+  () => currentEntityEndpoint.value,
+  {
+    immediate: currentEntityId.value !== undefined,
+    watch: [currentEntityEndpoint, () => crawl.value?.id]
+  }
+)
 
 const currentValue = computed(() => {
   const field = crawl.value?.field
-  const model = storeModel.value as Record<string, unknown> | null
-  if (!field || !model) {
+  const entity = currentEntityData.value
+  if (!field || !entity || currentEntityStatus.value !== 'success' || entity.id !== currentEntityId.value) {
     return undefined
   }
-  const value = model[field]
+  const value = Object.getOwnPropertyDescriptor(entity, field)?.value
   return value === undefined || value === null ? undefined : String(value)
 })
 
