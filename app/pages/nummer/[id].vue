@@ -18,9 +18,18 @@ Title {{song.title}} ({{song.artist.name}})
   ui-tabs(:tabs="tabs")
     nuxt-page(keepalive :song="song" :full-song-data="fullSongData")
 
-  .spotify(v-if='fullSongData?.spotifyId')
-    div
+  .media-embeds(v-if='fullSongData?.spotifyId || fullSongData?.youtubeVideoId')
+    .media-embed(v-if='fullSongData?.spotifyId')
       spotify(:spotify-id='fullSongData.spotifyId')
+    .media-embed(v-if='fullSongData?.youtubeVideoId')
+      iframe.youtube(
+        :src='`https://www.youtube.com/embed/${encodeURIComponent(fullSongData.youtubeVideoId)}`'
+        title='YouTube video player'
+        width='352'
+        height='198'
+        allowfullscreen
+        loading='lazy'
+      )
 </template>
 
 <script setup lang="ts">
@@ -66,14 +75,26 @@ definePageMeta({
 </script>
 
 <style scoped>
-  div.spotify {
+  div.media-embeds {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
     margin-top: 30px;
 
-    div {
-      text-align: center;
+    .media-embed {
+      width: min(352px, 100%);
 
-      iframe {
-        max-width: 80%;
+      :deep(iframe) {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      iframe.youtube {
+        display: block;
+        aspect-ratio: 16 / 9;
+        height: auto;
       }
     }
   }
